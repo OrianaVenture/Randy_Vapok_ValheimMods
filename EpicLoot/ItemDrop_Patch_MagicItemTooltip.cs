@@ -18,7 +18,7 @@ namespace EpicLoot
             if (item.IsEquipable() && !item.m_equipped && Player.m_localPlayer != null && Player.m_localPlayer.HasEquipmentOfType(item.m_shared.m_itemType) && Input.GetKey(KeyCode.LeftControl))
             {
                 var otherItem = Player.m_localPlayer.GetEquipmentOfType(item.m_shared.m_itemType);
-                tooltipText = item.GetTooltip() + $"\n\n<color=#AAA><i>$mod_epicloot_currentlyequipped:</i></color>\n<size=18>{otherItem.GetDecoratedName()}</size>\n" + otherItem.GetTooltip();
+                tooltipText = item.GetTooltip() + $"<color=#AAA><i>$mod_epicloot_currentlyequipped:</i></color>\n<size=18>{otherItem.GetDecoratedName()}</size>\n" + otherItem.GetTooltip();
             }
             else
             {
@@ -279,7 +279,7 @@ namespace EpicLoot
             }
 
             // Add magic item effects here
-            text.Append(magicItem.GetTooltip());
+            text.AppendLine(magicItem.GetTooltip());
 
             // Set stuff
             if (item.IsSetItem())
@@ -328,8 +328,8 @@ namespace EpicLoot
                 __result += text.ToString();
             }
             
-            __result = __result.Replace("<color=orange>", "<color=lightblue>");
-            __result = __result.Replace("<color=yellow>", "<color=lightblue>");
+            __result = __result.Replace("<color=orange>", "<color=#add8e6ff>");
+            __result = __result.Replace("<color=yellow>", "<color=#add8e6ff>");
             __result = __result.Replace("\n\n\n", "\n\n");
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +9,8 @@ namespace EpicLoot.Crafting
 {
     public class AugmentChoiceDialog : MonoBehaviour
     {
-        public Text NameText;
-        public Text Description;
+        public TMP_Text NameText;
+        public TMP_Text Description;
         public Image Icon;
         public Image MagicBG;
         public List<Button> EffectChoiceButtons = new List<Button>();
@@ -112,29 +113,30 @@ namespace EpicLoot.Crafting
             {
                 NameText.text = Localization.instance.Localize(fromItem.GetDecoratedName());
             }
-
+            
             if (Description != null)
             {
                 Description.text = Localization.instance.Localize(fromItem.GetTooltip());
             }
-
+            
             if (Icon != null)
             {
                 Icon.sprite = fromItem.GetIcon();
             }
-
+            
             foreach (var button in EffectChoiceButtons)
             {
                 button.gameObject.SetActive(false);
             }
-
+            
             var newEffectOptions = LootRoller.RollAugmentEffects(fromItem, magicItem, effectIndex);
+            
             for (var index = 0; index < newEffectOptions.Count; index++)
             {
                 var effect = newEffectOptions[index];
                 var button = EffectChoiceButtons[index];
                 button.gameObject.SetActive(true);
-                var text = button.GetComponentInChildren<Text>();
+                var text = button.GetComponentInChildren<TMP_Text>();
                 text.text = Localization.instance.Localize((index == 0 ? "<color=white>($mod_epicloot_augment_keep)</color> " : "") + MagicItem.GetEffectText(effect, rarity, true));
                 text.color = rarityColor;
 

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace EpicLoot.Adventure
 {
@@ -9,7 +9,7 @@ namespace EpicLoot.Adventure
     {
         public static void Postfix(MessageHud __instance)
         {
-            var biomeMessageTextRect = __instance.m_biomeFoundPrefab.transform.Find("UnlockMessage/Title").GetComponent<Text>().rectTransform;
+            var biomeMessageTextRect = __instance.m_biomeFoundPrefab.transform.Find("UnlockMessage/Title").GetComponent<TMP_Text>().rectTransform;
             biomeMessageTextRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 800);
         }
     }
