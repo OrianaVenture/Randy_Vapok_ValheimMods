@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using EpicLoot.Adventure.Feature;
+using EpicLoot_UnityLib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -62,7 +63,7 @@ namespace EpicLoot.Adventure
 
             Icon.sprite = ItemInfo.Item.GetIcon();
             Icon.color = canAfford ? Color.white : new Color(1.0f, 0.0f, 1.0f, 0.0f);
-            NameText.text = Localization.instance.Localize(ItemInfo.Item.GetDecoratedName(canAfford ? null : "#808080ff"));
+            NameText.text = Localization.instance.Localize(ItemInfo.Item.GetDecoratedName(canAfford ? null : EpicColors.Grey));
 
             CoinsCostText.text = ItemInfo.Cost.Coins.ToString();
             CoinsCostText.transform.parent.gameObject.SetActive(ItemInfo.Cost.Coins > 0);
@@ -98,7 +99,7 @@ namespace EpicLoot.Adventure
 
             if (ItemInfo.IsGamble)
             {
-                var color = canAfford ? (itemInfo.GuaranteedRarity ? EpicLoot.GetRarityColor(itemInfo.Rarity) : "white") : "#808080ff";
+                var color = canAfford ? (itemInfo.GuaranteedRarity ? EpicLoot.GetRarityColor(itemInfo.Rarity) : EpicColors.White) : EpicColors.Grey;
                 var rarityDisplay = itemInfo.GuaranteedRarity ? EpicLoot.GetRarityDisplayName(itemInfo.Rarity) : "$mod_epicloot_merchant_unknown";
                 NameText.text = Localization.instance.Localize($"<color={color}>{rarityDisplay} {ItemInfo.Item.m_shared.m_name}</color>");
 
@@ -152,7 +153,7 @@ namespace EpicLoot.Adventure
             var totalWeight = AdventureDataManager.Config.Gamble.GambleRarityChance.Sum();
             for (var i = 0; i < 5; ++i)
             {
-                var color = i == 0 ? "white" : EpicLoot.GetRarityColor((ItemRarity) (i - 1));
+                var color = i == 0 ? EpicColors.White : EpicLoot.GetRarityColor((ItemRarity) (i - 1));
                 var percent = rarityChance[i] / totalWeight * 100;
                 if (percent >= 0.01)
                 {

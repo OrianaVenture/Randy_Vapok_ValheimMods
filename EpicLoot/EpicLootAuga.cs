@@ -171,7 +171,8 @@ namespace EpicLoot
                     text.color = color;
                 }
 
-                text.text = text.text.Replace("<color=yellow>", $"<color={Auga.API.BrightGold}>");
+                // TODO: test support for this color replacement
+                text.text = text.text.Replace($"<color={EpicColors.Yellow}>", $"<color={Auga.API.BrightGold}>");
             }
         }
 
@@ -216,7 +217,7 @@ namespace EpicLoot
             Object.Destroy(scrollbar.GetComponent<Image>());
             scrollbar.colors = ColorBlock.defaultColorBlock;
             var scrollbarImage = scrollbar.handleRect.GetComponent<Image>();
-            if (ColorUtility.TryParseHtmlString("#8B7C6A", out var brown))
+            if (ColorUtility.TryParseHtmlString(EpicColors.AugaBrown, out var brown))
                 scrollbarImage.color = new Color(brown.r, brown.g, brown.b, 1.0f);
         }
     }

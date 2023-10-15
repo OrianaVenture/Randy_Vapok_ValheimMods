@@ -134,7 +134,7 @@ namespace EpicLoot
         public static ConfigEntry<bool> EnableLimitedBountiesInProgress;
         public static ConfigEntry<int> MaxInProgressBounties;
         public static ConfigEntry<EnchantingTabs> EnchantingTableActivatedTabs;
-        
+
         public static Dictionary<string, CustomSyncedValue<string>> SyncedJsonFiles = new Dictionary<string, CustomSyncedValue<string>>();
         public static Dictionary<string, ConfigValue<string>> NonSyncedJsonFiles = new Dictionary<string, ConfigValue<string>>();
 
@@ -156,16 +156,17 @@ namespace EpicLoot
 
         public static readonly Dictionary<string, string> MagicItemColors = new Dictionary<string, string>()
         {
-            { "Red",    "#ff4545" },
-            { "Orange", "#ffac59" },
-            { "Yellow", "#ffff75" },
-            { "Green",  "#80fa70" },
-            { "Teal",   "#18e7a9" },
-            { "Blue",   "#00abff" },
-            { "Indigo", "#709bba" },
-            { "Purple", "#d078ff" },
-            { "Pink",   "#ff63d6" },
-            { "Gray",   "#dbcadb" },
+            { "Red",    EpicColors.MagicItemRed },
+            { "Orange", EpicColors.MagicItemOrange },
+            { "Yellow", EpicColors.MagicItemYellow },
+            { "Green",  EpicColors.MagicItemGreen },
+            { "Teal",   EpicColors.MagicItemTeal },
+            { "Blue",   EpicColors.MagicItemBlue },
+            { "Indigo", EpicColors.MagicItemIndigo },
+            { "Purple", EpicColors.MagicItemPurple },
+            { "Pink",   EpicColors.MagicItemPink },
+            { "Gray",   EpicColors.MagicItemGrey },
+            { "Grey",   EpicColors.MagicItemGrey }
         };
 
         public static readonly Assets Assets = new Assets();
@@ -179,7 +180,7 @@ namespace EpicLoot
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
         public static bool HasAuga;
         public static bool AugaTooltipNoTextBoxes;
-        
+
 
         public static event Action AbilitiesInitialized;
         public static event Action LootTableLoaded;
@@ -237,16 +238,16 @@ namespace EpicLoot
             //Enchanting Table
             EnchantingTableUpgradesActive = SyncedConfig("Enchanting Table", "Upgrades Active", true, "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
             EnchantingTableActivatedTabs = SyncedConfig("Enchanting Table", $"Table Features Active", EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant | EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
-            
+
             //Limiting Bounties
             EnableLimitedBountiesInProgress = SyncedConfig("Bounty Management", "Enable Bounty Limit", false, "Toggles limiting bounties. Players unable to purchase if enabled and maximum bounty in-progress count is met");
             MaxInProgressBounties = SyncedConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
-            
+
             _configSync.AddLockingConfigEntry(_serverConfigLocked);
 
             var assembly = Assembly.GetExecutingAssembly();
 
-            
+
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
             LoadEmbeddedAssembly(assembly, "Newtonsoft.Json.dll");
@@ -407,12 +408,12 @@ namespace EpicLoot
                 {
                     Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
                 }
-                
+
             }
         }
 
         private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, string description, bool synchronizedSetting = true) => SyncedConfig(group, configName, value, new ConfigDescription(description), synchronizedSetting);
-        
+
         private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, ConfigDescription description, bool synchronizedSetting = true)
         {
             var configEntry = Config.Bind(group, configName, value, description);
@@ -445,7 +446,7 @@ namespace EpicLoot
             {
                 Localization.instance.m_translations.Remove(entry.Key);
             }
-            
+
             //Load New Translations
             foreach (var translation in translations)
             {
@@ -741,7 +742,7 @@ namespace EpicLoot
                 {
                     if (!_assetCache.ContainsKey(asset.name))
                         _assetCache.Add(asset.name, assetGo);
-                    
+
                     if (!RegisteredPrefabs.Contains(assetGo))
                         RegisteredPrefabs.Add(assetGo);
                 }
@@ -867,7 +868,7 @@ namespace EpicLoot
                 return;
             }
 
-            
+
             foreach (var prefab in RegisteredItemPrefabs)
             {
                 var itemDrop = prefab.GetComponent<ItemDrop>();
@@ -878,7 +879,7 @@ namespace EpicLoot
                     if (itemDrop.m_itemData.IsMagicCraftingMaterial() || itemDrop.m_itemData.IsRunestone())
                     {
                         var rarity = itemDrop.m_itemData.GetRarity();
-                        
+
                         if (itemDrop.m_itemData.IsMagicCraftingMaterial())
                         {
                             itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
@@ -1018,7 +1019,7 @@ namespace EpicLoot
                 else
                     NonSyncedJsonFiles.Add(filename,new ConfigValue<string>(filename,jsonFile));
             }
-            
+
             void Process()
             {
                 T result;
@@ -1130,7 +1131,7 @@ namespace EpicLoot
             var jsonFileText = File.ReadAllText(jsonFilePath);
             var patchedJsonFileText = FilePatching.ProcessConfigFile(filename, jsonFileText);
             if (OutputPatchedConfigFiles.Value && jsonFileText != patchedJsonFileText)
-            { 
+            {
                 var debugFilePath = Path.Combine(Paths.ConfigPath, "EpicLoot", filename.Replace(".json", "_patched.json"));
                 File.WriteAllText(debugFilePath, patchedJsonFileText);
             }
@@ -1600,9 +1601,9 @@ namespace EpicLoot
                     return GetColor(_legendaryRarityColor.Value);
                 case ItemRarity.Mythic:
                     // TODO: Mythic Hookup
-                    return GetColor("Orange"/*_mythicRarityColor.Value*/);
+                    return GetColor(EpicColors.MagicItemOrange/*_mythicRarityColor.Value*/);
                 default:
-                    return "#FFFFFF";
+                    return EpicColors.White;
             }
         }
 
@@ -1625,7 +1626,7 @@ namespace EpicLoot
                 }
             }
 
-            return "#000000";
+            return EpicColors.Black;
         }
 
         public static int GetRarityIconIndex(ItemRarity rarity)

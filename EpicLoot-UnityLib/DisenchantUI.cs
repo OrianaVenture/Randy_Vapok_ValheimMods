@@ -83,7 +83,7 @@ namespace EpicLoot_UnityLib
                 var costReduction = float.IsNaN(featureValues.Item2) ? 0 : (int)featureValues.Item2;
 
                 if (costReduction > 0 && cost.Count > 0)
-                    CostLabel.text = Localization.instance.Localize("$mod_epicloot_disenchantcost <color=#EAA800>($mod_epicloot_disenchantcostreduction)</color>", costReduction.ToString());
+                    CostLabel.text = Localization.instance.Localize($"$mod_epicloot_disenchantcost <color={EpicColors.DarkGold}>($mod_epicloot_disenchantcostreduction)</color>", costReduction.ToString());
                 else
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_disenchantcost");
 

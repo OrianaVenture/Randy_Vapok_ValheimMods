@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.Crafting;
+using EpicLoot_UnityLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -152,7 +153,7 @@ namespace EpicLoot.Adventure
                 $"$mod_epicloot_merchant_gamble: {gambleRefreshTooltip}\n" +
                 $"$mod_epicloot_merchant_treasuremaps: {treasureMapRefreshTooltip}\n" +
                 $"$mod_epicloot_merchant_bounties: {bountiesRefreshTooltip}\n\n" +
-                $"<color=silver>$mod_epicloot_merchant_rollovertime</color>";
+                $"<color={EpicColors.Silver}>$mod_epicloot_merchant_rollovertime</color>";
 
             var buyListPrefab = transform.Find("SecretStash/Panel/ItemElement").gameObject.AddComponent<BuyListElement>();
             buyListPrefab.gameObject.SetActive(false);
@@ -172,9 +173,9 @@ namespace EpicLoot.Adventure
                 EpicLootAuga.ReplaceButton(transform.Find("Bounties/ClaimBountyButton").GetComponent<Button>());
                 EpicLootAuga.ReplaceButton(transform.Find("Bounties/AbandonBountyButton").GetComponent<Button>(), true);
             }
-            
+
             _acceptBountyText = transform.Find("Bounties/AcceptBountyButton").GetComponentInChildren<Text>();
-            
+
 
             Panels.Add(new SecretStashListPanel(this, buyListPrefab));
             Panels.Add(new GambleListPanel(this, buyListPrefab));
@@ -310,9 +311,9 @@ namespace EpicLoot.Adventure
         private static string GetRefreshTimeTooltip(int refreshInterval)
         {
             var message = refreshInterval > 1 ?
-                Localization.instance.Localize("$mod_epicloot_merchant_refreshdays", refreshInterval.ToString()) : 
+                Localization.instance.Localize("$mod_epicloot_merchant_refreshdays", refreshInterval.ToString()) :
                 "$mod_epicloot_merchant_refreshday";
-            return $"<color=#add8e6ff>{message}</color>";
+            return $"<color={EpicColors.LightBlue}>{message}</color>";
         }
 
         public void Update()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EpicLoot_UnityLib;
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
@@ -100,7 +101,7 @@ namespace EpicLoot.Crafting
             var rarity = fromItem.GetRarity();
             var magicItem = fromItem.GetMagicItem();
             var rarityColor = fromItem.GetRarityColor();
-            
+
             MagicBG.enabled = fromItem.IsMagic();
             MagicBG.color = rarityColor;
 
@@ -113,31 +114,31 @@ namespace EpicLoot.Crafting
             {
                 NameText.text = Localization.instance.Localize(fromItem.GetDecoratedName());
             }
-            
+
             if (Description != null)
             {
                 Description.text = Localization.instance.Localize(fromItem.GetTooltip());
             }
-            
+
             if (Icon != null)
             {
                 Icon.sprite = fromItem.GetIcon();
             }
-            
+
             foreach (var button in EffectChoiceButtons)
             {
                 button.gameObject.SetActive(false);
             }
-            
+
             var newEffectOptions = LootRoller.RollAugmentEffects(fromItem, magicItem, effectIndex);
-            
+
             for (var index = 0; index < newEffectOptions.Count; index++)
             {
                 var effect = newEffectOptions[index];
                 var button = EffectChoiceButtons[index];
                 button.gameObject.SetActive(true);
-                var text = button.GetComponentInChildren<TMP_Text>();
-                text.text = Localization.instance.Localize((index == 0 ? "<color=white>($mod_epicloot_augment_keep)</color> " : "") + MagicItem.GetEffectText(effect, rarity, true));
+                var text = button.GetComponentInChildren<Text>();
+                text.text = Localization.instance.Localize((index == 0 ? $"<color={EpicColors.White}>($mod_epicloot_augment_keep)</color> " : "") + MagicItem.GetEffectText(effect, rarity, true));
                 text.color = rarityColor;
 
                 if (EpicLoot.HasAuga)

@@ -160,11 +160,11 @@ namespace EpicLoot_UnityLib
             sb.AppendLine(Localization.instance.Localize($"<size=26>{EnchantingTableUpgrades.GetFeatureName(feature)}</size>"));
             sb.AppendLine();
             if (locked)
-                sb.AppendLine(Localization.instance.Localize("$mod_epicloot_currentlevel: <color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.BloodRed}><b>$mod_epicloot_featurelocked</b></color>"));
             else if (currentLevel == 0)
-                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.SkyBlue}><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
             else
-                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.DarkGold}><b>{currentLevel}</b></color> / {maxLevel}"));
             sb.AppendLine();
 
             sb.AppendLine(Localization.instance.Localize(EnchantingTableUpgrades.GetFeatureDescription(feature)));
@@ -174,7 +174,7 @@ namespace EpicLoot_UnityLib
             for (var i = 1; i <= maxLevel; ++i)
             {
                 var text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(EnchantingTableUI.instance.SourceTable, feature, i);
-                sb.AppendLine($"<color=#808080ff>{i}:</color> " + (i == currentLevel ? $"<color=#EAA800>{text}</color>" : text));
+                sb.AppendLine($"<color={EpicColors.Grey}>{i}:</color> " + (i == currentLevel ? $"<color={EpicColors.DarkGold}>{text}</color>" : text));
             }
 
             return sb.ToString();

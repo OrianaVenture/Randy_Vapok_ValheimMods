@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EpicLoot_UnityLib;
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -92,7 +93,7 @@ namespace EpicLoot.Adventure
             _sb.Clear();
             var biome = $"$biome_{BountyInfo.Biome.ToString().ToLower()}";
             var monsterName = AdventureDataManager.GetMonsterName(BountyInfo.Target.MonsterID).ToLowerInvariant();
-            var targetName = string.IsNullOrEmpty(BountyInfo.TargetName) ? "" : $"<color=orange>{BountyInfo.TargetName}</color>, ";
+            var targetName = string.IsNullOrEmpty(BountyInfo.TargetName) ? "" : $"<color={EpicColors.Orange}>{BountyInfo.TargetName}</color>, ";
             var slayMessage = BountyInfo.Adds.Count > 0 ? "$mod_epicloot_bounties_tooltip_slaymultiple" : "$mod_epicloot_bounties_tooltip_slay";
 
             //"mod_epicloot_bounties_tooltip": "Travel to the <color=#31eb41>$1</color> and locate $2 the <color=#f03232>$3</color>. $4. Return to me when it is done.",
@@ -100,7 +101,7 @@ namespace EpicLoot.Adventure
             _sb.AppendLine(tooltipText);
             _sb.AppendLine();
 
-            _sb.AppendLine("<color=#ffc400>$mod_epicloot_bounties_tooltip_rewards</color>");
+            _sb.AppendLine($"<color={EpicColors.Gold}>$mod_epicloot_bounties_tooltip_rewards</color>");
             if (BountyInfo.RewardIron > 0)
             {
                 _sb.AppendLine($"  {MerchantPanel.GetIronBountyTokenName()} x{BountyInfo.RewardIron}");
@@ -115,20 +116,20 @@ namespace EpicLoot.Adventure
             }
 
             _sb.AppendLine();
-            _sb.AppendLine("<color=#ffc400>$mod_epicloot_bounties_tooltip_status</color>");
+            _sb.AppendLine($"<color={EpicColors.Gold}>$mod_epicloot_bounties_tooltip_status</color>");
             switch (BountyInfo.State)
             {
                 case BountyState.Available:
                     _sb.AppendLine($"  {Localization.instance.Localize("$mod_epicloot_bounties_tooltip_available")}");
                     break;
                 case BountyState.InProgress:
-                    _sb.AppendLine("  <color=#00f0ff>$mod_epicloot_bounties_tooltip_inprogress</color>");
+                    _sb.AppendLine($"  <color={EpicColors.Cyan}>$mod_epicloot_bounties_tooltip_inprogress</color>");
                     break;
                 case BountyState.Complete:
-                    _sb.AppendLine("  <color=#70f56c>$mod_epicloot_bounties_tooltip_vanquished</color>");
+                    _sb.AppendLine($"  <color={EpicColors.Lime}>$mod_epicloot_bounties_tooltip_vanquished</color>");
                     break;
                 case BountyState.Claimed:
-                    _sb.AppendLine("  $mod_epicloot_bounties_tooltip_claimed");
+                    _sb.AppendLine($"  $mod_epicloot_bounties_tooltip_claimed");
                     break;
             }
 

@@ -115,16 +115,16 @@ namespace EpicLoot_UnityLib
                 var currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
                 var maxLevel = EnchantingTableUpgrades.GetFeatureMaxLevel(Feature);
                 if (locked)
-                    sb.AppendLine(Localization.instance.Localize("$mod_epicloot_currentlevel: <color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.BloodRed}><b>$mod_epicloot_featurelocked</b></color>"));
                 else if (currentLevel == 0)
-                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.SkyBlue}><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
                 else
-                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color={EpicColors.DarkGold}><b>{currentLevel}</b></color> / {maxLevel}"));
 
                 if (!locked && currentLevel > 0)
                 {
                     var text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(EnchantingTableUI.instance.SourceTable, Feature, currentLevel);
-                    sb.AppendLine($"<color=#EAA800>{text}</color>");
+                    sb.AppendLine($"<color={EpicColors.DarkGold}>{text}</color>");
                 }
 
                 sb.AppendLine();

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using EpicLoot.Adventure;
+using EpicLoot_UnityLib;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
@@ -64,7 +65,7 @@ namespace EpicLoot
                 {
                     var effect = entry2.Key;
                     var item = entry2.Value;
-                    t.AppendLine($" <color=silver>- {MagicItem.GetEffectText(effect, item.GetRarity(), false)} ({item.GetDecoratedName()})</color>");
+                    t.AppendLine($" <color={EpicColors.Silver}>- {MagicItem.GetEffectText(effect, item.GetRarity(), false)} ({item.GetDecoratedName()})</color>");
                 }
 
                 t.AppendLine();
@@ -82,7 +83,7 @@ namespace EpicLoot
 
             var saveData = player.GetAdventureSaveData();
 
-            t.AppendLine("<color=orange><size=30>$mod_epicloot_merchant_treasuremaps</size></color>");
+            t.AppendLine($"<color={EpicColors.Orange}><size=30>$mod_epicloot_merchant_treasuremaps</size></color>");
             t.AppendLine();
 
             var sortedTreasureMaps = saveData.TreasureMaps.Where(x => x.State == TreasureMapState.Purchased).OrderBy(x => GetBiomeOrder(x.Biome));
@@ -93,7 +94,7 @@ namespace EpicLoot
 
             t.AppendLine();
             t.AppendLine();
-            t.AppendLine("<color=orange><size=30>$mod_epicloot_activebounties</size></color>");
+            t.AppendLine($"<color={EpicColors.Orange}><size=30>$mod_epicloot_activebounties</size></color>");
             t.AppendLine();
 
             var sortedBounties = saveData.Bounties.OrderBy(x => x.State);
@@ -106,25 +107,30 @@ namespace EpicLoot
 
                 var targetName = AdventureDataManager.GetBountyName(bounty);
                 t.AppendLine($"<size=24>{targetName}</size>");
-                t.Append($"  <color=silver>$mod_epicloot_activebounties_classification: <color=#d66660>{AdventureDataManager.GetMonsterName(bounty.Target.MonsterID)}</color>, ");
-                t.AppendLine($" $mod_epicloot_activebounties_biome: <color={GetBiomeColor(bounty.Biome)}>$biome_{bounty.Biome.ToString().ToLower()}</color></color>");
+                t.Append($"  <color={EpicColors.Silver}>$mod_epicloot_activebounties_classification: " +
+                    $"<color={EpicColors.Coral}>{AdventureDataManager.GetMonsterName(bounty.Target.MonsterID)}</color>, ");
+                t.AppendLine($" $mod_epicloot_activebounties_biome: " +
+                    $"<color={GetBiomeColor(bounty.Biome)}>$biome_{bounty.Biome.ToString().ToLower()}</color></color>");
 
                 var status = "";
                 switch (bounty.State)
                 {
                     case BountyState.InProgress:
-                        status = ("<color=#00f0ff>$mod_epicloot_bounties_tooltip_inprogress</color>");
+                        status = ($"<color={EpicColors.Cyan}>$mod_epicloot_bounties_tooltip_inprogress</color>");
                         break;
                     case BountyState.Complete:
-                        status = ("<color=#70f56c>$mod_epicloot_bounties_tooltip_vanquished</color>");
+                        status = ($"<color={EpicColors.Lime}>$mod_epicloot_bounties_tooltip_vanquished</color>");
                         break;
                 }
 
-                t.Append($"  <color=silver>$mod_epicloot_bounties_tooltip_status {status}");
+                t.Append($"  <color={EpicColors.Silver}>$mod_epicloot_bounties_tooltip_status {status}");
 
                 var iron = bounty.RewardIron;
                 var gold = bounty.RewardGold;
-                t.AppendLine($", $mod_epicloot_bounties_tooltip_rewards {(iron > 0 ? $"<color=white>{MerchantPanel.GetIronBountyTokenName()} x{iron}</color>" : "")}{(iron > 0 && gold > 0 ? ", " : "")}{(gold > 0 ? $"<color=#f5da53>{MerchantPanel.GetGoldBountyTokenName()} x{gold}</color>" : "")}</color>");
+                t.AppendLine($", $mod_epicloot_bounties_tooltip_rewards {(iron > 0 ? $"<color={EpicColors.White}>" +
+                    $"{MerchantPanel.GetIronBountyTokenName()} x{iron}</color>" : "")}" +
+                    $"{(iron > 0 && gold > 0 ? ", " : "")}" +
+                    $"{(gold > 0 ? $"<color={EpicColors.BountyGold}>{MerchantPanel.GetGoldBountyTokenName()} x{gold}</color>" : "")}</color>");
                 t.AppendLine();
             }
 
@@ -136,14 +142,17 @@ namespace EpicLoot
         
         public static string GetBiomeColor(Heightmap.Biome biome)
         {
-            var biomeColor = "white";
+            var biomeColor = EpicColors.White;
             switch (biome)
             {
-                case Heightmap.Biome.Meadows: biomeColor = "#75d966"; break;
-                case Heightmap.Biome.BlackForest: biomeColor = "#72a178"; break;
-                case Heightmap.Biome.Swamp: biomeColor = "#a88a6f"; break;
-                case Heightmap.Biome.Mountain: biomeColor = "#a3bcd6"; break;
-                case Heightmap.Biome.Plains: biomeColor = "#d6cea3"; break;
+                case Heightmap.Biome.Meadows: biomeColor = EpicColors.BiomeMeadows; break;
+                case Heightmap.Biome.BlackForest: biomeColor = EpicColors.BiomeBlackForest; break;
+                case Heightmap.Biome.Swamp: biomeColor = EpicColors.BiomeSwamp; break;
+                case Heightmap.Biome.Mountain: biomeColor = EpicColors.BiomeMountain; break;
+                case Heightmap.Biome.Plains: biomeColor = EpicColors.BiomePlains; break;
+                case Heightmap.Biome.Mistlands: biomeColor = EpicColors.BiomeMistlands; break;
+                case Heightmap.Biome.AshLands: biomeColor = EpicColors.BiomeAshlands; break;
+                case Heightmap.Biome.DeepNorth: biomeColor = EpicColors.BiomeDeepNorth; break;
             }
 
             return biomeColor;
@@ -170,7 +179,7 @@ namespace EpicLoot
             foreach (var effectEntry in sortedMagicEffects)
             {
                 t.AppendLine($"<size=24>{effectEntry.Key}</size>");
-                t.AppendLine($"<color=silver>{effectEntry.Value}</color>");
+                t.AppendLine($"<color={EpicColors.Silver}>{effectEntry.Value}</color>");
                 t.AppendLine();
             }
 

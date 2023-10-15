@@ -273,7 +273,7 @@ namespace EpicLoot_UnityLib
                     isBonusCost = true;
 
                 if (isBonusCost && cost.Count > 0)
-                    CostLabel.text = Localization.instance.Localize("<color=#EAA800>($mod_epicloot_bonus)</color> $mod_epicloot_upgradecost");
+                    CostLabel.text = Localization.instance.Localize($"<color={EpicColors.DarkGold}>($mod_epicloot_bonus)</color> $mod_epicloot_upgradecost");
                 else
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_upgradecost");
             }

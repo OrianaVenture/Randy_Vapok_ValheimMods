@@ -369,9 +369,9 @@ namespace EpicLoot.CraftingV2
                 var label = count == 1 ? $"{count} $mod_epicloot_enchant_effect" : $"{count} $mod_epicloot_enchant_effects";
 
                 if (index == effectCountWeights.Count - 1 && highValueBonus > 0)
-                    sb.AppendLine($"‣ {label} {percent}% <color=#EAA800>(+{highValueBonus}% $mod_epicloot_bonus)</color>");
+                    sb.AppendLine($"‣ {label} {percent}% <color={EpicColors.DarkGold}>(+{highValueBonus}% $mod_epicloot_bonus)</color>");
                 else if (index == effectCountWeights.Count - 2 && midValueBonus > 0)
-                    sb.AppendLine($"‣ {label} {percent}% <color=#EAA800>(+{midValueBonus}% $mod_epicloot_bonus)</color>");
+                    sb.AppendLine($"‣ {label} {percent}% <color={EpicColors.DarkGold}>(+{midValueBonus}% $mod_epicloot_bonus)</color>");
                 else
                     sb.AppendLine($"‣ {label} {percent}%");
             }
@@ -497,6 +497,11 @@ namespace EpicLoot.CraftingV2
 
                     var text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
                     var color = EpicLoot.GetRarityColor(rarity);
+                    if (color.Length > 7)
+                    {
+                        // Strip alpha from color
+                        color = color.Substring(0, 7);
+                    }
                     var alpha = canAugment ? "FF" : "7F";
                     text = $"<color={color}{alpha}>{text}</color>";
 

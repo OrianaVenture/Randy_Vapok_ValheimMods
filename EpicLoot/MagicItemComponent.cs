@@ -11,6 +11,7 @@ using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
+using EpicLoot_UnityLib;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -61,7 +62,7 @@ namespace EpicLoot
             }
             catch (Exception)
             {
-                EpicLoot.LogError($"[{nameof(MagicItemComponent)}] Could not deserialize MagicItem json data! ({Item?.m_shared?.m_name})"); 
+                EpicLoot.LogError($"[{nameof(MagicItemComponent)}] Could not deserialize MagicItem json data! ({Item?.m_shared?.m_name})");
                 throw;
             }
         }
@@ -104,7 +105,7 @@ namespace EpicLoot
             {
                 CheckForExtendedItemDataAndConvert();
             }
-            
+
             FixupValuelessEffects();
             SetMagicItem(MagicItem);
         }
@@ -195,7 +196,7 @@ namespace EpicLoot
 
         public static Color GetRarityColor(this ItemDrop.ItemData itemData)
         {
-            var colorString = "white";
+            var colorString = EpicColors.White;
             if (itemData.IsMagic())
             {
                 colorString = itemData.GetMagicItem().GetColorString();
@@ -252,7 +253,7 @@ namespace EpicLoot
 
         public static string GetDecoratedName(this ItemDrop.ItemData itemData, string colorOverride = null)
         {
-            var color = "white";
+            var color = EpicColors.White;
             var name = GetDisplayName(itemData);
 
             if (!string.IsNullOrEmpty(colorOverride))
@@ -443,14 +444,14 @@ namespace EpicLoot
                 foreach (var setItemName in setPieces)
                 {
                     var isEquipped = IsSetItemEquipped(currentSetEquipped, setItemName, isMundane);
-                    var color = isEquipped ? "white" : "#808080ff";
+                    var color = isEquipped ? EpicColors.White : EpicColors.Grey;
                     var displayName = GetSetItemDisplayName(setItemName, isMundane);
                     text.Append($"\n  <color={color}>{displayName}</color>");
                 }
 
                 if (isMundane)
                 {
-                    var setEffectColor = currentSetEquipped.Count == setSize ? EpicLoot.GetSetItemColor() : "#808080ff";
+                    var setEffectColor = currentSetEquipped.Count == setSize ? EpicLoot.GetSetItemColor() : EpicColors.Grey;
                     var skillLevel = Player.m_localPlayer.GetSkillLevel(item.m_shared.m_skillType);
                     text.Append($"\n<color={setEffectColor}>({setSize}) ‣ {item.GetSetStatusEffectTooltip(item.m_quality, skillLevel).Replace("\n", " ")}</color>");
                 }
@@ -468,7 +469,7 @@ namespace EpicLoot
                         }
 
                         var display = MagicItem.GetEffectText(effectDef, setBonusInfo.Effect.Values?.MinValue ?? 0);
-                        text.Append($"\n<color={(hasEquipped ? EpicLoot.GetSetItemColor() : "#808080ff")}>({setBonusInfo.Count}) ‣ {display}</color>");
+                        text.Append($"\n<color={(hasEquipped ? EpicLoot.GetSetItemColor() : EpicColors.Grey)}>({setBonusInfo.Count}) ‣ {display}</color>");
                     }
                 }
 
@@ -775,7 +776,7 @@ namespace EpicLoot
                 }
             }
         }
-   
+
         public static void UpdateGuiItems(ItemDrop.ItemData itemData, InventoryGrid.Element element)
         {
             var magicItem = ItemBackgroundHelper.CreateAndGetMagicItemBackgroundImage(element.m_go, element.m_equiped.gameObject, true);
@@ -800,7 +801,7 @@ namespace EpicLoot
                 }
             }
         }
-   
+
         [UsedImplicitly]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -816,7 +817,7 @@ namespace EpicLoot
                 return instruction;
             }
 
-            var elementUsedField = AccessTools.DeclaredField(typeof(InventoryGrid.Element), nameof(InventoryGrid.Element.m_used)); 
+            var elementUsedField = AccessTools.DeclaredField(typeof(InventoryGrid.Element), nameof(InventoryGrid.Element.m_used));
             var elementQueuedField = AccessTools.DeclaredField(typeof(InventoryGrid.Element), nameof(InventoryGrid.Element.m_queued));
 
             for (int i = 0; i < instrs.Count; ++i)
@@ -835,7 +836,7 @@ namespace EpicLoot
                     //Get Element variable
                     yield return LogMessage(callInstruction);
                     counter++;
-                    
+
                     //Skip Stfld Instruction
                     i++;
 
@@ -858,21 +859,21 @@ namespace EpicLoot
                     //Get Item variable
                     yield return LogMessage(ldLocsInstruction);
                     counter++;
-        
+
                     //Get Element variable
                     yield return LogMessage(new CodeInstruction(OpCodes.Ldloc_S,elementOperand));
                     counter++;
-        
+
                     //Patch Calling Method
                     yield return LogMessage(new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(InventoryGrid_UpdateGui_MagicItemComponent_Patch), nameof(UpdateGuiItems))));
                     counter++;
                     successPatch2 = true;
                 }
-                
+
                 yield return LogMessage(instrs[i]);
                 counter++;
             }
-            
+
             if (!successPatch2 || !successPatch1)
             {
                 EpicLoot.LogError($"InventoryGrid.UpdateGui Transpiler Failed To Patch");
@@ -915,7 +916,7 @@ namespace EpicLoot
                 magicItem.enabled = false;
             }
         }
-        
+
         [UsedImplicitly]
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -931,10 +932,10 @@ namespace EpicLoot
                 return instruction;
             }
 
-            var elementDataEquipedField = AccessTools.DeclaredField(typeof(HotkeyBar.ElementData), nameof(HotkeyBar.ElementData.m_equiped)); 
+            var elementDataEquipedField = AccessTools.DeclaredField(typeof(HotkeyBar.ElementData), nameof(HotkeyBar.ElementData.m_equiped));
             var itemDataEquipedField = AccessTools.DeclaredField(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_equipped));
             var setActiveMethod = AccessTools.DeclaredMethod(typeof(GameObject), nameof(GameObject.SetActive));
-            var elementUsedField = AccessTools.DeclaredField(typeof(HotkeyBar.ElementData), nameof(HotkeyBar.ElementData.m_used)); 
+            var elementUsedField = AccessTools.DeclaredField(typeof(HotkeyBar.ElementData), nameof(HotkeyBar.ElementData.m_used));
 
             for (int i = 0; i < instrs.Count; ++i)
             {
@@ -953,12 +954,12 @@ namespace EpicLoot
                     //Get Element variable
                     yield return LogMessage(callInstruction);
                     counter++;
-                    
+
                     //Skip Stfld Instruction
                     i++;
                     successPatch1 = true;
                 }
-                
+
                 yield return LogMessage(instrs[i]);
                 counter++;
 
@@ -968,7 +969,7 @@ namespace EpicLoot
                 {
                     var elementOperand = instrs[i - 4].operand;
                     var itemDataOperand = instrs[i - 2].operand;
-                    
+
                     var ldLocInstruction = new CodeInstruction(OpCodes.Ldloc_S,elementOperand);
                     //Move Any Labels from the instruction position being patched to new instruction.
                     if (instrs[i].labels.Count > 0)
@@ -977,18 +978,18 @@ namespace EpicLoot
                     //Get Element
                     yield return LogMessage(ldLocInstruction);
                     counter++;
-                    
+
                     //Get Item Data
                     yield return LogMessage(new CodeInstruction(OpCodes.Ldloc_S,itemDataOperand));
                     counter++;
-          
+
                     //Patch Calling Method
                     yield return LogMessage(new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(HotkeyBar_UpdateIcons_Patch), nameof(UpdateIcons))));
                     counter++;
                     successPatch2 = true;
                 }
             }
-            
+
             if (!successPatch2 || !successPatch1)
             {
                 EpicLoot.LogError($"HotkeyBar.UpdateIcons Transpiler Failed To Patch");
@@ -1035,7 +1036,7 @@ namespace EpicLoot
             {
                 str = $"{str} x{__instance.m_itemData.m_stack}";
             }
-            __result = Localization.instance.Localize($"{str}\n[<color=yellow><b>$KEY_Use</b></color>] $inventory_pickup");
+            __result = Localization.instance.Localize($"{str}\n[<color={EpicColors.Yellow}><b>$KEY_Use</b></color>] $inventory_pickup");
             return false;
         }
 

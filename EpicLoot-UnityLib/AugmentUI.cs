@@ -61,7 +61,7 @@ namespace EpicLoot_UnityLib
                 if (!float.IsNaN(featureValues.Item1))
                     augmentChoices = (int)featureValues.Item1;
 
-                var colorPre = augmentChoices > 2 ? "<color=#EAA800>" : "";
+                var colorPre = augmentChoices > 2 ? $"<color={EpicColors.DarkGold}>" : "";
                 var colorPost = augmentChoices > 2 ? "</color>" : "";
                 AvailableEffectsHeader.text = Localization.instance.Localize($"$mod_epicloot_augment_availableeffects {colorPre}($mod_epicloot_augment_choices){colorPost}", augmentChoices.ToString());
             }
@@ -183,7 +183,7 @@ namespace EpicLoot_UnityLib
                 var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
                 var reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
                 if (reenchantCostReduction > 0)
-                    CostLabel.text = Localization.instance.Localize($"$mod_epicloot_augmentcost <color=#EAA800>(-{reenchantCostReduction}% $item_coins!)</color>");
+                    CostLabel.text = Localization.instance.Localize($"$mod_epicloot_augmentcost <color={EpicColors.DarkGold}>(-{reenchantCostReduction}% $item_coins!)</color>");
                 else
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_augmentcost");
 
