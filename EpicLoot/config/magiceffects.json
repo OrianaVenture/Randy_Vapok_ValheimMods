@@ -1971,7 +1971,7 @@
           "Legs",
           "Shoulder",
           "Utility",
-		  "Staffs"
+      "Staffs"
         ],
         "AllowedSkillTypes" : [
           "BloodMagic"
@@ -2001,7 +2001,7 @@
           "Legs",
           "Shoulder",
           "Utility",
-		  "Staffs"
+      "Staffs"
         ],
         "AllowedSkillTypes" : [
           "ElementalMagic"

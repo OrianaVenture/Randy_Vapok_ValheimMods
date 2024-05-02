@@ -1072,14 +1072,14 @@ namespace EpicLoot
 
                 }
 
-	            var filePath = GetAssetPath(filename);
-	            FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(filePath), Path.GetFileName(filePath));
-	            watcher.Changed += ConsumeConfigFileEvent;
-	            watcher.Created += ConsumeConfigFileEvent;
-	            watcher.Renamed += ConsumeConfigFileEvent;
-	            watcher.IncludeSubdirectories = true;
-	            watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-	            watcher.EnableRaisingEvents = true;
+                var filePath = GetAssetPath(filename);
+                FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(filePath), Path.GetFileName(filePath));
+                watcher.Changed += ConsumeConfigFileEvent;
+                watcher.Created += ConsumeConfigFileEvent;
+                watcher.Renamed += ConsumeConfigFileEvent;
+                watcher.IncludeSubdirectories = true;
+                watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
+                watcher.EnableRaisingEvents = true;
 
                 //Patch JSON Watcher
                 for (var i = 0; i < FilePatching.PatchesPerFile.Where(y => y.Key.Equals(filename)).ToList().Count; i++)

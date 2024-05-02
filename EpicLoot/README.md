@@ -47,18 +47,18 @@ Enter these into the console (F5) after using `devcommands`:
 
   * `magicitem <rarity> <itemtype> <amount>`: Roll a random magic item using the specified values. (alias: `mi`)
     * `<rarity>`: (String) One of: magic, rare, epic, legendary, random. If left empty, uses random.
-	* `<itemtype>`: (String) The internal ID of an item. May be "random". If left empty, uses random.
-	* `<amount>`: (Int) The number of magic items to roll. If the other values are set to random, rerolls that random item each time. If left empty, uses 1.
-	* `<effectcount>`: (Int) The number of magic effects to roll on each item. If left empty, it rolls effect count as normal.
+  * `<itemtype>`: (String) The internal ID of an item. May be "random". If left empty, uses random.
+  * `<amount>`: (Int) The number of magic items to roll. If the other values are set to random, rerolls that random item each time. If left empty, uses 1.
+  * `<effectcount>`: (Int) The number of magic effects to roll on each item. If left empty, it rolls effect count as normal.
   * `magicmats`: Spawns a bunch of all the magic crafting materials
   * `magicitemwitheffect <effectID> <itemtype>`: Spawn a magic item with the specified magic effect. (alias: `mieffect`)
     * `<effectID>`: (String) The type of magic effect you want to guarantee
-	* `<itemtype>`: (String) The internal ID of an item.
+  * `<itemtype>`: (String) The internal ID of an item.
   * `magicitemlegendary <legendaryID> <itemtype>`: Spawn a specific legendary item. (alias: `milegend`)
-	* `<legendaryID>`: (String) The ID of the legendary you want to spawn
-	* `<itemtype>`: (String) The internal ID of an item (optional, will use an item that meets the legendary definition's requirements)
+  * `<legendaryID>`: (String) The ID of the legendary you want to spawn
+  * `<itemtype>`: (String) The internal ID of an item (optional, will use an item that meets the legendary definition's requirements)
   * `magicitemset <setID>`: Spawn all the items in a legendary item set. (alias: `miset`)
-	* `<setID>`: (String) The ID of the legendary set you want to spawn
+  * `<setID>`: (String) The ID of the legendary set you want to spawn
 
 ## Current Known Mod Conflicts
   * **BetterUI** ([Nexus](https://www.nexusmods.com/valheim/mods/189), [Thunderstore](https://valheim.thunderstore.io/package/Masa/BetterUI/)): You won't be able to see the magic item properties in the tooltip. Go to the BetterUI config and set `showCustomTooltips = false`.

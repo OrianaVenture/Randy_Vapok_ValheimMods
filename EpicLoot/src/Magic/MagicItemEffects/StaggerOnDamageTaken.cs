@@ -5,11 +5,11 @@ using Random = UnityEngine.Random;
 
 namespace EpicLoot.MagicItemEffects
 {
-	[HarmonyPatch(typeof(Character), nameof(Character.RPC_Damage))]
-	public class RPC_StaggerOnDamageTaken_Character_RPC_Damage_Patch
-	{
-		[UsedImplicitly]
-		private static void Postfix(Character __instance, HitData hit)
+    [HarmonyPatch(typeof(Character), nameof(Character.RPC_Damage))]
+    public class RPC_StaggerOnDamageTaken_Character_RPC_Damage_Patch
+    {
+        [UsedImplicitly]
+        private static void Postfix(Character __instance, HitData hit)
         {
             if (hit == null || __instance == null)
                 return; 
@@ -32,6 +32,6 @@ namespace EpicLoot.MagicItemEffects
             {
                 EpicLoot.LogWarning($"[StaggerOnDamageTaken] Caught null exception. Everything is fine.");
             }
-		}
-	}
+        }
+    }
 }

@@ -43,7 +43,7 @@ namespace EpicLoot.MagicItemEffects
                 ModifyWithLowHealth.Apply(player, MagicEffectType.LifeSteal, effect => lifeStealMultiplier += MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(player, weapon, effect, 0.01f));
 
                 if (lifeStealMultiplier == 0)
-	                return;
+                    return;
                 
                 var healOn = hit.m_damage.GetTotalDamage() * lifeStealMultiplier;
                 
