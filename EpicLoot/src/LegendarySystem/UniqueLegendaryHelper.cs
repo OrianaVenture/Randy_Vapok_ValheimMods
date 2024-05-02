@@ -32,7 +32,15 @@ namespace EpicLoot.LegendarySystem
         {
             foreach (var legendaryInfo in legendaryItems)
             {
-                LegendaryInfo.Add(legendaryInfo.ID, legendaryInfo);
+                if (!LegendaryInfo.ContainsKey(legendaryInfo.ID))
+                {
+                    LegendaryInfo.Add(legendaryInfo.ID, legendaryInfo);
+                }
+                else
+                {
+                    EpicLoot.LogWarning($"Duplicate entry found for LegendaryInfo: {legendaryInfo.ID}. " +
+                        $"Please fix your configuration.");
+                }
             }
         }
 
@@ -40,10 +48,28 @@ namespace EpicLoot.LegendarySystem
         {
             foreach (var legendarySetInfo in legendarySets)
             {
-                LegendarySets.Add(legendarySetInfo.ID, legendarySetInfo);
+                if (!LegendarySets.ContainsKey(legendarySetInfo.ID))
+                {
+                    LegendarySets.Add(legendarySetInfo.ID, legendarySetInfo);
+                }
+                else
+                {
+                    EpicLoot.LogWarning($"Duplicate entry found for LegendarySetInfo: {legendarySetInfo.ID}. " +
+                        $"Please fix your configuration.");
+                    continue;
+                }
+
                 foreach (var legendaryID in legendarySetInfo.LegendaryIDs)
                 {
-                    _itemsToSetMap.Add(legendaryID, legendarySetInfo);
+                    if (!_itemsToSetMap.ContainsKey(legendaryID))
+                    {
+                        _itemsToSetMap.Add(legendaryID, legendarySetInfo);
+                    }
+                    else
+                    {
+                        EpicLoot.LogWarning($"Duplicate entry found for LegendarySet {legendarySetInfo.ID}: {legendaryID}. " +
+                            $"Please fix your configuration.");
+                    }
                 }
             }
         }
