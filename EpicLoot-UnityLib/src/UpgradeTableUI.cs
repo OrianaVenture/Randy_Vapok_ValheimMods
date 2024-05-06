@@ -40,8 +40,15 @@ namespace EpicLoot_UnityLib
                 }
             }
 
-            EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged += Refresh;
             Refresh();
+        }
+
+        public void Start()
+        {
+            if (EnchantingTableUI.instance.SourceTable != null)
+            {
+                EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged += Refresh;
+            }
         }
 
         private void OnButtonSelected(MultiSelectItemListElement selectedButton, bool selected, int _)
@@ -50,25 +57,24 @@ namespace EpicLoot_UnityLib
                 return;
 
             var noneSelected = !_featureButtons.Any(x => x.IsSelected());
-            if (noneSelected)
-            {
-                _selectedFeature = -1;
-                Refresh();
-                return;
-            }
 
             _selectedFeature = -1;
-            for (var index = 0; index < _featureButtons.Count; index++)
+
+            if (!noneSelected)
             {
-                var button = _featureButtons[index];
-                if (button == selectedButton)
+                for (var index = 0; index < _featureButtons.Count; index++)
                 {
-                    _selectedFeature = index;
-                }
-                else
-                {   button.SuppressEvents = true;
-                    button.Deselect(true);
-                    button.SuppressEvents = false;
+                    var button = _featureButtons[index];
+                    if (button == selectedButton)
+                    {
+                        _selectedFeature = index;
+                    }
+                    else
+                    {
+                        button.SuppressEvents = true;
+                        button.Deselect(true);
+                        button.SuppressEvents = false;
+                    }
                 }
             }
 
@@ -77,6 +83,11 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
+            if (EnchantingTableUI.instance.SourceTable == null)
+            {
+                return;
+            }
+
             for (var index = 0; index < _featureButtons.Count; index++)
             {
                 var button = _featureButtons[index];
