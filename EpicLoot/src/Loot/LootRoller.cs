@@ -52,7 +52,8 @@ namespace EpicLoot
             if (Config == null)
             {
                 Config = new LootConfig();
-                EpicLoot.LogErrorForce("Could not load loottables.json! Verify that your json files are installed correctly alongside the EpicLoot.dll file.");
+                EpicLoot.LogErrorForce("Could not load loottables.json! " +
+                    "Verify that your json files are installed correctly alongside the EpicLoot.dll file.");
                 return;
             }
           
@@ -135,17 +136,20 @@ namespace EpicLoot
             }
         }
 
-        public static List<GameObject> RollLootTableAndSpawnObjects(List<LootTable> lootTables, int level, string objectName, Vector3 dropPoint)
+        public static List<GameObject> RollLootTableAndSpawnObjects(List<LootTable> lootTables, 
+            int level, string objectName, Vector3 dropPoint)
         {
             return RollLootTableInternal(lootTables, level, objectName, dropPoint, true);
         }
 
-        public static List<GameObject> RollLootTableAndSpawnObjects(LootTable lootTable, int level, string objectName, Vector3 dropPoint)
+        public static List<GameObject> RollLootTableAndSpawnObjects(LootTable lootTable, 
+            int level, string objectName, Vector3 dropPoint)
         {
             return RollLootTableInternal(lootTable, level, objectName, dropPoint, true);
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(List<LootTable> lootTables, int level, string objectName, Vector3 dropPoint)
+        public static List<ItemDrop.ItemData> RollLootTable(List<LootTable> lootTables, 
+            int level, string objectName, Vector3 dropPoint)
         {
             var results = new List<ItemDrop.ItemData>();
             var gameObjects = RollLootTableInternal(lootTables, level, objectName, dropPoint, false);
@@ -158,12 +162,14 @@ namespace EpicLoot
             return results;
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(LootTable lootTable, int level, string objectName, Vector3 dropPoint)
+        public static List<ItemDrop.ItemData> RollLootTable(LootTable lootTable, 
+            int level, string objectName, Vector3 dropPoint)
         {
             return RollLootTable(new List<LootTable> {lootTable}, level, objectName, dropPoint);
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(string lootTableName, int level, string objectName, Vector3 dropPoint)
+        public static List<ItemDrop.ItemData> RollLootTable(string lootTableName, 
+            int level, string objectName, Vector3 dropPoint)
         {
             var lootTable = GetLootTable(lootTableName);
             if (lootTable == null)
@@ -174,7 +180,8 @@ namespace EpicLoot
             return RollLootTable(lootTable, level, objectName, dropPoint);
         }
 
-        private static List<GameObject> RollLootTableInternal(IEnumerable<LootTable> lootTables, int level, string objectName, Vector3 dropPoint, bool initializeObject)
+        private static List<GameObject> RollLootTableInternal(IEnumerable<LootTable> lootTables, 
+            int level, string objectName, Vector3 dropPoint, bool initializeObject)
         {
             var results = new List<GameObject>();
             foreach (var lootTable in lootTables)
@@ -186,10 +193,12 @@ namespace EpicLoot
 
         public static bool AnyItemSpawnCheatsActive()
         {
-            return CheatRollingItem || CheatDisableGating || CheatForceMagicEffect || !string.IsNullOrEmpty(CheatForceLegendary) || CheatEffectCount > 0;
+            return CheatRollingItem || CheatDisableGating || CheatForceMagicEffect || 
+                !string.IsNullOrEmpty(CheatForceLegendary) || CheatEffectCount > 0;
         }
 
-        private static List<GameObject> RollLootTableInternal(LootTable lootTable, int level, string objectName, Vector3 dropPoint, bool initializeObject)
+        private static List<GameObject> RollLootTableInternal(LootTable lootTable, 
+            int level, string objectName, Vector3 dropPoint, bool initializeObject)
         {
             var results = new List<GameObject>();
             if (lootTable == null || level <= 0 || string.IsNullOrEmpty(objectName))
@@ -265,6 +274,7 @@ namespace EpicLoot
                 {
                     continue;
                 }
+
                 var lootDrop = ResolveLootDrop(ld);
                 
                 var itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
@@ -289,40 +299,44 @@ namespace EpicLoot
                             EpicLoot.LogWarning($"Error: {e.Message}");
                         }
 
-                        if (prefab != null)
+                        if (prefab == null)
                         {
-                            var rarity = RollItemRarity(lootDrop, luckFactor);
-                            var itemType = prefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_itemType;
-                            var disenchantProducts = EnchantCostsHelper.GetSacrificeProducts(true, itemType, rarity);
-                            if (disenchantProducts != null)
-                            {
-                                foreach (var itemAmountConfig in disenchantProducts)
-                                {
-                                    GameObject materialPrefab = null;
-                                    try
-                                    {
-                                        materialPrefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        EpicLoot.LogWarning($"Unable to get Disenchant Product Prefab for [{itemAmountConfig?.Item ?? "Invalid Item"}]. Continuing.");
-                                        EpicLoot.LogWarning($"Error: {e.Message}");
-                                    }
+                            continue;
+                        }
 
-                                    if (materialPrefab == null) continue;
-                                    var materialItem = SpawnLootForDrop(materialPrefab, dropPoint, true);
-                                    var materialItemDrop = materialItem.GetComponent<ItemDrop>();
-                                    materialItemDrop.m_itemData.m_stack = itemAmountConfig.Amount;
-                                    if (materialItemDrop.m_itemData.IsMagicCraftingMaterial())
-                                        materialItemDrop.m_itemData.m_variant = EpicLoot.GetRarityIconIndex(rarity);
-                                    results.Add(materialItem);
+                        var rarity = RollItemRarity(lootDrop, luckFactor);
+                        var itemType = prefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_itemType;
+                        var disenchantProducts = EnchantCostsHelper.GetSacrificeProducts(true, itemType, rarity);
+                        if (disenchantProducts != null)
+                        {
+                            foreach (var itemAmountConfig in disenchantProducts)
+                            {
+                                GameObject materialPrefab = null;
+                                try
+                                {
+                                    materialPrefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
                                 }
+                                catch (Exception e)
+                                {
+                                    EpicLoot.LogWarning($"Unable to get Disenchant Product Prefab for " +
+                                        $"[{itemAmountConfig?.Item ?? "Invalid Item"}]. Continuing.");
+                                    EpicLoot.LogWarning($"Error: {e.Message}");
+                                }
+
+                                if (materialPrefab == null) continue;
+                                var materialItem = SpawnLootForDrop(materialPrefab, dropPoint, true);
+                                var materialItemDrop = materialItem.GetComponent<ItemDrop>();
+                                materialItemDrop.m_itemData.m_stack = itemAmountConfig.Amount;
+                                if (materialItemDrop.m_itemData.IsMagicCraftingMaterial())
+                                    materialItemDrop.m_itemData.m_variant = EpicLoot.GetRarityIconIndex(rarity);
+                                results.Add(materialItem);
                             }
                         }
 
                         continue;
                     }
                 }
+
                 var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item);
 
                 GameObject itemPrefab = null;
@@ -342,8 +356,10 @@ namespace EpicLoot
                     EpicLoot.LogError($"Tried to spawn loot ({itemID}) for ({objectName}), but the item prefab was not found!");
                     continue;
                 }
+
                 var item = SpawnLootForDrop(itemPrefab, dropPoint, initializeObject);
                 var itemDrop = item.GetComponent<ItemDrop>();
+
                 if (EpicLoot.CanBeMagicItem(itemDrop.m_itemData) && !ArrayUtils.IsNullOrEmpty(lootDrop.Rarity))
                 {
                     var itemData = itemDrop.m_itemData;
@@ -458,6 +474,7 @@ namespace EpicLoot
 
         public static MagicItem RollMagicItem(ItemRarity rarity, ItemDrop.ItemData baseItem, float luckFactor)
         {
+            // TODO: add cheat for forcing mythic items
             var cheatLegendary = !string.IsNullOrEmpty(CheatForceLegendary);
             if (cheatLegendary)
             {
@@ -566,22 +583,25 @@ namespace EpicLoot
             switch (rarity)
             {
                 case ItemRarity.Magic:
-                    result = Config.MagicEffectsCount.Magic.Select(x => new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
+                    result = Config.MagicEffectsCount.Magic.Select(x => 
+                        new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
                     break;
                 case ItemRarity.Rare:
-                    result = Config.MagicEffectsCount.Rare.Select(x => new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
+                    result = Config.MagicEffectsCount.Rare.Select(x => 
+                        new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
                     break;
                 case ItemRarity.Epic:
-                    result = Config.MagicEffectsCount.Epic.Select(x => new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
+                    result = Config.MagicEffectsCount.Epic.Select(x => 
+                        new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
                     break;
                 case ItemRarity.Legendary:
-                    result = Config.MagicEffectsCount.Legendary.Select(x => new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
+                    result = Config.MagicEffectsCount.Legendary.Select(x => 
+                        new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
                     break;
-
                 case ItemRarity.Mythic:
-                    // TODO: Mythic Hookup
-                    return new List<KeyValuePair<int, float>>();//Config.MagicEffectsCount.Mythic.Select(x => new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
-
+                    result = Config.MagicEffectsCount.Mythic.Select(x => 
+                        new KeyValuePair<int, float>((int)x[0], x[1])).ToList();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rarity), rarity, null);
             }
@@ -670,7 +690,8 @@ namespace EpicLoot
                 { ItemRarity.Magic, rarity.Length >= 1 ? rarity[0] : 0 },
                 { ItemRarity.Rare, rarity.Length >= 2 ? rarity[1] : 0 },
                 { ItemRarity.Epic, rarity.Length >= 3 ? rarity[2] : 0 },
-                { ItemRarity.Legendary, rarity.Length >= 4 ? rarity[3] : 0 }
+                { ItemRarity.Legendary, rarity.Length >= 4 ? rarity[3] : 0 },
+                { ItemRarity.Mythic, rarity.Length >= 5 ? rarity[4] : 0 }
             };
 
             return ModifyRarityByLuck(rarityWeights, luckFactor);
@@ -689,7 +710,8 @@ namespace EpicLoot
             return results;
         }
 
-        public static List<KeyValuePair<int, float>> GetDropsForLevel([NotNull] LootTable lootTable, int level, bool useNextHighestIfNotPresent = true)
+        public static List<KeyValuePair<int, float>> GetDropsForLevel([NotNull] LootTable lootTable,
+            int level, bool useNextHighestIfNotPresent = true)
         {
             if (level == 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Drops3))
             {
@@ -732,7 +754,8 @@ namespace EpicLoot
                 }
             }
 
-            EpicLoot.LogError($"Could not find any leveled drops for ({lootTable.Object} lvl {level}), but a loot table exists for this object!");
+            EpicLoot.LogError($"Could not find any leveled drops for ({lootTable.Object} lvl {level}), " +
+                $"but a loot table exists for this object!");
             return null;
         }
 
@@ -741,7 +764,8 @@ namespace EpicLoot
             return drops.Select(x => new KeyValuePair<int, float>((int) x[0], x[1])).ToList();
         }
 
-        public static LootDrop[] GetLootForLevel([NotNull] LootTable lootTable, int level, bool useNextHighestIfNotPresent = true)
+        public static LootDrop[] GetLootForLevel([NotNull] LootTable lootTable, int level,
+            bool useNextHighestIfNotPresent = true)
         {
             if (level == 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Loot3))
             {
@@ -784,7 +808,8 @@ namespace EpicLoot
                 }
             }
 
-            EpicLoot.LogError($"Could not find any leveled loot for ({lootTable.Object} lvl {level}), but a loot table exists for this object!");
+            EpicLoot.LogError($"Could not find any leveled loot for ({lootTable.Object} lvl {level}), " +
+                $"but a loot table exists for this object!");
             return null;
         }
 
@@ -800,7 +825,8 @@ namespace EpicLoot
 
             if (effectIndex < 0 || effectIndex >= magicItem.Effects.Count)
             {
-                EpicLoot.LogError($"[RollAugmentEffects] Bad effect index ({effectIndex}), effects count: {magicItem.Effects.Count}");
+                EpicLoot.LogError($"[RollAugmentEffects] Bad effect index ({effectIndex}), " +
+                    $"effects count: {magicItem.Effects.Count}");
                 return results;
             }
 
@@ -809,7 +835,8 @@ namespace EpicLoot
             results.Add(currentEffect);
 
             var valuelessEffect = MagicItemEffectDefinitions.IsValuelessEffect(currentEffect.EffectType, rarity);
-            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, magicItem, valuelessEffect ? -1 : effectIndex);
+            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, magicItem, valuelessEffect ? 
+                -1 : effectIndex);
 
             var augmentChoices = 2;
             var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
@@ -878,10 +905,11 @@ namespace EpicLoot
             }
         }
 
-        public static Dictionary<ItemRarity, float> ModifyRarityByLuck(IReadOnlyDictionary<ItemRarity, float> rarityWeights, float luckFactor = 0)
+        public static Dictionary<ItemRarity, float> ModifyRarityByLuck(
+            IReadOnlyDictionary<ItemRarity, float> rarityWeights, float luckFactor = 0)
         {
             var results = new Dictionary<ItemRarity, float>();
-            for (var rarity = ItemRarity.Magic; rarity <= ItemRarity.Legendary; rarity++)
+            for (var rarity = ItemRarity.Magic; rarity <= ItemRarity.Mythic; rarity++)
             {
                 var skewFactor = GetSkewFactor(rarity);
                 results.Add(rarity, rarityWeights[rarity] * GetSkewedLuckFactor(luckFactor, skewFactor));
@@ -954,7 +982,7 @@ namespace EpicLoot
             lootDrop = ResolveLootDrop(lootDrop);
             var rarity = lootDrop.Rarity;
 
-            Debug.LogWarning($"> rarity=[ {rarity[0]}, {rarity[1]}, {rarity[2]}, {rarity[3]} ]");
+            Debug.LogWarning($"> rarity=[ {rarity[0]}, {rarity[1]}, {rarity[2]}, {rarity[3]}, {rarity[4]} ]");
         }
     }
 }

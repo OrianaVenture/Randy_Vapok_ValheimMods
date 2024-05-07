@@ -1,3 +1,25 @@
+## Version 0.10.0 - Ashlands & Mythic Rarity
+
+* Bug fixes to catch various reported exceptions.
+* Added check to ensure chest is empty before self-destruct on treasure chests.
+* Additions for the new Ashlands content.
+* Additions for missing Hildir content.
+* Added Mythic rarity! New translations available:
+  * $mod_epicloot_mythic
+  * $mod_epicloot_mythicsetlabel (not used yet)
+  * $mod_epicloot_basicmythicnameformat
+* Rebalanced the mod to account for Mythic rarity and to be more vanilla friendly.
+* Added missing crossbow skill: 4 new translation keys available:
+  * $mod_epicloot_me_addcrossbowsskill_display
+  * $mod_epicloot_me_addcrossbowsskill_desc
+  * $mod_epicloot_me_addcrossbowsskill_prefix1
+  * $mod_epicloot_me_addcrossbowsskill_suffix1
+* Added new magic effect requirement option: MustHaveEffectTypes, to only apply when any of the given effects are present on the item.
+  * This is used to prevent recall from applying to weapons that are not throwable.
+
+<details>
+<summary><b>Changelog History</b> (<i>click to expand</i>)</summary>
+
 ## Version 0.9.38 - Various Bug Fixes
 * Fix enchanting table not displaying correctly the first time it is accessed.
 * Fix for Modify health critical effect not applying correctly.
@@ -8,9 +30,6 @@
 * Added self-destruct to treasure chests that have been found upon reloading them.
 * Minimap should now handle removing adventure map pins when abandoned or when resetting via console commands.
 * Decreased maximum minimap offset by 20% so that treasure chests and bounties are better spawned within the red map circle.
-
-<details>
-<summary><b>Changelog History</b> (<i>click to expand</i>)</summary>
 
 ## Version 0.9.37 - Auga Tooltip Bug Fix
 * Auga Tooltip now populates correctly in the Crafting and Augmenting actions.

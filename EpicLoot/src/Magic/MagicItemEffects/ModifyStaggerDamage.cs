@@ -25,7 +25,8 @@ namespace EpicLoot.MagicItemEffects
         public static float ReadStaggerDamageValue(Player player)
         {
             if (Attack_Patch.ActiveAttack != null)
-                return 1 + MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(player, Attack_Patch.ActiveAttack.m_weapon, MagicEffectType.ModifyStaggerDamage, 0.01f);
+                return 1 + MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+                    player, Attack_Patch.ActiveAttack.m_weapon, MagicEffectType.ModifyStaggerDamage, 0.01f);
             else
                 return 1 + player.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyStaggerDamage, 0.01f);
         }
@@ -43,7 +44,8 @@ namespace EpicLoot.MagicItemEffects
                 return;
             }
 
-            ModifyStaggerDamage_Character_Damage_Patch.HandlingProjectileDamage = __instance.m_nview.GetZDO()?.GetFloat("epic loot modify stagger damage", 1f);
+            ModifyStaggerDamage_Character_Damage_Patch.HandlingProjectileDamage = 
+                __instance.m_nview.GetZDO()?.GetFloat("epic loot modify stagger damage", 1f);
         }
 
         [UsedImplicitly]
@@ -61,7 +63,8 @@ namespace EpicLoot.MagicItemEffects
         {
             if (owner != null && owner.IsPlayer() && __instance != null && __instance.m_nview != null)
             {
-                __instance.m_nview.GetZDO().Set("epic loot modify stagger damage", ModifyStaggerDamage_Character_Damage_Patch.ReadStaggerDamageValue((Player)owner));
+                __instance.m_nview.GetZDO().Set("epic loot modify stagger damage",
+                    ModifyStaggerDamage_Character_Damage_Patch.ReadStaggerDamageValue((Player)owner));
             }
         }
     }

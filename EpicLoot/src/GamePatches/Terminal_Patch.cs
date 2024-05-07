@@ -283,8 +283,7 @@ namespace EpicLoot
             foreach (var itemPrefab in EpicLoot.RegisteredItemPrefabs)
             {
                 var itemDrop = UnityEngine.Object.Instantiate(itemPrefab, Player.m_localPlayer.transform.position + Player.m_localPlayer.transform.forward * 2f + Vector3.up, Quaternion.identity).GetComponent<ItemDrop>();
-                // TODO: Mythic Hookup
-                if (itemDrop.m_itemData.IsMagicCraftingMaterial() || itemDrop.m_itemData.IsRunestone() && itemDrop.m_itemData.GetCraftingMaterialRarity() != ItemRarity.Mythic)
+                if (itemDrop.m_itemData.IsMagicCraftingMaterial() || itemDrop.m_itemData.IsRunestone())
                 {
                     itemDrop.m_itemData.m_stack = itemDrop.m_itemData.m_shared.m_maxStackSize / 2;
                 }
@@ -395,7 +394,8 @@ namespace EpicLoot
             }
 
             var effectRequirements = magicItemEffectDef.Requirements;
-            var itemRarity = effectRequirements.AllowedRarities.Count == 0 ? ItemRarity.Magic : effectRequirements.AllowedRarities.First();
+            var itemRarity = effectRequirements.AllowedRarities.Count == 0 ? ItemRarity.Magic : 
+                effectRequirements.AllowedRarities.First();
             var rarityTable = GetRarityTable(itemRarity.ToString());
             var loot = new LootTable
             {
@@ -424,20 +424,23 @@ namespace EpicLoot
 
         private static float[] GetRarityTable(string rarityName)
         {
-            var rarityTable = new float[] {1, 1, 1, 1};
+            var rarityTable = new float[] {1, 1, 1, 1, 1};
             switch (rarityName.ToLowerInvariant())
             {
                 case "magic":
-                    rarityTable = new float[] {1, 0, 0, 0};
+                    rarityTable = new float[] {1, 0, 0, 0, 0};
                     break;
                 case "rare":
-                    rarityTable = new float[] {0, 1, 0, 0};
+                    rarityTable = new float[] {0, 1, 0, 0, 0 };
                     break;
                 case "epic":
-                    rarityTable = new float[] {0, 0, 1, 0};
+                    rarityTable = new float[] {0, 0, 1, 0, 0 };
                     break;
                 case "legendary":
-                    rarityTable = new float[] {0, 0, 0, 1};
+                    rarityTable = new float[] {0, 0, 0, 1, 0 };
+                    break;
+                case "mythic":
+                    rarityTable = new float[] { 0, 0, 0, 0, 1 };
                     break;
             }
 
@@ -516,7 +519,7 @@ namespace EpicLoot
                     new LootDrop
                     {
                         Item = itemType,
-                        Rarity = new float[]{ 0, 0, 0, 1 }
+                        Rarity = new float[]{ 0, 0, 0, 1, 0 }
                     }
                 }
             };

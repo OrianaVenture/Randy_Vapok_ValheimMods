@@ -126,12 +126,17 @@ namespace EpicLoot
 
         private void CheckForExtendedItemDataAndConvert()
         {
-            if (!Item.IsLegacyEIDFItem() || !Item.IsLegacyMagicItem() || MagicItem != null) return;
+            if (!Item.IsLegacyEIDFItem() || !Item.IsLegacyMagicItem() || MagicItem != null)
+            {
+                return;
+            }
 
             Value = EIDFLegacy.GetMagicItemFromCrafterName(Item);
 
             if (string.IsNullOrEmpty(Value))
+            {
                 return;
+            }
 
             Deserialize();
         }
@@ -143,7 +148,8 @@ namespace EpicLoot
 
             foreach (var effect in MagicItem.Effects)
             {
-                if (MagicItemEffectDefinitions.IsValuelessEffect(effect.EffectType, MagicItem.Rarity) && !Mathf.Approximately(effect.EffectValue, 1))
+                if (MagicItemEffectDefinitions.IsValuelessEffect(effect.EffectType, MagicItem.Rarity) &&
+                    !Mathf.Approximately(effect.EffectValue, 1))
                 {
                     EpicLoot.Log($"Fixing up effect on {MagicItem.DisplayName}: effect={effect.EffectType}");
                     effect.EffectValue = 1;

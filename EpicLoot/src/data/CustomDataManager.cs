@@ -52,11 +52,14 @@ namespace EpicLoot.Data
         public virtual void Unload() { }
         public virtual void Upgraded() { }
 
-        // data arg is CustomItemData this CustomItemData is stacked with (identical Key) - if the other item has no such CustomItemData, null is passed
+        // data arg is CustomItemData this CustomItemData is stacked with (identical Key) -
+        // if the other item has no such CustomItemData, null is passed
         // If null, stacking disallowed.
         // If non-null, the new item will have CustomItemData with this new string-value
-        // By default stacking is disallowed. Set AllowStackingIdenticalValues property to true for trivial by Value comparisons.
-        public virtual string? TryStack(CustomItemData? data) => AllowStackingIdenticalValues && data?.Value == Value ? Value : null;
+        // By default stacking is disallowed. Set AllowStackingIdenticalValues property to true for
+        // trivial by Value comparisons.
+        public virtual string? TryStack(CustomItemData? data) => AllowStackingIdenticalValues &&
+            data?.Value == Value ? Value : null;
     }
 
     public sealed class StringItemData : CustomItemData
@@ -81,7 +84,8 @@ namespace EpicLoot.Data
             {
                 types = e.Types.Where(t => t != null).Select(t => t.GetTypeInfo());
             }
-            BaseUnityPlugin plugin = (BaseUnityPlugin)Chainloader.ManagerObject.GetComponent(types.First(t => t.IsClass && typeof(BaseUnityPlugin).IsAssignableFrom(t)));
+            BaseUnityPlugin plugin = (BaseUnityPlugin)Chainloader.ManagerObject.GetComponent(
+                types.First(t => t.IsClass && typeof(BaseUnityPlugin).IsAssignableFrom(t)));
             return plugin.Info.Metadata.GUID;
         }))();
 
@@ -126,7 +130,8 @@ namespace EpicLoot.Data
 
         internal static string classKey(Type type, string key)
         {
-            string typeKey = type.FullName + (type.Assembly != Assembly.GetExecutingAssembly() ? $",{type.Assembly.GetName().Name}" : "");
+            string typeKey = type.FullName + (type.Assembly != Assembly.GetExecutingAssembly() ?
+                $",{type.Assembly.GetName().Name}" : "");
             addTypeToInheritorsCache(type, typeKey);
             return typeKey + (key == "" ? "" : $"#{key}");
         }
@@ -151,7 +156,8 @@ namespace EpicLoot.Data
                 {
                     string unprefixedKey = key.Substring(prefix.Length);
                     string[] keyParts = unprefixedKey.Split(new[] { '#' }, 2);
-                    if (!knownTypes.Contains(keyParts[0]) && Type.GetType(keyParts[0]) is { } type && typeof(CustomItemData).IsAssignableFrom(type))
+                    if (!knownTypes.Contains(keyParts[0]) && Type.GetType(keyParts[0]) is { } type &&
+                        typeof(CustomItemData).IsAssignableFrom(type))
                     {
                         addTypeToInheritorsCache(type, keyParts[0]);
                     }
@@ -184,7 +190,8 @@ namespace EpicLoot.Data
             {
                 if (!typeof(CustomItemData).IsAssignableFrom(typeof(T)) || typeof(T) == typeof(CustomItemData))
                 {
-                    throw new Exception("Trying to get value from ItemDataManager for class not inheriting from " + nameof(ItemData));
+                    throw new Exception("Trying to get value from ItemDataManager for class not inheriting from " + 
+                        nameof(ItemData));
                 }
                 return null;
             }
@@ -377,9 +384,11 @@ namespace EpicLoot.Data
 
         private static void ItemDropAwake(ItemDrop __instance)
         {
-            if (__instance.m_itemData.m_dropPrefab is { } prefab && ItemExtensions.itemInfo.TryGetValue(prefab.GetComponent<ItemDrop>().m_itemData, out ItemInfo info))
+            if (__instance.m_itemData.m_dropPrefab is { } prefab &&
+                ItemExtensions.itemInfo.TryGetValue(prefab.GetComponent<ItemDrop>().m_itemData, out ItemInfo info))
             {
-                __instance.m_itemData.Data().isCloned = new HashSet<string>(info.data.Values.Select(i => i.CustomDataKey));
+                __instance.m_itemData.Data().isCloned =
+                    new HashSet<string>(info.data.Values.Select(i => i.CustomDataKey));
             }
         }
 
@@ -391,7 +400,8 @@ namespace EpicLoot.Data
             }
         }
 
-        private static void ItemDataClonePrefix(ItemDrop.ItemData __instance, ItemDrop.ItemData __result) => SaveItem(__instance);
+        private static void ItemDataClonePrefix(ItemDrop.ItemData __instance, ItemDrop.ItemData __result) => 
+            SaveItem(__instance);
 
         private static void ItemDataClonePostfix(ItemDrop.ItemData __instance, ItemDrop.ItemData __result)
         {
@@ -422,24 +432,29 @@ namespace EpicLoot.Data
 
         private static ItemDrop.ItemData? checkingForStackableItemData;
 
-        private static void SaveCheckingForStackableItemData(ItemDrop.ItemData item) => checkingForStackableItemData = item;
+        private static void SaveCheckingForStackableItemData(ItemDrop.ItemData item) =>
+            checkingForStackableItemData = item;
         private static void ResetCheckingForStackableItemData() => checkingForStackableItemData = null;
 
         private static Dictionary<string, string>? newValuesOnStackable;
 
-        private static IEnumerable<CodeInstruction> CheckStackableInFindFreeStackMethods(IEnumerable<CodeInstruction> instructionsEnumerable)
+        private static IEnumerable<CodeInstruction> CheckStackableInFindFreeStackMethods(
+            IEnumerable<CodeInstruction> instructionsEnumerable)
         {
             CodeInstruction[] instructions = instructionsEnumerable.ToArray();
-            Label target = (Label)instructions.First(i => i.opcode == OpCodes.Br || i.opcode == OpCodes.Br_S).operand;
+            Label target = (Label)instructions.First(i =>
+            i.opcode == OpCodes.Br || i.opcode == OpCodes.Br_S).operand;
             CodeInstruction targetedInstr = instructions.First(i => i.labels.Contains(target));
-            CodeInstruction lastBranch = instructions.Reverse().First(i => i.Branches(out Label? label) && targetedInstr.labels.Contains(label!.Value));
+            CodeInstruction lastBranch = instructions.Reverse().First(i =>
+            i.Branches(out Label? label) && targetedInstr.labels.Contains(label!.Value));
             CodeInstruction? loadingInstruction = null;
 
             for (int i = 0; i < instructions.Length; ++i)
             {
                 yield return instructions[i];
                 // get hold of the loop variable store (the itemdata we want to compare against)
-                if (loadingInstruction == null && instructions[i].opcode == OpCodes.Call && ((MethodInfo)instructions[i].operand).Name == "get_Current")
+                if (loadingInstruction == null && instructions[i].opcode == OpCodes.Call &&
+                    ((MethodInfo)instructions[i].operand).Name == "get_Current")
                 {
                     loadingInstruction = instructions[i + 1].Clone();
                     loadingInstruction.opcode = new Dictionary<OpCode, OpCode>
@@ -454,8 +469,10 @@ namespace EpicLoot.Data
                 if (instructions[i] == lastBranch)
                 {
                     yield return loadingInstruction!;
-                    yield return new CodeInstruction(OpCodes.Ldsfld, AccessTools.DeclaredField(typeof(ItemInfo), nameof(checkingForStackableItemData)));
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CheckItemDataIsStackableFindFree)));
+                    yield return new CodeInstruction(OpCodes.Ldsfld,
+                        AccessTools.DeclaredField(typeof(ItemInfo), nameof(checkingForStackableItemData)));
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CheckItemDataIsStackableFindFree)));
                     yield return new CodeInstruction(OpCodes.Brfalse, target);
                 }
             }
@@ -505,7 +522,8 @@ namespace EpicLoot.Data
             return new Dictionary<string, string>();
         }
 
-        private static bool CheckItemDataStackableAddItem(Inventory __instance, ItemDrop.ItemData item, int x, int y, ref Dictionary<string, string>? __state, ref bool __result)
+        private static bool CheckItemDataStackableAddItem(Inventory __instance, ItemDrop.ItemData item,
+            int x, int y, ref Dictionary<string, string>? __state, ref bool __result)
         {
             if (__instance.GetItemAt(x, y) is { } itemAt)
             {
@@ -521,7 +539,8 @@ namespace EpicLoot.Data
             return true;
         }
 
-        private static void ApplyCustomItemDataStackableAddItem(Inventory __instance, int x, int y, Dictionary<string, string>? __state, bool __result)
+        private static void ApplyCustomItemDataStackableAddItem(Inventory __instance,
+            int x, int y, Dictionary<string, string>? __state, bool __result)
         {
             if (__result && __state is not null)
             {
@@ -532,14 +551,17 @@ namespace EpicLoot.Data
             }
         }
 
-        private static void ApplyCustomItemDataStackableAutoStack(ItemDrop item, Dictionary<string, string> customData)
+        private static void ApplyCustomItemDataStackableAutoStack(ItemDrop item,
+            Dictionary<string, string> customData)
         {
             item.m_itemData.m_customData = customData;
         }
 
-        private static Dictionary<string, string>? IsStackableItemDrop(ItemDrop drop, ItemDrop.ItemData item) => IsStackable(drop.m_itemData, item);
+        private static Dictionary<string, string>? IsStackableItemDrop(ItemDrop drop, ItemDrop.ItemData item) =>
+            IsStackable(drop.m_itemData, item);
 
-        private static IEnumerable<CodeInstruction> HandleAutostackableItems(IEnumerable<CodeInstruction> instructionList, ILGenerator ilg)
+        private static IEnumerable<CodeInstruction> HandleAutostackableItems(
+            IEnumerable<CodeInstruction> instructionList, ILGenerator ilg)
         {
             // Turn:
             // if (component.m_itemData.m_stack <= num) { ... }
@@ -551,36 +573,45 @@ namespace EpicLoot.Data
             FieldInfo itemData = AccessTools.DeclaredField(typeof(ItemDrop), nameof(ItemDrop.m_itemData));
             for (int i = 0; i < instructions.Count; ++i)
             {
-                if (instructions[i].StoresField(stack))
+                if (!instructions[i].StoresField(stack))
                 {
-                    for (int j = i; j > 0; --j)
+                    continue;
+                }
+
+                for (int j = i; j > 0; --j)
+                {
+                    if (!instructions[j].Branches(out Label? skipTarget))
                     {
-                        if (instructions[j].Branches(out Label? skipTarget))
+                        continue;
+                    }
+
+                    for (int k = j; k > 0; --k)
+                    {
+                        if (!instructions[k].LoadsField(itemData))
                         {
-                            for (int k = j; k > 0; --k)
-                            {
-                                if (instructions[k].LoadsField(itemData))
-                                {
-                                    LocalBuilder dict = ilg.DeclareLocal(typeof(Dictionary<string, string>));
-                                    LocalBuilder itemDataVar = ilg.DeclareLocal(typeof(ItemDrop.ItemData));
-                                    instructions.Insert(i + 1, new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ApplyCustomItemDataStackableAutoStack))));
-                                    instructions.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc, dict.LocalIndex));
-                                    instructions.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
-
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Brfalse, skipTarget));
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Stloc, dict.LocalIndex));
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Dup, dict.LocalIndex));
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(IsStackableItemDrop))));
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Ldloc, itemDataVar.LocalIndex));
-                                    instructions.Insert(j + 1, new CodeInstruction(OpCodes.Ldarg_0));
-
-                                    instructions.Insert(k + 1, new CodeInstruction(OpCodes.Stloc, itemDataVar.LocalIndex));
-                                    instructions.Insert(k + 1, new CodeInstruction(OpCodes.Dup));
-
-                                    return instructions;
-                                }
-                            }
+                            continue;
                         }
+
+                        LocalBuilder dict = ilg.DeclareLocal(typeof(Dictionary<string, string>));
+                        LocalBuilder itemDataVar = ilg.DeclareLocal(typeof(ItemDrop.ItemData));
+                        instructions.Insert(i + 1, new CodeInstruction(OpCodes.Call,
+                            AccessTools.DeclaredMethod(typeof(ItemInfo),
+                            nameof(ApplyCustomItemDataStackableAutoStack))));
+                        instructions.Insert(i + 1, new CodeInstruction(OpCodes.Ldloc, dict.LocalIndex));
+                        instructions.Insert(i + 1, new CodeInstruction(OpCodes.Ldarg_0));
+
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Brfalse, skipTarget));
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Stloc, dict.LocalIndex));
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Dup, dict.LocalIndex));
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Call,
+                            AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(IsStackableItemDrop))));
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Ldloc, itemDataVar.LocalIndex));
+                        instructions.Insert(j + 1, new CodeInstruction(OpCodes.Ldarg_0));
+
+                        instructions.Insert(k + 1, new CodeInstruction(OpCodes.Stloc, itemDataVar.LocalIndex));
+                        instructions.Insert(k + 1, new CodeInstruction(OpCodes.Dup));
+
+                        return instructions;
                     }
                 }
             }
@@ -589,15 +620,19 @@ namespace EpicLoot.Data
 
         private static ItemDrop.ItemData? currentlyUpgradingItem;
 
-        private static IEnumerable<CodeInstruction> TransferCustomItemDataOnUpgrade(IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
+        private static IEnumerable<CodeInstruction> TransferCustomItemDataOnUpgrade(
+            IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
         {
-            MethodInfo itemDeleter = AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.RemoveItem), new[] { typeof(ItemDrop.ItemData) });
+            MethodInfo itemDeleter = AccessTools.DeclaredMethod(typeof(Inventory),
+                nameof(Inventory.RemoveItem), new[] { typeof(ItemDrop.ItemData) });
+
             foreach (CodeInstruction instruction in instructions)
             {
                 if (instruction.opcode == OpCodes.Callvirt && instruction.OperandIs(itemDeleter))
                 {
                     yield return new CodeInstruction(OpCodes.Dup);
-                    yield return new CodeInstruction(OpCodes.Stsfld, AccessTools.DeclaredField(typeof(ItemInfo), nameof(currentlyUpgradingItem)));
+                    yield return new CodeInstruction(OpCodes.Stsfld,
+                        AccessTools.DeclaredField(typeof(ItemInfo), nameof(currentlyUpgradingItem)));
                 }
                 yield return instruction;
             }
@@ -628,7 +663,11 @@ namespace EpicLoot.Data
             {
                 ZNetView netView = item.GetComponent<ZNetView>();
                 ZDO? zdo = netView && netView.IsValid() ? netView.GetZDO() : null;
-                if (zdo == null) return;
+
+                if (zdo == null)
+                {
+                    return;
+                }
                 
                 if (!ZDOExtraData.s_ints.ContainsKey(zdo.m_uid))
                 {
@@ -639,7 +678,8 @@ namespace EpicLoot.Data
                 
                 if (containsDataCount != true)
                 {
-                    item.m_itemData.m_customData = new Dictionary<string, string>(prefab.GetComponent<ItemDrop>().m_itemData.m_customData);
+                    item.m_itemData.m_customData = new Dictionary<string, string>(
+                        prefab.GetComponent<ItemDrop>().m_itemData.m_customData);
 
                     int num = 0;
                     zdo.Set("dataCount", item.m_itemData.m_customData.Count);
@@ -658,10 +698,12 @@ namespace EpicLoot.Data
             foreach (CodeInstruction instruction in instructions)
             {
                 yield return instruction;
-                if (instruction.opcode == OpCodes.Stfld && instruction.OperandIs(AccessTools.DeclaredField(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_dropPrefab))))
+                if (instruction.opcode == OpCodes.Stfld && instruction.OperandIs(
+                    AccessTools.DeclaredField(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_dropPrefab))))
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CopyCustomDataFromUpgradedItem)));
+                    yield return new CodeInstruction(OpCodes.Call,
+                        AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CopyCustomDataFromUpgradedItem)));
                 }
             }
         }
@@ -669,36 +711,86 @@ namespace EpicLoot.Data
         static ItemInfo()
         {
             Harmony harmony = new("org.bepinex.helpers.ItemDataManager");
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.Save)), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(SaveInventoryPrefix)), Priority.First));
-            foreach (MethodInfo method in typeof(ItemDrop.ItemData).GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Where(m => m.Name == nameof(ItemDrop.SaveToZDO)))
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.Save)),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(SaveInventoryPrefix)), Priority.First));
+            foreach (MethodInfo method in typeof(ItemDrop.ItemData)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(m => m.Name == nameof(ItemDrop.SaveToZDO)))
             {
-                harmony.Patch(method, prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(SavePrefix)), Priority.First));
+                harmony.Patch(method, prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(SavePrefix)), Priority.First));
             }
 
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem), new[] { typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int) }), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CheckItemDataStackableAddItem))), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ApplyCustomItemDataStackableAddItem))));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem),
+                new[] { typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int) }),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(CheckItemDataStackableAddItem))),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(ApplyCustomItemDataStackableAddItem))));
 
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.CanAddItem), new[] { typeof(ItemDrop.ItemData), typeof(int) }), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(SaveCheckingForStackableItemData))), finalizer: new HarmonyMethod(typeof(ItemInfo), nameof(ResetCheckingForStackableItemData)));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem), new[] { typeof(ItemDrop.ItemData) }), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(SaveCheckingForStackableItemData))), finalizer: new HarmonyMethod(typeof(ItemInfo), nameof(ResetCheckingForStackableItemData)));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.CanAddItem),
+                new[] { typeof(ItemDrop.ItemData), typeof(int) }),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(SaveCheckingForStackableItemData))),
+                finalizer: new HarmonyMethod(typeof(ItemInfo), nameof(ResetCheckingForStackableItemData)));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem),
+                new[] { typeof(ItemDrop.ItemData) }),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(SaveCheckingForStackableItemData))),
+                finalizer: new HarmonyMethod(typeof(ItemInfo), nameof(ResetCheckingForStackableItemData)));
 
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.FindFreeStackSpace)), transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CheckStackableInFindFreeStackMethods))));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.FindFreeStackItem)), transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(CheckStackableInFindFreeStackMethods))), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ResetNewValuesOnStackable))), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ApplyNewValuesOnStackable))));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.FindFreeStackSpace)),
+                transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(CheckStackableInFindFreeStackMethods))));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.FindFreeStackItem)),
+                transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(CheckStackableInFindFreeStackMethods))),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(ResetNewValuesOnStackable))),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ApplyNewValuesOnStackable))));
 
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.AutoStackItems)), transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(HandleAutostackableItems))));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.AutoStackItems)),
+                transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(HandleAutostackableItems))));
 
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(InventoryGui), nameof(InventoryGui.DoCrafting)), transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(TransferCustomItemDataOnUpgrade))), finalizer: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ResetCurrentlyUpgradingItem))));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(InventoryGui), nameof(InventoryGui.DoCrafting)),
+                transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(TransferCustomItemDataOnUpgrade))),
+                finalizer: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(ResetCurrentlyUpgradingItem))));
 
             // Force loads
-            foreach (MethodInfo method in typeof(ItemDrop.ItemData).GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Where(m => m.Name == nameof(ItemDrop.LoadFromZDO)))
+            foreach (MethodInfo method in typeof(ItemDrop.ItemData)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(m => m.Name == nameof(ItemDrop.LoadFromZDO)))
             {
-                harmony.Patch(method, postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(RegisterForceLoadedTypes))));
+                harmony.Patch(method, postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(RegisterForceLoadedTypes))));
             }
             // Note: Inventory load implicitly handled by CustomItemData.Clone() handling within AddItem
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Player), nameof(Player.Load)), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(RegisterForceLoadedTypesOnPlayerLoaded)), Priority.VeryHigh));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem), new[] { typeof(string), typeof(int), typeof(int), typeof(int), typeof(long), typeof(string), typeof(bool) }), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(RegisterForceLoadedTypesAddItem)), Priority.First));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.Awake)), transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ImportCustomDataOnUpgrade)), Priority.First), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDropAwake)), Priority.First));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.Awake)), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDropAwakeDelayed)), Priority.First - 1));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.Clone)), prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDataClonePrefix))), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDataClonePostfix)), Priority.HigherThanNormal));
-            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.Clone)), postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDataClonePostfixDelayed)), Priority.HigherThanNormal - 1));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Player), nameof(Player.Load)),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(RegisterForceLoadedTypesOnPlayerLoaded)), Priority.VeryHigh));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(Inventory), nameof(Inventory.AddItem), new[] { 
+                typeof(string), typeof(int), typeof(int), typeof(int), typeof(long), typeof(string), typeof(bool) }),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(RegisterForceLoadedTypesAddItem)), Priority.First));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.Awake)),
+                transpiler: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(ImportCustomDataOnUpgrade)), Priority.First),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(
+                    typeof(ItemInfo), nameof(ItemDropAwake)), Priority.First));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop), nameof(ItemDrop.Awake)),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), 
+                    nameof(ItemDropAwakeDelayed)), Priority.First - 1));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.Clone)),
+                prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDataClonePrefix))),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo), nameof(ItemDataClonePostfix)), 
+                    Priority.HigherThanNormal));
+            harmony.Patch(AccessTools.DeclaredMethod(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.Clone)),
+                postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ItemInfo),
+                    nameof(ItemDataClonePostfixDelayed)), Priority.HigherThanNormal - 1));
         }
     }
 
@@ -714,7 +806,9 @@ namespace EpicLoot.Data
         {
             get
             {
-                if (foreignItemInfo.GetType().InvokeMember("Item", BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty, null, foreignItemInfo, new object[] { key }) is { } stringData)
+                if (foreignItemInfo.GetType().InvokeMember("Item",
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty, 
+                    null, foreignItemInfo, new object[] { key }) is { } stringData)
                 {
                     return (string?)stringData.GetType().GetProperty("Value")?.GetValue(stringData);
                 }
@@ -723,7 +817,8 @@ namespace EpicLoot.Data
             }
             set
             {
-                foreignItemInfo.GetType().GetMethod("set_Item", BindingFlags.Public | BindingFlags.Instance)?.Invoke(foreignItemInfo, new object?[] { key, value });
+                foreignItemInfo.GetType().GetMethod("set_Item", BindingFlags.Public | BindingFlags.Instance)?
+                    .Invoke(foreignItemInfo, new object?[] { key, value });
             }
         }
 
@@ -739,7 +834,9 @@ namespace EpicLoot.Data
         {
             foreach (MethodInfo method in foreignItemInfo.GetType().GetMethods())
             {
-                if (method.Name == name && method.GetParameters().Select(p => p.ParameterType.IsGenericParameter ? null : p.ParameterType).SequenceEqual(args) && generic is not null == method.IsGenericMethod)
+                if (method.Name == name && method.GetParameters()
+                    .Select(p => p.ParameterType.IsGenericParameter ? null : p.ParameterType)
+                    .SequenceEqual(args) && generic is not null == method.IsGenericMethod)
                 {
                     MethodInfo call = method;
                     if (generic is not null)
@@ -753,22 +850,31 @@ namespace EpicLoot.Data
             return null;
         }
 
-        public T? Add<T>(string key = "") where T : class, new() => call(nameof(Add), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
+        public T? Add<T>(string key = "") where T : class, new() =>
+            call(nameof(Add), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
 
-        public T? Get<T>(string key = "") where T : class => call(nameof(Get), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
+        public T? Get<T>(string key = "") where T : class =>
+            call(nameof(Get), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
 
-        public Dictionary<string, T> GetAll<T>() where T : class => call(nameof(GetAll), Array.Empty<object?>(), Array.Empty<Type?>(), typeof(T)) as T as Dictionary<string, T> ?? new Dictionary<string, T>();
+        public Dictionary<string, T> GetAll<T>() where T : class =>
+            call(nameof(GetAll), Array.Empty<object?>(), Array.Empty<Type?>(), typeof(T)) as T as Dictionary<string,
+                T> ?? new Dictionary<string, T>();
 
-        public bool Remove(string key = "") => call(nameof(Add), new object[] { key }, new[] { typeof(string) }) as bool? ?? false;
+        public bool Remove(string key = "") =>
+            call(nameof(Add), new object[] { key }, new[] { typeof(string) }) as bool? ?? false;
 
-        public bool Remove<T>(string key = "") where T : class => call(nameof(Remove), new object[] { key }, new[] { typeof(string) }, typeof(T)) as bool? ?? false;
+        public bool Remove<T>(string key = "") where T : class =>
+            call(nameof(Remove), new object[] { key }, new[] { typeof(string) }, typeof(T)) as bool? ?? false;
 
-        public bool Remove<T>(T itemData) where T : class => call(nameof(Remove), new object[] { itemData }, new Type?[] { null }, typeof(T)) as bool? ?? false;
+        public bool Remove<T>(T itemData) where T : class =>
+            call(nameof(Remove), new object[] { itemData }, new Type?[] { null }, typeof(T)) as bool? ?? false;
 
         public void Save() => call(nameof(Save), Array.Empty<object?>(), Array.Empty<Type?>());
         public void LoadAll() => call(nameof(LoadAll), Array.Empty<object?>(), Array.Empty<Type?>());
 
-        public IEnumerator<object> GetEnumerator() => call(nameof(GetEnumerator), Array.Empty<object?>(), Array.Empty<Type?>()) as IEnumerator<object> ?? new List<object>().GetEnumerator();
+        public IEnumerator<object> GetEnumerator() =>
+            call(nameof(GetEnumerator), Array.Empty<object?>(), Array.Empty<Type?>()) as IEnumerator<object> ??
+            new List<object>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
@@ -777,7 +883,8 @@ namespace EpicLoot.Data
     public static class ItemExtensions
     {
         internal static readonly ConditionalWeakTable<ItemDrop.ItemData, ItemInfo> itemInfo = new();
-        private static readonly ConditionalWeakTable<ItemDrop.ItemData, Dictionary<string, ForeignItemInfo?>> foreignItemInfo = new();
+        private static readonly ConditionalWeakTable<ItemDrop.ItemData, Dictionary<string,
+            ForeignItemInfo?>> foreignItemInfo = new();
 
         public static ItemInfo Data(this ItemDrop.ItemData item)
         {
@@ -801,12 +908,16 @@ namespace EpicLoot.Data
                 return null;
             }
 
-            if (plugin.Instance.GetType().Assembly.GetType(typeof(ItemExtensions).FullName)?.GetMethod(nameof(Data), BindingFlags.Static | BindingFlags.Public, null, new[] { typeof(ItemDrop.ItemData) }, Array.Empty<ParameterModifier>())?.Invoke(null, new object[] { item }) is { } foreignItemData)
+            if (plugin.Instance.GetType().Assembly.GetType(typeof(ItemExtensions).FullName)?
+                .GetMethod(nameof(Data), BindingFlags.Static | BindingFlags.Public, null,
+                    new[] { typeof(ItemDrop.ItemData) }, Array.Empty<ParameterModifier>())?
+                .Invoke(null, new object[] { item }) is { } foreignItemData)
             {
                 return foreignInfos[mod] = new ForeignItemInfo(item, foreignItemData);
             }
 
-            Debug.LogWarning($"Mod {mod} has an {typeof(ItemExtensions).FullName} class, but no Data(ItemDrop.ItemData) method could be called on it.");
+            Debug.LogWarning($"Mod {mod} has an {typeof(ItemExtensions).FullName} class, " +
+                $"but no Data(ItemDrop.ItemData) method could be called on it.");
             return foreignInfos[mod] = null;
         }
     }

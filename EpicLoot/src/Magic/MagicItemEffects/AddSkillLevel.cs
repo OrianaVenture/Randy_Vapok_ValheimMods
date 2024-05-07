@@ -40,6 +40,7 @@ namespace EpicLoot.MagicItemEffects
             check(MagicEffectType.AddAxesSkill, SkillType.Axes);
             check(MagicEffectType.AddAxesSkill, SkillType.WoodCutting);
             check(MagicEffectType.AddBowsSkill, SkillType.Bows);
+            check(MagicEffectType.AddCrossbowsSkill, SkillType.Crossbows);
             check(MagicEffectType.AddUnarmedSkill, SkillType.Unarmed);
             check(MagicEffectType.AddPickaxesSkill, SkillType.Pickaxes);
             check(MagicEffectType.AddElementalMagicSkill, SkillType.ElementalMagic);

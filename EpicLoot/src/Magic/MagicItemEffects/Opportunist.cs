@@ -10,7 +10,8 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Prefix(Character __instance, HitData hit)
         {
-            if (hit.GetAttacker() is Player player && player.HasActiveMagicEffect(MagicEffectType.Opportunist) && __instance.IsStaggering())
+            if (hit.GetAttacker() is Player player && player.HasActiveMagicEffect(MagicEffectType.Opportunist) && 
+                __instance.IsStaggering())
             {
                 var chance = player.GetTotalActiveMagicEffectValue(MagicEffectType.Opportunist, 0.01f);
                 if (Random.Range(0f, 1f) < chance)
