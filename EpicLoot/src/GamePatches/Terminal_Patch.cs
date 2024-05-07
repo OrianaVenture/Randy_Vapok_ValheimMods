@@ -40,11 +40,19 @@ namespace EpicLoot
             }), true);
             new Terminal.ConsoleCommand("magicitemlegendary", "", (args =>
             {
-                SpawnLegendaryMagicItem(args.Context, args.Args);
+                SpawnLegendaryMagicItem(args.Context, args.Args, ItemRarity.Legendary);
             }), true);
             new Terminal.ConsoleCommand("milegend", "", (args =>
             {
-                SpawnLegendaryMagicItem(args.Context, args.Args);
+                SpawnLegendaryMagicItem(args.Context, args.Args, ItemRarity.Legendary);
+            }), true);
+            new Terminal.ConsoleCommand("magicitemmythic", "", (args =>
+            {
+                SpawnLegendaryMagicItem(args.Context, args.Args, ItemRarity.Mythic);
+            }), true);
+            new Terminal.ConsoleCommand("mimythic", "", (args =>
+            {
+                SpawnLegendaryMagicItem(args.Context, args.Args, ItemRarity.Mythic);
             }), true);
             new Terminal.ConsoleCommand("magicitemset", "", (args =>
             {
@@ -447,7 +455,7 @@ namespace EpicLoot
             return rarityTable;
         }
 
-        private static void SpawnLegendaryMagicItem(Terminal context, string[] args)
+        private static void SpawnLegendaryMagicItem(Terminal context, string[] args, ItemRarity rarity = ItemRarity.Legendary)
         {
             if (args.Length < 2)
             {
@@ -458,28 +466,35 @@ namespace EpicLoot
             var legendaryID = args[1];
             var itemType = args.Length >= 3 ? args[2] : null;
 
-            context.AddString($"magicitemlegendary - legendaryID:{legendaryID}");
-            SpawnLegendaryItemHelper(legendaryID, itemType, context);
+            if (rarity == ItemRarity.Legendary)
+            {
+                context.AddString($"magicitemlegendary - legendaryID:{legendaryID}");
+            }
+            else
+            {
+                context.AddString($"magicitemmythic - legendaryID:{legendaryID}");
+            }
+
+            SpawnLegendaryItemHelper(legendaryID, itemType, context, rarity);
         }
 
-        private static void SpawnLegendaryItemHelper(string legendaryID, string itemType, Terminal context)
+        private static void SpawnLegendaryItemHelper(string legendaryID, string itemType, Terminal context, ItemRarity rarity)
         {
-            if (!UniqueLegendaryHelper.TryGetLegendaryInfo(legendaryID, out var legendaryInfo))
+            if (!UniqueLegendaryHelper.TryGetLegendaryInfo(legendaryID, out var itemInfo))
             {
                 if (context != null)
                 {
-                    context.AddString($"> Could not find info for legendaryID: ({legendaryID})");
+                    context.AddString($"> Could not find legendary/mythic info for legendaryID: ({legendaryID})");
                 }
                 return;
             }
 
             if (string.IsNullOrEmpty(itemType))
             {
-                var dummyMagicItem = new MagicItem { Rarity = ItemRarity.Legendary };
+                var dummyMagicItem = new MagicItem { Rarity = rarity };
                 var allowedItems = new List<ItemDrop>();
                 foreach (var itemName in GatedItemTypeHelper.ItemInfoByID.Keys)
                 {
-
                     var itemPrefab = ObjectDB.instance.GetItemPrefab(itemName);
                     if (itemPrefab == null)
                     {
@@ -494,7 +509,7 @@ namespace EpicLoot
 
                     var itemData = itemDrop.m_itemData;
                     itemData.m_dropPrefab = itemPrefab;
-                    var checkRequirements = legendaryInfo.Requirements.CheckRequirements(itemData, dummyMagicItem);
+                    var checkRequirements = itemInfo.Requirements.CheckRequirements(itemData, dummyMagicItem);
 
                     if (checkRequirements)
                     {
@@ -510,7 +525,7 @@ namespace EpicLoot
                 return;
             }
 
-            var loot = new LootTable
+            LootTable loot = new LootTable
             {
                 Object = "Console",
                 Drops = new[] { new float[] { 1, 1 } },
@@ -519,22 +534,32 @@ namespace EpicLoot
                     new LootDrop
                     {
                         Item = itemType,
-                        Rarity = new float[]{ 0, 0, 0, 1, 0 }
+                        Rarity = GetRarityTable(rarity.ToString())
                     }
                 }
             };
 
-            LootRoller.CheatForceLegendary = legendaryID;
+            if (rarity == ItemRarity.Legendary)
+            {
+                LootRoller.CheatForceLegendary = legendaryID;
+            }
+            else
+            {
+                LootRoller.CheatForceMythic = legendaryID;
+            }
+
             var previousDisableGatingState = LootRoller.CheatDisableGating;
             LootRoller.CheatDisableGating = true;
 
             var randomOffset = UnityEngine.Random.insideUnitSphere;
-            var dropPoint = Player.m_localPlayer.transform.position + Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+            var dropPoint = Player.m_localPlayer.transform.position +
+                Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
             LootRoller.CheatRollingItem = true;
             LootRoller.RollLootTableAndSpawnObjects(loot, 1, loot.Object, dropPoint);
-            LootRoller.CheatRollingItem = false;
 
+            LootRoller.CheatRollingItem = false;
             LootRoller.CheatForceLegendary = null;
+            LootRoller.CheatForceMythic = null;
             LootRoller.CheatDisableGating = previousDisableGatingState;
         }
 
@@ -549,15 +574,18 @@ namespace EpicLoot
             var setID = args[1];
             terminal.AddString($"magicitemset - setID:{setID}");
 
-            if (!UniqueLegendaryHelper.TryGetLegendarySetInfo(setID, out var setInfo))
+            if (!UniqueLegendaryHelper.TryGetLegendarySetInfo(setID, out var setInfo, out ItemRarity rarity))
             {
                 terminal.AddString($"> Could not find set info for setID: ({setID})");
                 return;
             }
 
-            foreach (var legendaryID in setInfo.LegendaryIDs)
+            if (setInfo != null)
             {
-                SpawnLegendaryItemHelper(legendaryID, null, terminal);
+                foreach (var legendaryID in setInfo.LegendaryIDs)
+                {
+                    SpawnLegendaryItemHelper(legendaryID, null, terminal, rarity);
+                }
             }
         }
 
@@ -604,6 +632,7 @@ namespace EpicLoot
                 MagicEffectType.AddPoisonResistance,
                 MagicEffectType.AddSpiritResistance
             };
+
             foreach (var itemData in player.GetInventory().GetAllItems())
             {
                 if (itemData.IsMagic() && itemData.GetMagicItem().HasAnyEffect(oldResistanceTypes))

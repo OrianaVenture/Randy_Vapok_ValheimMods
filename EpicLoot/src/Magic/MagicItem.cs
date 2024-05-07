@@ -208,8 +208,8 @@ namespace EpicLoot
         {
             if (IsUniqueLegendary())
             {
-                UniqueLegendaryHelper.TryGetLegendaryInfo(LegendaryID, out var legendaryInfo);
-                return legendaryInfo;
+                UniqueLegendaryHelper.TryGetLegendaryInfo(LegendaryID, out var itemInfo);
+                return itemInfo;
             }
 
             return null;

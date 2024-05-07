@@ -80,6 +80,6 @@ ValheimUnity/Assets/ExternalLibraries/EpicLoot-UnityLib.dll
 
 # Unity
 ValheimUnity/AssetBundles
-ValheimUnity/Assets/ExternalLibraries
+ValheimUnity/Assets/ExternalLibraries/*.dll
+ValheimUnity/Assets/ExternalLibraries/valheim/*.dll
 ValheimUnity/UserSettings
-ValheimUnity/Packages/valheim

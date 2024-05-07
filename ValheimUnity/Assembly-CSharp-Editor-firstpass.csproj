@@ -412,10 +412,6 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="assembly_googleanalytics">
-      <HintPath>Packages\valheim\assembly_googleanalytics.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SharpCompress">
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\SharpCompress\SharpCompress.dll</HintPath>
       <Private>False</Private>
@@ -425,35 +421,27 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Packages\valheim\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PlatformTools.Core">
-      <HintPath>Packages\valheim\PlatformTools.Core.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayFabParty">
-      <HintPath>Packages\valheim\PlayFabParty.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PlatformTools.Platform.Dev">
-      <HintPath>Packages\valheim\PlatformTools.Platform.Dev.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PlatformToolsWrapper">
-      <HintPath>Packages\valheim\PlatformToolsWrapper.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\PlayFabParty.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NGCoreEditor">
       <HintPath>Assets\Plugins\NGTools\NGCore\Editor\NGCoreEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mono.WebBrowser">
-      <HintPath>Packages\valheim\Mono.WebBrowser.dll</HintPath>
+    <Reference Include="PlatformTools.Core">
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformTools.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SoftReferenceableAssets">
-      <HintPath>Packages\valheim\SoftReferenceableAssets.dll</HintPath>
+    <Reference Include="Mono.WebBrowser">
+      <HintPath>Assets\ExternalLibraries\valheim\Mono.WebBrowser.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>Assets\ExternalLibraries\valheim\Mono.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NGLicenses">
@@ -465,63 +453,67 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Posix">
-      <HintPath>Packages\valheim\Mono.Posix.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PlatformTools.Platform.Playstation">
-      <HintPath>Packages\valheim\PlatformTools.Platform.Playstation.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="XGamingRuntime">
-      <HintPath>Packages\valheim\XGamingRuntime.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\Mono.Posix.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlatformTools.Common">
-      <HintPath>Packages\valheim\PlatformTools.Common.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformTools.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="gui_framework">
-      <HintPath>Packages\valheim\gui_framework.dll</HintPath>
+    <Reference Include="PlatformTools.Platform.Steam">
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformTools.Platform.Steam.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="XGamingRuntime">
+      <HintPath>Assets\ExternalLibraries\valheim\XGamingRuntime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PlatformTools.Platform.Dev">
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformTools.Platform.Dev.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PlatformTools.Platform.Playstation">
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformTools.Platform.Playstation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="EpicLoot-UnityLib">
-      <HintPath>Assets\ExternalLibraries\EpicLoot-UnityLib.dll</HintPath>
+    <Reference Include="SoftReferenceableAssets">
+      <HintPath>Assets\ExternalLibraries\valheim\SoftReferenceableAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="com.rlabrecque.steamworks.net">
-      <HintPath>Packages\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Markdig.Signed">
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\Markdig\Markdig.Signed.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>Packages\valheim\Mono.Security.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ConnectedStorage">
-      <HintPath>Packages\valheim\ConnectedStorage.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\ConnectedStorage.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AssetsTools.NET">
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PlayFab">
-      <HintPath>Packages\valheim\PlayFab.dll</HintPath>
+    <Reference Include="PlatformToolsWrapper">
+      <HintPath>Assets\ExternalLibraries\valheim\PlatformToolsWrapper.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PlatformTools.Platform.Steam">
-      <HintPath>Packages\valheim\PlatformTools.Platform.Steam.dll</HintPath>
+    <Reference Include="PlayFab">
+      <HintPath>Assets\ExternalLibraries\valheim\PlayFab.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Accessibility">
-      <HintPath>Packages\valheim\Accessibility.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\valheim\Accessibility.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="gui_framework">
+      <HintPath>Assets\ExternalLibraries\valheim\gui_framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="nunit.framework">
