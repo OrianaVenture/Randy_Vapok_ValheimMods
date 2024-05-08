@@ -39,16 +39,17 @@ namespace EpicLoot_UnityLib
                         button.SelectMaxQuantity(true);
                 }
             }
-
-            Refresh();
         }
 
-        public void Start()
+        public void OnEnable()
         {
             if (EnchantingTableUI.instance.SourceTable != null)
             {
+                EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged -= Refresh;
                 EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged += Refresh;
             }
+
+            Refresh();
         }
 
         private void OnButtonSelected(MultiSelectItemListElement selectedButton, bool selected, int _)

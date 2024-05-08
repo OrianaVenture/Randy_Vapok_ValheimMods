@@ -43,6 +43,7 @@ namespace EpicLoot.MagicItemEffects
             check(MagicEffectType.AddCrossbowsSkill, SkillType.Crossbows);
             check(MagicEffectType.AddUnarmedSkill, SkillType.Unarmed);
             check(MagicEffectType.AddPickaxesSkill, SkillType.Pickaxes);
+            check(MagicEffectType.AddFishingSkill, SkillType.Fishing);
             check(MagicEffectType.AddElementalMagicSkill, SkillType.ElementalMagic);
             check(MagicEffectType.AddBloodMagicSkill, SkillType.BloodMagic);
             check(MagicEffectType.AddMovementSkills, SkillType.Run, SkillType.Jump, SkillType.Swim, SkillType.Sneak);

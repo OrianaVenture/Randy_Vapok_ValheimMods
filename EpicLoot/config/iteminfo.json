@@ -294,10 +294,10 @@
     {
       "Type": "Tools",
       "Fallback": "Clubs",
-      "Items": [ "Hammer", "Hoe", "Cultivator" ],
+      "Items": [ "Hammer", "Hoe", "Cultivator", "FishingRod" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "Hammer", "Hoe" ],
-        "defeated_gdking"     : [ "Cultivator" ],
+        "defeated_gdking"     : [ "Cultivator", "FishingRod" ],
         "defeated_bonemass"   : [],
         "defeated_dragon"     : [],
         "defeated_goblinking" : [],

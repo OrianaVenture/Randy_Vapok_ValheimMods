@@ -238,7 +238,7 @@
       { "Biome": "Mountain",    "Cost": 400, "ForestTokens": 20, "MinRadius": 2000, "MaxRadius": 6000 },
       { "Biome": "Plains",      "Cost": 500, "ForestTokens": 25, "MinRadius": 3000, "MaxRadius": 6000 },
       { "Biome": "Mistlands",   "Cost": 600, "ForestTokens": 30, "MinRadius": 5000, "MaxRadius": 9000 },
-      { "Biome": "Ashlands",    "Cost": 700,"ForestTokens": 35, "MinRadius": 5000, "MaxRadius": 20000 }
+      { "Biome": "Ashlands",    "Cost": 700, "ForestTokens": 35, "MinRadius": 5000, "MaxRadius": 15000 }
     ],
     "StartRadiusMin": 0,
     "StartRadiusMax": 500,

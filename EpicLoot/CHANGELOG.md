@@ -14,6 +14,12 @@
   * $mod_epicloot_me_addcrossbowsskill_desc
   * $mod_epicloot_me_addcrossbowsskill_prefix1
   * $mod_epicloot_me_addcrossbowsskill_suffix1
+* Added missing fishing skill: 4 new translation keys available:
+  * $mod_epicloot_me_addfishingskill_display
+  * $mod_epicloot_me_addfishingskill_desc
+  * $mod_epicloot_me_addfishingskill_prefix1
+  * $mod_epicloot_me_addfishingskill_suffix1
+* Added fishing rod support to enchanting system
 * Added new magic effect requirement option: MustHaveEffectTypes, to only apply when any of the given effects are present on the item.
   * This is used to prevent recall from applying to weapons that are not throwable.
 
