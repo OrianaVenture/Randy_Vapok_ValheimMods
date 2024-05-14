@@ -203,7 +203,7 @@
       ]
     },
     {
-      "ItemNames" : [ "$item_queen_drop" ],
+      "ItemNames" : [ "$item_seekerqueen_drop" ],
       "Products" : [
         { "Item": "DustLegendary",    "Amount": 2 },
         { "Item": "EssenceLegendary", "Amount": 1 },

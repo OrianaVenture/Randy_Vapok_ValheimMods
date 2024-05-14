@@ -1010,7 +1010,20 @@ namespace EpicLoot
             lootDrop = ResolveLootDrop(lootDrop);
             var rarity = lootDrop.Rarity;
 
-            Debug.LogWarning($"> rarity=[ {rarity[0]}, {rarity[1]}, {rarity[2]}, {rarity[3]}, {rarity[4]} ]");
+            if (rarity.Length < 1)
+            {
+                return;
+            }
+
+            string rarityStr = "> rarity=[ ";
+            for (int i = 0; i < rarity.Length - 1; i++)
+            {
+                rarityStr += $"{rarity[i]},";
+            }
+
+            rarityStr += $"{rarity[rarity.Length - 1]} ]";
+
+            Debug.LogWarning(rarityStr);
         }
     }
 }

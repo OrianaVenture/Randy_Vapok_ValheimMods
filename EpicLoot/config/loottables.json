@@ -1777,7 +1777,7 @@
       ]
     },
     {
-      "Object": "TreasureMapChest_Ashlands",
+      "Object": "TreasureMapChest_AshLands",
       "Drops": [ [3, 80], [4, 15], [5, 5] ],
       "Loot": [
         { "Item": "Tier6Everything", "Weight": 1, "Rarity": [ 0, 0, 65, 25, 10] },

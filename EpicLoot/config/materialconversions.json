@@ -344,6 +344,7 @@
     {
       "Name": "Recipe_BoneSkeletonTrophy",
       "Product": "TrophySkeleton",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
         { "Item": "BoneFragments", "Amount": 10 }
@@ -352,6 +353,7 @@
     {
       "Name": "Recipe_EyeGreydwarfTrophy",
       "Product": "TrophyGreydwarf",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
         { "Item": "GreydwarfEye", "Amount": 10 }
@@ -360,14 +362,16 @@
     {
       "Name": "Recipe_AntlerDeerTrophy",
       "Product": "TrophyDeer",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
-        { "Item": "HardAntler", "Amount": 5 }
+        { "Item": "HardAntler", "Amount": 3 }
       ]
     },
     {
       "Name": "Recipe_HideTrollTrophy",
       "Product": "TrophyFrostTroll",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
         { "Item": "TrollHide", "Amount": 10 }
@@ -376,6 +380,7 @@
     {
       "Name": "Recipe_CoreSurtlingTrophy",
       "Product": "TrophySurtling",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
         { "Item": "SurtlingCore", "Amount": 2 }
@@ -384,6 +389,7 @@
     {
       "Name": "Recipe_FreezeGlandDrakeTrophy",
       "Product": "TrophyHatchling",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
         { "Item": "FreezeGland", "Amount": 3 }
@@ -392,35 +398,37 @@
     {
       "Name": "Recipe_DragonTearRunestone",
       "Product": "RunestoneLegendary",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
-        { "Item": "DragonTear", "Amount": 3 }
+        { "Item": "DragonTear", "Amount": 10 }
       ]
     },
     {
       "Name": "Recipe_YagluthThingRunestone",
       "Product": "RunestoneLegendary",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
-        { "Item": "YagluthDrop", "Amount": 1 }
+        { "Item": "YagluthDrop", "Amount": 3 }
       ]
     },
     {
       "Name": "Recipe_SeekerQueenRunestone",
       "Product": "RunestoneLegendary",
-      "Amount": 3, 
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
-        { "Item": "QueenDrop", "Amount": 1 }
+        { "Item": "QueenDrop", "Amount": 5 }
       ]
     },
     {
       "Name": "Recipe_FaderRunestone",
-      "Product": "RunestoneLegendary",
-      "Amount": 3, 
+      "Product": "RunestoneMythic",
+      "Amount": 1,
       "Type": "Junk", 
       "Resources": [
-        { "Item": "FaderDrop", "Amount": 1 }
+        { "Item": "FaderDrop", "Amount": 5 }
       ]
     }
   ] 
