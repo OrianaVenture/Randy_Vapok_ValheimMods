@@ -176,17 +176,23 @@ namespace EpicLoot.CraftingV2
             var inventory = player.GetInventory();
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
-            foreach (var item in inventory.GetAllItems())
+            var items = InventoryManagement.Instance.GetAllItems();
+            if (items != null)
             {
-                if (!EpicLoot.ShowEquippedAndHotbarItemsInSacrificeTab.Value)
+                foreach (var item in items)
                 {
-                    if (item != null && item.m_equipped || boundItems.Contains(item))
+                    if (!EpicLoot.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
+                        (item != null && item.m_equipped || boundItems.Contains(item)))
+                    {
                         continue;
-                }
+                    }
 
-                var products = EnchantCostsHelper.GetSacrificeProducts(item);
-                if (products != null)
-                    result.Add(new InventoryItemListElement() { Item = item });
+                    var products = EnchantCostsHelper.GetSacrificeProducts(item);
+                    if (products != null)
+                    {
+                        result.Add(new InventoryItemListElement() { Item = item });
+                    }
+                }
             }
 
             return result;

@@ -281,10 +281,10 @@ namespace EpicLoot_UnityLib
                 var quantityText = string.Format(ReadOnly ? ReadOnlyQuantityFormat : TotalQuantityFormat, _item.GetMax());
                 if (CheckPlayerInventory)
                 {
-                    var inventory = Player.m_localPlayer.GetInventory();
-                    var hasEnough = inventory.CountItems(_item.GetItem().m_shared.m_name) >= _item.GetItem().m_stack;
-                    if (!hasEnough)
+                    if (!InventoryManagement.Instance.HasItem(_item.GetItem()))
+                    {
                         quantityText = $"<color=red>{quantityText}</color>";
+                    }
                 }
                 ItemTotalQuantity.text = quantityText;
             }

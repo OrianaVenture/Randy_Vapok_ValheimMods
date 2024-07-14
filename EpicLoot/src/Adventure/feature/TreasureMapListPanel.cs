@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EpicLoot_UnityLib;
+using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -58,8 +59,7 @@ namespace EpicLoot.Adventure.Feature
                 {
                     if (success)
                     {
-                        var inventory = player.GetInventory();
-                        inventory.RemoveItem(MerchantPanel.GetCoinsName(), treasureMap.Price);
+                        InventoryManagement.Instance.RemoveItem(MerchantPanel.GetCoinsName(), treasureMap.Price);
 
                         StoreGui.instance.m_trader.OnBought(null);
                         StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
