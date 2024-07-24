@@ -302,9 +302,6 @@ namespace EpicLoot.Adventure
 
             StoreGui.instance.m_trader.OnBought(null);
             StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
-            Player.m_localPlayer.ShowPickupMessage(listItem.ItemInfo.Item, listItem.ItemInfo.Item.m_stack);
-
-            //Gogan.LogEvent("Game", "BoughtItem", selectedStashItem.Item, 0L);
         }
 
         private static string GetRefreshTimeTooltip(int refreshInterval)

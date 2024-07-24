@@ -9,6 +9,7 @@
 * Reworked gating logic to fix bugs with fallback items not found correctly.
 * Simplified double and triple shot checks to improve other mod compatibilities.
 * Reworked inventory management (checks, additions, removal) into a new class EpicLoot_UnityLib.InventoryManagement to improve other mod compatibilities.
+* Re-enabled gotomerchant command
 
 ## Version 0.10.1
 

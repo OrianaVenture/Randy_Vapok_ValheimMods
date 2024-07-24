@@ -74,6 +74,7 @@ public class InventoryManagement
 
     public void GiveItem(string item, int amount)
     {
+        Debug.Log($"Attempting to give item {item} with amount {amount}");
         Inventory inventory = GetInventory();
         if (inventory != null)
         {
@@ -87,6 +88,7 @@ public class InventoryManagement
 
     public bool GiveItem(ItemDrop.ItemData item)
     {
+        Debug.Log($"Attempting to give itemdata {item.m_shared.m_name} with amount {item.m_stack}");
         Inventory inventory = GetInventory();
 
         do
@@ -95,7 +97,7 @@ public class InventoryManagement
             itemToAdd.m_stack = Mathf.Min(item.m_stack, item.m_shared.m_maxStackSize);
             item.m_stack -= itemToAdd.m_stack;
 
-            if (inventory != null && inventory.CanAddItem(itemToAdd))
+            if (inventory != null)
             {
                 AddItem(ref inventory, itemToAdd);
             }
@@ -110,18 +112,29 @@ public class InventoryManagement
 
     private void AddItem(ref Inventory inventory, string item, int amount)
     {
-        inventory.AddItem(item, amount, 1, 0, 0, string.Empty);
+        var result = inventory.AddItem(item, amount, 1, 0, 0, string.Empty);
+
+        if (result == null)
+        {
+            DropItem(item, amount);
+        }
     }
 
     private void AddItem(ref Inventory inventory, ItemDrop.ItemData item)
     {
-        inventory.AddItem(item);
-
-        SendMessage($"$msg_added {item.m_shared.m_name}", item.m_stack, item.GetIcon());
+        if (inventory.AddItem(item))
+        {
+            SendMessage($"$msg_added {item.m_shared.m_name}", item.m_stack, item.GetIcon());
+        }
+        else
+        {
+            DropItem(item);
+        }
     }
 
     private void DropItem(string item, int amount)
     {
+        Debug.Log($"Attempting to drop item {item} with amount {amount}");
         Player player = Player.m_localPlayer;
         var prefab = ObjectDB.instance.GetItemPrefab(item);
 
@@ -142,6 +155,7 @@ public class InventoryManagement
 
     private void DropItem(ItemDrop.ItemData item)
     {
+        Debug.Log($"Attempting to drop itemdata {item.m_shared.m_name} with amount {item.m_stack}");
         Player player = Player.m_localPlayer;
         var itemDrop = ItemDrop.DropItem(item, item.m_stack,
             player.transform.position + player.transform.forward + player.transform.up,
