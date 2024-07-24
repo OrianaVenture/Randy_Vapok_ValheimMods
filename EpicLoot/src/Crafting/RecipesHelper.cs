@@ -29,7 +29,7 @@ namespace EpicLoot.Crafting
             }
         }
 
-        public static bool HaveRequirements(Player player, Piece.Requirement[] requirements, int qualityLevel)
+        /*public static bool HaveRequirements(Player player, Piece.Requirement[] requirements, int qualityLevel)
         {
             foreach (var resource in requirements)
             {
@@ -42,6 +42,6 @@ namespace EpicLoot.Crafting
                 }
             }
             return true;
-        }
+        }*/
     }
 }

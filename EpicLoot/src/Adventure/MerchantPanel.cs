@@ -269,7 +269,6 @@ namespace EpicLoot.Adventure
                 ZNetScene.instance.Destroy(itemDrop.gameObject);
             }
 
-            //var inventory = player.GetInventory();
             if (item == null || !InventoryManagement.Instance.GiveItem(item))
             {
                 EpicLoot.LogWarning($"Could not buy item {listItem.ItemInfo.Item.m_shared.m_name}");

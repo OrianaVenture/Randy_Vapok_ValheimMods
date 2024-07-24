@@ -181,7 +181,9 @@ namespace EpicLoot_UnityLib
         protected static bool LocalPlayerCanAffordCost(List<InventoryItemListElement> cost)
         {
             if (Player.m_localPlayer.NoCostCheat())
+            {
                 return true;
+            }
 
             foreach (var element in cost)
             {

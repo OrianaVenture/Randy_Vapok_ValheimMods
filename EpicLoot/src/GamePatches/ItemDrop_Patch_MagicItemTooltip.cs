@@ -56,7 +56,7 @@ namespace EpicLoot
             var magicColor = magicItem.GetColorString();
             var itemTypeName = magicItem.GetItemTypeName(item.Extended());
 
-            var skillLevel = Player.m_localPlayer.GetSkillLevel(item.m_shared.m_skillType);
+            var skillLevel = localPlayer.GetSkillLevel(item.m_shared.m_skillType);
 
             text.Append($"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>\n");
             if (item.IsLegendarySetItem())

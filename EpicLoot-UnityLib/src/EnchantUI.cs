@@ -147,7 +147,9 @@ namespace EpicLoot_UnityLib
             Cancel();
 
             if (selectedItem?.Item1.GetItem() == null)
+            {
                 return;
+            }
 
             var item = selectedItem.Item1.GetItem();
             var cost = GetEnchantCost(item, _rarity);
@@ -161,16 +163,17 @@ namespace EpicLoot_UnityLib
                     return;
                 }
 
-                var inventory = player.GetInventory();
                 foreach (var costElement in cost)
                 {
                     var costItem = costElement.GetItem();
-                    inventory.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
+                    InventoryManagement.Instance.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
                 }
             }
 
             if (_successDialog != null)
+            {
                 Destroy(_successDialog);
+            }
 
             DeselectAll();
             Lock();

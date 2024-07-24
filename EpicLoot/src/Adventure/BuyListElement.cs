@@ -49,10 +49,11 @@ namespace EpicLoot.Adventure
 
         public bool CanAfford(Currencies currencies)
         {
-            return ItemInfo.Cost.Coins <= currencies.Coins
+            return (ItemInfo.Cost.Coins <= currencies.Coins
                    && ItemInfo.Cost.ForestTokens <= currencies.ForestTokens
                    && ItemInfo.Cost.IronBountyTokens <= currencies.IronBountyTokens
-                   && ItemInfo.Cost.GoldBountyTokens <= currencies.GoldBountyTokens;
+                   && ItemInfo.Cost.GoldBountyTokens <= currencies.GoldBountyTokens)
+                   || Player.m_localPlayer.NoCostCheat();
         }
 
         public void SetItem(SecretStashItemInfo itemInfo, Currencies currencies)

@@ -13,7 +13,7 @@
   "ItemInfo": [
     {
       "Type": "Swords",
-      "Fallback": "AxeFlint",
+      "Fallback": "Axes",
       "Items": [ "SwordBronze", "SwordIron", "SwordSilver", "SwordBlackmetal", "SwordMistwalker", "THSwordKrom", "SwordNiedhogg", "THSwordSlayer", "SwordDyrnwyn" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [],
@@ -27,7 +27,7 @@
     },
     {
       "Type": "Axes",
-      "Fallback": "Club",
+      "Fallback": "AxeStone",
       "Items": [ "AxeStone", "AxeFlint", "AxeBronze", "AxeIron", "AxeBlackMetal", "AxeJotunBane", "AxeBerzerkr"],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "AxeStone", "AxeFlint" ],
@@ -55,7 +55,7 @@
     },
     {
       "Type": "Knives",
-      "Fallback": "Clubs",
+      "Fallback": "Axes",
       "Items": [ "KnifeFlint", "KnifeCopper", "KnifeChitin", "KnifeSilver", "KnifeBlackMetal", "KnifeSkollAndHati" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "KnifeFlint" ],
@@ -96,18 +96,18 @@
         }
     },
     {
-      "Type": "Clubs",
-      "Fallback": "",
-      "Items": [ "Club", "MaceBronze", "MaceIron", "MaceSilver", "MaceNeedle", "MaceEldner" ],
-      "ItemsByBoss" : {
-        "defeated_eikthyr"    : [ "Club" ],
-        "defeated_gdking"     : [ "MaceBronze" ],
-        "defeated_bonemass"   : [ "MaceIron" ],
-        "defeated_dragon"     : [ "MaceSilver" ],
-        "defeated_goblinking" : [ "MaceNeedle" ],
-        "defeated_queen"      : [],
-        "defeated_fader"      : [ "MaceEldner" ]
-      }
+        "Type": "Clubs",
+        "Fallback": "Club",
+        "Items": [ "Club", "MaceBronze", "MaceIron", "MaceSilver", "MaceNeedle", "MaceEldner" ],
+        "ItemsByBoss": {
+            "defeated_eikthyr": [ "Club" ],
+            "defeated_gdking": [ "MaceBronze" ],
+            "defeated_bonemass": [ "MaceIron" ],
+            "defeated_dragon": [ "MaceSilver" ],
+            "defeated_goblinking": [ "MaceNeedle" ],
+            "defeated_queen": [],
+            "defeated_fader": [ "MaceEldner" ]
+        }
     },
     {
         "Type": "Sledges",
@@ -223,7 +223,7 @@
     },
     {
       "Type": "ChestArmor",
-      "Fallback": "",
+      "Fallback": "ArmorRagsChest",
       "Items": [ "ArmorRagsChest", "ArmorLeatherChest", "ArmorBronzeChest", "ArmorTrollLeatherChest", "ArmorIronChest", "ArmorRootChest", "ArmorWolfChest", "ArmorFenringChest", "ArmorPaddedCuirass", "ArmorCarapaceChest", "ArmorMageChest", "ArmorFlametalChest", "ArmorAshlandsMediumChest", "ArmorMageChest_Ashlands" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ArmorRagsChest", "ArmorLeatherChest" ],
@@ -237,7 +237,7 @@
     },
     {
       "Type": "LegsArmor",
-      "Fallback": "",
+      "Fallback": "ArmorRagsLegs",
       "Items": [ "ArmorRagsLegs", "ArmorLeatherLegs", "ArmorTrollLeatherLegs", "ArmorBronzeLegs", "ArmorIronLegs", "ArmorRootLegs", "ArmorWolfLegs", "ArmorFenringLegs", "ArmorPaddedGreaves", "ArmorCarapaceLegs", "ArmorMageLegs", "ArmorFlametalLegs", "ArmorAshlandsMediumlegs", "ArmorMageLegs_Ashlands" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ArmorRagsLegs", "ArmorLeatherLegs" ],
@@ -279,7 +279,7 @@
     },
     {
       "Type": "Torches",
-      "Fallback": "Club",
+      "Fallback": "Clubs",
       "Items": [ "Torch" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "Torch" ],

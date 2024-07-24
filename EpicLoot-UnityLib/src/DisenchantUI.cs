@@ -40,12 +40,9 @@ namespace EpicLoot_UnityLib
             if (!LocalPlayerCanAffordCost(cost))
                 return;
 
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
             foreach (var costElement in cost)
             {
-                var costItem = costElement.GetItem();
-                inventory.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
+                InventoryManagement.Instance.RemoveItem(costElement.GetItem());
             }
 
             var bonusItems = DisenchantItem(item);

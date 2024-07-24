@@ -156,7 +156,6 @@ namespace EpicLoot.Adventure
             AreaPinInfo newPin = null;
             switch (pinJob.Task)
             {
-                    
                 case MinimapPinQueueTask.AddBountyPin:
                     newPin = pinJob.BountyPin.Value;
                     break;
@@ -177,7 +176,8 @@ namespace EpicLoot.Adventure
             //Add Debug Pin
             if (pinJob.DebugMode)
             {
-                newPin.DebugPin = _minimap.AddPin(newPin.Position, Minimap.PinType.Icon3, $"{newPin.Position.x:0.0}, {newPin.Position.z:0.0}", false, false);
+                newPin.DebugPin = _minimap.AddPin(newPin.Position, Minimap.PinType.Icon3,
+                    $"{newPin.Position.x:0.0}, {newPin.Position.z:0.0}", false, false);
             }
             
             switch (pinJob.Task)
@@ -212,7 +212,8 @@ namespace EpicLoot.Adventure
                 return;
 
             var unfoundTreasureChests = adventureSaveData.GetUnfoundTreasureChests();
-            var oldPins = TreasureMapPins.Where(pinEntry => !unfoundTreasureChests.Exists(x => x.Interval == pinEntry.Key.Item1 && x.Biome == pinEntry.Key.Item2)).ToList();
+            var oldPins = TreasureMapPins.Where(pinEntry => !unfoundTreasureChests
+                .Exists(x => x.Interval == pinEntry.Key.Item1 && x.Biome == pinEntry.Key.Item2)).ToList();
             foreach (var pinEntry in oldPins)
             {
                 var pinJob = new PinJob
@@ -234,7 +235,9 @@ namespace EpicLoot.Adventure
                     {
                         Position = chestInfo.Position + chestInfo.MinimapCircleOffset,
                         Type = EpicLoot.TreasureMapPinType,
-                        Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin", Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"), (chestInfo.Interval + 1).ToString())
+                        Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin",
+                            Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"),
+                            (chestInfo.Interval + 1).ToString())
                     };
 
                     var pinJob = new PinJob

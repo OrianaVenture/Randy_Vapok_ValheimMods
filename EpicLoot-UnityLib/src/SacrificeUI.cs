@@ -48,11 +48,9 @@ namespace EpicLoot_UnityLib
                 }
             }
 
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
             foreach (var selectedItem in selectedItems)
             {
-                inventory.RemoveItem(selectedItem.Item1.GetItem(), selectedItem.Item2);
+                InventoryManagement.Instance.RemoveItem(selectedItem.Item1.GetItem().m_shared.m_name, selectedItem.Item2);
             }
 
             GiveItemsToPlayer(sacrificeProducts);

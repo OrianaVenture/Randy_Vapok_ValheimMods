@@ -155,7 +155,7 @@ namespace EpicLoot
                 if (ZoneSystem.instance.FindClosestLocation("Vendor_BlackForest", player.transform.position, out var location))
                 {
                     Console.instance.AddString(location.m_position.ToString());
-                    //player.TeleportTo(location.m_position + Vector3.right * 5, player.transform.rotation, true);
+                    player.TeleportTo(location.m_position + Vector3.right * 5, player.transform.rotation, true);
                 }
             }), true);
             new Terminal.ConsoleCommand("gotom", "", (args =>
@@ -164,7 +164,7 @@ namespace EpicLoot
                 if (ZoneSystem.instance.FindClosestLocation("Vendor_BlackForest", player.transform.position, out var location))
                 {
                     Console.instance.AddString(location.m_position.ToString());
-                    //player.TeleportTo(location.m_position + Vector3.right * 5, player.transform.rotation, true);
+                    player.TeleportTo(location.m_position + Vector3.right * 5, player.transform.rotation, true);
                 }
             }), true);
             new Terminal.ConsoleCommand("globalkeys", "", (args =>
@@ -254,7 +254,8 @@ namespace EpicLoot
 
         private static IEnumerator TestTreasureMapCoroutine(AdventureSaveData saveData, Heightmap.Biome biome, Player player, int count)
         {
-            var biomes = new[] { Heightmap.Biome.Meadows, Heightmap.Biome.BlackForest, Heightmap.Biome.Swamp, Heightmap.Biome.Mountain, Heightmap.Biome.Plains };
+            var biomes = new[] { Heightmap.Biome.Meadows, Heightmap.Biome.BlackForest, Heightmap.Biome.Swamp,
+                Heightmap.Biome.Mountain, Heightmap.Biome.Plains };
 
             saveData.DebugMode = true;
             var startInterval = saveData.TreasureMaps.Count == 0 ? -1 : saveData.TreasureMaps.Min(x => x.Interval) - 1;
@@ -262,13 +263,13 @@ namespace EpicLoot
             {
                 saveData.IntervalOverride = startInterval - (i + 1);
                 var selectedBiome = biome == Heightmap.Biome.None ? biomes[UnityEngine.Random.Range(0, biomes.Length)] : biome;
-                yield return AdventureDataManager.TreasureMaps.SpawnTreasureChest(selectedBiome, player, OnTreasureChestSpawnComplete);
+                yield return AdventureDataManager.TreasureMaps.SpawnTreasureChest(selectedBiome, player, 0, OnTreasureChestSpawnComplete);
             }
             saveData.DebugMode = false;
             AdventureDataManager.CheatNumberOfBounties = -1;
         }
 
-        private static void OnTreasureChestSpawnComplete(bool success, Vector3 spawnPoint)
+        private static void OnTreasureChestSpawnComplete(int price, bool success, Vector3 spawnPoint)
         {
             var output = "> Failed to spawn treasure map chest";
             if (success)

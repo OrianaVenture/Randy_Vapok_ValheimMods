@@ -59,7 +59,9 @@ namespace EpicLoot_UnityLib
                 var augmentChoices = 2;
                 var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
                 if (!float.IsNaN(featureValues.Item1))
+                {
                     augmentChoices = (int)featureValues.Item1;
+                }
 
                 var colorPre = augmentChoices > 2 ? "<color=#EAA800>" : "";
                 var colorPost = augmentChoices > 2 ? "</color>" : "";
@@ -91,7 +93,9 @@ namespace EpicLoot_UnityLib
                 {
                     var rightStickAxis = ZInput.GetJoyRightStickY();
                     if (Mathf.Abs(rightStickAxis) > 0.5f)
+                    {
                         AvailableEffectsScrollbar.value = Mathf.Clamp01(AvailableEffectsScrollbar.value + rightStickAxis * -0.1f);
+                    }
                 }
             }
 
@@ -105,7 +109,9 @@ namespace EpicLoot_UnityLib
                 AvailableItems.ForeachElement((i, e) =>
                 {
                     if (!e.IsSelected())
+                    {
                         return;
+                    }
                     e.SetItem(e.GetListElement());
                     e.Refresh();
                 });
@@ -131,7 +137,9 @@ namespace EpicLoot_UnityLib
             else
             {
                 if (!AugmentSelectors.Any(x => x.isOn))
+                {
                     SelectAugmentIndex(-1);
+                }
             }
         }
 
@@ -183,9 +191,14 @@ namespace EpicLoot_UnityLib
                 var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
                 var reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
                 if (reenchantCostReduction > 0)
-                    CostLabel.text = Localization.instance.Localize($"$mod_epicloot_augmentcost <color=#EAA800>(-{reenchantCostReduction}% $item_coins!)</color>");
+                {
+                    CostLabel.text = Localization.instance.Localize($"$mod_epicloot_augmentcost " +
+                        $"<color=#EAA800>(-{reenchantCostReduction}% $item_coins!)</color>");
+                }
                 else
+                {
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_augmentcost");
+                }
 
                 var canAfford = LocalPlayerCanAffordCost(cost);
                 var featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Augment);
@@ -219,16 +232,17 @@ namespace EpicLoot_UnityLib
                     return;
                 }
 
-                var inventory = player.GetInventory();
                 foreach (var costElement in cost)
                 {
                     var costItem = costElement.GetItem();
-                    inventory.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
+                    InventoryManagement.Instance.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
                 }
             }
 
             if (_choiceDialog != null)
+            {
                 Destroy(_choiceDialog);
+            }
 
             _choiceDialog = AugmentItem(item, _augmentIndex);
 
@@ -250,12 +264,16 @@ namespace EpicLoot_UnityLib
             {
                 var selector = AugmentSelectors[index];
                 if (selector == null)
+                {
                     continue;
+                }
 
                 selector.SetIsOnWithoutNotify(index == 0);
                 selector.gameObject.SetActive(item != null && index < augmentableEffects.Count);
                 if (!selector.gameObject.activeSelf)
+                {
                     continue;
+                }
 
                 var selectorText = selector.GetComponentInChildren<Text>();
                 if (selectorText != null)
@@ -266,7 +284,9 @@ namespace EpicLoot_UnityLib
             }
 
             if (item == null)
+            {
                 AvailableEffectsText.text = string.Empty;
+            }
 
             _augmentIndex = 0;
             OnAugmentIndexChanged();
@@ -282,12 +302,16 @@ namespace EpicLoot_UnityLib
             {
                 var selector = AugmentSelectors[index];
                 if (selector == null)
+                {
                     continue;
+                }
 
                 selector.SetIsOnWithoutNotify(index == _augmentIndex);
                 selector.gameObject.SetActive(item != null && index < augmentableEffects.Count);
                 if (!selector.gameObject.activeSelf)
+                {
                     continue;
+                }
 
                 var selectorText = selector.GetComponentInChildren<Text>();
                 if (selectorText != null)

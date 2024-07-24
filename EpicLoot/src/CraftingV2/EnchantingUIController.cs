@@ -270,9 +270,6 @@ namespace EpicLoot.CraftingV2
             var materialConversionAmount = float.IsNaN(featureValues.Item1) ? -1 : featureValues.Item1;
             var runestoneConversionAmount = float.IsNaN(featureValues.Item2) ? -1 : featureValues.Item2;
 
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
-
             var result = new List<ConversionRecipeUnity>();
 
             foreach (var conversion in conversions)
@@ -336,14 +333,16 @@ namespace EpicLoot.CraftingV2
                         Amount = requiredAmount
                     });
 
-                    if (inventory.CountItems(reqItemDrop.m_itemData.m_shared.m_name) > 0)
+                    if (InventoryManagement.Instance.CountItem(reqItemDrop.m_itemData.m_shared.m_name) > 0)
                     {
                         hasSomeItems = true;
                     }
                 }
 
                 if (hasSomeItems)
+                {
                     result.Add(recipe);
+                }
             }
 
             return result;
@@ -356,7 +355,7 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetEnchantableItems()
         {
-            return Player.m_localPlayer.GetInventory().GetAllItems()
+            return InventoryManagement.Instance.GetAllItems()
                 .Where( item => !item.IsMagic() && EpicLoot.CanBeMagicItem(item))
                 .Select( item => new InventoryItemListElement() { Item = item })
                 .ToList();
@@ -497,7 +496,7 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetAugmentableItems()
         {
-            return Player.m_localPlayer.GetInventory().GetAllItems()
+            return InventoryManagement.Instance.GetAllItems()
                 .Where(item => item.CanBeAugmented())
                 .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
@@ -661,7 +660,7 @@ namespace EpicLoot.CraftingV2
             var inventory = player.GetInventory();
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
-            return Player.m_localPlayer.GetInventory().GetAllItems()
+            return InventoryManagement.Instance.GetAllItems()
                 .Where(item => !item.m_equipped && (EpicLoot.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
                     !boundItems.Contains(item)))
                 .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())

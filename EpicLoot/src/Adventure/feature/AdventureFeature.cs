@@ -140,12 +140,24 @@ namespace EpicLoot.Adventure.Feature
 
         protected static void RollOnListNTimes<T>(Random random, List<T> list, int n, List<T> results)
         {
-            for (var i = 0; i < n && i < list.Count; i++)
+            HashSet<int> indexes = new HashSet<int>();
+            if (n > list.Count)
+            {
+                n = list.Count - 1;
+            }
+
+            int count = 0;
+
+            while (count < n)
             {
                 var index = random.Next(0, list.Count);
-                var item = list[index];
-                results.Add(item);
-                list.RemoveAt(index);
+                if (!indexes.Contains(index))
+                {
+                    var item = list[index];
+                    results.Add(item);
+                    indexes.Add(index);
+                    count++;
+                }
             }
         }
 
@@ -186,7 +198,7 @@ namespace EpicLoot.Adventure.Feature
                         yield return null;
                     }
 
-                    ZoneSystem.instance.GetGroundData(ref spawnPoint, out var normal, out var foundBiome, out _, out _);
+                    ZoneSystem.instance.GetGroundData(ref spawnPoint, out var normal, out var foundBiome, out var biomeArea, out var hmap);
                     var groundHeight = spawnPoint.y;
 
                     EpicLoot.Log($"Checking biome at ({randomPoint}): {foundBiome} (try {tries})");
@@ -196,6 +208,13 @@ namespace EpicLoot.Adventure.Feature
                         continue;
                     }
 
+                    if (foundBiome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(spawnPoint) > 0.6f)
+                    {
+                        // Don't spawn in lava
+                        continue;
+                    }
+
+                    // TODO: This might not be working correctly
                     var solidHeight = ZoneSystem.instance.GetSolidHeight(spawnPoint);
                     var offsetFromGround = Math.Abs(solidHeight - groundHeight);
                     EpicLoot.Log($"solidHeight {solidHeight} - groundHeight{groundHeight} = offset {offsetFromGround} (5 is limit)");

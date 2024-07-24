@@ -118,8 +118,7 @@ namespace EpicLoot.Adventure.Feature
         public override void RefreshButton(Currencies playerCurrencies)
         {
             var selectedItem = GetSelectedItem();
-            //var haveSpace = CanAddRewardToInventory(selectedItem);
-            MainButton.interactable = selectedItem != null && selectedItem.CanClaim;//&& haveSpace;
+            MainButton.interactable = selectedItem != null && selectedItem.CanClaim;
             var tooltip = MainButton.GetComponent<UITooltip>();
             if (tooltip != null)
             {
@@ -128,65 +127,12 @@ namespace EpicLoot.Adventure.Feature
                 {
                     tooltip.m_text = "$mod_epicloot_bounties_notcompletetooltip";
                 }
-                /*else if (selectedItem != null && !haveSpace)
-                {
-                    tooltip.m_text = "$mod_epicloot_bounties_noroomtooltip";
-                }*/
             }
 
             var canAbandon = selectedItem != null && selectedItem.BountyInfo.State == BountyState.InProgress;
             AbandonButton.interactable = canAbandon;
             AbandonButtonIcon.color = canAbandon ? Color.red : Color.grey;
         }
-
-        /*public bool CanAddRewardToInventory(BountyListElement selectedItem)
-        {
-            if (selectedItem == null)
-            {
-                return false;
-            }
-
-            var rewardCount = (selectedItem.BountyInfo.RewardIron > 0 ? 1 : 0) +
-                (selectedItem.BountyInfo.RewardGold > 0 ? 1 : 0) +
-                (selectedItem.BountyInfo.RewardCoins > 0 ? 1 : 0);
-            var hasEmptySlots = Player.m_localPlayer.GetInventory().GetEmptySlots() >= rewardCount;
-            if (hasEmptySlots)
-            {
-                return true;
-            }
-
-            if (selectedItem.BountyInfo.RewardIron > 0)
-            {
-                var haveSpace = Player.m_localPlayer.GetInventory()
-                    .FindFreeStackSpace(MerchantPanel.GetIronBountyTokenName(), Game.m_worldLevel) > selectedItem.BountyInfo.RewardIron;
-                if (!haveSpace)
-                {
-                    return false;
-                }
-            }
-
-            if (selectedItem.BountyInfo.RewardGold > 0)
-            {
-                var haveSpace = Player.m_localPlayer.GetInventory()
-                    .FindFreeStackSpace(MerchantPanel.GetGoldBountyTokenName(), Game.m_worldLevel) > selectedItem.BountyInfo.RewardGold;
-                if (!haveSpace)
-                {
-                    return false;
-                }
-            }
-
-            if (selectedItem.BountyInfo.RewardCoins > 0)
-            {
-                var haveSpace = Player.m_localPlayer.GetInventory()
-                    .FindFreeStackSpace(MerchantPanel.GetCoinsName(), Game.m_worldLevel) > selectedItem.BountyInfo.RewardCoins;
-                if (!haveSpace)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }*/
 
         protected override void OnMainButtonClicked()
         {

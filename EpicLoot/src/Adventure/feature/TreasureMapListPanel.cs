@@ -1,4 +1,5 @@
 ﻿using EpicLoot_UnityLib;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -8,6 +9,7 @@ namespace EpicLoot.Adventure.Feature
     class TreasureMapListPanel : MerchantListPanel<TreasureMapListElement>
     {
         private readonly MerchantPanel _merchantPanel;
+        private IEnumerator SpawnTreasureChestCoroutine;
 
         public TreasureMapListPanel(MerchantPanel merchantPanel, TreasureMapListElement elementPrefab) 
             : base(
@@ -46,6 +48,11 @@ namespace EpicLoot.Adventure.Feature
 
         protected override void OnMainButtonClicked()
         {
+            if (SpawnTreasureChestCoroutine != null)
+            {
+                return;
+            }
+
             var player = Player.m_localPlayer;
             if (player == null)
             {
@@ -55,17 +62,22 @@ namespace EpicLoot.Adventure.Feature
             var treasureMap = GetSelectedItem();
             if (treasureMap != null)
             {
-                player.StartCoroutine(AdventureDataManager.TreasureMaps.SpawnTreasureChest(treasureMap.Biome, player, (success, position) =>
-                {
-                    if (success)
-                    {
-                        InventoryManagement.Instance.RemoveItem(MerchantPanel.GetCoinsName(), treasureMap.Price);
-
-                        StoreGui.instance.m_trader.OnBought(null);
-                        StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
-                    }
-                }));
+                SpawnTreasureChestCoroutine = AdventureDataManager.TreasureMaps
+                    .SpawnTreasureChest(treasureMap.Biome, player, treasureMap.Price, OnSpawnTreasureChest);
+                player.StartCoroutine(SpawnTreasureChestCoroutine);
             }
+        }
+
+        private void OnSpawnTreasureChest(int price, bool success, Vector3 position)
+        {
+            if (success)
+            {
+                InventoryManagement.Instance.RemoveItem(MerchantPanel.GetCoinsName(), price);
+
+                StoreGui.instance.m_trader.OnBought(null);
+                StoreGui.instance.m_buyEffects.Create(Player.m_localPlayer.transform.position, Quaternion.identity);
+            }
+            SpawnTreasureChestCoroutine = null;
         }
 
         public override void RefreshItems(Currencies currencies)
@@ -89,7 +101,6 @@ namespace EpicLoot.Adventure.Feature
         public override void UpdateRefreshTime()
         {
             UpdateRefreshTime(AdventureDataManager.TreasureMaps.GetSecondsUntilRefresh());
-
         }
     }
 }

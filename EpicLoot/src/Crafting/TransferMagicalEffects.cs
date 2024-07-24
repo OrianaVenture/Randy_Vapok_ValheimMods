@@ -7,7 +7,6 @@ namespace EpicLoot.Crafting;
 
 public static class TransferMagicalEffects
 {
-
     private static bool IsDoCraft;
     private static ItemDrop.ItemData CraftedItem = null;
     private static List<ItemDrop.ItemData> ConsumedMagicItems = new ();
@@ -61,7 +60,8 @@ public static class TransferMagicalEffects
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), new []{typeof(string), typeof(int), typeof(int), typeof(int), typeof(long),typeof(string),typeof(bool)})]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.AddItem), new []{typeof(string), typeof(int), typeof(int),
+        typeof(int), typeof(long),typeof(string),typeof(bool)})]
     static class InventoryAddItemPatch
     {
         [UsedImplicitly]

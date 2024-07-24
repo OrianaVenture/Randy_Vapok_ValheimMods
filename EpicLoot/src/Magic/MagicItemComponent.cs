@@ -247,6 +247,7 @@ namespace EpicLoot
 
         public static string GetDisplayName(this ItemDrop.ItemData itemData)
         {
+            // TODO: investigate
             var name = itemData.m_shared.m_name;
 
             if (itemData.IsMagic(out var magicItem) && !string.IsNullOrEmpty(magicItem.DisplayName))
