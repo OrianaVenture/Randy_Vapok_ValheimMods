@@ -1,15 +1,18 @@
 ## Version 0.10.2
 
 * Set fallback gambling Coins from 1 to 10000 when misconfigured.
+* Tweaked default fallback items for the item info configuration.
 * Set default maximum radius for Ashlands adventure spawns to 8000, should help with performance issues when spawning bounties and treasure chests.
 * Bounties and treasure chest should no longer spawn in lava.
 * Treasure chests now delete themselves (like tombstones) after fully looted.
+* Tweaked code for buying treasure chests to prevent accidental multiple purchase.
 * Added support for the nocost cheat for Epic Loot trader menu.
-* Epic Loot trader menu now allows you to buy items with a full inventory. Items will drop at the player's feet.
-* Reworked gating logic to fix bugs with fallback items not found correctly.
+* Epic Loot trader menu now allows you to buy items (and do other interactions) with a full inventory. Items will drop at the player's feet.
+* Reworked gating logic to fix bugs with some items dropping when not allowed.
 * Simplified double and triple shot checks to improve other mod compatibilities.
 * Reworked inventory management (checks, additions, removal) into a new class EpicLoot_UnityLib.InventoryManagement to improve other mod compatibilities.
-* Re-enabled gotomerchant command
+* Re-enabled gotomerchant command to teleport the player again.
+* Set the default value of the "Config Sync - Lock Config" configuration to true.
 
 ## Version 0.10.1
 

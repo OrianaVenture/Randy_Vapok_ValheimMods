@@ -138,12 +138,23 @@ namespace EpicLoot.Adventure.Feature
             return results;
         }
 
+        /// <summary>
+        /// Randomly select N items from the list without duplicates.
+        /// </summary>
         protected static void RollOnListNTimes<T>(Random random, List<T> list, int n, List<T> results)
         {
             HashSet<int> indexes = new HashSet<int>();
             if (n > list.Count)
             {
-                n = list.Count - 1;
+                // Return all items
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    results.Add(item);
+                    indexes.Add(i);
+                }
+
+                return;
             }
 
             int count = 0;
@@ -214,7 +225,7 @@ namespace EpicLoot.Adventure.Feature
                         continue;
                     }
 
-                    // TODO: This might not be working correctly
+                    // TODO: Investigate validity of the spawn point. May still be placing inside rocks.
                     var solidHeight = ZoneSystem.instance.GetSolidHeight(spawnPoint);
                     var offsetFromGround = Math.Abs(solidHeight - groundHeight);
                     EpicLoot.Log($"solidHeight {solidHeight} - groundHeight{groundHeight} = offset {offsetFromGround} (5 is limit)");

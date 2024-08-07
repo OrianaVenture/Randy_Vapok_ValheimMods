@@ -100,13 +100,13 @@
         "Fallback": "Club",
         "Items": [ "Club", "MaceBronze", "MaceIron", "MaceSilver", "MaceNeedle", "MaceEldner" ],
         "ItemsByBoss": {
-            "defeated_eikthyr": [ "Club" ],
-            "defeated_gdking": [ "MaceBronze" ],
-            "defeated_bonemass": [ "MaceIron" ],
-            "defeated_dragon": [ "MaceSilver" ],
-            "defeated_goblinking": [ "MaceNeedle" ],
-            "defeated_queen": [],
-            "defeated_fader": [ "MaceEldner" ]
+            "defeated_eikthyr"    : [ "Club" ],
+            "defeated_gdking"     : [ "MaceBronze" ],
+            "defeated_bonemass"   : [ "MaceIron" ],
+            "defeated_dragon"     : [ "MaceSilver" ],
+            "defeated_goblinking" : [ "MaceNeedle" ],
+            "defeated_queen"      : [],
+            "defeated_fader"      : [ "MaceEldner" ]
         }
     },
     {
