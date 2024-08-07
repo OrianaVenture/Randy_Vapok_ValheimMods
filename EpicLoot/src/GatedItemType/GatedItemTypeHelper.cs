@@ -126,15 +126,6 @@ namespace EpicLoot.GatedItemType
                 return itemID;
             }
 
-            // Why is this here?
-            /*var itemName = GetItemName(itemID);
-            if (itemName == null)
-            {
-                return null;
-            }*/
-
-            //var index = info.Items.IndexOf(itemID);
-
             if (info.Items.Count < 0)
             {
                 // Items list is empty, no need to gate any items from of this type
@@ -153,7 +144,7 @@ namespace EpicLoot.GatedItemType
 
             while (CheckIfItemNeedsGate(mode, id))
             {
-                if (index < 0)
+                if (index == 0)
                 {
                     if (string.IsNullOrEmpty(info.Fallback))
                     {
@@ -164,10 +155,10 @@ namespace EpicLoot.GatedItemType
                 }
 
                 index--;
-                itemID = info.Items[index];
+                id = info.Items[index];
             }
 
-            return itemID;
+            return id;
         }
 
         private static string GetItemName(string itemID)

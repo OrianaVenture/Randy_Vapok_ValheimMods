@@ -300,7 +300,7 @@ namespace EpicLoot
                 "Set to false to disable. This will not actually remove active treasure maps or bounties from your save.");
             _andvaranautRange = SyncedConfig("Balance", "Andvaranaut Range", 20,
                 "Sets the range that Andvaranaut will locate a treasure chest.");
-            _serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", false,
+            _serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", true,
                 new ConfigDescription("[Server Only] The configuration is locked and may not be changed by clients " +
                 "once it has been synced from the server. Only valid for server config, will have no effect on clients."));
             SetItemDropChance = SyncedConfig("Balance", "Set Item Drop Chance", 0.15f,
