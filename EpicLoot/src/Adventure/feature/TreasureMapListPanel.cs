@@ -73,10 +73,15 @@ namespace EpicLoot.Adventure.Feature
             if (success)
             {
                 InventoryManagement.Instance.RemoveItem(MerchantPanel.GetCoinsName(), price);
+                
+                if (StoreGui.instance.m_trader != null)
+                {
+                    StoreGui.instance.m_trader.OnBought(null);
+                }
 
-                StoreGui.instance.m_trader.OnBought(null);
-                StoreGui.instance.m_buyEffects.Create(Player.m_localPlayer.transform.position, Quaternion.identity);
+                StoreGui.instance.m_buyEffects?.Create(Player.m_localPlayer.transform.position, Quaternion.identity);
             }
+
             SpawnTreasureChestCoroutine = null;
         }
 
