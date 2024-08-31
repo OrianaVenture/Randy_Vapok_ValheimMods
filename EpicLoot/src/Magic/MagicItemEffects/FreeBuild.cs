@@ -27,7 +27,31 @@ namespace EpicLoot.MagicItemEffects
             __state = piece.m_craftingStation;
             if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.FreeBuild))
             {
-                piece.m_craftingStation = null;
+                switch (piece.m_craftingStation.m_name)
+                {
+                    // Building with iron or stone requires having defeated the elder
+                    case "piece_stonecutter":
+                    case "forge":
+                        if (ZoneSystem.instance.GetGlobalKey("defeated_gdking"))
+                        { piece.m_craftingStation = null; }
+                        break;
+                    // building with the artisan table requires defeating moder
+                    case "piece_artisanstation":
+                        if (ZoneSystem.instance.GetGlobalKey("defeated_dragon"))
+                        { piece.m_craftingStation = null; }
+                        break;
+                    // building with the blackforge or galdur table requires defeating yag
+                    case "blackforge":
+                    case "piece_magetable":
+                        if (ZoneSystem.instance.GetGlobalKey("defeated_goblinking"))
+                        { piece.m_craftingStation = null; }
+                        break;
+                    // if we hit default, we've checked everything we know from vanilla, this will ensure the no-cost is applied to mod piece table building requirements
+                    // we could instead start with a check for the workbench and only support vanilla crafting structures- but what fun is that?
+                    default:
+                        piece.m_craftingStation = null;
+                        break;
+                }
             }
         }
 
