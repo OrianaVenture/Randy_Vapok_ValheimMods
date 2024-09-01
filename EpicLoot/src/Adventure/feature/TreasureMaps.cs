@@ -53,7 +53,7 @@ namespace EpicLoot.Adventure.Feature
             return results.OrderBy(x => x.Cost).ToList();
         }
 
-        public IEnumerator SpawnTreasureChest(Heightmap.Biome biome, Player player, Action<bool, Vector3> callback)
+        public IEnumerator SpawnTreasureChest(Heightmap.Biome biome, Player player, int price, Action<int, bool, Vector3> callback)
         {
             player.Message(MessageHud.MessageType.Center, "$mod_epicloot_treasuremap_locatingmsg");
             var saveData = player.GetAdventureSaveData();
@@ -61,16 +61,17 @@ namespace EpicLoot.Adventure.Feature
             {
                 if (success)
                 {
-                    CreateTreasureChest(biome, player, spawnPoint, normal, saveData, callback);
+                    CreateTreasureChest(biome, player, price, spawnPoint, normal, saveData, callback);
                 }
                 else
                 {
-                    callback?.Invoke(false, Vector3.zero);
+                    callback?.Invoke(0, false, Vector3.zero);
                 }
             });
         }
         
-        private void CreateTreasureChest(Heightmap.Biome biome, Player player, Vector3 spawnPoint, Vector3 normal, AdventureSaveData saveData, Action<bool, Vector3> callback)
+        private void CreateTreasureChest(Heightmap.Biome biome, Player player, int price, Vector3 spawnPoint, Vector3 normal,
+            AdventureSaveData saveData, Action<int, bool, Vector3> callback)
         {
             const string treasureChestPrefabName = "piece_chest_wood";
             var treasureChestPrefab = ZNetScene.instance.GetPrefab(treasureChestPrefabName);
@@ -83,7 +84,7 @@ namespace EpicLoot.Adventure.Feature
             saveData.PurchasedTreasureMap(GetCurrentInterval(), biome, spawnPoint, offset);
             Minimap.instance.ShowPointOnMap(spawnPoint + offset);
 
-            callback?.Invoke(true, spawnPoint);
+            callback?.Invoke(price, true, spawnPoint);
         }
     }
 }

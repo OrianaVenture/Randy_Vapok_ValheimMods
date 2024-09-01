@@ -31,16 +31,11 @@ namespace EpicLoot_UnityLib
 
         public int GetMax()
         {
-            var player = Player.m_localPlayer;
-            if (player == null)
-                return 0;
-
-            var inventory = player.GetInventory();
-            var min = int.MaxValue;
+            int min = int.MaxValue;
             foreach (var cost in Cost)
             {
-                var count = inventory.CountItems(cost.Item.m_shared.m_name);
-                var canMake = Mathf.FloorToInt(count / (float)cost.Amount);
+                int count = InventoryManagement.Instance.CountItem(cost.Item);
+                int canMake = Mathf.FloorToInt(count / (float)cost.Amount);
                 min = Mathf.Min(min, canMake);
             }
 
@@ -175,28 +170,14 @@ namespace EpicLoot_UnityLib
 
             Cancel();
 
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
             foreach (var costElement in cost)
             {
-                var costItem = costElement.GetItem();
-                inventory.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
+                InventoryManagement.Instance.RemoveItem(costElement.GetItem());
             }
 
             foreach (var productElement in allProducts)
             {
-                var product = productElement.GetItem();
-                if (inventory.CanAddItem(product))
-                {
-                    inventory.AddItem(product);
-                    player.Message(MessageHud.MessageType.TopLeft, $"$msg_added {product.m_shared.m_name}", product.m_stack, product.GetIcon());
-                }
-                else
-                {
-                    var itemDrop = ItemDrop.DropItem(product, product.m_stack, player.transform.position + player.transform.forward + player.transform.up, player.transform.rotation);
-                    itemDrop.GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
-                    player.Message(MessageHud.MessageType.TopLeft, $"$msg_dropped {itemDrop.m_itemData.m_shared.m_name} $mod_epicloot_sacrifice_inventoryfullexplanation", itemDrop.m_itemData.m_stack, itemDrop.m_itemData.GetIcon());
-                }
+                InventoryManagement.Instance.GiveItem(productElement.GetItem());
             }
 
             DeselectAll();

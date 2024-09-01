@@ -81,7 +81,9 @@ namespace EpicLoot.Adventure
 
         public static string GetBountyName(BountyInfo bountyInfo)
         {
-            return Localization.instance.Localize(string.IsNullOrEmpty(bountyInfo.TargetName) ? GetMonsterName(bountyInfo.Target.MonsterID) : bountyInfo.TargetName);
+            return Localization.instance.Localize(string.IsNullOrEmpty(bountyInfo.TargetName) ?
+                GetMonsterName(bountyInfo.Target.MonsterID) :
+                bountyInfo.TargetName);
         }
 
         public static string GetMonsterName(string monsterID)

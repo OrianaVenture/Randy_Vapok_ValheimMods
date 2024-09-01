@@ -212,8 +212,8 @@ namespace EpicLoot_UnityLib
             if (maxLevel)
                 return;
 
-            var cost = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature) 
-                ? EnchantingTableUI.instance.SourceTable.GetFeatureUnlockCost(feature) 
+            var cost = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature)
+                ? EnchantingTableUI.instance.SourceTable.GetFeatureUnlockCost(feature)
                 : EnchantingTableUI.instance.SourceTable.GetFeatureUpgradeCost(feature);
 
             var canAfford = LocalPlayerCanAffordCost(cost);
@@ -224,7 +224,8 @@ namespace EpicLoot_UnityLib
                 {
                     if (!success)
                     {
-                        Debug.LogError($"[Enchanting Upgrade] ERROR: Tried to upgrade ({feature}) to level ({currentLevel + 1}) but it failed!");
+                        Debug.LogError($"[Enchanting Upgrade] ERROR: " +
+                            $"Tried to upgrade ({feature}) to level ({currentLevel + 1}) but it failed!");
                         return;
                     }
 
@@ -233,15 +234,14 @@ namespace EpicLoot_UnityLib
                     {
                         if (!LocalPlayerCanAffordCost(cost))
                         {
-                            Debug.LogError("[Augment Item] ERROR: Tried to augment item but could not afford the cost. This should not happen!");
+                            Debug.LogError("[Augment Item] ERROR: Tried to augment item but could not afford the cost. " +
+                                "This should not happen!");
                             return;
                         }
 
-                        var inventory = player.GetInventory();
                         foreach (var costElement in cost)
                         {
-                            var costItem = costElement.GetItem();
-                            inventory.RemoveItem(costItem.m_shared.m_name, costItem.m_stack);
+                            InventoryManagement.Instance.RemoveItem(costElement.GetItem());
                         }
                     }
 

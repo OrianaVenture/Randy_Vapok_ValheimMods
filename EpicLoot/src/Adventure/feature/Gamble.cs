@@ -21,12 +21,11 @@ namespace EpicLoot.Adventure.Feature
             var random = GetRandom();
             var results = new List<SecretStashItemInfo>();
 
-            var availableGambles = GetAvailableGambles();
-            RollOnListNTimes(random, availableGambles.ToList(), AdventureDataManager.Config.Gamble.GamblesCount, results);
+            List<SecretStashItemInfo> availableGambles = GetAvailableGambles();
+            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GamblesCount, results);
 
-            availableGambles = GetAvailableGambles();
             var forestTokenGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles.ToList(), AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
+            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
             foreach (var forestTokenGamble in forestTokenGambles)
             {
                 forestTokenGamble.Cost.Coins = (int)(forestTokenGamble.Cost.Coins * AdventureDataManager.Config.Gamble.ForestTokenGambleCoinsCost);
@@ -36,9 +35,8 @@ namespace EpicLoot.Adventure.Feature
                 results.Add(forestTokenGamble);
             }
 
-            availableGambles = GetAvailableGambles();
             var ironBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles.ToList(), AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
+            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
             foreach (var ironBountyGamble in ironBountyGambles)
             {
                 ironBountyGamble.Cost.Coins = (int)(ironBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.IronBountyGambleCoinsCost);
@@ -48,9 +46,8 @@ namespace EpicLoot.Adventure.Feature
                 results.Add(ironBountyGamble);
             }
 
-            availableGambles = GetAvailableGambles();
             var goldBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles.ToList(), AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
+            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
             foreach (var goldBountyGamble in goldBountyGambles)
             {
                 goldBountyGamble.Cost.Coins = (int)(goldBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.GoldBountyGambleCoinsCost);
@@ -73,13 +70,14 @@ namespace EpicLoot.Adventure.Feature
                     EpicLoot.LogWarning($"Found empty itemConfig.. skipping.");
                     continue;
                 }
+
                 var gatingMode = EpicLoot.GetGatedItemTypeMode();
                 if (gatingMode == GatedItemTypeMode.Unlimited)
                 {
                     gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
                 }
 
-                var itemId = GatedItemTypeHelper.GetItemFromCategory(itemConfig, gatingMode);
+                var itemId = GatedItemTypeHelper.GetItemFromCategory(itemConfig, gatingMode, 0);
                 if (string.IsNullOrEmpty(itemId))
                 {
                     EpicLoot.LogWarning($"[AdventureData] Could not find item id from Category (orig={itemConfig})!");
@@ -106,7 +104,7 @@ namespace EpicLoot.Adventure.Feature
             var costConfig = AdventureDataManager.Config.Gamble.GambleCosts.Find(x => x.Item == itemId);
             return new Currencies()
             {
-                Coins = costConfig?.CoinsCost ?? 1,
+                Coins = costConfig?.CoinsCost ?? 10000,
                 ForestTokens = costConfig?.ForestTokenCost ?? 0,
                 IronBountyTokens = costConfig?.IronBountyTokenCost ?? 0,
                 GoldBountyTokens = costConfig?.GoldBountyTokenCost ?? 0

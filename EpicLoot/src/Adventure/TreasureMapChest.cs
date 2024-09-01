@@ -20,6 +20,7 @@ namespace EpicLoot.Adventure
             if (container == null || container.m_nview == null)
             {
                 EpicLoot.LogError($"Trying to set up TreasureMapChest ({biome} {treasureMapInterval}) but there was no Container component!");
+                return;
             }
 
             var zdo = container.m_nview.GetZDO();
@@ -64,21 +65,11 @@ namespace EpicLoot.Adventure
             var container = GetComponent<Container>();
             if (container != null)
             {
-                if (hasBeenFound && container.m_inventory.NrOfItems() == 0)
-                {
-                    // Remove treasure chests that have already been found
-                    var zdo = container.m_nview.GetZDO();
-                    if (zdo != null && zdo.IsValid())
-                    {
-                        zdo.SetOwner(ZDOMan.GetSessionID());
-                        container.m_nview.Destroy();
-                        return;
-                    }
-                }
-
-                var label = Localization.instance.Localize("$mod_epicloot_treasurechest_name", $"$biome_{Biome.ToString().ToLower()}", (treasureMapInterval + 1).ToString());
+                var label = Localization.instance.Localize("$mod_epicloot_treasurechest_name",
+                    $"$biome_{Biome.ToString().ToLower()}", (treasureMapInterval + 1).ToString());
                 container.m_name = Localization.instance.Localize(label);
                 container.m_privacy = hasBeenFound ? Container.PrivacySetting.Public : Container.PrivacySetting.Private;
+                container.m_autoDestroyEmpty = true;
             }
 
             var piece = GetComponent<Piece>();

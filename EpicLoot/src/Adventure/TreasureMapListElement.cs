@@ -47,7 +47,7 @@ namespace EpicLoot.Adventure
         public void SetItem(TreasureMapItemInfo itemInfo, int currentCoins)
         {
             ItemInfo = itemInfo;
-            CanAfford = Price <= currentCoins;
+            CanAfford = Price <= currentCoins || Player.m_localPlayer.NoCostCheat();
             AlreadyPurchased = itemInfo.AlreadyPurchased;
 
             var displayName = Localization.instance.Localize("$mod_epicloot_treasuremap_name", $"$biome_{Biome.ToString().ToLower()}", (itemInfo.Interval + 1).ToString());

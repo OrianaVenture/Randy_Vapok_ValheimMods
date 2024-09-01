@@ -196,12 +196,12 @@ namespace EpicLoot
 
         public static bool AnyItemSpawnCheatsActive()
         {
-            return CheatRollingItem || CheatDisableGating || CheatForceMagicEffect || 
+            return CheatRollingItem || CheatDisableGating || CheatForceMagicEffect ||
                 !string.IsNullOrEmpty(CheatForceLegendary) || !string.IsNullOrEmpty(CheatForceMythic) ||
                 CheatEffectCount > 0;
         }
 
-        private static List<GameObject> RollLootTableInternal(LootTable lootTable, 
+        private static List<GameObject> RollLootTableInternal(LootTable lootTable,
             int level, string objectName, Vector3 dropPoint, bool initializeObject)
         {
             var results = new List<GameObject>();
@@ -341,7 +341,7 @@ namespace EpicLoot
                     }
                 }
 
-                var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item);
+                var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item, 0);
 
                 GameObject itemPrefab = null;
 

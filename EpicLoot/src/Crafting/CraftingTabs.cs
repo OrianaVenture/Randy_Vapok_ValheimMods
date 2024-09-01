@@ -1,13 +1,13 @@
 ﻿namespace EpicLoot.Crafting
 {
-    public enum CraftingTabType
+    /*public enum CraftingTabType
     {
         Crafting,
         Upgrade,
         Disenchant,
         Enchant,
         Augment
-    }
+    }*/
 
     public enum CraftingTabStyle
     {
@@ -17,7 +17,8 @@
         Angled
     }
 
-    public static class CraftingTabs
+    // TODO: Is this used anywhere?
+    /*public static class CraftingTabs
     {
         public static bool HaveRequirementsHelper(Player player, Piece.Requirement[] requirements, int qualityLevel)
         {
@@ -33,5 +34,5 @@
             }
             return true;
         }
-    }
+    }*/
 }

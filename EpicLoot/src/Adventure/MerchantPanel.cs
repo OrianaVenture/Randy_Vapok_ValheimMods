@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.Crafting;
+using EpicLoot_UnityLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -268,8 +269,7 @@ namespace EpicLoot.Adventure
                 ZNetScene.instance.Destroy(itemDrop.gameObject);
             }
 
-            var inventory = player.GetInventory();
-            if (item == null || !inventory.AddItem(item))
+            if (item == null || !InventoryManagement.Instance.GiveItem(item))
             {
                 EpicLoot.LogWarning($"Could not buy item {listItem.ItemInfo.Item.m_shared.m_name}");
                 return;
@@ -282,29 +282,26 @@ namespace EpicLoot.Adventure
 
             if (listItem.ItemInfo.Cost.Coins > 0)
             {
-                inventory.RemoveItem(GetCoinsName(), listItem.ItemInfo.Cost.Coins);
+                InventoryManagement.Instance.RemoveItem(GetCoinsName(), listItem.ItemInfo.Cost.Coins);
             }
 
             if (listItem.ItemInfo.Cost.ForestTokens > 0)
             {
-                inventory.RemoveItem(GetForestTokenName(), listItem.ItemInfo.Cost.ForestTokens);
+                InventoryManagement.Instance.RemoveItem(GetForestTokenName(), listItem.ItemInfo.Cost.ForestTokens);
             }
 
             if (listItem.ItemInfo.Cost.IronBountyTokens > 0)
             {
-                inventory.RemoveItem(GetIronBountyTokenName(), listItem.ItemInfo.Cost.IronBountyTokens);
+                InventoryManagement.Instance.RemoveItem(GetIronBountyTokenName(), listItem.ItemInfo.Cost.IronBountyTokens);
             }
 
             if (listItem.ItemInfo.Cost.GoldBountyTokens > 0)
             {
-                inventory.RemoveItem(GetGoldBountyTokenName(), listItem.ItemInfo.Cost.GoldBountyTokens);
+                InventoryManagement.Instance.RemoveItem(GetGoldBountyTokenName(), listItem.ItemInfo.Cost.GoldBountyTokens);
             }
 
             StoreGui.instance.m_trader.OnBought(null);
             StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
-            Player.m_localPlayer.ShowPickupMessage(listItem.ItemInfo.Item, listItem.ItemInfo.Item.m_stack);
-
-            //Gogan.LogEvent("Game", "BoughtItem", selectedStashItem.Item, 0L);
         }
 
         private static string GetRefreshTimeTooltip(int refreshInterval)
@@ -358,11 +355,9 @@ namespace EpicLoot.Adventure
 
         private bool UpdateCurrencies()
         {
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
             var currenciesChanged = false;
 
-            var newCoinCount = inventory.CountItems(GetCoinsName());
+            var newCoinCount = InventoryManagement.Instance.CountItem(GetCoinsName());
             if (_currencies.Coins != newCoinCount)
             {
                 _currencies.Coins = newCoinCount;
@@ -370,7 +365,7 @@ namespace EpicLoot.Adventure
                 currenciesChanged = true;
             }
 
-            var newForestTokenCount = inventory.CountItems(GetForestTokenName());
+            var newForestTokenCount = InventoryManagement.Instance.CountItem(GetForestTokenName());
             if (_currencies.ForestTokens != newForestTokenCount)
             {
                 _currencies.ForestTokens = newForestTokenCount;
@@ -378,7 +373,7 @@ namespace EpicLoot.Adventure
                 currenciesChanged = true;
             }
 
-            var newIronBountyTokenCount = inventory.CountItems(GetIronBountyTokenName());
+            var newIronBountyTokenCount = InventoryManagement.Instance.CountItem(GetIronBountyTokenName());
             if (newIronBountyTokenCount != _currencies.IronBountyTokens)
             {
                 _currencies.IronBountyTokens = newIronBountyTokenCount;
@@ -386,7 +381,7 @@ namespace EpicLoot.Adventure
                 currenciesChanged = true;
             }
 
-            var newGoldBountyTokenCount = inventory.CountItems(GetGoldBountyTokenName());
+            var newGoldBountyTokenCount = InventoryManagement.Instance.CountItem(GetGoldBountyTokenName());
             if (newGoldBountyTokenCount != _currencies.GoldBountyTokens)
             {
                 _currencies.GoldBountyTokens = newGoldBountyTokenCount;

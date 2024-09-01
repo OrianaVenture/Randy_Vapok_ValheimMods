@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using BepInEx;
 using Common;
+using EpicLoot_UnityLib;
 using HarmonyLib;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -339,18 +340,17 @@ namespace EpicLoot.Adventure.Feature
 
             MessageHud.instance.ShowBiomeFoundMsg("$mod_epicloot_bounties_claimedmsg", true);
 
-            var inventory = player.GetInventory();
             if (bountyInfo.RewardIron > 0)
             {
-                inventory.AddItem("IronBountyToken", bountyInfo.RewardIron, 1, 0, 0, string.Empty);
+                InventoryManagement.Instance.GiveItem("IronBountyToken", bountyInfo.RewardIron);
             }
             if (bountyInfo.RewardGold > 0)
             {
-                inventory.AddItem("GoldBountyToken", bountyInfo.RewardGold, 1, 0, 0, string.Empty);
+                InventoryManagement.Instance.GiveItem("GoldBountyToken", bountyInfo.RewardGold);
             }
             if (bountyInfo.RewardCoins > 0)
             {
-                inventory.AddItem("Coins", bountyInfo.RewardCoins, 1, 0, 0, string.Empty);
+                InventoryManagement.Instance.GiveItem("Coins", bountyInfo.RewardCoins);
             }
         }
 
