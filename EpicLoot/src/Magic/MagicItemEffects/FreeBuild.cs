@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace EpicLoot.MagicItemEffects
 {
     [HarmonyPatch]
-    public class FreeBuildGuiDisplay_Recipe_GetRequiredStation_Patch
+    public static class FreeBuildGuiDisplay_Recipe_GetRequiredStation_Patch
     {
         [UsedImplicitly]
         private static IEnumerable<MethodBase> TargetMethods()
@@ -23,26 +23,32 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Prefix(ref CraftingStation __state, Piece piece)
         {
-            if (piece == null || Player.m_localPlayer == null)
+            if (piece == null || Player.m_localPlayer == null || ZoneSystem.instance == null)
             {
                 return;
             }
 
-            // maybe we should reduce the frequency of the hashcode check to see if a piece is buildable through changed global keys
-            if (CurrentGlobalKeyset == 0) { CurrentGlobalKeyset = ZoneSystem.instance.m_globalKeys.GetHashCode(); }
-            if (CurrentGlobalKeyset != ZoneSystem.instance.m_globalKeys.GetHashCode()) { FreeBuildablePieces.Clear(); }
+            // maybe we should reduce the frequency of the check to see if a piece is buildable through changed global keys
+            if (CurrentGlobalKeyset != ZoneSystem.instance.m_globalKeysEnums.Count)
+            {
+                FreeBuildablePieces.Clear();
+                CurrentGlobalKeyset = ZoneSystem.instance.m_globalKeysEnums.Count;
+            }
 
             __state = piece.m_craftingStation;
 
-            if (piece.m_craftingStation.name != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.FreeBuild))
+            if (piece.m_craftingStation != null && piece.m_craftingStation.name != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.FreeBuild))
             {
-                if (FreeBuildablePieces.ContainsKey(piece.m_craftingStation.name)) 
+                //EpicLoot.Log($"Piece does require a crafting station, and player has freebuild.");
+                if (FreeBuildablePieces.ContainsKey(piece.m_name)) 
                 {
-                    if (FreeBuildablePieces[piece.m_craftingStation.name] == true) { piece.m_craftingStation = null;  }
+                    // EpicLoot.Log($"Checking diectionary for freebuild status");
+                    if (FreeBuildablePieces[piece.m_name] == true) { piece.m_craftingStation = null;  }
                 } else
                 {
                     bool pieceFreebuild = CanBeFreeBuilt(piece.m_craftingStation.name);
-                    FreeBuildablePieces.Add(piece.m_craftingStation.name, pieceFreebuild);
+                    FreeBuildablePieces.Add(piece.m_name, pieceFreebuild);
+                    // EpicLoot.Log($"Dictionary entry not present, checking freebuild and adding entry {piece.m_name}-{pieceFreebuild}");
                     if (pieceFreebuild) { piece.m_craftingStation = null; }
                 }
             }
@@ -65,18 +71,27 @@ namespace EpicLoot.MagicItemEffects
                 case "piece_stonecutter":
                 case "forge":
                     if (ZoneSystem.instance.GetGlobalKey("defeated_gdking"))
-                    { return true; }
+                    {
+                        EpicLoot.Log($"Stonecutter & forge check for gdking {ZoneSystem.instance.GetGlobalKey("defeated_gdking")}");
+                        return true; 
+                    }
                     break;
                 // building with the artisan table requires defeating moder
                 case "piece_artisanstation":
-                    if (ZoneSystem.instance.GetGlobalKey("defeated_dragon"))
-                    { return true; }
+                    if (ZoneSystem.instance.GetGlobalKey("defeated_dragon") == true)
+                    {
+                        EpicLoot.Log($"artisan station check for dragon {ZoneSystem.instance.GetGlobalKey("defeated_dragon")}");
+                        return true;
+                    }
                     break;
                 // building with the blackforge or galdur table requires defeating yag
                 case "blackforge":
                 case "piece_magetable":
                     if (ZoneSystem.instance.GetGlobalKey("defeated_goblinking"))
-                    { return true; }
+                    {
+                        EpicLoot.Log($"blackforge & magetable check for goblinking {ZoneSystem.instance.GetGlobalKey("defeated_goblinking")}");
+                        return true;
+                    }
                     break;
                 // if we hit default, we've checked everything we know from vanilla, this will ensure the no-cost is applied to mod piece table building requirements
                 // we could instead start with a check for the workbench and only support vanilla crafting structures- but what fun is that?
