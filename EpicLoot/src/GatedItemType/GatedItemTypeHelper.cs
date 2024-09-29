@@ -6,6 +6,13 @@ using EpicLoot.Adventure.Feature;
 
 namespace EpicLoot.GatedItemType
 {
+    public enum GatedPieceTypeMode
+    {
+        Unlimited,
+        BossKillUnlocksCurrentBiomePieces,
+        BossKillUnlocksNextBiomePieces
+    }
+
     public enum GatedItemTypeMode
     {
         Unlimited,

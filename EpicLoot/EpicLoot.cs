@@ -115,6 +115,7 @@ namespace EpicLoot
         public static ConfigEntry<bool> UseGeneratedMagicItemNames;
         private static ConfigEntry<GatedItemTypeMode> _gatedItemTypeModeConfig;
         public static ConfigEntry<GatedBountyMode> BossBountyMode;
+        public static ConfigEntry<GatedPieceTypeMode> GatedFreebuildMode;
         private static ConfigEntry<BossDropMode> _bossTrophyDropMode;
         private static ConfigEntry<float> _bossTrophyDropPlayerRange;
         private static ConfigEntry<int> _andvaranautRange;
@@ -133,7 +134,6 @@ namespace EpicLoot
         public static ConfigEntry<bool> OutputPatchedConfigFiles;
         public static ConfigEntry<bool> EnchantingTableUpgradesActive;
         public static ConfigEntry<bool> EnableLimitedBountiesInProgress;
-        public static ConfigEntry<bool> EnableFreebuildBossGating;
         public static ConfigEntry<int> MaxInProgressBounties;
         public static ConfigEntry<EnchantingTabs> EnchantingTableActivatedTabs;
 
@@ -278,6 +278,8 @@ namespace EpicLoot
                 "skill that the player has unlocked (i.e. swords will stay swords) according to iteminfo.json.");
             BossBountyMode = SyncedConfig("Balance", "Gated Bounty Mode", GatedBountyMode.Unlimited,
                 "Sets whether available bounties are ungated or gated by boss kills.");
+            GatedFreebuildMode = Config.Bind("Balance", "Gated Freebuild Mode", GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces,
+                "Sets whether available pieces for the Freebuild effect are ungated or gated by boss kills.");
             _bossTrophyDropMode = SyncedConfig("Balance", "Boss Trophy Drop Mode", BossDropMode.OnePerPlayerNearBoss,
                 "Sets bosses to drop a number of trophies equal to the number of players. " +
                 "Optionally set it to only include players within a certain distance, " +
@@ -335,8 +337,7 @@ namespace EpicLoot
             AbilityBarPosition = Config.Bind("Abilities", "Ability Bar Position", new Vector2(150, 170), "The position offset from the Ability Bar Anchor at which to place the ability bar.");
             AbilityBarLayoutAlignment = Config.Bind("Abilities", "Ability Bar Layout Alignment", TextAnchor.LowerLeft, "The Ability Bar is a Horizontal Layout Group. This value indicates how the elements inside are aligned. Choices with 'Center' in them will keep the items centered on the bar, even if there are fewer than the maximum allowed. 'Left' will be left aligned, and similar for 'Right'.");
             AbilityBarIconSpacing = Config.Bind("Abilities", "Ability Bar Icon Spacing", 8.0f, "The number of units between the icons on the ability bar.");
-            EnableFreebuildBossGating = Config.Bind("Abilities", "Freebuild Requires Boss Kills", true, "Global Keys gate building tiers. Defeating the appropriate boss is required to freebuild pieces that require more than just a workbench.");
-
+            
             // Enchanting Table
             EnchantingTableUpgradesActive = SyncedConfig("Enchanting Table", "Upgrades Active", true, "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
             EnchantingTableActivatedTabs = SyncedConfig("Enchanting Table", $"Table Features Active", EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant | EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
