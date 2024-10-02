@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Linq;
+using HarmonyLib;
 using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
@@ -72,6 +73,24 @@ namespace EpicLoot.MagicItemEffects
                 __result.m_lightning *= modifier;
                 __result.m_poison *= modifier;
                 __result.m_spirit *= modifier;
+            }
+            
+            if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder));
+            {
+                var modifier = 1 + CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer);
+                if (modifier > 0)
+                {
+                    __result.m_blunt *= modifier;
+                    __result.m_slash *= modifier;
+                    __result.m_pierce *= modifier;
+                    __result.m_chop *= modifier;
+                    __result.m_pickaxe *= modifier;
+                    __result.m_fire *= modifier;
+                    __result.m_frost *= modifier;
+                    __result.m_lightning *= modifier;
+                    __result.m_poison *= modifier;
+                    __result.m_spirit *= modifier; 
+                }
             }
 
             var damageMod = 0f;

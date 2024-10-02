@@ -28,6 +28,7 @@ namespace EpicLoot
         public List<string> ExcludedItemNames = new List<string>();
         public bool ItemHasPhysicalDamage;
         public bool ItemHasElementalDamage;
+        public bool ItemHasChopDamage;
         public bool ItemUsesDurability;
         public bool ItemHasNegativeMovementSpeedModifier;
         public bool ItemHasBlockPower;
@@ -36,6 +37,9 @@ namespace EpicLoot
         public bool ItemHasArmor;
         public bool ItemHasBackstabBonus;
         public bool ItemUsesStaminaOnAttack;
+        public bool ItemUsesEitrOnAttack;
+        public bool ItemUsesHealthOnAttack;
+        public bool ItemUsesDrawStaminaOnAttack;
 
         public List<string> CustomFlags;
 
@@ -48,6 +52,7 @@ namespace EpicLoot
             if (ExclusiveSelf) _flags.Add(nameof(ExclusiveSelf));
             if (ItemHasPhysicalDamage) _flags.Add(nameof(ItemHasPhysicalDamage));
             if (ItemHasElementalDamage) _flags.Add(nameof(ItemHasElementalDamage));
+            if (ItemHasChopDamage) _flags.Add(nameof(ItemHasChopDamage));
             if (ItemUsesDurability) _flags.Add(nameof(ItemUsesDurability));
             if (ItemHasNegativeMovementSpeedModifier) _flags.Add(nameof(ItemHasNegativeMovementSpeedModifier));
             if (ItemHasBlockPower) _flags.Add(nameof(ItemHasBlockPower));
@@ -56,6 +61,9 @@ namespace EpicLoot
             if (ItemHasArmor) _flags.Add(nameof(ItemHasArmor));
             if (ItemHasBackstabBonus) _flags.Add(nameof(ItemHasBackstabBonus));
             if (ItemUsesStaminaOnAttack) _flags.Add(nameof(ItemUsesStaminaOnAttack));
+            if (ItemUsesEitrOnAttack) _flags.Add(nameof(ItemUsesEitrOnAttack));
+            if (ItemUsesHealthOnAttack) _flags.Add(nameof(ItemUsesHealthOnAttack));
+            if (ItemUsesDrawStaminaOnAttack) _flags.Add(nameof(ItemUsesDrawStaminaOnAttack));
 
             if (_flags.Count > 0)
             {
@@ -269,6 +277,11 @@ namespace EpicLoot
             {
                 return false;
             }
+            
+            if (ItemHasChopDamage && itemData.m_shared.m_damages.m_chop <= 0)
+            {
+                return false;
+            }
 
             if (ItemUsesDurability && !itemData.m_shared.m_useDurability)
             {
@@ -306,6 +319,21 @@ namespace EpicLoot
             }
 
             if (ItemUsesStaminaOnAttack && itemData.m_shared.m_attack.m_attackStamina <= 0 && itemData.m_shared.m_secondaryAttack.m_attackStamina <= 0)
+            {
+                return false;
+            }
+            
+            if (ItemUsesEitrOnAttack && itemData.m_shared.m_attack.m_attackEitr <= 0 && itemData.m_shared.m_secondaryAttack.m_attackEitr <= 0)
+            {
+                return false;
+            }
+            
+            if (ItemUsesHealthOnAttack && itemData.m_shared.m_attack.m_attackHealth <= 0 && itemData.m_shared.m_secondaryAttack.m_attackHealth <= 0)
+            {
+                return false;
+            }
+            
+            if (ItemUsesDrawStaminaOnAttack && itemData.m_shared.m_attack.m_drawStaminaDrain <= 0 && itemData.m_shared.m_secondaryAttack.m_drawStaminaDrain <= 0)
             {
                 return false;
             }

@@ -2,6 +2,7 @@
 using System.Text;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
+using EpicLoot.MagicItemEffects;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -165,19 +166,48 @@ namespace EpicLoot
                     var magicAttackStaminaColor = magicAttackStamina ? magicColor : "orange";
                     var staminaUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackStaminaUse, 0.01f);
                     var totalStaminaUse = staminaUsePercentage * item.m_shared.m_attack.m_attackStamina;
-                    if (item.m_shared.m_attack.m_attackStamina > 0.0)
+                    if (item.m_shared.m_attack.m_attackStamina > 0.0 && !magicItem.HasEffect(MagicEffectType.Bloodlust))
                         text.Append($"\n$item_staminause: <color={magicAttackStaminaColor}>{totalStaminaUse:#.#}</color>");
+                    
+                    var magicAttackEitr = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse) || magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
+                    var doubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
+                    var magicAttackEitrColor = magicAttackEitr ? magicColor : "orange";
+                    var eitrUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackEitrUse, 0.01f);
+                    var totalEitrUse = doubleMagicShot
+                        ? eitrUsePercentage * (item.m_shared.m_attack.m_attackEitr * 2)
+                        : eitrUsePercentage * item.m_shared.m_attack.m_attackEitr;
+                       
                     if (item.m_shared.m_attack.m_attackEitr > 0.0)
-                        text.Append($"\n$item_eitruse: <color=orange>{item.m_shared.m_attack.m_attackEitr}</color>");
-                    if (item.m_shared.m_attack.m_attackHealth > 0.0)
-                        text.Append($"\n$item_healthuse: " +
-                            $"<color=orange>{item.m_shared.m_attack.m_attackHealth}</color>");
+                        text.Append($"\n$item_eitruse: <color={magicAttackEitrColor}>{totalEitrUse:#.#}</color>");
+                    
+                    var hasBloodlust = magicItem.HasEffect(MagicEffectType.Bloodlust);
+                    var bloodlustColor = hasBloodlust ? magicColor : "orange";
+                    var bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
+                    if (hasBloodlust)
+                    {
+                        text.Append($"\n$item_healthuse: <color={bloodlustColor}>{bloodlustStaminaUse:#.#}</color>");
+                    }
+                    else
+                    {
+                        if (item.m_shared.m_attack.m_attackHealth > 0.0)
+                            text.Append($"\n$item_healthuse: " +
+                                        $"<color=orange>{item.m_shared.m_attack.m_attackHealth}</color>");
+                    }
+                    
+                    var magicAttackHealth = magicItem.HasEffect(MagicEffectType.ModifyAttackHealthUse);
+                    var magicAttackHealthColor = magicAttackHealth ? magicColor : "orange";
+                    var healthUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
+                    var totalHealthPercentageUse = healthUsePercentage * item.m_shared.m_attack.m_attackHealthPercentage;
                     if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0)
-                        text.Append($"\n$item_healthuse: " +
-                            $"<color=orange>{item.m_shared.m_attack.m_attackHealthPercentage:0.0}%</color>");
+                        text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{(totalHealthPercentageUse / 100):##.#%}</color>");
+                    
+                    var attackDrawStamina = magicItem.HasEffect(MagicEffectType.ModifyDrawStaminaUse);
+                    var attackDrawStaminaColor = attackDrawStamina ? magicColor : "orange";
+                    var attackDrawStaminaPercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyDrawStaminaUse, 0.01f);
+                    var totalattackDrawStamina = attackDrawStaminaPercentage * item.m_shared.m_attack.m_drawStaminaDrain;
                     if (item.m_shared.m_attack.m_drawStaminaDrain > 0.0)
                         text.Append($"\n$item_staminahold: " +
-                            $"<color=orange>{item.m_shared.m_attack.m_drawStaminaDrain}</color>/s");
+                            $"<color={attackDrawStaminaColor}>{totalattackDrawStamina:#.#}/s");
 
                     var baseBlockPower1 = item.GetBaseBlockPower(qualityLevel);
                     var blockPowerTooltipValue = item.GetBlockPowerTooltip(qualityLevel);
@@ -373,6 +403,7 @@ namespace EpicLoot
             var lightningMagic = item.HasEffect(MagicEffectType.AddLightningDamage);
             var poisonMagic = item.HasEffect(MagicEffectType.AddPoisonDamage);
             var spiritMagic = item.HasEffect(MagicEffectType.AddSpiritDamage);
+            var coinHoarderMagic = CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer) > 0;
             Player.m_localPlayer.GetSkills().GetRandomSkillRange(out var min, out var max, skillType);
             var str = "";
             if (instance.m_damage != 0.0)
@@ -381,42 +412,42 @@ namespace EpicLoot
             }
             if (instance.m_blunt != 0.0)
             {
-                var magic = allMagic || physMagic || bluntMagic;
+                var magic = allMagic || physMagic || bluntMagic || coinHoarderMagic;
                 str = str + "\n$inventory_blunt: " + DamageRange(instance.m_blunt, min, max, magic, magicColor);
             }
             if (instance.m_slash != 0.0)
             {
-                var magic = allMagic || physMagic || slashMagic;
+                var magic = allMagic || physMagic || slashMagic || coinHoarderMagic;
                 str = str + "\n$inventory_slash: " + DamageRange(instance.m_slash, min, max, magic, magicColor);
             }
             if (instance.m_pierce != 0.0)
             {
-                var magic = allMagic || physMagic || pierceMagic;
+                var magic = allMagic || physMagic || pierceMagic || coinHoarderMagic;
                 str = str + "\n$inventory_pierce: " + DamageRange(instance.m_pierce, min, max, magic, magicColor);
             }
             if (instance.m_fire != 0.0)
             {
-                var magic = allMagic || elemMagic || fireMagic;
+                var magic = allMagic || elemMagic || fireMagic || coinHoarderMagic;
                 str = str + "\n$inventory_fire: " + DamageRange(instance.m_fire, min, max, magic, magicColor);
             }
             if (instance.m_frost != 0.0)
             {
-                var magic = allMagic || elemMagic || frostMagic;
+                var magic = allMagic || elemMagic || frostMagic || coinHoarderMagic;
                 str = str + "\n$inventory_frost: " + DamageRange(instance.m_frost, min, max, magic, magicColor);
             }
             if (instance.m_lightning != 0.0)
             {
-                var magic = allMagic || elemMagic || lightningMagic;
+                var magic = allMagic || elemMagic || lightningMagic || coinHoarderMagic;
                 str = str + "\n$inventory_lightning: " + DamageRange(instance.m_lightning, min, max, magic, magicColor);
             }
             if (instance.m_poison != 0.0)
             {
-                var magic = allMagic || elemMagic || poisonMagic;
+                var magic = allMagic || elemMagic || poisonMagic || coinHoarderMagic;
                 str = str + "\n$inventory_poison: " + DamageRange(instance.m_poison, min, max, magic, magicColor);
             }
             if (instance.m_spirit != 0.0)
             {
-                var magic = allMagic || elemMagic || spiritMagic;
+                var magic = allMagic || elemMagic || spiritMagic || coinHoarderMagic;
                 str = str + "\n$inventory_spirit: " + DamageRange(instance.m_spirit, min, max, magic, magicColor);
             }
             return str;

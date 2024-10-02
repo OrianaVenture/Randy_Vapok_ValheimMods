@@ -77,7 +77,7 @@ namespace EpicLoot
 
             tooltip.Append($"</color>");
             
-            tooltip.AppendLine($"Rarity: {GetRarityDisplay()}<pos=75%>Effects: <color={color}>{Effects.Count}</color>");
+            tooltip.AppendLine($"$mod_epicloot_itemtooltip_rarity: {GetRarityDisplay()}<pos=75%>$mod_epicloot_itemtooltip_effects: <color={color}>{Effects.Count}</color>");
             
             return tooltip.ToString();
         }

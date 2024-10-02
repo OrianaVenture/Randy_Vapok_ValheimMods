@@ -83,3 +83,7 @@ ValheimUnity/AssetBundles
 ValheimUnity/Assets/ExternalLibraries/*.dll
 ValheimUnity/Assets/ExternalLibraries/valheim/*.dll
 ValheimUnity/UserSettings
+
+# Manual adds
+Common
+ValheimMods.sln
