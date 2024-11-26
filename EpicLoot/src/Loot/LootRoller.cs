@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Common;
+using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
@@ -52,13 +53,6 @@ namespace EpicLoot
 
             ItemSets.Clear();
             LootTables.Clear();
-            if (Config == null)
-            {
-                Config = new LootConfig();
-                EpicLoot.LogErrorForce("Could not load loottables.json! " +
-                    "Verify that your json files are installed correctly alongside the EpicLoot.dll file.");
-                return;
-            }
           
             AddItemSets(lootConfig.ItemSets);
             AddLootTables(lootConfig.LootTables);
@@ -222,9 +216,9 @@ namespace EpicLoot
             {
                 drops = drops.Where(x => x.Key > 0).ToList();
             }
-            else if (Mathf.Abs(EpicLoot.GlobalDropRateModifier.Value - 1) > float.Epsilon)
+            else if (Mathf.Abs(ELConfig.GlobalDropRateModifier.Value - 1) > float.Epsilon)
             {
-                var clampedDropRate = Mathf.Clamp(EpicLoot.GlobalDropRateModifier.Value, 0, 4);
+                var clampedDropRate = Mathf.Clamp(ELConfig.GlobalDropRateModifier.Value, 0, 4);
                 var modifiedDrops = new List<KeyValuePair<int, float>>();
                 foreach (var dropPair in drops)
                 {
@@ -285,9 +279,9 @@ namespace EpicLoot
                 var rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                 EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
                 
-                if (!cheatsActive && EpicLoot.ItemsToMaterialsDropRatio.Value > 0)
+                if (!cheatsActive && ELConfig.ItemsToMaterialsDropRatio.Value > 0)
                 {
-                    var clampedConvertRate = Mathf.Clamp(EpicLoot.ItemsToMaterialsDropRatio.Value, 0.0f, 1.0f);
+                    var clampedConvertRate = Mathf.Clamp(ELConfig.ItemsToMaterialsDropRatio.Value, 0.0f, 1.0f);
                     var replaceWithMats = Random.Range(0.0f, 1.0f) < clampedConvertRate;
                     if (replaceWithMats)
                     {
@@ -509,8 +503,8 @@ namespace EpicLoot
                 if (itemInfo == null)
                 {
                     var roll = Random.Range(0.0f, 1.0f);
-                    var rollSetItem = roll < EpicLoot.SetItemDropChance.Value;
-                    EpicLoot.Log($"Rolling Legendary/Mythic: set={rollSetItem} ({roll:#.##}/{EpicLoot.SetItemDropChance.Value})");
+                    var rollSetItem = roll < ELConfig.SetItemDropChance.Value;
+                    EpicLoot.Log($"Rolling Legendary/Mythic: set={rollSetItem} ({roll:#.##}/{ELConfig.SetItemDropChance.Value})");
                     if (rarity == ItemRarity.Legendary)
                     {
                         var availableLegendaries = UniqueLegendaryHelper.GetAvailableLegendaries(baseItem, magicItem, rollSetItem);

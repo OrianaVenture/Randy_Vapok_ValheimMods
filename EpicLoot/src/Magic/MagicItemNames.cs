@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EpicLoot.Config;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Random = UnityEngine.Random;
@@ -49,7 +50,7 @@ namespace EpicLoot
         public static string GetNameForItem(ItemDrop.ItemData item, MagicItem magicItem)
         {
             var baseName = TranslateAndCapitalize(item.m_shared.m_name);
-            if (!EpicLoot.UseGeneratedMagicItemNames.Value || magicItem == null)
+            if (!ELConfig.UseGeneratedMagicItemNames.Value || magicItem == null)
             {
                 return null;
             }

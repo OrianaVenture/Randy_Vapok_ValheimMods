@@ -6,10 +6,10 @@ using System.Reflection;
 using System.Text;
 using AdventureBackpacks.API;
 using BepInEx;
-using BepInEx.Configuration;
 using Common;
 using EpicLoot.Abilities;
 using EpicLoot.Adventure;
+using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.Data;
@@ -94,52 +94,6 @@ namespace EpicLoot
         public const string DisplayName = "Epic Loot";
         public const string Version = "0.10.6";
 
-        private readonly ConfigSync _configSync = new ConfigSync(PluginId) { DisplayName = DisplayName, CurrentVersion = Version, MinimumRequiredVersion = "0.10.0" };
-
-        private static ConfigEntry<string> _setItemColor;
-        private static ConfigEntry<string> _magicRarityColor;
-        private static ConfigEntry<string> _rareRarityColor;
-        private static ConfigEntry<string> _epicRarityColor;
-        private static ConfigEntry<string> _legendaryRarityColor;
-        private static ConfigEntry<string> _mythicRarityColor;
-        private static ConfigEntry<int> _magicMaterialIconColor;
-        private static ConfigEntry<int> _rareMaterialIconColor;
-        private static ConfigEntry<int> _epicMaterialIconColor;
-        private static ConfigEntry<int> _legendaryMaterialIconColor;
-        private static ConfigEntry<int> _mythicMaterialIconColor;
-        public static ConfigEntry<bool> UseScrollingCraftDescription;
-        public static ConfigEntry<bool> TransferMagicItemToCrafts;
-        public static ConfigEntry<CraftingTabStyle> CraftingTabStyle;
-        private static ConfigEntry<bool> _loggingEnabled;
-        private static ConfigEntry<LogLevel> _logLevel;
-        public static ConfigEntry<bool> UseGeneratedMagicItemNames;
-        private static ConfigEntry<GatedItemTypeMode> _gatedItemTypeModeConfig;
-        public static ConfigEntry<GatedBountyMode> BossBountyMode;
-        public static ConfigEntry<GatedPieceTypeMode> GatedFreebuildMode;
-        private static ConfigEntry<BossDropMode> _bossTrophyDropMode;
-        private static ConfigEntry<float> _bossTrophyDropPlayerRange;
-        private static ConfigEntry<int> _andvaranautRange;
-        public static ConfigEntry<bool> ShowEquippedAndHotbarItemsInSacrificeTab;
-        private static ConfigEntry<bool> _adventureModeEnabled;
-        private static ConfigEntry<bool> _serverConfigLocked;
-        public static readonly ConfigEntry<string>[] AbilityKeyCodes = new ConfigEntry<string>[AbilityController.AbilitySlotCount];
-        public static ConfigEntry<TextAnchor> AbilityBarAnchor;
-        public static ConfigEntry<Vector2> AbilityBarPosition;
-        public static ConfigEntry<TextAnchor> AbilityBarLayoutAlignment;
-        public static ConfigEntry<float> AbilityBarIconSpacing;
-        public static ConfigEntry<float> SetItemDropChance;
-        public static ConfigEntry<float> GlobalDropRateModifier;
-        public static ConfigEntry<float> ItemsToMaterialsDropRatio;
-        public static ConfigEntry<bool> AlwaysShowWelcomeMessage;
-        public static ConfigEntry<bool> OutputPatchedConfigFiles;
-        public static ConfigEntry<bool> EnchantingTableUpgradesActive;
-        public static ConfigEntry<bool> EnableLimitedBountiesInProgress;
-        public static ConfigEntry<int> MaxInProgressBounties;
-        public static ConfigEntry<EnchantingTabs> EnchantingTableActivatedTabs;
-
-        public static Dictionary<string, CustomSyncedValue<string>> SyncedJsonFiles = new Dictionary<string, CustomSyncedValue<string>>();
-        public static Dictionary<string, ConfigValue<string>> NonSyncedJsonFiles = new Dictionary<string, ConfigValue<string>>();
-
         public static readonly List<ItemDrop.ItemData.ItemType> AllowedMagicItemTypes = new List<ItemDrop.ItemData.ItemType>
         {
             ItemDrop.ItemData.ItemType.Helmet,
@@ -190,177 +144,23 @@ namespace EpicLoot
         private static EpicLoot _instance;
         private Harmony _harmony;
         private float _worldLuckFactor;
-        private static ConfigEntry<BossDropMode> _bossCryptKeyDropMode;
-        private static ConfigEntry<float> _bossCryptKeyDropPlayerRange;
-        private static ConfigEntry<BossDropMode> _bossWishboneDropMode;
-        private static ConfigEntry<float> _bossWishboneDropPlayerRange;
+        internal ELConfig cfg;
 
         [UsedImplicitly]
         private void Awake()
         {
             _instance = this;
 
-            // Item Colors
-            _magicRarityColor = Config.Bind("Item Colors", "Magic Rarity Color", "Blue",
-                "The color of Magic rarity items, the lowest magic item tier. " +
-                "(Optional, use an HTML hex color starting with # to have a custom color.) " +
-                "Available options: Red, Orange, Yellow, Green, Teal, Blue, Indigo, Purple, Pink, Gray");
-            _magicMaterialIconColor = Config.Bind("Item Colors", "Magic Crafting Material Icon Index", 5,
-                "Indicates the color of the icon used for magic crafting materials. A number between 0 and 9. " +
-                "Available options: 0=Red, 1=Orange, 2=Yellow, 3=Green, 4=Teal, 5=Blue, 6=Indigo, 7=Purple, 8=Pink, 9=Gray");
-            _rareRarityColor = Config.Bind("Item Colors", "Rare Rarity Color", "Yellow",
-                "The color of Rare rarity items, the second magic item tier. " +
-                "(Optional, use an HTML hex color starting with # to have a custom color.) " +
-                "Available options: Red, Orange, Yellow, Green, Teal, Blue, Indigo, Purple, Pink, Gray");
-            _rareMaterialIconColor = Config.Bind("Item Colors", "Rare Crafting Material Icon Index", 2,
-                "Indicates the color of the icon used for rare crafting materials. A number between 0 and 9. " +
-                "Available options: 0=Red, 1=Orange, 2=Yellow, 3=Green, 4=Teal, 5=Blue, 6=Indigo, 7=Purple, 8=Pink, 9=Gray");
-            _epicRarityColor = Config.Bind("Item Colors", "Epic Rarity Color", "Purple",
-                "The color of Epic rarity items, the third magic item tier. " +
-                "(Optional, use an HTML hex color starting with # to have a custom color.) " +
-                "Available options: Red, Orange, Yellow, Green, Teal, Blue, Indigo, Purple, Pink, Gray");
-            _epicMaterialIconColor = Config.Bind("Item Colors", "Epic Crafting Material Icon Index", 7,
-                "Indicates the color of the icon used for epic crafting materials. A number between 0 and 9. " +
-                "Available options: 0=Red, 1=Orange, 2=Yellow, 3=Green, 4=Teal, 5=Blue, 6=Indigo, 7=Purple, 8=Pink, 9=Gray");
-            _legendaryRarityColor = Config.Bind("Item Colors", "Legendary Rarity Color", "Teal",
-                "The color of Legendary rarity items, the fourth magic item tier. " +
-                "(Optional, use an HTML hex color starting with # to have a custom color.) " +
-                "Available options: Red, Orange, Yellow, Green, Teal, Blue, Indigo, Purple, Pink, Gray");
-            _legendaryMaterialIconColor = Config.Bind("Item Colors", "Legendary Crafting Material Icon Index", 4, 
-                "Indicates the color of the icon used for legendary crafting materials. A number between 0 and 9. " +
-                "Available options: 0=Red, 1=Orange, 2=Yellow, 3=Green, 4=Teal, 5=Blue, 6=Indigo, 7=Purple, 8=Pink, 9=Gray");
-            _mythicRarityColor = Config.Bind("Item Colors", "Mythic Rarity Color", "Orange",
-                "The color of Mythic rarity items, the highest magic item tier. " +
-                "(Optional, use an HTML hex color starting with # to have a custom color.) " +
-                "Available options: Red, Orange, Yellow, Green, Teal, Blue, Indigo, Purple, Pink, Gray");
-            _mythicMaterialIconColor = Config.Bind("Item Colors", "Mythic Crafting Material Icon Index", 1,
-                "Indicates the color of the icon used for legendary crafting materials. A number between 0 and 9. " +
-                "Available options: 0=Red, 1=Orange, 2=Yellow, 3=Green, 4=Teal, 5=Blue, 6=Indigo, 7=Purple, 8=Pink, 9=Gray");
-            _setItemColor = Config.Bind("Item Colors", "Set Item Color", "#26ffff",
-                "The color of set item text and the set item icon. Use a hex color, default is cyan");
-            
-            // Crafting UI
-            UseScrollingCraftDescription = Config.Bind("Crafting UI", "Use Scrolling Craft Description", true,
-                "Changes the item description in the crafting panel to scroll instead of scale when it gets too " +
-                "long for the space.");
-            CraftingTabStyle = Config.Bind("Crafting UI", "Crafting Tab Style", Crafting.CraftingTabStyle.HorizontalSquish,
-                "Sets the layout style for crafting tabs, if you've got too many. " +
-                "Horizontal is the vanilla method, but might overlap other mods or run off the screen. " +
-                "HorizontalSquish makes the buttons narrower, works okay with 6 or 7 buttons. " +
-                "Vertical puts the tabs in a column to the left the crafting window. " +
-                "Angled tries to make more room at the top of the crafting panel by angling the tabs, " +
-                "works okay with 6 or 7 tabs.");
-            ShowEquippedAndHotbarItemsInSacrificeTab = Config.Bind("Crafting UI",
-                "ShowEquippedAndHotbarItemsInSacrificeTab", false,
-                "If set to false, hides the items that are equipped or on your hotbar in the Sacrifice items list.");
-            
-            // Logging
-            _loggingEnabled = Config.Bind("Logging", "Logging Enabled", false, "Enable logging");
-            _logLevel = Config.Bind("Logging", "Log Level", LogLevel.Info,
-                "Only log messages of the selected level or higher");
-            
-            // General
-            UseGeneratedMagicItemNames = Config.Bind("General", "Use Generated Magic Item Names", true,
-                "If true, magic items uses special, randomly generated names based on their rarity, type, and magic effects.");
-            
-            // Balance
-            _gatedItemTypeModeConfig = SyncedConfig("Balance", "Item Drop Limits",
-                GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems,
-                "Sets how the drop system limits what item types can drop. " +
-                "Unlimited: no limits, exactly what's in the loot table will drop. " +
-                "BossKillUnlocksCurrentBiomeItems: items will drop for the current biome if the that biome's boss has been killed " +
-                "(Leather gear will drop once Eikthyr is killed). " +
-                "BossKillUnlocksNextBiomeItems: items will only drop for the current biome if the previous biome's boss is killed " +
-                "(Bronze gear will drop once Eikthyr is killed). " +
-                "PlayerMustKnowRecipe: (local world only) the item can drop if the player can craft it. " +
-                "PlayerMustHaveCraftedItem: (local world only) the item can drop if the player has already crafted it " +
-                "or otherwise picked it up. If an item type cannot drop, it will downgrade to an item of the same type and " +
-                "skill that the player has unlocked (i.e. swords will stay swords) according to iteminfo.json.");
-            BossBountyMode = SyncedConfig("Balance", "Gated Bounty Mode", GatedBountyMode.Unlimited,
-                "Sets whether available bounties are ungated or gated by boss kills.");
-            GatedFreebuildMode = Config.Bind("Balance", "Gated Freebuild Mode", GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces,
-                "Sets whether available pieces for the Freebuild effect are ungated or gated by boss kills.");
-            _bossTrophyDropMode = SyncedConfig("Balance", "Boss Trophy Drop Mode", BossDropMode.OnePerPlayerNearBoss,
-                "Sets bosses to drop a number of trophies equal to the number of players. " +
-                "Optionally set it to only include players within a certain distance, " +
-                "use 'Boss Trophy Drop Player Range' to set the range.");
-            _bossTrophyDropPlayerRange = SyncedConfig("Balance", "Boss Trophy Drop Player Range", 100.0f,
-                "Sets the range that bosses check when dropping multiple trophies using the OnePerPlayerNearBoss drop mode.");
-            _bossCryptKeyDropMode = SyncedConfig("Balance", "Crypt Key Drop Mode", BossDropMode.OnePerPlayerNearBoss,
-                "Sets bosses to drop a number of crypt keys equal to the number of players. " +
-                "Optionally set it to only include players within a certain distance, " +
-                "use 'Crypt Key Drop Player Range' to set the range.");
-            _bossCryptKeyDropPlayerRange = SyncedConfig("Balance", "Crypt Key Drop Player Range", 100.0f,
-                "Sets the range that bosses check when dropping multiple crypt keys using the OnePerPlayerNearBoss drop mode.");
-            _bossWishboneDropMode = SyncedConfig("Balance", "Wishbone Drop Mode", BossDropMode.OnePerPlayerNearBoss,
-                "Sets bosses to drop a number of wishbones equal to the number of players. " +
-                "Optionally set it to only include players within a certain distance, " +
-                "use 'Crypt Key Drop Player Range' to set the range.");
-            _bossWishboneDropPlayerRange = SyncedConfig("Balance", "Wishbone Drop Player Range", 100.0f,
-                "Sets the range that bosses check when dropping multiple wishbones using the OnePerPlayerNearBoss drop mode.");
-            _adventureModeEnabled = SyncedConfig("Balance", "Adventure Mode Enabled", true,
-                "Set to true to enable all the adventure mode features: secret stash, gambling, treasure maps, and bounties. " +
-                "Set to false to disable. This will not actually remove active treasure maps or bounties from your save.");
-            _andvaranautRange = SyncedConfig("Balance", "Andvaranaut Range", 20,
-                "Sets the range that Andvaranaut will locate a treasure chest.");
-            _serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", true,
-                new ConfigDescription("[Server Only] The configuration is locked and may not be changed by clients " +
-                "once it has been synced from the server. Only valid for server config, will have no effect on clients."));
-            SetItemDropChance = SyncedConfig("Balance", "Set Item Drop Chance", 0.15f,
-                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1");
-            GlobalDropRateModifier = SyncedConfig("Balance", "Global Drop Rate Modifier", 1.0f,
-                "A global percentage that modifies how likely items are to drop. " +
-                "1 = Exactly what is in the loot tables will drop. " +
-                "0 = Nothing will drop. " +
-                "2 = The number of items in the drop table are twice as likely to drop " +
-                "(note, this doesn't double the number of items dropped, just doubles the relative chance for them to drop). " +
-                "Min = 0, Max = 4");
-            ItemsToMaterialsDropRatio = SyncedConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
-                "Sets the chance that item drops are instead dropped as magic crafting materials. " +
-                "0 = all items, no materials. " +
-                "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop. " +
-                "At 0.5, half of everything that drops would be items and the other half would be materials. " +
-                "Min = 0, Max = 1");
-            TransferMagicItemToCrafts = SyncedConfig("Balance", "Transfer Enchants to Crafted Items", false,
-                "When enchanted items are used as ingredients in recipes, transfer the highest enchant to the " +
-                "newly crafted item. Default: False.");
-
-            // Debug
-            AlwaysShowWelcomeMessage = Config.Bind("Debug", "AlwaysShowWelcomeMessage", false, "Just a debug flag for testing the welcome message, do not use.");
-            OutputPatchedConfigFiles = Config.Bind("Debug", "OutputPatchedConfigFiles", false, "Just a debug flag for testing the patching system, do not use.");
-
-            // Abilities
-            AbilityKeyCodes[0] = Config.Bind("Abilities", "Ability Hotkey 1", "g", "Hotkey for Ability Slot 1.");
-            AbilityKeyCodes[1] = Config.Bind("Abilities", "Ability Hotkey 2", "h", "Hotkey for Ability Slot 2.");
-            AbilityKeyCodes[2] = Config.Bind("Abilities", "Ability Hotkey 3", "j", "Hotkey for Ability Slot 3.");
-            AbilityBarAnchor = Config.Bind("Abilities", "Ability Bar Anchor", TextAnchor.LowerLeft, "The point on the HUD to anchor the ability bar. Changing this also changes the pivot of the ability bar to that corner. For reference: the ability bar size is 208 by 64.");
-            AbilityBarPosition = Config.Bind("Abilities", "Ability Bar Position", new Vector2(150, 170), "The position offset from the Ability Bar Anchor at which to place the ability bar.");
-            AbilityBarLayoutAlignment = Config.Bind("Abilities", "Ability Bar Layout Alignment", TextAnchor.LowerLeft, "The Ability Bar is a Horizontal Layout Group. This value indicates how the elements inside are aligned. Choices with 'Center' in them will keep the items centered on the bar, even if there are fewer than the maximum allowed. 'Left' will be left aligned, and similar for 'Right'.");
-            AbilityBarIconSpacing = Config.Bind("Abilities", "Ability Bar Icon Spacing", 8.0f, "The number of units between the icons on the ability bar.");
-            
-            // Enchanting Table
-            EnchantingTableUpgradesActive = SyncedConfig("Enchanting Table", "Upgrades Active", true, "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
-            EnchantingTableActivatedTabs = SyncedConfig("Enchanting Table", $"Table Features Active", EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant | EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
-            
-            // Bounty Management
-            EnableLimitedBountiesInProgress = SyncedConfig("Bounty Management", "Enable Bounty Limit", false, "Toggles limiting bounties. Players unable to purchase if enabled and maximum bounty in-progress count is met");
-            MaxInProgressBounties = SyncedConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
-            
-            _configSync.AddLockingConfigEntry(_serverConfigLocked);
-
             var assembly = Assembly.GetExecutingAssembly();
             
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
-
-            EnchantingTableUpgradesActive.SettingChanged += (_, _) => EnchantingTableUI.UpdateUpgradeActivation();
-            EnchantingTableActivatedTabs.SettingChanged += (_, _) => EnchantingTableUI.UpdateTabActivation();
+            cfg = new ELConfig(Config);
 
             HasAdventureBackpacks = ABAPI.IsLoaded();
 
             LoadPatches();
-            InitializeConfig();
             InitializeAbilities();
             PrintInfo();
             //GenerateTranslations();
@@ -521,21 +321,6 @@ namespace EpicLoot
             }
         }
 
-        private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value,
-            string description, bool synchronizedSetting = true) => 
-            SyncedConfig(group, configName, value, new ConfigDescription(description), synchronizedSetting);
-        
-        private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value,
-            ConfigDescription description, bool synchronizedSetting = true)
-        {
-            var configEntry = Config.Bind(group, configName, value, description);
-
-            var syncedConfigEntry = _configSync.AddConfigEntry(configEntry);
-            syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
-
-            return configEntry;
-        }
-
         public static void LoadPatches()
         {
             FilePatching.LoadAllPatches();
@@ -567,71 +352,6 @@ namespace EpicLoot
             }
         }
 
-        public static ConfigFile GetConfigObject()
-        {
-            return _instance.Config;
-        }
-
-        public static void InitializeConfig()
-        {
-            LoadJsonFile<IDictionary<string, object>>("translations.json", LoadTranslations, ConfigType.Nonsynced);
-            LoadJsonFile<LootConfig>("loottables.json", LootRoller.Initialize, ConfigType.Synced);
-            LoadJsonFile<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize, ConfigType.Synced);
-            LoadJsonFile<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize, ConfigType.Synced);
-            LoadJsonFile<RecipesConfig>("recipes.json", RecipesHelper.Initialize, ConfigType.Synced);
-            LoadJsonFile<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize, ConfigType.Synced);
-            LoadJsonFile<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize, ConfigType.Synced);
-            LoadJsonFile<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize, ConfigType.Synced);
-            LoadJsonFile<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize, ConfigType.Synced);
-            LoadJsonFile<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize, ConfigType.Synced);
-            LoadJsonFile<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, ConfigType.Synced);
-            LoadJsonFile<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, ConfigType.Synced);
-            
-            WatchNewPatchConfig();
-        }
-
-        public static void WatchNewPatchConfig()
-        {
-            Log("Watching For Files");
-
-            //Patch JSON Watcher
-            void ConsumeNewPatchFile(object s, FileSystemEventArgs e)
-            {
-                switch (e.ChangeType)
-                {
-                    case WatcherChangeTypes.Created:
-                        //File Created
-                        var fileInfo = new FileInfo(e.FullPath);
-                        if (!fileInfo.Exists)
-                            return;
-
-                        FilePatching.ProcessPatchFile(fileInfo);
-                        var sourceFile = fileInfo.Name;
-
-                        foreach (var fileName in FilePatching.PatchesPerFile.Values.SelectMany(l => l).ToList()
-                            .Where(u => u.SourceFile.Equals(sourceFile)).Select(p => p.TargetFile).Distinct()
-                            .ToArray())
-                        {
-                            if (SyncedJsonFiles.ContainsKey(fileName))
-                                SyncedJsonFiles[fileName].AssignLocalValue(LoadJsonText(fileName));
-                            else
-                                NonSyncedJsonFiles[fileName].AssignValue(LoadJsonText(fileName));
-
-                            AddPatchFileWatcher(fileName, sourceFile);
-                        }
-
-                        break;
-                }
-            }
-
-            var newPatchWatcher = new FileSystemWatcher(FilePatching.PatchesDirPath, "*.json");
-
-            newPatchWatcher.Created += ConsumeNewPatchFile;
-            newPatchWatcher.IncludeSubdirectories = true;
-            newPatchWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-            newPatchWatcher.EnableRaisingEvents = true;
-        }
-
         private static void InitializeAbilities()
         {
             MagicEffectType.Initialize();
@@ -640,7 +360,7 @@ namespace EpicLoot
 
         public static void Log(string message)
         {
-            if (_loggingEnabled.Value && _logLevel.Value <= LogLevel.Info)
+            if (ELConfig._loggingEnabled.Value && ELConfig._logLevel.Value <= LogLevel.Info)
             {
                 _instance.Logger.LogInfo(message);
             }
@@ -648,7 +368,7 @@ namespace EpicLoot
 
         public static void LogWarning(string message)
         {
-            if (_loggingEnabled.Value && _logLevel.Value <= LogLevel.Warning)
+            if (ELConfig._loggingEnabled.Value && ELConfig._logLevel.Value <= LogLevel.Warning)
             {
                 _instance.Logger.LogWarning(message);
             }
@@ -656,7 +376,7 @@ namespace EpicLoot
 
         public static void LogError(string message)
         {
-            if (_loggingEnabled.Value && _logLevel.Value <= LogLevel.Error)
+            if (ELConfig._loggingEnabled.Value && ELConfig._logLevel.Value <= LogLevel.Error)
             {
                 _instance.Logger.LogError(message);
             }
@@ -1097,135 +817,7 @@ namespace EpicLoot
             ObjectDB.instance.m_StatusEffects.Add(paralyzed);
         }
 
-        public static void LoadJsonFile<T>(string filename, Action<T> onFileLoad, ConfigType configType, bool update = false) where T : class
-        {
-            var jsonFile = LoadJsonText(filename);
-
-            if (!update)
-            {
-                if (configType == ConfigType.Synced)
-                    SyncedJsonFiles.Add(filename, new CustomSyncedValue<string>(_instance._configSync, filename, jsonFile));
-                else
-                    NonSyncedJsonFiles.Add(filename,new ConfigValue<string>(filename,jsonFile));
-            }
-            
-            void Process()
-            {
-                T result;
-                try
-                {
-                    if (configType == ConfigType.Synced)
-                        result = string.IsNullOrEmpty(SyncedJsonFiles[filename].Value) ? null : JsonConvert.DeserializeObject<T>(SyncedJsonFiles[filename].Value);
-                    else
-                        result = string.IsNullOrEmpty(NonSyncedJsonFiles[filename].Value) ? null : JsonConvert.DeserializeObject<T>(NonSyncedJsonFiles[filename].Value);
-                }
-                catch (Exception)
-                {
-                    LogErrorForce($"Could not parse file '{filename}'! Errors in JSON!");
-                    throw;
-                }
-
-                onFileLoad(result);
-            }
-
-            if (configType == ConfigType.Synced)
-                SyncedJsonFiles[filename].ValueChanged += Process;
-            else
-                NonSyncedJsonFiles[filename].ValueChanged += Process;
-
-            Process();
-
-            if (jsonFile != null)
-            {
-                //Primary JSON Watcher
-                void ConsumeConfigFileEvent(object s, FileSystemEventArgs e)
-                {
-                    if (configType == ConfigType.Synced)
-                        SyncedJsonFiles[filename].AssignLocalValue(LoadJsonText(filename));
-                    else
-                        NonSyncedJsonFiles[filename].AssignValue(LoadJsonText(filename));
-
-                }
-
-                var filePath = GetAssetPath(filename);
-                FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(filePath), Path.GetFileName(filePath));
-                watcher.Changed += ConsumeConfigFileEvent;
-                watcher.Created += ConsumeConfigFileEvent;
-                watcher.Renamed += ConsumeConfigFileEvent;
-                watcher.IncludeSubdirectories = true;
-                watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-                watcher.EnableRaisingEvents = true;
-
-                //Patch JSON Watcher
-                for (var i = 0; i < FilePatching.PatchesPerFile.Where(y => y.Key.Equals(filename)).ToList().Count; i++)
-                {
-                    var configFile = FilePatching.PatchesPerFile.Where(y => y.Key.Equals(filename)).ToList()[i];
-                    var lists = configFile.Value.Select(p => p.SourceFile).Distinct().ToList();
-
-                    for (var index = 0; index < lists.Count; index++)
-                    {
-                        var patchfile = lists[index];
-                        AddPatchFileWatcher(filename,patchfile);
-                    }
-                }
-            }
-        }
-
-        private static void AddPatchFileWatcher(string fileName, string patchFile)
-        {
-            var fullPatchFilename = Path.Combine(FilePatching.PatchesDirPath, patchFile);
-            Log($"[AddPatchFileWatcher] Full Patch File Name = {fullPatchFilename}");
-            void ConsumePatchFileEvent(object s, FileSystemEventArgs e)
-            {
-                FileInfo fileInfo = null;
-
-                switch (e.ChangeType)
-                {
-                    case WatcherChangeTypes.Deleted:
-                        //File Deleted
-                        Debug.Log($"Function Deleted");
-                        FilePatching.RemoveFilePatches(fileName, patchFile);
-                        break;
-                    case WatcherChangeTypes.Changed:
-                        //File Changed
-                        Debug.Log($"Function Changed");
-                        FilePatching.RemoveFilePatches(fileName, patchFile);
-                        fileInfo = new FileInfo(fullPatchFilename);
-                        break;
-                }
-
-                if (fileInfo != null && fileInfo.Exists)
-                    FilePatching.ProcessPatchFile(fileInfo);
-
-                SyncedJsonFiles[fileName].AssignLocalValue(LoadJsonText(fileName));
-            }
-
-            var patchWatcher = new FileSystemWatcher(Path.GetDirectoryName(fullPatchFilename),
-                Path.GetFileName(fullPatchFilename));
-
-            patchWatcher.Changed += ConsumePatchFileEvent;
-            patchWatcher.Deleted += ConsumePatchFileEvent;
-            patchWatcher.IncludeSubdirectories = true;
-            patchWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-            patchWatcher.EnableRaisingEvents = true;
-        }
-
-
-        public static string LoadJsonText(string filename)
-        {
-            var jsonFilePath = GetAssetPath(filename);
-            if (string.IsNullOrEmpty(jsonFilePath))
-                return null;
-
-            var jsonFileText = File.ReadAllText(jsonFilePath);
-            var patchedJsonFileText = FilePatching.ProcessConfigFile(filename, jsonFileText);
-            if (OutputPatchedConfigFiles.Value && jsonFileText != patchedJsonFileText)
-            { 
-                var debugFilePath = Path.Combine(Paths.ConfigPath, "EpicLoot", filename.Replace(".json", "_patched.json"));
-                File.WriteAllText(debugFilePath, patchedJsonFileText);
-            }
-            return patchedJsonFileText;
-        }
+        
 
         public static AssetBundle LoadAssetBundle(string filename)
         {
@@ -1256,6 +848,27 @@ namespace EpicLoot
             }
 
             return assetFileName;
+        }
+
+        /// <summary>
+        /// This reads an embedded file resouce name, these are all resouces packed into the DLL
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        internal static string ReadEmbeddedResourceFile(string filename)
+        {
+            //EpicLoot.Log($"Attempting to load resource path: {filename}");
+            //foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
+            //{
+            //    EpicLoot.Log($"resource: {embeddedResouce}");
+            //}
+            using (var stream = typeof(EpicLoot).Assembly.GetManifestResourceStream(filename))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
         }
 
         public static bool CanBeMagicItem(ItemDrop.ItemData item)
@@ -1672,7 +1285,7 @@ namespace EpicLoot
 
         public static string GetSetItemColor()
         {
-            return _setItemColor.Value;
+            return ELConfig._setItemColor.Value;
         }
 
         public static string GetRarityDisplayName(ItemRarity rarity)
@@ -1699,15 +1312,15 @@ namespace EpicLoot
             switch (rarity)
             {
                 case ItemRarity.Magic:
-                    return GetColor(_magicRarityColor.Value);
+                    return GetColor(ELConfig._magicRarityColor.Value);
                 case ItemRarity.Rare:
-                    return GetColor(_rareRarityColor.Value);
+                    return GetColor(ELConfig._rareRarityColor.Value);
                 case ItemRarity.Epic:
-                    return GetColor(_epicRarityColor.Value);
+                    return GetColor(ELConfig._epicRarityColor.Value);
                 case ItemRarity.Legendary:
-                    return GetColor(_legendaryRarityColor.Value);
+                    return GetColor(ELConfig._legendaryRarityColor.Value);
                 case ItemRarity.Mythic:
-                    return GetColor(_mythicRarityColor.Value);
+                    return GetColor(ELConfig._mythicRarityColor.Value);
                 default:
                     return "#FFFFFF";
             }
@@ -1740,15 +1353,15 @@ namespace EpicLoot
             switch (rarity)
             {
                 case ItemRarity.Magic:
-                    return Mathf.Clamp(_magicMaterialIconColor.Value, 0, 9);
+                    return Mathf.Clamp(ELConfig._magicMaterialIconColor.Value, 0, 9);
                 case ItemRarity.Rare:
-                    return Mathf.Clamp(_rareMaterialIconColor.Value, 0, 9);
+                    return Mathf.Clamp(ELConfig._rareMaterialIconColor.Value, 0, 9);
                 case ItemRarity.Epic:
-                    return Mathf.Clamp(_epicMaterialIconColor.Value, 0, 9);
+                    return Mathf.Clamp(ELConfig._epicMaterialIconColor.Value, 0, 9);
                 case ItemRarity.Legendary:
-                    return Mathf.Clamp(_legendaryMaterialIconColor.Value, 0, 9);
+                    return Mathf.Clamp(ELConfig._legendaryMaterialIconColor.Value, 0, 9);
                 case ItemRarity.Mythic:
-                    return Mathf.Clamp(_mythicMaterialIconColor.Value, 0, 9);
+                    return Mathf.Clamp(ELConfig._mythicMaterialIconColor.Value, 0, 9);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rarity), rarity, null);
             }
@@ -1761,51 +1374,51 @@ namespace EpicLoot
 
         public static GatedItemTypeMode GetGatedItemTypeMode()
         {
-            return _gatedItemTypeModeConfig.Value;
+            return ELConfig._gatedItemTypeModeConfig.Value;
         }
 
         public static BossDropMode GetBossTrophyDropMode()
         {
-            return _bossTrophyDropMode.Value;
+            return ELConfig._bossTrophyDropMode.Value;
         }
 
         public static float GetBossTrophyDropPlayerRange()
         {
-            return _bossTrophyDropPlayerRange.Value;
+            return ELConfig._bossTrophyDropPlayerRange.Value;
         }
         public static float GetBossCryptKeyPlayerRange()
         {
-            return _bossCryptKeyDropPlayerRange.Value;
+            return ELConfig._bossCryptKeyDropPlayerRange.Value;
         }
 
         public static BossDropMode GetBossCryptKeyDropMode()
         {
-            return _bossCryptKeyDropMode.Value;
+            return ELConfig._bossCryptKeyDropMode.Value;
         }
 
         public static BossDropMode GetBossWishboneDropMode()
         {
-            return _bossWishboneDropMode.Value;
+            return ELConfig._bossWishboneDropMode.Value;
         }
 
         public static float GetBossWishboneDropPlayerRange()
         {
-            return _bossWishboneDropPlayerRange.Value;
+            return ELConfig._bossWishboneDropPlayerRange.Value;
         }
 
         public static int GetAndvaranautRange()
         {
-          return _andvaranautRange.Value;
+          return ELConfig._andvaranautRange.Value;
         }
 
         public static bool IsAdventureModeEnabled()
         {
-            return _adventureModeEnabled.Value;
+            return ELConfig._adventureModeEnabled.Value;
         }
 
         private static void GenerateTranslations()
         {
-            var jsonFile = LoadJsonText("magiceffects.json");
+            var jsonFile = ELConfig.LoadJsonText("magiceffects.json");
             var config = JsonConvert.DeserializeObject<MagicItemEffectsList>(jsonFile);
 
             var translations = new Dictionary<string, string>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common;
+using EpicLoot.Config;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,7 +47,7 @@ namespace EpicLoot.Abilities
             }
 
             Binding.enabled = ability.AbilityDef.ActivationMode == AbilityActivationMode.Activated;
-            var bindingText = EpicLoot.AbilityKeyCodes[_index].Value.ToUpperInvariant();
+            var bindingText = ELConfig.AbilityKeyCodes[_index].Value.ToUpperInvariant();
             if (Binding.text != bindingText)
             {
                 Binding.text = bindingText;
@@ -125,18 +126,18 @@ namespace EpicLoot.Abilities
 
         public override void EnsureCorrectPosition()
         {
-            AnchorConfig = EpicLoot.AbilityBarAnchor;
-            PositionConfig = EpicLoot.AbilityBarPosition;
+            AnchorConfig = ELConfig.AbilityBarAnchor;
+            PositionConfig = ELConfig.AbilityBarPosition;
             base.EnsureCorrectPosition();
 
-            if (_horizontalLayoutGroup.childAlignment == EpicLoot.AbilityBarLayoutAlignment.Value
-                && Mathf.Approximately(_horizontalLayoutGroup.spacing, EpicLoot.AbilityBarIconSpacing.Value))
+            if (_horizontalLayoutGroup.childAlignment == ELConfig.AbilityBarLayoutAlignment.Value
+                && Mathf.Approximately(_horizontalLayoutGroup.spacing, ELConfig.AbilityBarIconSpacing.Value))
             {
                 return;
             }
 
-            _horizontalLayoutGroup.childAlignment = EpicLoot.AbilityBarLayoutAlignment.Value;
-            _horizontalLayoutGroup.spacing = EpicLoot.AbilityBarIconSpacing.Value;
+            _horizontalLayoutGroup.childAlignment = ELConfig.AbilityBarLayoutAlignment.Value;
+            _horizontalLayoutGroup.spacing = ELConfig.AbilityBarIconSpacing.Value;
         }
     }
 
