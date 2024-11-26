@@ -61,7 +61,7 @@
     <EmbeddedResource Include="config\magiceffects.json" />
     <EmbeddedResource Include="config\materialconversions.json" />
     <EmbeddedResource Include="config\recipes.json" />
-    <EmbeddedResource Include="config\translations.json" />
+    <EmbeddedResource Include="localizations\English.json" />
     <None Include="info.md" />
     <None Include="packages.config" />
     <None Include="thunderstore\manifest.json" />

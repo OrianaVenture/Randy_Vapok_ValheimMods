@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using AdventureBackpacks.API;
 using BepInEx;
 using Common;
@@ -20,6 +21,8 @@ using EpicLoot.Patching;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn.Entities;
+using Jotunn.Managers;
 using Newtonsoft.Json;
 using ServerSync;
 using UnityEngine;
@@ -163,7 +166,7 @@ namespace EpicLoot
             LoadPatches();
             InitializeAbilities();
             PrintInfo();
-            //GenerateTranslations();
+            AddLocalizations();
 
             LoadAssets();
 
@@ -326,29 +329,21 @@ namespace EpicLoot
             FilePatching.LoadAllPatches();
         }
 
-        private static void LoadTranslations(IDictionary<string, object> translations)
+        private void AddLocalizations()
         {
-            const string translationPrefix = "mod_epicloot_";
-
-            if (translations == null)
+            CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
+            // load all localization files within the localizations directory
+            Log("Loading Localizations.");
+            foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
             {
-                LogErrorForce("Could not parse translations.json!");
-                return;
-            }
-
-            var oldEntries = Localization.instance.m_translations.Where(instanceMTranslation => 
-                instanceMTranslation.Key.StartsWith(translationPrefix)).ToList();
-
-            //Clean Translations
-            foreach (var entry in oldEntries)
-            {
-                Localization.instance.m_translations.Remove(entry.Key);
-            }
-            
-            //Load New Translations
-            foreach (var translation in translations)
-            {
-                Localization.instance.AddWord(translation.Key, translation.Value.ToString());
+                if (!embeddedResouce.Contains("localizations")) { continue; }
+                string localization = ReadEmbeddedResourceFile(embeddedResouce);
+                // This will clean comments out of the localization files
+                string cleaned_localization = Regex.Replace(localization, @"\/\/.*\n", "");
+                // Log($"Cleaned Localization: {cleaned_localization}");
+                var localization_name = embeddedResouce.Split('.');
+                Log($"Adding localization: {localization_name[2]}");
+                Localization.AddJsonFile(localization_name[2], cleaned_localization);
             }
         }
 
