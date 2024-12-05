@@ -56,6 +56,16 @@ namespace EpicLoot
           
             AddItemSets(lootConfig.ItemSets);
             AddLootTables(lootConfig.LootTables);
+            EpicLoot.Log("Setup Lootroller");
+        }
+
+        // This is not a partial update, rather a wholesale replacement of existing data
+        public static void UpdateLootConfigs(LootConfig lootConfig)
+        {
+            ItemSets.Clear();
+            LootTables.Clear();
+            AddItemSets(lootConfig.ItemSets);
+            AddLootTables(lootConfig.LootTables);
         }
 
         private static void AddItemSets([NotNull] IEnumerable<LootItemSet> itemSets)

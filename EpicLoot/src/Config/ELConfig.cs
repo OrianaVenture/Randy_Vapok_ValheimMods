@@ -85,8 +85,8 @@ namespace EpicLoot.Config
             cfg = Config;
             cfg.SaveOnConfigSet = true;
             CreateConfigValues(Config);
-            InitializeConfig();
             SetupConfigRPCs();
+            InitializeConfig();
         }
 
         public void SetupConfigRPCs()
@@ -351,7 +351,7 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
-            LootRoller.Initialize(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
+            LootRoller.UpdateLootConfigs(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
@@ -387,7 +387,7 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
-            AdventureDataManager.Initialize(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
+            AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
@@ -427,78 +427,89 @@ namespace EpicLoot.Config
 
         private static ZPackage LootConfigSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial Loot configuration.");
             ZPackage package = new ZPackage();
-            package.Write(LootRoller.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(LootRoller.Config));
             return package;
         }
 
         private static ZPackage MagicEffectsSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial MagicItem configuration.");
             ZPackage package = new ZPackage();
-            package.Write(MagicItemEffectDefinitions.AllDefinitions.ToString());
+            package.Write(JsonConvert.SerializeObject(MagicItemEffectDefinitions.AllDefinitions));
             return package;
         }
 
         private static ZPackage ItemInfoConfigSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial ItemInfo configuration.");
             ZPackage package = new ZPackage();
-            package.Write(GatedItemTypeHelper.ItemInfos.ToString());
+            package.Write(JsonConvert.SerializeObject(GatedItemTypeHelper.gatedConfig));
             return package;
         }
 
         private static ZPackage RecipesConfigSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial Recipe configuration.");
             ZPackage package = new ZPackage();
-            package.Write(RecipesHelper.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(RecipesHelper.Config));
             return package;
         }
 
         private static ZPackage EnchantCostConfigSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial EnchantCost configuration.");
             ZPackage package = new ZPackage();
-            package.Write(EnchantCostsHelper.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(EnchantCostsHelper.Config));
             return package;
         }
 
         private static ZPackage MagicItemNamesSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial MagicItemNames configuration.");
             ZPackage package = new ZPackage();
-            package.Write(MagicItemNames.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(MagicItemNames.Config));
             return package;
         }
 
         private static ZPackage AdventureDataSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial AdventureData configuration.");
             ZPackage package = new ZPackage();
-            package.Write(AdventureDataManager.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(AdventureDataManager.Config));
             return package;
         }
 
         private static ZPackage LegendarySendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial Legendary configuration.");
             ZPackage package = new ZPackage();
-            package.Write(UniqueLegendaryHelper.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config));
             return package;
         }
 
         private static ZPackage AbilitiesSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial Abilities configuration.");
             ZPackage package = new ZPackage();
-            package.Write(AbilityDefinitions.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(AbilityDefinitions.Config));
             return package;
         }
 
         private static ZPackage MaterialConversionSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial MaterialConversion configuration.");
             ZPackage package = new ZPackage();
-            package.Write(MaterialConversions.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(MaterialConversions.Config));
             return package;
         }
 
         private static ZPackage EnchantingTableUpgradeSendIntialConfigs()
         {
+            EpicLoot.Log("Sending initial EnchantingTableUpgrade configuration.");
             ZPackage package = new ZPackage();
-            package.Write(EnchantingTableUpgrades.Config.ToString());
+            package.Write(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config));
             return package;
         }
 

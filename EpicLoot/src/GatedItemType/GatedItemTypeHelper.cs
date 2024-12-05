@@ -24,6 +24,7 @@ namespace EpicLoot.GatedItemType
 
     public static class GatedItemTypeHelper
     {
+        public static ItemInfoConfig gatedConfig;
         public static readonly List<ItemTypeInfo> ItemInfos = new List<ItemTypeInfo>();
         public static readonly Dictionary<string, ItemTypeInfo> ItemInfoByID = new Dictionary<string, ItemTypeInfo>();
         public static readonly Dictionary<string, List<string>> ItemsPerBoss = new Dictionary<string, List<string>>();
@@ -31,6 +32,7 @@ namespace EpicLoot.GatedItemType
 
         public static void Initialize(ItemInfoConfig config)
         {
+            gatedConfig = config;
             ItemInfos.Clear();
             ItemInfoByID.Clear();
             ItemsPerBoss.Clear();

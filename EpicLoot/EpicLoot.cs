@@ -24,7 +24,6 @@ using JetBrains.Annotations;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Newtonsoft.Json;
-using ServerSync;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
@@ -864,6 +863,20 @@ namespace EpicLoot
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        internal static List<string> GetEmbeddedResourceNamesFromDirectory(string embedded_location = "EpicLoot.config.")
+        {
+            List<string> resourcenames = new List<string>();
+            foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
+            {
+                if (embeddedResouce.Contains(embedded_location))
+                {
+                    // Got to strip the starting 'EpicLoot.config.' off, so we just take the ending substring
+                    resourcenames.Add(embeddedResouce.Substring(16));
+                }
+            }
+            return resourcenames;
         }
 
         public static bool CanBeMagicItem(ItemDrop.ItemData item)

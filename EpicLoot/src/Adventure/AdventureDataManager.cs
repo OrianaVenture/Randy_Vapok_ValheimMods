@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EpicLoot.Adventure.Feature;
+using EpicLoot.Config;
 using UnityEngine;
 
 namespace EpicLoot.Adventure
@@ -24,6 +25,11 @@ namespace EpicLoot.Adventure
             Gamble = new GambleAdventureFeature();
             TreasureMaps = new TreasureMapsAdventureFeature();
             Bounties = new BountiesAdventureFeature();
+        }
+
+        public static void UpdateAventureData(AdventureDataConfig config)
+        {
+            Config = config;
         }
 
         public static Sprite GetTrophyIconForMonster(string monsterID, bool isGold)
