@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using BepInEx;
 using Common;
+using EpicLoot.Config;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace EpicLoot.Patching
 
     public static class FilePatching
     {
-        public static string PatchesDirPath;
+        public static string PatchesDirPath = GetPatchesDirectoryPath();
         public static List<string> ConfigFileNames = new List<string>();
         public static MultiValueDictionary<string, Patch> PatchesPerFile = new MultiValueDictionary<string, Patch>();
 
@@ -83,7 +84,7 @@ namespace EpicLoot.Patching
                 var pluginFolder = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
 
                 CheckForOldPatches(pluginFolder.Parent);
-                GetAllConfigFileNames(pluginFolder.Parent);
+                ConfigFileNames = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
                 ProcessPatchDirectory(patchesFolder);
             }
             catch (Exception e)
@@ -114,29 +115,6 @@ namespace EpicLoot.Patching
         public static void RemoveFilePatches(string fileName, string patchFile)
         {
             PatchesPerFile.GetValues(fileName, true).RemoveAll(y => y.SourceFile.Equals(patchFile));
-        }
-        
-        public static void GetAllConfigFileNames(DirectoryInfo pluginFolder)
-        {
-            ConfigFileNames.Clear();
-
-            FileInfo[] files = null;
-            try
-            {
-                files = pluginFolder.GetFiles("*.json");
-            }
-            catch (Exception e)
-            {
-                EpicLoot.LogError($"Error parsing patch directory ({pluginFolder.Name}): {e.Message}");
-            }
-
-            if (files == null)
-                return;
-
-            foreach (var file in files)
-            {
-                ConfigFileNames.Add(file.Name);
-            }
         }
 
         public static void ProcessPatchDirectory(DirectoryInfo dir)
@@ -282,7 +260,7 @@ namespace EpicLoot.Patching
                 ApplyPatch(json, patch);
             }
 
-            var output = json.ToString(EpicLoot.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
+            var output = json.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
             return output;
         }
 

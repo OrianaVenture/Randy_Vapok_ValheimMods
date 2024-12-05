@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using BepInEx;
 using Common;
+using EpicLoot.Config;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace EpicLoot.Adventure.Feature
 
         public bool BossBountiesGated()
         {
-            switch (EpicLoot.BossBountyMode.Value) 
+            switch (ELConfig.BossBountyMode.Value) 
             {
                 case GatedBountyMode.BossKillUnlocksCurrentBiomeBounties:
                 case GatedBountyMode.BossKillUnlocksNextBiomeBounties:
@@ -57,7 +58,7 @@ namespace EpicLoot.Adventure.Feature
             {
                 foreach (var bossConfig in AdventureDataManager.Config.Bounties.Bosses)
                 {
-                    if (previousBoss == "" && EpicLoot.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
+                    if (previousBoss == "" && ELConfig.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
                     {
                         defeatedBossBiomes.Add(bossConfig.Biome);
                         previousBoss = bossConfig.BossDefeatedKey;
@@ -70,7 +71,7 @@ namespace EpicLoot.Adventure.Feature
                         previousBoss = bossConfig.BossDefeatedKey;
                     }
                     else if ((previousBossKilled || previousBoss.Equals(bossConfig.BossDefeatedKey)) &&
-                        EpicLoot.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
+                        ELConfig.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
                     {
                         defeatedBossBiomes.Add(bossConfig.Biome);
                         previousBoss = bossConfig.BossDefeatedKey;

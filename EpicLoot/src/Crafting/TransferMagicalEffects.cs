@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using EpicLoot.Config;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -13,7 +14,7 @@ public static class TransferMagicalEffects
 
     private static void TransferMagicToCraftedItem(Player player)
     {
-        if (!IsDoCraft || !EpicLoot.TransferMagicItemToCrafts.Value || CraftedItem == null || ConsumedMagicItems.Count == 0) return;
+        if (!IsDoCraft || !ELConfig.TransferMagicItemToCrafts.Value || CraftedItem == null || ConsumedMagicItems.Count == 0) return;
 
         MagicItem highestTierMagicItem =  null;
         
