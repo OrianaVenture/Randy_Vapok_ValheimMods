@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EpicLoot.Config;
 using HarmonyLib;
 using UnityEngine;
 
@@ -54,7 +55,7 @@ namespace EpicLoot.Abilities
         public static string GetBindingKeycode(int index)
         {
             index = Mathf.Clamp(index, 0, AbilitySlotCount - 1);
-            return EpicLoot.AbilityKeyCodes[index]?.Value.ToLowerInvariant();
+            return ELConfig.AbilityKeyCodes[index]?.Value.ToLowerInvariant();
         }
 
         private void UseAbility(int index)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot_UnityLib;
@@ -80,9 +81,9 @@ namespace EpicLoot.CraftingV2
                     break;
             }
 
-            featureActive = (tabEnum & EpicLoot.EnchantingTableActivatedTabs.Value) != 0;
+            featureActive = (tabEnum & ELConfig.EnchantingTableActivatedTabs.Value) != 0;
             
-            return EpicLoot.EnchantingTableUpgradesActive.Value;
+            return ELConfig.EnchantingTableUpgradesActive.Value;
         }
 
         private static void TabActivation(EnchantingTableUI ui)
@@ -97,12 +98,12 @@ namespace EpicLoot.CraftingV2
                 switch ((EnchantingTabs)tabBitwise)
                 {
                     case EnchantingTabs.Upgrade:
-                        tabGo.SetActive(EpicLoot.EnchantingTableUpgradesActive.Value);
+                        tabGo.SetActive(ELConfig.EnchantingTableUpgradesActive.Value);
                         break;
                     case EnchantingTabs.None:
                         break;
                     default:
-                        tabGo.SetActive((EpicLoot.EnchantingTableActivatedTabs.Value & (EnchantingTabs)tabBitwise) != 0);
+                        tabGo.SetActive((ELConfig.EnchantingTableActivatedTabs.Value & (EnchantingTabs)tabBitwise) != 0);
                         break;
                 }
             }
@@ -181,7 +182,7 @@ namespace EpicLoot.CraftingV2
             {
                 foreach (var item in items)
                 {
-                    if (!EpicLoot.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
+                    if (!ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
                         (item != null && item.m_equipped || boundItems.Contains(item)))
                     {
                         continue;
@@ -661,7 +662,7 @@ namespace EpicLoot.CraftingV2
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => !item.m_equipped && (EpicLoot.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
+                .Where(item => !item.m_equipped && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
                     !boundItems.Contains(item)))
                 .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
                 .Select(item => new InventoryItemListElement() { Item = item })

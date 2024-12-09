@@ -8,6 +8,7 @@ namespace EpicLoot.LegendarySystem
 {
     public static class UniqueLegendaryHelper
     {
+        internal static LegendaryItemConfig Config;
         public static readonly Dictionary<string, LegendaryInfo> LegendaryInfo = new Dictionary<string, LegendaryInfo>();
         public static readonly Dictionary<string, LegendarySetInfo> LegendarySets = new Dictionary<string, LegendarySetInfo>();
         public static readonly Dictionary<string, LegendaryInfo> MythicInfo = new Dictionary<string, LegendaryInfo>();
@@ -23,6 +24,7 @@ namespace EpicLoot.LegendarySystem
 
         public static void Initialize(LegendaryItemConfig config)
         {
+            Config = config;
             LegendaryInfo.Clear();
             AddLegendaryInfo(config.LegendaryItems);
 
