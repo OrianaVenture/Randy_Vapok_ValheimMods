@@ -332,23 +332,6 @@ namespace EpicLoot.Config
         }
 
 
-
-        public static string LoadJsonText(string filename)
-        {
-            var jsonFilePath = EpicLoot.GetAssetPath(filename);
-            if (string.IsNullOrEmpty(jsonFilePath))
-                return null;
-
-            var jsonFileText = File.ReadAllText(jsonFilePath);
-            var patchedJsonFileText = FilePatching.ProcessConfigFile(filename, jsonFileText);
-            if (ELConfig.OutputPatchedConfigFiles.Value && jsonFileText != patchedJsonFileText)
-            {
-                var debugFilePath = Path.Combine(Paths.ConfigPath, "EpicLoot", filename.Replace(".json", "_patched.json"));
-                File.WriteAllText(debugFilePath, patchedJsonFileText);
-            }
-            return patchedJsonFileText;
-        }
-
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
             LootRoller.UpdateLootConfigs(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));

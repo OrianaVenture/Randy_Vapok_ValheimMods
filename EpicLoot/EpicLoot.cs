@@ -8,25 +8,21 @@ using System.Text.RegularExpressions;
 using AdventureBackpacks.API;
 using BepInEx;
 using Common;
-using EpicLoot.Abilities;
 using EpicLoot.Adventure;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
-using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot_UnityLib;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Entities;
 using Jotunn.Managers;
-using Newtonsoft.Json;
+using Jotunn.Utils;
 using UnityEngine;
 using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -87,6 +83,8 @@ namespace EpicLoot
     }
 
     [BepInPlugin(PluginId, DisplayName, Version)]
+    [BepInDependency(Jotunn.Main.ModGuid)]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
@@ -94,7 +92,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.10.6";
+        public const string Version = "0.10.7";
 
         public static readonly List<ItemDrop.ItemData.ItemType> AllowedMagicItemTypes = new List<ItemDrop.ItemData.ItemType>
         {
@@ -822,28 +820,6 @@ namespace EpicLoot
             return assetBundle;
         }
 
-        public static string GenerateAssetPathAtAssembly(string assetName)
-        {
-            var assembly = typeof(EpicLoot).Assembly;
-            return Path.Combine(Path.GetDirectoryName(assembly.Location) ?? string.Empty, assetName);
-        }
-
-        public static string GetAssetPath(string assetName)
-        {
-            var assetFileName = Path.Combine(Paths.PluginPath, "EpicLoot", assetName);
-            if (!File.Exists(assetFileName))
-            {
-                assetFileName = GenerateAssetPathAtAssembly(assetName);
-                if (!File.Exists(assetFileName))
-                {
-                    LogErrorForce($"Could not find asset ({assetName})");
-                    return null;
-                }
-            }
-
-            return assetFileName;
-        }
-
         /// <summary>
         /// This reads an embedded file resouce name, these are all resouces packed into the DLL
         /// </summary>
@@ -1422,34 +1398,6 @@ namespace EpicLoot
         public static bool IsAdventureModeEnabled()
         {
             return ELConfig._adventureModeEnabled.Value;
-        }
-
-        private static void GenerateTranslations()
-        {
-            var jsonFile = ELConfig.LoadJsonText("magiceffects.json");
-            var config = JsonConvert.DeserializeObject<MagicItemEffectsList>(jsonFile);
-
-            var translations = new Dictionary<string, string>();
-
-            foreach (var effectDef in config.MagicItemEffects)
-            {
-                if (string.IsNullOrEmpty(effectDef.Description))
-                {
-                    effectDef.Description = effectDef.DisplayText.Replace("display", "desc");
-                    jsonFile = jsonFile.Replace($"\"DisplayText\" : \"{effectDef.DisplayText}\"",
-                        $"\"DisplayText\" : \"{effectDef.DisplayText}\",\n      " +
-                        $"\"Description\" : \"{effectDef.Description}\"");
-                    translations.Add(effectDef.Description, "");
-                }
-            }
-
-            var outputPath = GenerateAssetPathAtAssembly("magiceffects_translated.json");
-            File.WriteAllText(outputPath, jsonFile);
-
-            var translationsOutputPath = GenerateAssetPathAtAssembly("new_translations.json");
-            var translationsText = "{\n" + string.Join("\n", 
-                translations.Select(x => $"  \"{x.Key}\": \"{x.Value}\",")) +"\n}";
-            File.WriteAllText(translationsOutputPath, translationsText);
         }
 
         private static string Clean(string name)
