@@ -275,56 +275,69 @@ namespace EpicLoot.Patching
             }
         }
 
-        public static void ApplyPatchesToSpecificFiles(List<string> files_with_patch_updates)
+        public static void ApplyPatchesToSpecificFilesWithNetworkUpdates(List<string> files_with_patch_updates)
         {
             // skip update if there are no changes, this should never happen
             if (files_with_patch_updates.Count == 0) return;
 
             foreach(string file in files_with_patch_updates)
             {
-                LoadPatchedJSON(file);
+                LoadPatchedJSON(file, true);
             }
         }
 
-        internal static void LoadPatchedJSON(string patch_filename)
+        
+        internal static void LoadPatchedJSON(string patch_filename, bool network_updates = false)
         {
             var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + patch_filename));
             var patched_json = BuildPatchedConfig(patch_filename, base_json_string);
 
+            // We don't want to do network updates on startup
             switch (patch_filename)
             {
                 case "loottables.json":
                     LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patched_json));
+                    if (network_updates) { ELConfig.LootConfigSendConfigs(); }
                     break;
                 case "magiceffects.json":
                     MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patched_json));
+                    if (network_updates) { ELConfig.MagicEffectsSendConfigs(); }
                     break;
                 case "iteminfo.json":
                     GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patched_json));
+                    if (network_updates) { ELConfig.ItemInfoConfigSendConfigs(); }
                     break;
                 case "recipes.json":
                     RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patched_json));
+                    if (network_updates) { ELConfig.RecipesConfigSendConfigs(); }
                     break;
                 case "enchantcosts.json":
                     EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patched_json));
+                    if (network_updates) { ELConfig.EnchantCostConfigSendConfigs(); }
                     break;
                 case "itemnames.json":
                     MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patched_json));
+                    if (network_updates) { ELConfig.MagicItemNamesSendConfigs(); }
                     break;
                 case "adventuredata.json":
                     AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patched_json));
+                    if (network_updates) { ELConfig.AdventureDataSendConfigs(); }
                     break;
                 case "legendaries.json":
                     UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patched_json));
+                    if (network_updates) { ELConfig.LegendarySendConfigs(); }
                     break;
                 case "abilities.json":
                     AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patched_json));
+                    if (network_updates) { ELConfig.AbilitiesSendConfigs(); }
                     break;
                 case "materialconversions.json":
                     MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patched_json));
+                    if (network_updates) { ELConfig.MaterialConversionSendConfigs(); }
                     break;
                 case "enchantingupgrades.json":
                     EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patched_json));
+                    if (network_updates) { ELConfig.EnchantingTableUpgradeSendConfigs(); }
                     break;
             }
         }
