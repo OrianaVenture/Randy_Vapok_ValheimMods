@@ -5,10 +5,18 @@ using System.Linq;
 using System.Reflection;
 using BepInEx;
 using Common;
+using EpicLoot.Abilities;
+using EpicLoot.Adventure;
 using EpicLoot.Config;
+using EpicLoot.Crafting;
+using EpicLoot.CraftingV2;
+using EpicLoot.GatedItemType;
+using EpicLoot.LegendarySystem;
+using EpicLoot_UnityLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Patching
 {
@@ -94,6 +102,7 @@ namespace EpicLoot.Patching
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
             }
+            ApplyAllPatches();
         }
 
         public static void CheckForOldPatches(DirectoryInfo pluginFolder)
@@ -144,7 +153,7 @@ namespace EpicLoot.Patching
             }
         }
 
-        public static void ProcessPatchFile(FileInfo file)
+        public static List<string> ProcessPatchFile(FileInfo file)
         {
             var defaultTargetFile = "";
             if (ConfigFileNames.Contains(file.Name))
@@ -158,13 +167,13 @@ namespace EpicLoot.Patching
             catch (Exception e)
             {
                 EpicLoot.LogErrorForce($"Error parsing patch file ({file.Name})! Error: {e.Message}");
-                return;
+                return null;
             }
 
             if (patchFile == null)
             {
                 EpicLoot.LogErrorForce($"Error parsing patch file ({file.Name})! Error: unknown!");
-                return;
+                return null;
             }
 
             if (!string.IsNullOrEmpty(patchFile.TargetFile) && !string.IsNullOrEmpty(defaultTargetFile) && 
@@ -181,7 +190,7 @@ namespace EpicLoot.Patching
             {
                 EpicLoot.LogErrorForce($"TargetFile ({defaultTargetFile}) specified in patch file ({file.Name}) " +
                     $"does not exist! {file.Name} will not be processed.");
-                return;
+                return null;
             }
 
             var requiresSpecifiedSourceFile = string.IsNullOrEmpty(defaultTargetFile);
@@ -189,6 +198,7 @@ namespace EpicLoot.Patching
             var author = string.IsNullOrEmpty(patchFile.Author) ? "<author>" : patchFile.Author;
             var requireAll = patchFile.RequireAll;
             var defaultPriority = patchFile.Priority;
+            List<string> files_with_new_patches = new List<string>();
 
             for (var index = 0; index < patchFile.Patches.Count; index++)
             {
@@ -223,7 +233,9 @@ namespace EpicLoot.Patching
                 patch.SourceFile = file.Name;
                 EpicLoot.Log($"Adding Patch from {patch.SourceFile} to file {patch.TargetFile} with {patch.Path}");
                 PatchesPerFile.Add(patch.TargetFile, patch);
+                files_with_new_patches.Add(patch.TargetFile);
             }
+            return files_with_new_patches;
         }
 
         public static string GetPatchesDirectoryPath(bool debug = false)
@@ -238,30 +250,83 @@ namespace EpicLoot.Patching
             return dirInfo.FullName;
         }
 
-        public static string ProcessConfigFile(string fileName, string fileText)
+        public static string BuildPatchedConfig(string targetfile, JObject source_file_json)
         {
-            var patches = PatchesPerFile.GetValues(fileName, true).OrderByDescending(x => x.Priority).ToList();
-            if (patches.Count == 0)
-                return fileText;
-
-            JObject json = null;
-            try
-            {
-                json = JObject.Parse(fileText);
-            }
-            catch (Exception e)
-            {
-                EpicLoot.LogErrorForce($"Error parsing config file ({fileName})! Error: {e.Message}");
-                return string.Empty;
+            var patches = PatchesPerFile.GetValues(targetfile, true).OrderByDescending(x => x.Priority).ToList();
+            if (patches.Count == 0) {
+                return null;
             }
 
             foreach (var patch in patches)
             {
-                ApplyPatch(json, patch);
+                ApplyPatch(source_file_json, patch);
             }
 
-            var output = json.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
+            var output = source_file_json.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
             return output;
+        }
+
+        // This is only called on startup, and will modify all base classes that have patches loaded locally
+        public static void ApplyAllPatches()
+        {
+            foreach(var entry in PatchesPerFile)
+            {
+                LoadPatchedJSON(entry.Key);
+            }
+        }
+
+        public static void ApplyPatchesToSpecificFiles(List<string> files_with_patch_updates)
+        {
+            // skip update if there are no changes, this should never happen
+            if (files_with_patch_updates.Count == 0) return;
+
+            foreach(string file in files_with_patch_updates)
+            {
+                LoadPatchedJSON(file);
+            }
+        }
+
+        internal static void LoadPatchedJSON(string patch_filename)
+        {
+            var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + patch_filename));
+            var patched_json = BuildPatchedConfig(patch_filename, base_json_string);
+
+            switch (patch_filename)
+            {
+                case "loottables.json":
+                    LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patched_json));
+                    break;
+                case "magiceffects.json":
+                    MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patched_json));
+                    break;
+                case "iteminfo.json":
+                    GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patched_json));
+                    break;
+                case "recipes.json":
+                    RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patched_json));
+                    break;
+                case "enchantcosts.json":
+                    EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patched_json));
+                    break;
+                case "itemnames.json":
+                    MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patched_json));
+                    break;
+                case "adventuredata.json":
+                    AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patched_json));
+                    break;
+                case "legendaries.json":
+                    UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patched_json));
+                    break;
+                case "abilities.json":
+                    AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patched_json));
+                    break;
+                case "materialconversions.json":
+                    MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patched_json));
+                    break;
+                case "enchantingupgrades.json":
+                    EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patched_json));
+                    break;
+            }
         }
 
         public static void ApplyPatch(JObject json, Patch patch)

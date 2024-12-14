@@ -158,6 +158,9 @@ namespace EpicLoot
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
             cfg = new ELConfig(Config);
 
+            // Set the referenced common logger to the EL specific reference so that common things get logged
+            PrefabCreator.Logger = Logger;
+
             HasAdventureBackpacks = ABAPI.IsLoaded();
 
             LoadPatches();

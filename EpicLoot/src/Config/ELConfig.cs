@@ -14,6 +14,7 @@ using Jotunn.Managers;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -291,6 +292,12 @@ namespace EpicLoot.Config
 
         private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
         {
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+            {
+                EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
+                return;
+            }
+
             var fileInfo = new FileInfo(e.FullPath);
             switch (e.ChangeType)
             {
@@ -301,6 +308,8 @@ namespace EpicLoot.Config
 
                     // Loads the new file into the patch system
                     FilePatching.ProcessPatchFile(fileInfo);
+                    List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
+                    FilePatching.ApplyPatchesToSpecificFiles(new_patched_files);
                     break;
 
                 case WatcherChangeTypes.Deleted:
@@ -314,7 +323,8 @@ namespace EpicLoot.Config
                     //File Changed
                     Debug.Log($"Function Changed");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    FilePatching.ProcessPatchFile(fileInfo);
+                    List<string> patched_files =  FilePatching.ProcessPatchFile(fileInfo);
+                    FilePatching.ApplyPatchesToSpecificFiles(patched_files);
                     break;
             }
         }
@@ -322,10 +332,11 @@ namespace EpicLoot.Config
         public static void SetupPatchConfigFileWatch()
         {
             var newPatchWatcher = new FileSystemWatcher(FilePatching.PatchesDirPath, "*.json");
-            newPatchWatcher.Created += IngestPatchFilesFromDisk;
-            newPatchWatcher.Changed += IngestPatchFilesFromDisk;
-            newPatchWatcher.Renamed += IngestPatchFilesFromDisk;
-            newPatchWatcher.Deleted += IngestPatchFilesFromDisk;
+            newPatchWatcher.Created += new FileSystemEventHandler(IngestPatchFilesFromDisk);
+            newPatchWatcher.Changed += new FileSystemEventHandler(IngestPatchFilesFromDisk);
+            newPatchWatcher.Renamed += new RenamedEventHandler(IngestPatchFilesFromDisk);
+            newPatchWatcher.Deleted += new FileSystemEventHandler(IngestPatchFilesFromDisk);
+            newPatchWatcher.NotifyFilter = NotifyFilters.LastWrite;
             newPatchWatcher.IncludeSubdirectories = true;
             newPatchWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
             newPatchWatcher.EnableRaisingEvents = true;
@@ -334,66 +345,77 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Loot Configs.");
             LootRoller.UpdateLootConfigs(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMagicConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Magic Effect Configs.");
             MagicItemEffectDefinitions.Initialize(ClientRecieveParseJsonConfig<MagicItemEffectsList>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemInfoConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Item Info Configs.");
             GatedItemTypeHelper.Initialize(ClientRecieveParseJsonConfig<ItemInfoConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveRecipesConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Recipe Configs.");
             RecipesHelper.Initialize(ClientRecieveParseJsonConfig<RecipesConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingCostsConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Enchanting Cost Configs.");
             EnchantCostsHelper.Initialize(ClientRecieveParseJsonConfig<EnchantingCostsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemNameConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Item Name Configs.");
             MagicItemNames.Initialize(ClientRecieveParseJsonConfig<ItemNameConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Adventure Configs.");
             AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveLegendaryItemConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Legendary Item Configs.");
             UniqueLegendaryHelper.Initialize(ClientRecieveParseJsonConfig<LegendaryItemConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAbilityConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Ability Configs.");
             AbilityDefinitions.Initialize(ClientRecieveParseJsonConfig<AbilityConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMaterialConversionConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Material Conversion Configs.");
             MaterialConversions.Initialize(ClientRecieveParseJsonConfig<MaterialConversionsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
+            EpicLoot.Log("Recieved Enchanting Upgrade Configs.");
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
             yield return null;
         }
