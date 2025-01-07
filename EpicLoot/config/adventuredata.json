@@ -241,10 +241,10 @@
       { "Biome": "AshLands",    "Cost": 700, "ForestTokens": 35, "MinRadius": 8000, "MaxRadius": 15000 }
     ],
     "StartRadiusMin": 0,
-    "StartRadiusMax": 500,
+    "StartRadiusMax": 250,
     "IncreaseRadiusCount": 3,
-    "RadiusInterval": 100,
-    "MinimapAreaRadius": 60,
+    "RadiusInterval": 50,
+    "MinimapAreaRadius": 45,
     "SaleItems": [
       { "Item": "RunestoneMagic",     "ForestTokenCost": 5 },
       { "Item": "RunestoneRare",      "ForestTokenCost": 10 },
