@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -29,7 +27,7 @@ namespace EpicLoot.MagicItemEffects
                         multi_jump_combo++;
                     }
                     // You can't keep jumping
-                    if (multi_jump_combo > Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.DoubleJump))
+                    if (multi_jump_combo >= Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.DoubleJump))
                     {
                         return false;
                     } else {
