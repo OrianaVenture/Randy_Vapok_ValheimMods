@@ -6,8 +6,10 @@ using System.Text;
 using BepInEx;
 using Common;
 using EpicLoot.Config;
+using EpicLoot.src.Adventure.bounties;
 using EpicLoot_UnityLib;
 using HarmonyLib;
+using Jotunn.Managers;
 using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -204,61 +206,27 @@ namespace EpicLoot.Adventure.Feature
                     saveData.AcceptedBounty(bounty, spawnPoint, offset);
                     saveData.NumberOfTreasureMapsOrBountiesStarted++;
 
-                    // Spawn Monster
-                    SpawnBountyTargets(bounty, spawnPoint, offset);
+                    // Spawn monster initializer
+                    SpawnBountyInitilizer(bounty, spawnPoint, offset);
                 }
-                else
-                {
+                else {
+                    // Sleep for a tiny bit before trying again
+                    // we also want to consider if this has failed repeatedly we should give up or reset parameters of the scan to get a new location
                     callback?.Invoke(false, Vector3.zero);
                 }
             });
         }
 
-        private static void SpawnBountyTargets(BountyInfo bounty, Vector3 spawnPoint, Vector3 offset)
+         private static void SpawnBountyInitilizer(BountyInfo bounty, Vector3 spawnPoint, Vector3 offset)
         {
-            var mainPrefab = ZNetScene.instance.GetPrefab(bounty.Target.MonsterID);
-            if (mainPrefab == null)
-            {
-                EpicLoot.LogError($"Could not find prefab for bounty target! BountyID: " +
-                    $"{bounty.ID}, MonsterID: {bounty.Target.MonsterID}");
-                return;
-            }
-
-            var prefabs = new List<GameObject>() { mainPrefab };
-            foreach (var addConfig in bounty.Adds)
-            {
-                for (var i = 0; i < addConfig.Count; i++)
-                {
-                    var prefab = ZNetScene.instance.GetPrefab(addConfig.MonsterID);
-                    if (prefab == null)
-                    {
-                        EpicLoot.LogError($"Could not find prefab for bounty add! BountyID: " +
-                            $"{bounty.ID}, MonsterID: {addConfig.MonsterID}");
-                        return;
-                    }
-                    prefabs.Add(prefab);
-                }
-            }
-            for (var index = 0; index < prefabs.Count; index++)
-            {
-                var prefab = prefabs[index];
-                var isAdd = index > 0;
-
-                var creature = Object.Instantiate(prefab, spawnPoint, Quaternion.identity);
-                var bountyTarget = creature.AddComponent<BountyTarget>();
-                bountyTarget.Initialize(bounty, prefab.name, isAdd);
-
-                var randomSpacing = UnityEngine.Random.insideUnitSphere * 4;
-                spawnPoint += randomSpacing;
-                ZoneSystem.instance.FindFloor(spawnPoint, out var floorHeight);
-                spawnPoint.y = floorHeight;
-            }
-
+            Quaternion rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+            GameObject gameObject = PrefabManager.Instance.GetPrefab("EL_SpawnController");
+            GameObject created_go = Object.Instantiate(gameObject, spawnPoint, rotation);
+            // store the spawn position in the bounty object
+            bounty.Position = spawnPoint;
+            // Pass the bounty data to this object, save it to the ZNetView
+            created_go.GetComponent<AdventureSpawnController>().SetBounty(bounty);
             Minimap.instance.ShowPointOnMap(spawnPoint + offset);
-
-            var pkg = new ZPackage();
-            bounty.ToPackage(pkg);
-            ZRoutedRpc.instance.InvokeRoutedRPC("SpawnBounties", pkg);
         }
 
         private static void OnBountyTargetSlain(BountyInfo bounty, string monsterID, bool isAdd)

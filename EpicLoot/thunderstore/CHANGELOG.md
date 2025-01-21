@@ -3,10 +3,13 @@
 * Now requires Jotunn
 * Fixed doublejump allowing infinite jumping
 * Reduced default scan radius for adventure mode to help mitigate bounties not spawning in the Ashlands
+* Improved bounty spawning so that chests and bounties no longer spawn inside rocks, underground or underwater
 * Internalized all of the json files for the mod
 * Added Requirement check that server AND clients must have the mod installed and running for multiplayer
+* Some Art asset optimizations, download size reduced by 50%
 * Improved server syncing of configurations to allow reloading patches without restarting the server
     * Configurations are now virtualized and not dumped to disk when received from a host/server.
+    * Many pieces of configuration are still only loaded when restarting the game. More will be hotloaded going forward.
 
 
 ## Version 0.10.6

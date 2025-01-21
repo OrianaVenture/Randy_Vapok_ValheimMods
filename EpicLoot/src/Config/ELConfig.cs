@@ -314,14 +314,14 @@ namespace EpicLoot.Config
 
                 case WatcherChangeTypes.Deleted:
                     //File Deleted
-                    Debug.Log($"Function Deleted");
+                    EpicLoot.Log($"Function Deleted");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
                     break;
 
                 case WatcherChangeTypes.Changed:
                 case WatcherChangeTypes.Renamed:
                     //File Changed
-                    Debug.Log($"Function Changed");
+                    EpicLoot.Log($"Function Changed");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
                     List<string> patched_files =  FilePatching.ProcessPatchFile(fileInfo);
                     FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
