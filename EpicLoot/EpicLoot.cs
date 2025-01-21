@@ -16,8 +16,10 @@ using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
+using EpicLoot.src.Adventure.bounties;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
@@ -471,6 +473,12 @@ namespace EpicLoot
             LoadItem(assetBundle, "GoldBountyToken");
 
             LoadAllZNetAssets(assetBundle);
+
+
+            GameObject bounty_spawner = assetBundle.LoadAsset<GameObject>("Assets/EpicLoot/Prefabs/Adventure/EL_SpawnController.prefab");
+            bounty_spawner.AddComponent<AdventureSpawnController>();
+            CustomPrefab prefab_obj = new CustomPrefab(bounty_spawner, false);
+            PrefabManager.Instance.AddPrefab(prefab_obj);
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object

@@ -88,6 +88,7 @@
     <Compile Include="src\Crafting\RecipesHelper.cs" />
     <Compile Include="src\Crafting\TransferMagicalEffects.cs" />
     <Compile Include="src\data\CustomDataManager.cs" />
+    <Compile Include="src\data\CustomZNet.cs" />
     <Compile Include="src\data\EIDFLegacy.cs" />
     <Compile Include="src\GamePatches\Attack_Patch.cs" />
     <Compile Include="src\GamePatches\CharacterDrop_Patch.cs" />

@@ -1,8 +1,12 @@
-﻿using System;
+﻿using EpicLoot.src.Adventure.bounties;
+using Jotunn.Managers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Heightmap;
+using static ZDOMan;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot.Adventure.Feature
@@ -61,7 +65,8 @@ namespace EpicLoot.Adventure.Feature
             {
                 if (success)
                 {
-                    CreateTreasureChest(biome, player, price, spawnPoint, normal, saveData, callback);
+                    CreateTreasureSpawner(biome, spawnPoint, saveData);
+                    callback?.Invoke(price, true, spawnPoint);
                 }
                 else
                 {
@@ -69,22 +74,27 @@ namespace EpicLoot.Adventure.Feature
                 }
             });
         }
-        
-        private void CreateTreasureChest(Heightmap.Biome biome, Player player, int price, Vector3 spawnPoint, Vector3 normal,
-            AdventureSaveData saveData, Action<int, bool, Vector3> callback)
+
+        private void CreateTreasureSpawner(Heightmap.Biome biome,  Vector3 spawnPoint, AdventureSaveData saveData)
         {
-            const string treasureChestPrefabName = "piece_chest_wood";
-            var treasureChestPrefab = ZNetScene.instance.GetPrefab(treasureChestPrefabName);
-            var treasureChestObject = Object.Instantiate(treasureChestPrefab, spawnPoint, Quaternion.FromToRotation(Vector3.up, normal));
-            var treasureChest = treasureChestObject.AddComponent<TreasureMapChest>();
-            treasureChest.Setup(player, biome, GetCurrentInterval());
+            Quaternion rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+            GameObject gameObject = PrefabManager.Instance.GetPrefab("EL_SpawnController");
+            GameObject created_go = Object.Instantiate(gameObject, spawnPoint, rotation);
+            AdventureSpawnController asc = created_go.GetComponent<AdventureSpawnController>();
+            TreasureMapChestInfo treasure_details = new TreasureMapChestInfo()
+            {
+                Biome = biome,
+                Interval = GetCurrentInterval(),
+                Position = spawnPoint,
+                PlayerID = Player.m_localPlayer.GetPlayerID()
+            };
+            asc.SetTreasure(treasure_details);
 
             var offset2 = UnityEngine.Random.insideUnitCircle * (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
             var offset = new Vector3(offset2.x, 0, offset2.y);
-            saveData.PurchasedTreasureMap(GetCurrentInterval(), biome, spawnPoint, offset);
-            Minimap.instance.ShowPointOnMap(spawnPoint + offset);
+            saveData.PurchasedTreasureMap(treasure_details);
 
-            callback?.Invoke(price, true, spawnPoint);
+            Minimap.instance.ShowPointOnMap(spawnPoint + offset);
         }
     }
 }

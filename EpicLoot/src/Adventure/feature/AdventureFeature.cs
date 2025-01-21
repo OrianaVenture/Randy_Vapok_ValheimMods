@@ -225,20 +225,6 @@ namespace EpicLoot.Adventure.Feature
                         continue;
                     }
 
-                    // TODO: Investigate validity of the spawn point. May still be placing inside rocks.
-                    var solidHeight = ZoneSystem.instance.GetSolidHeight(spawnPoint);
-                    var offsetFromGround = Math.Abs(solidHeight - groundHeight);
-                    EpicLoot.Log($"solidHeight {solidHeight} - groundHeight{groundHeight} = offset {offsetFromGround} (5 is limit)");
-                    if (offsetFromGround > 5)
-                    {
-                        // Don't place too high off the ground (on top of tree or something?
-                        EpicLoot.Log($"Spawn Point rejected: too high off of ground (groundHeight:{groundHeight}, solidHeight:{solidHeight})");
-                        continue;
-                    }
-
-                    // But also don't place inside rocks
-                    spawnPoint.y = solidHeight;
-
                     var placedNearPlayerBase = EffectArea.IsPointInsideArea(spawnPoint, EffectArea.Type.PlayerBase, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius);
                     if (placedNearPlayerBase)
                     {
@@ -266,6 +252,9 @@ namespace EpicLoot.Adventure.Feature
                             continue;
                         }
                     }
+
+                    // place the spawn creator decently above terrain and ground objects.
+                    spawnPoint.y += 100f;
 
                     EpicLoot.Log($"Success! (ground={groundHeight} water={waterLevel} placed={spawnPoint.y})");
 
