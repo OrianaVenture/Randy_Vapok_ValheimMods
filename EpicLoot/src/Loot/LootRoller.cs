@@ -742,6 +742,20 @@ namespace EpicLoot
             return results;
         }
 
+        public static KeyValuePair<string, List<LootTable>> GetLootTableOrDefault(string objectName)
+        {
+            KeyValuePair<string, List<LootTable>> results = LootTables.FirstOrDefault(x => x.Key == objectName);
+            if (results.Key != objectName)
+            {
+                if (results.Key == null)
+                {
+                    results = LootTables.First();
+                }
+                EpicLoot.LogWarning($"Requested Loot table ({objectName}) does not exist, defaulting to ({results.Key})");
+            }
+            return results;
+        }
+
         public static List<KeyValuePair<int, float>> GetDropsForLevel([NotNull] LootTable lootTable,
             int level, bool useNextHighestIfNotPresent = true)
         {
@@ -971,14 +985,19 @@ namespace EpicLoot
 
         public static void PrintLuckTest(string lootTableName, float luckFactor)
         {
-            var lootTable = GetLootTable(lootTableName)[0];
-            var lootDrop = GetLootForLevel(lootTable, 1)[0];
+            KeyValuePair<string, List<LootTable>> loot_info =  GetLootTableOrDefault(lootTableName);
+            LootDrop lootDrop = GetLootForLevel(loot_info.Value[0], 1)[0];
             lootDrop = ResolveLootDrop(lootDrop);
+            if (lootDrop.Rarity == null)
+            {
+                lootDrop.Rarity = [100, 0, 0, 0, 0];
+                EpicLoot.LogWarning($"No rarity table was found for {loot_info.Value[0]} using default: [100, 0, 0, 0, 0]");
+            }
             var rarityBase = GetRarityWeights(lootDrop.Rarity, 0);
             var rarityLuck = GetRarityWeights(lootDrop.Rarity, luckFactor);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"Luck Test: {lootTableName}, {luckFactor}");
+            sb.AppendLine($"Luck Test: {loot_info.Key}, {luckFactor}");
             sb.AppendLine("Rarity     Base    %       Luck    %       Diff    Factor");
             sb.AppendLine("=====================================================");
 
@@ -1002,7 +1021,7 @@ namespace EpicLoot
                     (luckPercent / basePercent).ToString("0.##").PadRight(8));
             }
 
-            Debug.LogWarning(sb.ToString());
+            Console.instance.Print(sb.ToString());
         }
 
         public static void PrintLootResolutionTest(string lootTableName, int level, int itemIndex)

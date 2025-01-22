@@ -17,6 +17,7 @@ using EpicLoot.GatedItemType;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
 using EpicLoot.src.Adventure.bounties;
+using EpicLoot.src.General;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn;
@@ -177,6 +178,8 @@ namespace EpicLoot
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
             LootTableLoaded?.Invoke();
+
+            TerminalCommands.AddTerminalCommands();
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)

@@ -183,12 +183,6 @@ namespace EpicLoot
                 var player = Player.m_localPlayer;
                 FixResistances(player);
             }));
-            new Terminal.ConsoleCommand("lucktest", "", (args =>
-            {
-                var lootTable = args.Length > 1 ? args[1] : "Greydwarf";
-                var luckFactor = args.Length > 2 ? float.Parse(args[2]) : 0;
-                LootRoller.PrintLuckTest(lootTable, luckFactor);
-            }));
             new Terminal.ConsoleCommand("lootres", "", (args =>
             {
                 var lootTable = args.Length > 1 ? args[1] : "Greydwarf";

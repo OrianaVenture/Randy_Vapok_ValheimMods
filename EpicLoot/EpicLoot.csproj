@@ -107,6 +107,7 @@
     <Compile Include="src\GatedItemType\GatedItemTypeHelper.cs" />
     <Compile Include="src\GatedItemType\ItemInfoConfig.cs" />
     <Compile Include="src\General\DebugText.cs" />
+    <Compile Include="src\General\TerminalCommands.cs" />
     <Compile Include="src\General\WelcomeMessage.cs" />
     <Compile Include="src\Healing\AddHealingQueueToPlayerPatch.cs" />
     <Compile Include="src\Healing\HealingQueueMono.cs" />
