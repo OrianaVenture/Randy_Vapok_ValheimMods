@@ -12,6 +12,9 @@ namespace EpicLoot.src.Adventure.bounties
         private static BountyInfoZNetProperty bounty { get; set; }
         private static TreasureMapChestInfoZNetProperty treasure { get; set; }
 
+        // This might need to be znet saved if for some reason the update loop its called in isn't completed
+        private static bool placed = false;
+
         public void Awake()
         {
             if (this.gameObject.TryGetComponent<ZNetView>(out zNetView) == false)
@@ -36,25 +39,28 @@ namespace EpicLoot.src.Adventure.bounties
                 // EpicLoot.Log("ZNetView is not valid");
                 return;
             }
+            if (zNetView.IsOwner() != true)
+            {
+                // Only want these things to happen once.
+                return;
+            }
 
-            //EpicLoot.Log($"ASC Init triggered. bounty? {(bounty.Get().PlayerID > 0)} treasure? {(treasure.Get().PlayerID > 0)}");
             if (bounty.Get().PlayerID > 0)
             {
                 //EpicLoot.Log("Spawning bounty");
                 SpawnBountyTargets(bounty.Get());
-                //EpicLoot.Log("Destroying spawn controller");
-                ZNetScene.instance.Destroy(this.gameObject);
-                return;
             }
             if (treasure.Get().PlayerID > 0)
             {
                 //EpicLoot.Log("Spawning Treasure");
                 SpawnChest(treasure.Get());
-                //EpicLoot.Log("Destroying spawn controller");
-                ZNetScene.instance.Destroy(this.gameObject);
-                return;
             }
-            
+            if (placed)
+            {
+                //EpicLoot.Log("Destroying AdventureSpawnController");
+                Destroy(this);
+            }
+
         }
 
 
@@ -111,6 +117,7 @@ namespace EpicLoot.src.Adventure.bounties
                 var bountyTarget = creature.AddComponent<BountyTarget>();
                 bountyTarget.Initialize(bounty, prefab.name, isAdd);
             }
+            placed = true;
         }
 
         private static void SpawnChest(TreasureMapChestInfo treasure)
@@ -123,6 +130,7 @@ namespace EpicLoot.src.Adventure.bounties
             var treasureChestObject = UnityEngine.Object.Instantiate(treasureChestPrefab, spawnPoint, Quaternion.FromToRotation(Vector3.up, normal));
             var treasureChest = treasureChestObject.AddComponent<TreasureMapChest>();
             treasureChest.Setup(treasure.PlayerID, treasure.Biome, treasure.Interval);
+            placed = true;
         }
 
         internal static Vector3 DetermineSpawnPoint(Vector3 startingSpawnPoint, Biome biome, bool do_not_spawn_in_water_override = false)

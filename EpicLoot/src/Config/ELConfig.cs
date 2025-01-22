@@ -302,12 +302,12 @@ namespace EpicLoot.Config
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
+                    EpicLoot.Log($"Function Created");
                     //File Created
                     if (!fileInfo.Exists)
                         return;
 
                     // Loads the new file into the patch system
-                    FilePatching.ProcessPatchFile(fileInfo);
                     List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
                     FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(new_patched_files);
                     break;
@@ -320,10 +320,17 @@ namespace EpicLoot.Config
 
                 case WatcherChangeTypes.Changed:
                 case WatcherChangeTypes.Renamed:
+                    // Changed can be called when a deletion happens. It depends on the OS.
+                    if (!fileInfo.Exists) {
+                        EpicLoot.Log($"Function Deleted");
+                        FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+                        break;
+                    }
+                        
                     //File Changed
                     EpicLoot.Log($"Function Changed");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    List<string> patched_files =  FilePatching.ProcessPatchFile(fileInfo);
+                    List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
                     FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
                     break;
             }

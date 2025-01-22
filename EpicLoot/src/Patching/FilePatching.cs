@@ -16,7 +16,6 @@ using EpicLoot_UnityLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Patching
 {
@@ -200,10 +199,9 @@ namespace EpicLoot.Patching
             var defaultPriority = patchFile.Priority;
             List<string> files_with_new_patches = new List<string>();
 
-            for (var index = 0; index < patchFile.Patches.Count; index++)
+            foreach(var patch in patchFile.Patches)
             {
-                var patch = patchFile.Patches[index];
-                EpicLoot.Log($"Patch: ({file.Name}, {index})\n  > Action: {patch.Action}\n  > " +
+                EpicLoot.Log($"Patch: ({file.Name})\n  > Action: {patch.Action}\n  > " +
                     $"Path: {patch.Path}\n  > Value: {patch.Value}");
 
                 patch.Require = requireAll || patch.Require;
@@ -213,7 +211,7 @@ namespace EpicLoot.Patching
                 {
                     if (requiresSpecifiedSourceFile)
                     {
-                        EpicLoot.LogErrorForce($"Patch ({index}) in file ({file.Name}) " +
+                        EpicLoot.LogErrorForce($"Patch in file ({file.Name}) " +
                             $"requires a specified TargetFile!");
                         continue;
                     }
@@ -222,7 +220,7 @@ namespace EpicLoot.Patching
                 }
                 else if (!ConfigFileNames.Contains(patch.TargetFile))
                 {
-                    EpicLoot.LogErrorForce($"Patch ({index}) in file ({file.Name}) " +
+                    EpicLoot.LogErrorForce($"Patch in file ({file.Name}) " +
                         $"has unknown specified source file ({patch.TargetFile})!");
                     continue;
                 }
@@ -233,7 +231,11 @@ namespace EpicLoot.Patching
                 patch.SourceFile = file.Name;
                 EpicLoot.Log($"Adding Patch from {patch.SourceFile} to file {patch.TargetFile} with {patch.Path}");
                 PatchesPerFile.Add(patch.TargetFile, patch);
-                files_with_new_patches.Add(patch.TargetFile);
+                // each patch section can add a different file, but we only need to actually refresh the file once.
+                if (files_with_new_patches.Contains(patch.TargetFile) == false)
+                {
+                    files_with_new_patches.Add(patch.TargetFile);
+                }
             }
             return files_with_new_patches;
         }
@@ -280,10 +282,14 @@ namespace EpicLoot.Patching
             // skip update if there are no changes, this should never happen
             if (files_with_patch_updates.Count == 0) return;
 
+            EpicLoot.Log($"Applying {files_with_patch_updates.Count} patched files");
             foreach(string file in files_with_patch_updates)
             {
+                EpicLoot.Log($"Applying patchfile: {file}");
                 LoadPatchedJSON(file, true);
             }
+            // Once the update has been provided for these files, they dont need updates again unless something changes
+            files_with_patch_updates.Clear();
         }
 
         
