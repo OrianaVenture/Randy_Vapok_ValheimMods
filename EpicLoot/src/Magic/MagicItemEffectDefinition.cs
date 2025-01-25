@@ -461,7 +461,7 @@ namespace EpicLoot
 
     public static class MagicItemEffectDefinitions
     {
-        public static readonly Dictionary<string, MagicItemEffectDefinition> AllDefinitions =
+        public static Dictionary<string, MagicItemEffectDefinition> AllDefinitions =
             new Dictionary<string, MagicItemEffectDefinition>();
         public static event Action OnSetupMagicItemEffectDefinitions;
 
@@ -490,6 +490,20 @@ namespace EpicLoot
         public static MagicItemEffectDefinition Get(string type)
         {
             AllDefinitions.TryGetValue(type, out MagicItemEffectDefinition effectDef);
+            if (effectDef == null) {
+                EpicLoot.LogWarning($"Enchantment definition missing for: {type}");
+                effectDef = new MagicItemEffectDefinition() {
+                    ValuesPerRarity = new MagicItemEffectDefinition.ValuesPerRarityDef() {
+                        Magic = new MagicItemEffectDefinition.ValueDef() { Increment = 1, MaxValue = 10, MinValue = 1 },
+                        Rare = new MagicItemEffectDefinition.ValueDef() { Increment = 2, MaxValue = 15, MinValue = 1 },
+                        Epic = new MagicItemEffectDefinition.ValueDef() { Increment = 3, MaxValue = 20, MinValue = 1 },
+                        Legendary = new MagicItemEffectDefinition.ValueDef() { Increment = 4, MaxValue = 25, MinValue = 1 },
+                        Mythic = new MagicItemEffectDefinition.ValueDef() { Increment = 5, MaxValue = 30, MinValue = 1 }
+                    },
+                    Requirements = new MagicItemEffectRequirements() { NoRoll = true },
+                    Type = type,
+                };
+            }
             return effectDef;
         }
 

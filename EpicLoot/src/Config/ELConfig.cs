@@ -251,7 +251,6 @@ namespace EpicLoot.Config
             // Bounty Management
             EnableLimitedBountiesInProgress = BindServerConfig("Bounty Management", "Enable Bounty Limit", false, "Toggles limiting bounties. Players unable to purchase if enabled and maximum bounty in-progress count is met");
             MaxInProgressBounties = BindServerConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
-
         }
 
         public static void InitializeConfig()

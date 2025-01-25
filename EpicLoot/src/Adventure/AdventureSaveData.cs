@@ -162,6 +162,23 @@ namespace EpicLoot.Adventure
         }
     }
 
+    internal class Vector3ZNetProperty : ZNetProperty<Vector3>
+    {
+        public Vector3ZNetProperty(string key, ZNetView zNetView, Vector3 defaultValue) : base(key, zNetView, defaultValue)
+        {
+        }
+
+        public override Vector3 Get()
+        {
+            return zNetView.GetZDO().GetVec3(Key, DefaultValue);
+        }
+
+        protected override void SetValue(Vector3 value)
+        {
+            zNetView.GetZDO().Set(Key, value);
+        }
+    }
+
     internal class TreasureMapChestInfoZNetProperty : ZNetProperty<TreasureMapChestInfo>
     {
         BinaryFormatter binFormatter = new BinaryFormatter();

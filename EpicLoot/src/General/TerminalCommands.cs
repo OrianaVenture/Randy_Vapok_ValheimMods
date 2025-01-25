@@ -26,14 +26,12 @@ namespace EpicLoot.src.General
                 string lootTable = "Greydwarf";
                 float luckFactor = 0f;
                 try {
-                    if (args.Length == 2)
-                    {
+                    if (args.Length == 2) {
                         lootTable = args[0];
                         luckFactor = float.Parse(args[1]);
                     } else if (args.Length == 1) {
                         luckFactor = float.Parse(args[0]);
-                    } else
-                    {
+                    } else {
                         Console.instance.Print($"Using Lucktest Defaults: lucktest {lootTable} {luckFactor}");
                     }
                 }
