@@ -97,12 +97,12 @@ namespace EpicLoot.Config
             ItemConfigRPC = NetworkManager.Instance.AddRPC("epicloot_itemconfig_RPC", OnServerRecieveConfigs, OnClientRecieveItemInfoConfigs);
             RecipesRPC = NetworkManager.Instance.AddRPC("epicloot_recipes_RPC", OnServerRecieveConfigs, OnClientRecieveRecipesConfigs);
             EnchantingCostsRPC = NetworkManager.Instance.AddRPC("epicloot_enchantingcosts_RPC", OnServerRecieveConfigs, OnClientRecieveEnchantingCostsConfigs);
-            ItemNamesRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveItemNameConfigs);
-            AdventureDataRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveAdventureDataConfigs);
-            LegendariesRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveLegendaryItemConfigs);
-            AbilitiesRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveAbilityConfigs);
-            MaterialConversionRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveMaterialConversionConfigs);
-            EnchantingUpgradesRPC = NetworkManager.Instance.AddRPC("epicloot_patch_loottables_RPC", OnServerRecieveConfigs, OnClientRecieveEnchantingUpgradesConfigs);
+            ItemNamesRPC = NetworkManager.Instance.AddRPC("ItemNamesRPC", OnServerRecieveConfigs, OnClientRecieveItemNameConfigs);
+            AdventureDataRPC = NetworkManager.Instance.AddRPC("AdventureDataRPC", OnServerRecieveConfigs, OnClientRecieveAdventureDataConfigs);
+            LegendariesRPC = NetworkManager.Instance.AddRPC("LegendariesRPC", OnServerRecieveConfigs, OnClientRecieveLegendaryItemConfigs);
+            AbilitiesRPC = NetworkManager.Instance.AddRPC("AbilitiesRPC", OnServerRecieveConfigs, OnClientRecieveAbilityConfigs);
+            MaterialConversionRPC = NetworkManager.Instance.AddRPC("MaterialConversionRPC", OnServerRecieveConfigs, OnClientRecieveMaterialConversionConfigs);
+            EnchantingUpgradesRPC = NetworkManager.Instance.AddRPC("EnchantingUpgradesRPC", OnServerRecieveConfigs, OnClientRecieveEnchantingUpgradesConfigs);
         }
 
         private void CreateConfigValues(ConfigFile Config)
@@ -279,7 +279,7 @@ namespace EpicLoot.Config
             SynchronizationManager.Instance.AddInitialSynchronization(MaterialConversionRPC, MaterialConversionSendConfigs);
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, EnchantingTableUpgradeSendConfigs);
-            SetupPatchConfigFileWatch();
+            SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
         }
 
         public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, bool update = false) where T : class
@@ -291,17 +291,29 @@ namespace EpicLoot.Config
 
         private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
         {
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
-            {
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false) {
                 EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
                 return;
             }
 
+            // Do not process directories, setup a new watcher- otherwise they get ingored even with subdirectory watching.
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
+                SetupPatchConfigFileWatch(e.FullPath);
+                EpicLoot.Log($"Adding subdirectory filewatcher: {e.FullPath}");
+                return;
+            }
+
             var fileInfo = new FileInfo(e.FullPath);
+            if (!fileInfo.FullName.Contains(".json")) {
+                EpicLoot.Log($"File: {fileInfo} is not a supported format, ignoring.");
+                return;
+            }
+            EpicLoot.Log($"Processing patch file update: {fileInfo}");
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
-                    EpicLoot.Log($"Function Created");
+                    EpicLoot.Log($"Patch Created");
                     //File Created
                     if (!fileInfo.Exists)
                         return;
@@ -313,7 +325,7 @@ namespace EpicLoot.Config
 
                 case WatcherChangeTypes.Deleted:
                     //File Deleted
-                    EpicLoot.Log($"Function Deleted");
+                    EpicLoot.Log($"Patch Deleted");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
                     break;
 
@@ -321,13 +333,13 @@ namespace EpicLoot.Config
                 case WatcherChangeTypes.Renamed:
                     // Changed can be called when a deletion happens. It depends on the OS.
                     if (!fileInfo.Exists) {
-                        EpicLoot.Log($"Function Deleted");
+                        EpicLoot.Log($"Patch Changed");
                         FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
                         break;
                     }
                         
                     //File Changed
-                    EpicLoot.Log($"Function Changed");
+                    EpicLoot.Log($"Patch Changed");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
                     List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
                     FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
@@ -335,17 +347,88 @@ namespace EpicLoot.Config
             }
         }
 
-        public static void SetupPatchConfigFileWatch()
+        // WIP - support "modified core config files", this will be used as the base for configuration changes, patches ontop of this
+        private static void IngestCoreConfigFileFromDisk(object s, FileSystemEventArgs e)
         {
-            var newPatchWatcher = new FileSystemWatcher(FilePatching.PatchesDirPath, "*.json");
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+            {
+                EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
+                return;
+            }
+
+            var fileInfo = new FileInfo(e.FullPath);
+            switch (e.ChangeType)
+            {
+                case WatcherChangeTypes.Created:
+                    EpicLoot.Log($"CoreConfig Created");
+                    //File Created
+                    if (!fileInfo.Exists)
+                        return;
+
+                    // Loads the new file, and then applies patches to it, then network syncs it
+                    List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
+                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(new_patched_files);
+                    break;
+
+                case WatcherChangeTypes.Deleted:
+                    //File Deleted
+                    EpicLoot.Log($"CoreConfig Deleted");
+                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+                    break;
+
+                case WatcherChangeTypes.Changed:
+                case WatcherChangeTypes.Renamed:
+                    // Changed can be called when a deletion happens. It depends on the OS.
+                    if (!fileInfo.Exists)
+                    {
+                        EpicLoot.Log($"CoreConfig Deleted");
+                        FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+                        break;
+                    }
+
+                    //File Changed
+                    EpicLoot.Log($"CoreConfig Changed");
+                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+                    List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
+                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
+                    break;
+            }
+        }
+
+        public static void ProcessCoreConfigFileRepatchAndSync(FileInfo file)
+        {
+            List<String> core_config_files = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
+            string targetFile = "";
+            if (core_config_files.Contains(file.Name))
+            {
+                targetFile = file.Name;
+            } else
+            {
+                EpicLoot.LogWarning($"{file.Name} was expected to be a core config file, but was not. Valid core config file names are: {String.Join(" ", core_config_files)}");
+                return;
+            }
+            
+            switch (file.Name)
+            {
+                case "iteminfo.json":
+                    SychronizeConfig<ItemInfoConfig>(targetFile, GatedItemTypeHelper.Initialize);
+                    break;
+            }
+
+        }
+
+        public static void SetupPatchConfigFileWatch(string path)
+        {
+            var newPatchWatcher = new FileSystemWatcher(path);
             newPatchWatcher.Created += new FileSystemEventHandler(IngestPatchFilesFromDisk);
             newPatchWatcher.Changed += new FileSystemEventHandler(IngestPatchFilesFromDisk);
             newPatchWatcher.Renamed += new RenamedEventHandler(IngestPatchFilesFromDisk);
             newPatchWatcher.Deleted += new FileSystemEventHandler(IngestPatchFilesFromDisk);
             newPatchWatcher.NotifyFilter = NotifyFilters.LastWrite;
-            newPatchWatcher.IncludeSubdirectories = true;
+            // newPatchWatcher.IncludeSubdirectories = true;
             newPatchWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
             newPatchWatcher.EnableRaisingEvents = true;
+            // newPatchWatcher.Filter = "*.json";
         }
 
 
@@ -448,7 +531,7 @@ namespace EpicLoot.Config
         {
             EpicLoot.Log("Sending MagicItem configuration.");
             ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(MagicItemEffectDefinitions.AllDefinitions));
+            package.Write(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions()));
             return package;
         }
 

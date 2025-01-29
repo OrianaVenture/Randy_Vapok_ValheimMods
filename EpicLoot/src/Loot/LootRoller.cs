@@ -62,6 +62,7 @@ namespace EpicLoot
         // This is not a partial update, rather a wholesale replacement of existing data
         public static void UpdateLootConfigs(LootConfig lootConfig)
         {
+            Config = lootConfig;
             ItemSets.Clear();
             LootTables.Clear();
             AddItemSets(lootConfig.ItemSets);

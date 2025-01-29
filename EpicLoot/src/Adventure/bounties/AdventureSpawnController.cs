@@ -56,6 +56,7 @@ namespace EpicLoot.src.Adventure.bounties
             }
 
             // We've got to skip at least some updates because slow object spawning means that we can spawn inside of things- if those things are not spawned already
+            // Zonesystem.Instance.IsZoneLoaded? - instead?
             if (current_updates < 300)
             {
                 current_updates += 1;
@@ -266,7 +267,7 @@ namespace EpicLoot.src.Adventure.bounties
 
                 // Prevent spawning in Lava
                 // This is a slightly modified lava check which is a little more strict and should give us more spacing away from the lavas edge
-                if (biome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(determined_spawn) > 0.59f)
+                if (biome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(determined_spawn) > 0.45f)
                 {
                     EpicLoot.Log($"Selected spawn is in lava, retrying.");
                     spawn_location_attempts += 1;

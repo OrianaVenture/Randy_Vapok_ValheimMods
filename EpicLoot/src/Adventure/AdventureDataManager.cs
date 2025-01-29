@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EpicLoot.Adventure.Feature;
-using EpicLoot.Config;
 using UnityEngine;
 
 namespace EpicLoot.Adventure

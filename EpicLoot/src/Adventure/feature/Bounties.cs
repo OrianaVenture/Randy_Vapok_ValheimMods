@@ -7,6 +7,7 @@ using BepInEx;
 using Common;
 using EpicLoot.Config;
 using EpicLoot.src.Adventure.bounties;
+using EpicLoot.src.Adventure.feature;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using Jotunn.Managers;
@@ -196,7 +197,7 @@ namespace EpicLoot.Adventure.Feature
         {
             player.Message(MessageHud.MessageType.Center, "$mod_epicloot_bounties_locatingmsg");
             var saveData = player.GetAdventureSaveData();
-            yield return GetRandomPointInBiome(bounty.Biome, saveData, (success, spawnPoint, _) =>
+            yield return BountyLocationEarlyCache.LazyCacheGetBiomePoint(bounty.Biome, saveData, (success, spawnPoint, _) =>
             {
                 if (success)
                 {

@@ -475,6 +475,11 @@ namespace EpicLoot
             OnSetupMagicItemEffectDefinitions?.Invoke();
         }
 
+        public static MagicItemEffectsList GetMagicItemEffectDefinitions()
+        {
+            return new MagicItemEffectsList() { MagicItemEffects = AllDefinitions.Values.ToList() };
+        }
+
         public static void Add(MagicItemEffectDefinition effectDef)
         {
             if (AllDefinitions.ContainsKey(effectDef.Type))
