@@ -13,9 +13,11 @@ using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using EpicLoot_UnityLib;
+using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using static Valheim.UI.RadialMenuAnimationManager;
 
 namespace EpicLoot.Patching
 {
@@ -32,6 +34,7 @@ namespace EpicLoot.Patching
         InsertAfter,    // Insert the provided value into the array containing the selected token, after the token
         RemoveAll,      // Remove all elements of an array or all properties of an object
         Merge,          // Use property values in the provided object to add or overwrite property values on the selected object
+        MultiAdd,       // Add the provided value to all defined values in MultiPropertyName
     }
 
     [Serializable]
@@ -46,6 +49,7 @@ namespace EpicLoot.Patching
         public bool Require;
         public string PropertyName = "";
         public JToken Value = null;
+        public string[] MultiPropertyName = null;
     }
 
     [Serializable]
@@ -370,8 +374,22 @@ namespace EpicLoot.Patching
                     case PatchAction.InsertAfter: ApplyPatch_Insert(token, patch, true); break;
                     case PatchAction.RemoveAll: ApplyPatch_RemoveAll(token, patch); break;
                     case PatchAction.Merge: ApplyPatch_Merge(token, patch); break;
+                    case PatchAction.MultiAdd: ApplyPatch_MultiAdd(token, patch); break;
                     default: break;
                 }
+            }
+        }
+
+        public static void ApplyPatch_MultiAdd(JToken token, Patch patch)
+        {
+            if (patch.Value == null) {
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'MultiAdd' but has not supplied a Value for the added value! This patch will be ignored!");
+                return;
+            }
+            int index = 0;
+            foreach (var item in patch.MultiPropertyName) {
+                Patch_Add(token, item, patch.Value);
+                index ++;
             }
         }
 
@@ -382,7 +400,6 @@ namespace EpicLoot.Patching
                 EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
-
             if (string.IsNullOrEmpty(patch.PropertyName))
             {
                 EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has not supplied a PropertyName for the added value! This patch will be ignored!");
@@ -391,20 +408,22 @@ namespace EpicLoot.Patching
 
             if (token.Type == JTokenType.Object)
             {
-                var jObject = ((JObject)token);
-                if (jObject.ContainsKey(patch.PropertyName) && jObject.Property(patch.PropertyName) is JProperty jProperty)
-                {
-                    EpicLoot.LogWarningForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but a property with the name ({patch.PropertyName}) already exists! The property's value will be overwritten");
-                    jProperty.Value = patch.Value;
-                }
-                else
-                {
-                    jObject.Add(patch.PropertyName, patch.Value);
-                }
+                Patch_Add(token, patch.PropertyName, patch.Value);
             }
             else
             {
                 EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has selected a token that is not a json Object! This patch will be ignored!");
+            }
+        }
+
+        internal static void Patch_Add(JToken token, string property, JToken value)
+        {
+            var jObject = ((JObject)token);
+            if (jObject.ContainsKey(property) && jObject.Property(property) is JProperty jProperty) {
+                EpicLoot.LogWarningForce($"Patch has action 'Add' but a property with the name ({property}) already exists! The property's value will be overwritten");
+                jProperty.Value = value;
+            } else {
+                jObject.Add(property, value);
             }
         }
 

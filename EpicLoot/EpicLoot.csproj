@@ -101,6 +101,7 @@
     <Compile Include="src\GamePatches\ObjectDB_Patch.cs" />
     <Compile Include="src\GamePatches\Terminal_Patch.cs" />
     <Compile Include="src\GamePatches\TextsDialog_Patch.cs" />
+    <Compile Include="src\GamePatches\UIFix_Patch.cs" />
     <Compile Include="src\GamePatches\VisEquipment_Patch.cs" />
     <Compile Include="src\GamePatches\ZNetScene_Patch.cs" />
     <Compile Include="src\GamePatches\ZNet_Patch.cs" />

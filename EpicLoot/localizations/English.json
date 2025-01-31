@@ -98,7 +98,7 @@
     "mod_epicloot_unlockcost": "Unlock Cost:",
     "mod_epicloot_effectsperlevel": "Upgrades:",
     "mod_epicloot_upgrademessage": "$1 upgraded to level $2",
-    "mod_epicloot_unlockmessage": "$1 upgraded to level $2",
+    "mod_epicloot_unlockmessage": "$1 unlocked!",
     "mod_epicloot_bonus": "Bonus!",
 
     "mod_epicloot_featureinfo_none": "Select a feature from the list to the left to view upgrade options.",

@@ -83,8 +83,20 @@ namespace EpicLoot.Adventure.Feature
                 }
             }
 
-            foreach (var targetConfig in AdventureDataManager.Config.Bounties.Targets)
+            // When we build the list of potential targets we only want to include those that are in the game, regardless of what the config says
+            List<BountyTargetConfig> targetable_bounty_configs = new List<BountyTargetConfig>();
+            foreach (var potential_bounty in AdventureDataManager.Config.Bounties.Targets) {
+                if (PrefabManager.Instance.GetPrefab(potential_bounty.TargetID) == null) {
+                    EpicLoot.Log($"Could not find bounty prefab {potential_bounty.TargetID}");
+                    continue;
+                } else {
+                    targetable_bounty_configs.Add(potential_bounty);
+                }
+            }
+
+            foreach (var targetConfig in targetable_bounty_configs)
             {
+
                 if ((bossBountiesGated && !defeatedBossBiomes.Contains(targetConfig.Biome)) ||
                     !player.m_knownBiome.Contains(targetConfig.Biome))
                 {

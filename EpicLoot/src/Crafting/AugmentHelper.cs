@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common;
 using EpicLoot_UnityLib;
+using Jotunn.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -117,22 +118,19 @@ namespace EpicLoot.Crafting
 
                 for (var i = 0; i < augmentChoices; i++)
                 {
-                    var button = Object.Instantiate(inventoryGui.m_craftButton, background);
+                    Button button = GUIManager.Instance.CreateButton(
+                        text: "Augment",
+                        parent: background.transform,
+                        anchorMin: new Vector2(0.5f, 0f),
+                        anchorMax: new Vector2(0.5f, 0f),
+                        position: new Vector2(0, 55 + ((augmentChoices - 1 - i) * 45)),
+                        width: 300f,
+                        height: 40f).GetComponent<Button>();
                     button.interactable = true;
-                    Object.Destroy(button.GetComponent<UITooltip>());
-                    var uiGamePad = button.GetComponent<UIGamePad>();
-                    if (uiGamePad)
-                    {
-                        Object.Destroy(uiGamePad.m_hint);
-                        Object.Destroy(uiGamePad);
-                    }
                     var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocus"), button.transform);
                     focus.SetActive(false);
                     focus.name = "ButtonFocus";
                     var rt = button.gameObject.RectTransform();
-                    rt.anchorMin = new Vector2(0.5f, 0);
-                    rt.anchorMax = new Vector2(0.5f, 0);
-                    rt.anchoredPosition = new Vector2(0, 55 + ((augmentChoices - 1 - i) * 45));
                     rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
                     rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 40);
                     choiceDialog.EffectChoiceButtons.Add(button);

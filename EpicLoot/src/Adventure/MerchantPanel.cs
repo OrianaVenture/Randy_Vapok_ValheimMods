@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.Crafting;
+using EpicLoot.src.Adventure.feature;
 using EpicLoot_UnityLib;
 using TMPro;
 using UnityEngine;
@@ -187,6 +188,9 @@ namespace EpicLoot.Adventure
             ForestTokensCount = transform.Find("Currencies/ForestTokensCount").GetComponent<Text>();
             IronBountyTokensCount = transform.Find("Currencies/BountyTokensIronCount").GetComponent<Text>();
             GoldBountyTokensCount = transform.Find("Currencies/BountyTokensGoldCount").GetComponent<Text>();
+
+            // Initialize the cache of of bounty positions, starting from the central part of the map.
+            StartCoroutine(BountyLocationEarlyCache.PopulateCacheFromStart());
 
             if (EpicLoot.HasAuga)
             {

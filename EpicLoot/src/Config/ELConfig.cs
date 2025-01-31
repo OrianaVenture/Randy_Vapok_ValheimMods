@@ -10,12 +10,16 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.Patching;
 using EpicLoot_UnityLib;
 using Jotunn.Entities;
+using Jotunn.Extensions;
 using Jotunn.Managers;
+using Mono.Cecil;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace EpicLoot.Config
@@ -347,75 +351,126 @@ namespace EpicLoot.Config
             }
         }
 
-        // WIP - support "modified core config files", this will be used as the base for configuration changes, patches ontop of this
-        private static void IngestCoreConfigFileFromDisk(object s, FileSystemEventArgs e)
+        internal static void UpdateLocalizations(object s, FileSystemEventArgs e)
         {
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+            var fileInfo = new FileInfo(e.FullPath);
+            if (!fileInfo.FullName.Contains(".json"))
             {
-                EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
+                EpicLoot.Log($"File: {fileInfo} is not a supported format, ignoring.");
+                return;
+            }
+            string language = e.FullPath.Trim().Split(Path.DirectorySeparatorChar).Last().Split('.').First();
+            List<string> supported_languages = LocalizationManager.Instance.GetLocalization().GetLanguages().ToList();
+            if (supported_languages.Contains(language.CapitalizeFirstLetter())) {
+                EpicLoot.LogWarning($"{language} is not a supported language [{string.Join(", ", supported_languages.ToArray())}]");
                 return;
             }
 
-            var fileInfo = new FileInfo(e.FullPath);
+            string contents = File.ReadAllText(e.FullPath);
+            string cleaned_localization = Regex.Replace(contents, @"\/\/.*\n", "");
+            Dictionary<string, string> localization_updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(cleaned_localization);
+            // LocalizationManager.Instance.GetLocalization().AddJsonFile(language, cleaned_localization);
+
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
-                    EpicLoot.Log($"CoreConfig Created");
-                    //File Created
-                    if (!fileInfo.Exists)
-                        return;
-
-                    // Loads the new file, and then applies patches to it, then network syncs it
-                    List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
-                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(new_patched_files);
-                    break;
-
-                case WatcherChangeTypes.Deleted:
-                    //File Deleted
-                    EpicLoot.Log($"CoreConfig Deleted");
-                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    break;
-
-                case WatcherChangeTypes.Changed:
-                case WatcherChangeTypes.Renamed:
-                    // Changed can be called when a deletion happens. It depends on the OS.
-                    if (!fileInfo.Exists)
-                    {
-                        EpicLoot.Log($"CoreConfig Deleted");
-                        FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                        break;
-                    }
-
-                    //File Changed
-                    EpicLoot.Log($"CoreConfig Changed");
-                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
-                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
+                    
                     break;
             }
         }
 
-        public static void ProcessCoreConfigFileRepatchAndSync(FileInfo file)
+        internal static void CheckAndUpdateLocalization(Dictionary<string, string> localization_updates, string language)
         {
-            List<String> core_config_files = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
-            string targetFile = "";
-            if (core_config_files.Contains(file.Name))
+            foreach (var localization in localization_updates)
             {
-                targetFile = file.Name;
-            } else
-            {
-                EpicLoot.LogWarning($"{file.Name} was expected to be a core config file, but was not. Valid core config file names are: {String.Join(" ", core_config_files)}");
-                return;
+                LocalizationManager.Instance.GetLocalization().ClearToken(language, localization.Key);
+                LocalizationManager.Instance.GetLocalization().AddTranslation(language, localization.Key, localization.Value);
             }
-            
-            switch (file.Name)
-            {
-                case "iteminfo.json":
-                    SychronizeConfig<ItemInfoConfig>(targetFile, GatedItemTypeHelper.Initialize);
-                    break;
-            }
-
         }
+
+        internal static void RemoveLocalizationAndRestoreDefault(Dictionary<string, string> localization_updates, string language)
+        {
+            foreach (var localization in localization_updates)
+            {
+                LocalizationManager.Instance.GetLocalization().ClearToken(language, localization.Key);
+            }
+            // Restore default localization
+            string[] internal_assets = typeof(EpicLoot).Assembly.GetManifestResourceNames();
+            internal_assets.Select(x => x.Contains("localizations") && x.Contains(language)).ToList();
+            string default_localization = EpicLoot.ReadEmbeddedResourceFile(internal_assets.First());
+            string cleaned_localization = Regex.Replace(default_localization, @"\/\/.*\n", "");
+            LocalizationManager.Instance.GetLocalization().AddJsonFile(language, cleaned_localization);
+        }
+
+        // WIP - support "modified core config files", this will be used as the base for configuration changes, patches ontop of this
+        //private static void IngestCoreConfigFileFromDisk(object s, FileSystemEventArgs e)
+        //{
+        //    if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+        //    {
+        //        EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
+        //        return;
+        //    }
+
+        //    var fileInfo = new FileInfo(e.FullPath);
+        //    switch (e.ChangeType)
+        //    {
+        //        case WatcherChangeTypes.Created:
+        //            EpicLoot.Log($"CoreConfig Created");
+        //            //File Created
+        //            if (!fileInfo.Exists)
+        //                return;
+
+        //            // Loads the new file, and then applies patches to it, then network syncs it
+        //            List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
+        //            FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(new_patched_files);
+        //            break;
+
+        //        case WatcherChangeTypes.Deleted:
+        //            //File Deleted
+        //            EpicLoot.Log($"CoreConfig Deleted");
+        //            FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+        //            break;
+
+        //        case WatcherChangeTypes.Changed:
+        //        case WatcherChangeTypes.Renamed:
+        //            // Changed can be called when a deletion happens. It depends on the OS.
+        //            if (!fileInfo.Exists)
+        //            {
+        //                EpicLoot.Log($"CoreConfig Deleted");
+        //                FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+        //                break;
+        //            }
+
+        //            //File Changed
+        //            EpicLoot.Log($"CoreConfig Changed");
+        //            FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+        //            List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
+        //            FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
+        //            break;
+        //    }
+        //}
+
+        //public static void ProcessCoreConfigFileRepatchAndSync(FileInfo file)
+        //{
+        //    List<String> core_config_files = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
+        //    string targetFile = "";
+        //    if (core_config_files.Contains(file.Name))
+        //    {
+        //        targetFile = file.Name;
+        //    } else
+        //    {
+        //        EpicLoot.LogWarning($"{file.Name} was expected to be a core config file, but was not. Valid core config file names are: {String.Join(" ", core_config_files)}");
+        //        return;
+        //    }
+
+        //    switch (file.Name)
+        //    {
+        //        case "iteminfo.json":
+        //            SychronizeConfig<ItemInfoConfig>(targetFile, GatedItemTypeHelper.Initialize);
+        //            break;
+        //    }
+
+        //}
 
         public static void SetupPatchConfigFileWatch(string path)
         {

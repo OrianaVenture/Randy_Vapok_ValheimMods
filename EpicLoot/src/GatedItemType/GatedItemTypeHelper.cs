@@ -50,7 +50,7 @@ namespace EpicLoot.GatedItemType
                     }
                     else
                     {
-                        EpicLoot.LogWarning($"Duplicate entry found for ItemInfo: {itemID}. " +
+                        EpicLoot.Log($"Duplicate entry found for ItemInfo: {itemID}. " +
                             $"Please fix your configuration.");
                     }
                 }
@@ -68,13 +68,10 @@ namespace EpicLoot.GatedItemType
 
                     foreach (var itemID in entry.Value)
                     {
-                        if (!BossPerItem.ContainsKey(itemID))
-                        {
+                        if (!BossPerItem.ContainsKey(itemID)) {
                             BossPerItem.Add(itemID, entry.Key);
-                        }
-                        else
-                        {
-                            EpicLoot.LogWarning($"Duplicate entry found for ItemInfo, " +
+                        } else {
+                            EpicLoot.Log($"Duplicate entry found for ItemInfo, " +
                                 $"BossPerItem: {itemID} with boss {entry.Key}. " +
                                 $"Please fix your configuration.");
                         }

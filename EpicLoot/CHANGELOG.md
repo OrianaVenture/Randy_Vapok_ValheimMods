@@ -3,10 +3,15 @@
 * Now requires Jotunn
 * Fixed doublejump allowing infinite jumping
 * Reduced default scan radius for adventure mode to help mitigate bounties not spawning in the Ashlands
+* Remove UI Locking during Bounty and Treasure Map generation
+* Bounty and Treasure map generation can now run for much longer without massively degrading performance
+* Improved bounty and treasure spawning to help prevent spawns inside of rocks, under terrain, and in other hard to reach places
+* Fixed a bug which caused the tooltip UI to constantly flicker when hovering over items
 * Internalized all of the json files for the mod
 * Added Requirement check that server AND clients must have the mod installed and running for multiplayer
 * Improved server syncing of configurations to allow reloading patches without restarting the server
     * Configurations are now virtualized and not dumped to disk when received from a host/server.
+    * This allows hot-reloading of patches, and servers to have their own configurations not shared by the client, that will be loaded on connect.
 
 
 ## Version 0.10.6
