@@ -251,14 +251,7 @@ namespace EpicLoot.src.Adventure.bounties
                 //}
                 // This is a Y check which prevents spawns in a body of water
                 // Does not apply for ocean spawns
-                if (biome != Heightmap.Biome.Ocean && determined_spawn.y < 27)
-                {
-                    EpicLoot.Log($"Selected spawn under water but should not be, retrying.");
-                    spawn_location_attempts += 1;
-                    continue;
-                }
-                // Prevent spawns at water levels if this should not spawn in water
-                if (do_not_spawn_in_water_override && determined_spawn.y < 27)
+                if (biome != Heightmap.Biome.Ocean && determined_spawn.y < 27 || do_not_spawn_in_water_override && determined_spawn.y < 27)
                 {
                     EpicLoot.Log($"Selected spawn under water but should not be, retrying.");
                     spawn_location_attempts += 1;

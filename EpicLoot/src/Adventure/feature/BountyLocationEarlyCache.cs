@@ -55,7 +55,7 @@ namespace EpicLoot.src.Adventure.feature
                     continue;
                 }
                 if (!PotentialBiomeLocations.ContainsKey(spawn_location_biome)) { 
-                    PotentialBiomeLocations.Add(spawn_location_biome, new List<Vector3>() { }); 
+                    PotentialBiomeLocations.Add(spawn_location_biome, new List<Vector3>() { });
                 }
                 EpicLoot.Log($"Adding {spawn_location_biome} location.");
                 PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
@@ -79,7 +79,6 @@ namespace EpicLoot.src.Adventure.feature
             // Populate the biome list first
             Heightmap.Biome[] biomes = Enum.GetValues(typeof(Heightmap.Biome)).Cast<Heightmap.Biome>().ToArray();
             foreach (var biome in biomes) {
-                if (biome == Heightmap.Biome.None || biome == Heightmap.Biome.All) { continue; }
                 if (!PotentialBiomeLocations.ContainsKey(biome)) { PotentialBiomeLocations.Add(biome, new List<Vector3>() { }); }
             }
             var adventure_save = Player.m_localPlayer.GetAdventureSaveData();
@@ -90,6 +89,7 @@ namespace EpicLoot.src.Adventure.feature
                 // Check if all biomes have the required number of keys
                 int cache_ready = 0;
                 foreach (var biome in biomes) {
+                    if (biome == Heightmap.Biome.None || biome == Heightmap.Biome.All) { continue; }
                     if (PotentialBiomeLocations[biome].Count() < minimum_location_keys) {
                         cache_ready += 1;
                     }
@@ -122,6 +122,9 @@ namespace EpicLoot.src.Adventure.feature
                 bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
                 EpicLoot.Log($"Found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
                 if (!valid_location) {
+                    continue;
+                }
+                if (spawn_location_biome == Heightmap.Biome.None) {
                     continue;
                 }
                 EpicLoot.Log($"Adding {spawn_location_biome} location.");

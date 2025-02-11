@@ -106,6 +106,24 @@ namespace EpicLoot.MagicItemEffects
                 __result.m_spirit *= modifier;
             }
 
+            if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance,
+                MagicEffectType.SpellSword, out float damageEffectValue, 0.01f))
+            {
+                var modifier = 1.0f + damageEffectValue;
+
+                __result.m_damage *= modifier;
+                __result.m_blunt *= modifier;
+                __result.m_slash *= modifier;
+                __result.m_pierce *= modifier;
+                __result.m_chop *= modifier;
+                __result.m_pickaxe *= modifier;
+                __result.m_fire *= modifier;
+                __result.m_frost *= modifier;
+                __result.m_lightning *= modifier;
+                __result.m_poison *= modifier;
+                __result.m_spirit *= modifier;
+            }
+
             var damageMod = 0f;
             ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyDamage, effect =>
             {
