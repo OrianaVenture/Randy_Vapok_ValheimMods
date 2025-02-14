@@ -22,10 +22,10 @@ namespace EpicLoot.Adventure.Feature
             var results = new List<SecretStashItemInfo>();
 
             List<SecretStashItemInfo> availableGambles = GetAvailableGambles();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GamblesCount, results);
+            RollOnListNTimes(availableGambles, AdventureDataManager.Config.Gamble.GamblesCount, results);
 
             var forestTokenGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
+            RollOnListNTimes(availableGambles, AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
             foreach (var forestTokenGamble in forestTokenGambles)
             {
                 forestTokenGamble.Cost.Coins = (int)(forestTokenGamble.Cost.Coins * AdventureDataManager.Config.Gamble.ForestTokenGambleCoinsCost);
@@ -36,7 +36,7 @@ namespace EpicLoot.Adventure.Feature
             }
 
             var ironBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
+            RollOnListNTimes(availableGambles, AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
             foreach (var ironBountyGamble in ironBountyGambles)
             {
                 ironBountyGamble.Cost.Coins = (int)(ironBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.IronBountyGambleCoinsCost);
@@ -47,7 +47,7 @@ namespace EpicLoot.Adventure.Feature
             }
 
             var goldBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
+            RollOnListNTimes(availableGambles, AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
             foreach (var goldBountyGamble in goldBountyGambles)
             {
                 goldBountyGamble.Cost.Coins = (int)(goldBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.GoldBountyGambleCoinsCost);
