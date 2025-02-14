@@ -407,24 +407,16 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="XblPCSandbox">
+      <HintPath>Assets\ExternalLibraries\valheim\XblPCSandbox.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SharpCompress">
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\SharpCompress\SharpCompress.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NGCore">
-      <HintPath>Assets\Plugins\NGTools\NGCore\NGCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Assets\ExternalLibraries\valheim\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PlayFabParty">
       <HintPath>Assets\ExternalLibraries\valheim\PlayFabParty.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NGCoreEditor">
-      <HintPath>Assets\Plugins\NGTools\NGCore\Editor\NGCoreEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlatformTools.Core">
@@ -433,18 +425,6 @@
     </Reference>
     <Reference Include="Mono.WebBrowser">
       <HintPath>Assets\ExternalLibraries\valheim\Mono.WebBrowser.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>Assets\ExternalLibraries\valheim\Mono.Security.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NGLicenses">
-      <HintPath>Assets\Plugins\NGTools\NGCore\Editor\NGLicenses.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NGMissingScriptRecoveryEditor">
-      <HintPath>Assets\Plugins\NGTools\NGMissingScriptRecovery\Editor\NGMissingScriptRecoveryEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Posix">
@@ -487,6 +467,10 @@
       <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\Markdig\Markdig.Signed.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.MemoryProfiler">
+      <HintPath>Assets\ExternalLibraries\valheim\Unity.MemoryProfiler.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ConnectedStorage">
       <HintPath>Assets\ExternalLibraries\valheim\ConnectedStorage.dll</HintPath>
       <Private>False</Private>
@@ -501,6 +485,10 @@
     </Reference>
     <Reference Include="PlayFab">
       <HintPath>Assets\ExternalLibraries\valheim\PlayFab.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EpicLoot-UnityLib">
+      <HintPath>Assets\ExternalLibraries\EpicLoot-UnityLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Accessibility">
@@ -1160,10 +1148,6 @@
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{4F36CE63-FC64-3551-8CB6-37895B314EA8}</Project>
       <Name>Assembly-CSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="Assembly-CSharp-Editor-firstpass.csproj">
-      <Project>{9008F9AA-7A1E-0DAD-6CBE-5DFBF3E13DBD}</Project>
-      <Name>Assembly-CSharp-Editor-firstpass</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

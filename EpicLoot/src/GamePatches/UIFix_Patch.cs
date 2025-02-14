@@ -12,6 +12,7 @@ namespace EpicLoot.src.GamePatches
         [HarmonyPrefix]
         public static void Postfix(UITooltip __instance, UITooltip tooltip)
         {
+            if (UITooltip.m_tooltip == null) { return; }
             RectTransform tooltip_box = (RectTransform)UITooltip.m_tooltip.transform.GetChild(0).transform;
             Vector3[] array = new Vector3[4];
             tooltip_box.GetWorldCorners(array);

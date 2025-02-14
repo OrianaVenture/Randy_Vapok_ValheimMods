@@ -77,21 +77,21 @@
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_googleanalytics.dll" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo projectiles\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo projectiles\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
+    <None Include="Assets\ExternalLibraries\valheim\XblPCSandbox.dll" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_valheim.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\Projectiles\README.txt" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo AOE skills\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\Projectiles\Readme.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo AOE skills\Readme.txt" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_simplemeshcombine.dll" />
-    <None Include="Assets\ExternalLibraries\valheim\Assembly-CSharp.dll" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_lux.dll" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Lit_CenterGlow.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\SmoothSmoke.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\HDRP and URP(LWRP).txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo magic circles Vol 1\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo magic circles Vol 1\Readme.txt" />
     <None Include="Assets\ExternalLibraries\valheim\PlayFabParty.dll" />
     <None Include="Assets\X_Wiz\AnimCtrl\OrganJarAnimationTiming.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\DissolveNoise.shader" />
@@ -105,19 +105,18 @@
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Distortion.shader" />
     <None Include="Assets\X_LootBeams\Shaders\Beams\Beam Additive.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Blend_TwoSides.shader" />
-    <None Include="Assets\X_LootBeams\README.txt" />
+    <None Include="Assets\X_LootBeams\Readme.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Electricity.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
     <None Include="Assets\X_RPGVFX\Auras pack\Shaders\Blend_CenterGlow.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Blend_Normals.shader" />
-    <None Include="Assets\ExternalLibraries\valheim\Mono.Security.dll" />
     <None Include="Assets\ExternalLibraries\valheim\Mono.Posix.dll" />
     <None Include="Assets\ExternalLibraries\valheim\PlatformTools.Common.dll" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\AOE spells\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\AOE spells\Readme.txt" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_sunshafts.dll" />
     <None Include="Assets\ExternalLibraries\valheim\PlatformTools.Platform.Steam.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo scene lasers\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo scene lasers\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\ExternalLibraries\valheim\XGamingRuntime.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -138,6 +137,7 @@
     <None Include="Assets\ExternalLibraries\valheim\PlatformTools.Platform.Playstation.dll" />
     <None Include="Assets\ExternalLibraries\valheim\SoftReferenceableAssets.dll" />
     <None Include="Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll" />
+    <None Include="Assets\ExternalLibraries\valheim\Unity.MemoryProfiler.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\ExternalLibraries\valheim\ConnectedStorage.dll" />
     <None Include="Assets\X_RPGVFX\Auras pack\Shaders\Add_CenterGlow.shader" />
@@ -147,7 +147,7 @@
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo AOE skills\HDRP and URP(LWRP).txt" />
     <None Include="Assets\ExternalLibraries\valheim\PlayFab.dll" />
-    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Scripts\README.txt" />
+    <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Scripts\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\ExternalLibraries\EpicLoot-UnityLib.dll" />
     <None Include="Assets\ExternalLibraries\valheim\Accessibility.dll" />
@@ -487,12 +487,8 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.17f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NGCore">
-      <HintPath>Assets\Plugins\NGTools\NGCore\NGCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Assets\ExternalLibraries\valheim\Assembly-CSharp.dll</HintPath>
+    <Reference Include="XblPCSandbox">
+      <HintPath>Assets\ExternalLibraries\valheim\XblPCSandbox.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayFabParty">
@@ -505,10 +501,6 @@
     </Reference>
     <Reference Include="Mono.WebBrowser">
       <HintPath>Assets\ExternalLibraries\valheim\Mono.WebBrowser.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Security">
-      <HintPath>Assets\ExternalLibraries\valheim\Mono.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Posix">
@@ -543,6 +535,10 @@
       <HintPath>Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.MemoryProfiler">
+      <HintPath>Assets\ExternalLibraries\valheim\Unity.MemoryProfiler.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ConnectedStorage">
       <HintPath>Assets\ExternalLibraries\valheim\ConnectedStorage.dll</HintPath>
       <Private>False</Private>
@@ -555,16 +551,16 @@
       <HintPath>Assets\ExternalLibraries\valheim\PlayFab.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="EpicLoot-UnityLib">
+      <HintPath>Assets\ExternalLibraries\EpicLoot-UnityLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Accessibility">
       <HintPath>Assets\ExternalLibraries\valheim\Accessibility.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="gui_framework">
       <HintPath>Assets\ExternalLibraries\valheim\gui_framework.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="EpicLoot-UnityLib">
-      <HintPath>Assets\ExternalLibraries\EpicLoot-UnityLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
