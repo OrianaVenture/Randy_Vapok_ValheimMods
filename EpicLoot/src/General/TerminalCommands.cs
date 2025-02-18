@@ -111,5 +111,10 @@ namespace EpicLoot.src.General
                 }
             }
         }
+
+        internal static class TerminalCommandHelpers
+        {
+
+        }
     }
 }

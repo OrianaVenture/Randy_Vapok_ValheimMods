@@ -54,6 +54,7 @@
     <Compile Include="src\Adventure\feature\SecretStashListPanel.cs" />
     <Compile Include="src\Adventure\feature\TreasureMapListPanel.cs" />
     <Compile Include="src\Adventure\feature\TreasureMaps.cs" />
+    <Compile Include="src\General\Extensions.cs" />
     <Compile Include="src\integrations\HarmonyPatches\ArmorStand_Patch.cs" />
     <Compile Include="src\integrations\HarmonyPatches\ItemStand_Patch.cs" />
     <Compile Include="src\Loot\LootBeams\AlwaysPointUp.cs" />

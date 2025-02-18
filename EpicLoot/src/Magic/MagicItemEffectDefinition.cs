@@ -153,8 +153,8 @@ namespace EpicLoot
             if (itemData.m_dropPrefab?.name != null)
                 prefabName = itemData.m_dropPrefab.name;
 
-            var typeName = !string.IsNullOrEmpty(prefabName) && GatedItemTypeHelper.ItemInfoByID.TryGetValue(prefabName,
-                out var itemTypeInfo) ? itemTypeInfo.Type : null;
+            var typeName = !string.IsNullOrEmpty(prefabName) && GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(prefabName,
+                out var itemTypeInfo) ? itemTypeInfo.category : null;
 
             return !string.IsNullOrEmpty(typeName) && AllowedItemTypes.Contains(typeName);
         }
@@ -185,8 +185,8 @@ namespace EpicLoot
                 prefabName = itemData.m_dropPrefab.name;
 
             var typeName = !string.IsNullOrEmpty(prefabName) &&
-                GatedItemTypeHelper.ItemInfoByID.TryGetValue(prefabName, out var itemTypeInfo) ?
-                itemTypeInfo.Type : null;
+                GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(prefabName, out var itemTypeInfo) ?
+                itemTypeInfo.category : null;
 
             return !string.IsNullOrEmpty(typeName) && ExcludedItemTypes.Contains(typeName);
         }

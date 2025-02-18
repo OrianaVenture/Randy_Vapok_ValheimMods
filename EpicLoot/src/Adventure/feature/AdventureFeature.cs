@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static MeleeWeaponTrail;
 using Object = UnityEngine.Object;
 using Random = System.Random;
 
@@ -143,16 +144,72 @@ namespace EpicLoot.Adventure.Feature
         /// <summary>
         /// Randomly select N items from the list without duplicates.
         /// </summary>
-        protected static void RollOnListNTimes<T>(List<T> list, int n, List<T> results)
+        protected static void RollOnListNTimes<T>(Random random, List<T> list, int n, List<T> results)
         {
-            // Randomize a list, and take a number of entries from it
-            results = (List<T>)list.shuffleList().Take(n);
+            HashSet<int> indexes = new HashSet<int>();
+            if (n > list.Count)
+            {
+                // Return all items
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    results.Add(item);
+                    indexes.Add(i);
+                }
+
+                return;
+            }
+
+            int count = 0;
+
+            while (count < n)
+            {
+                var index = random.Next(0, list.Count);
+                if (!indexes.Contains(index))
+                {
+                    var item = list[index];
+                    results.Add(item);
+                    indexes.Add(index);
+                    count++;
+                }
+            }
         }
 
-        protected static T RollOnList<T>(List<T> list)
+        protected static void RollOnListNTimesUnique<T>(Random random, List<T> list, int n, List<T> results)
         {
-            // Randomize a list and take one entry
-            return  (T)list.shuffleList().Take(1);
+            HashSet<int> indexes = new HashSet<int>();
+            // Return all items
+            if (n > list.Count)
+            {
+                for (int i = 0; i < list.Count; i++) {
+                    var item = list[i];
+                    results.Add(item);
+                    indexes.Add(i);
+                }
+                return;
+            }
+
+            int count = 0;
+            while (count < n) {
+                var index = random.Next(0, list.Count);
+                if (!indexes.Contains(index)) {
+                    var item = list[index];
+                    results.Add(item);
+                    indexes.Add(index);
+                    count++;
+                }
+            }
+        }
+
+        protected static T RollOnList<T>(Random random, List<T> list)
+        {
+            var index = random.Next(0, list.Count);
+            return list[index];
+        }
+
+        protected static List<SecretStashItemInfo> SortListByRarity(List<SecretStashItemInfo> list)
+        {
+            return list.OrderBy(x=> x.Rarity).ToList();
         }
     }
 }

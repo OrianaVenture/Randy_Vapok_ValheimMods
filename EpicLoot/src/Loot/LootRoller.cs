@@ -11,6 +11,7 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
+using Jotunn.Managers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -346,16 +347,13 @@ namespace EpicLoot
                     }
                 }
 
-                var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item, 0);
+                var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item, 2);
 
                 GameObject itemPrefab = null;
 
-                try
-                {
-                    itemPrefab = ObjectDB.instance.GetItemPrefab(itemID);
-                }
-                catch (Exception e)
-                {
+                try {
+                    itemPrefab = PrefabManager.Instance.GetPrefab(itemID);
+                } catch (Exception e) {
                     EpicLoot.LogWarning($"Unable to get Gated Item Prefab for [{itemID ?? "Invalid Item"}]. Continuing.");
                     EpicLoot.LogWarning($"Error: {e.Message}");
                 }

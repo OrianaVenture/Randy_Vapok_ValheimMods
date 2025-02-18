@@ -112,7 +112,7 @@ namespace EpicLoot.Adventure.Feature
             foreach (var entry in bountiesPerBiome)
             {
                 var targets = entry.Value;
-                RollOnListNTimes(targets, 1, selectedTargets);
+                selectedTargets.Add(RollOnList(random, targets));
             }
 
             var saveData = player.GetAdventureSaveData();
@@ -171,11 +171,11 @@ namespace EpicLoot.Adventure.Feature
 
             if (random.NextDouble() <= AdventureDataManager.Config.Bounties.Names.ChanceForSpecialName)
             {
-                return RollOnList(specialNames);
+                return RollOnList(random, specialNames);
             }
 
-            var prefix = Localization.instance.Localize(RollOnList(prefixes));
-            var suffix = Localization.instance.Localize(RollOnList(suffixes));
+            var prefix = Localization.instance.Localize(RollOnList(random, prefixes));
+            var suffix = Localization.instance.Localize(RollOnList(random, suffixes));
             var format = suffix.StartsWith(" ") || suffix.StartsWith(",") ?
                 "$mod_epicloot_bounties_targetnameformat_nospace" :
                 "$mod_epicloot_bounties_targetnameformat";
