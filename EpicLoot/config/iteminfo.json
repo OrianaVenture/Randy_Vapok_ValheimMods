@@ -27,7 +27,7 @@
     },
     {
       "Type": "Axes",
-      "Fallback": "AxeStone",
+      "Fallback": "Knives",
       "Items": [ "AxeStone", "AxeFlint", "AxeBronze", "AxeIron", "AxeBlackMetal", "AxeJotunBane", "AxeBerzerkr"],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "AxeStone", "AxeFlint" ],
@@ -97,7 +97,7 @@
     },
     {
       "Type": "Clubs",
-      "Fallback": "Club",
+      "Fallback": "Clubs",
       "Items": [ "Club", "MaceBronze", "MaceIron", "MaceSilver", "MaceNeedle", "MaceEldner" ],
       "ItemsByBoss": {
         "defeated_eikthyr"    : [ "Club" ],
@@ -195,7 +195,7 @@
     },
     {
       "Type": "RoundShields",
-      "Fallback": "ShieldWood",
+      "Fallback": "RoundShields",
       "Items": [ "ShieldWood", "ShieldBanded", "ShieldSilver", "ShieldBlackmetal", "ShieldCarapace", "ShieldFlametal" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ShieldWood" ],
@@ -209,7 +209,7 @@
     },
     {
       "Type": "TowerShields",
-      "Fallback": "ShieldWoodTower",
+      "Fallback": "TowerShields",
       "Items": [ "ShieldWoodTower", "ShieldBoneTower", "ShieldIronTower", "ShieldSerpentscale", "ShieldBlackmetalTower", "ShieldFlametalTower" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ShieldWoodTower" ],
@@ -223,7 +223,7 @@
     },
     {
       "Type": "ChestArmor",
-      "Fallback": "ArmorRagsChest",
+      "Fallback": "ChestArmor",
       "Items": [ "ArmorRagsChest", "ArmorLeatherChest", "ArmorBronzeChest", "ArmorTrollLeatherChest", "ArmorIronChest", "ArmorRootChest", "ArmorWolfChest", "ArmorFenringChest", "ArmorPaddedCuirass", "ArmorCarapaceChest", "ArmorMageChest", "ArmorFlametalChest", "ArmorAshlandsMediumChest", "ArmorMageChest_Ashlands" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ArmorRagsChest", "ArmorLeatherChest" ],
@@ -237,7 +237,7 @@
     },
     {
       "Type": "LegsArmor",
-      "Fallback": "ArmorRagsLegs",
+      "Fallback": "LegsArmor",
       "Items": [ "ArmorRagsLegs", "ArmorLeatherLegs", "ArmorTrollLeatherLegs", "ArmorBronzeLegs", "ArmorIronLegs", "ArmorRootLegs", "ArmorWolfLegs", "ArmorFenringLegs", "ArmorPaddedGreaves", "ArmorCarapaceLegs", "ArmorMageLegs", "ArmorFlametalLegs", "ArmorAshlandsMediumlegs", "ArmorMageLegs_Ashlands" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "ArmorRagsLegs", "ArmorLeatherLegs" ],
@@ -251,7 +251,7 @@
     },
     {
       "Type": "HeadArmor",
-      "Fallback": "ArmorRagsChest",
+      "Fallback": "HeadArmor",
       "Items": [ "HelmetLeather", "HelmetTrollLeather", "HelmetBronze", "HelmetIron", "HelmetRoot", "HelmetDrake", "HelmetFenring", "HelmetPadded", "HelmetCarapace", "HelmetMage", "HelmetFlametal", "HelmetAshlandsMediumHood", "HelmetMage_Ashlands" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "HelmetLeather" ],
@@ -265,7 +265,7 @@
     },
     {
       "Type": "ShouldersArmor",
-      "Fallback": "ArmorRagsLegs",
+      "Fallback": "ShouldersArmor",
       "Items": [ "CapeDeerHide", "CapeTrollHide", "CapeWolf", "CapeLinen", "CapeLox", "CapeFeather", "CapeAsh", "CapeAsksvin" ],
       "ItemsByBoss" : {
         "defeated_eikthyr"    : [ "CapeDeerHide" ],

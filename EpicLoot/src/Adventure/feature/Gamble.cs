@@ -73,6 +73,7 @@ namespace EpicLoot.Adventure.Feature
                 // If this is reduced to one, it means we basically grab current biome weapons 100% of the time- assuming that type is available
                 // Since vanilla is missing a handful of weapon types this does result in a few previous biome items and regular duplicates without grabbing 2 items
                 int number_of_items_per_category_to_select = 2;
+                var gatingMode = EpicLoot.GetGatedItemTypeMode();
                 for (int i = 0; i < number_of_items_per_category_to_select; i++)
                 {
                     if (string.IsNullOrEmpty(itemConfig))
@@ -80,17 +81,9 @@ namespace EpicLoot.Adventure.Feature
                         EpicLoot.LogWarning($"Found empty itemConfig.. skipping.");
                         continue;
                     }
-
-                    var gatingMode = EpicLoot.GetGatedItemTypeMode();
-                    if (gatingMode == GatedItemTypeMode.Unlimited)
-                    {
-                        gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
-                    }
-
                     var itemId = GatedItemTypeHelper.GetItemFromCategory(itemConfig, gatingMode, selectedItems);
-                    if (string.IsNullOrEmpty(itemId))
-                    {
-                        EpicLoot.LogWarning($"[AdventureData] Could not find item id from Category (orig={itemConfig})!");
+                    if (string.IsNullOrEmpty(itemId)) {
+                        EpicLoot.Log($"[AdventureData] Could not find item id from Category (orig={itemConfig})!");
                         continue;
                     }
                     var itemDrop = CreateItemDrop(itemId);

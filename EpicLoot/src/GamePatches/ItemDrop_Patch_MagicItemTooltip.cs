@@ -220,7 +220,7 @@ namespace EpicLoot
                     var baseBlockPower1 = item.GetBaseBlockPower(qualityLevel);
                     var blockPowerTooltipValue = item.GetBlockPowerTooltip(qualityLevel);
                     var blockPowerPercentageString = blockPowerTooltipValue.ToString("0");
-                    text.Append($"\n$item_blockpower: <color={magicBlockColor1}>{baseBlockPower1}</color> " +
+                    text.Append($"\n$item_blockarmor: <color={magicBlockColor1}>{baseBlockPower1}</color> " +
                         $"<color={magicBlockColor2}>({blockPowerPercentageString})</color>");
                     if (item.m_shared.m_timedBlockBonus > 1.0)
                     {
@@ -264,7 +264,7 @@ namespace EpicLoot
                     var baseBlockPower2 = item.GetBaseBlockPower(qualityLevel);
                     blockPowerTooltipValue = item.GetBlockPowerTooltip(qualityLevel);
                     var str5 = blockPowerTooltipValue.ToString("0");
-                    text.Append($"\n$item_blockpower: <color={magicBlockColor1}>{baseBlockPower2}</color> " +
+                    text.Append($"\n$item_blockarmor: <color={magicBlockColor1}>{baseBlockPower2}</color> " +
                         $"<color={magicBlockColor2}>({str5})</color>");
                     if (item.m_shared.m_timedBlockBonus > 1.0)
                     {
@@ -614,7 +614,7 @@ namespace EpicLoot
                         }
                         break;
 
-                    case "$item_blockpower":
+                    case "$item_blockarmor":
                         if (magicItem.HasEffect(MagicEffectType.ModifyBlockPower))
                         {
                             var baseBlockPower = item.GetBaseBlockPower(item.m_quality);
