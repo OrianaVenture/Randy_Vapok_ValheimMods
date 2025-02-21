@@ -265,6 +265,9 @@ namespace EpicLoot.Config
             SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, LootConfigSendConfigs);
             SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(MagicEffectsRPC, MagicEffectsSendConfigs);
+            // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
+            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize);
+            SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, AdventureDataSendConfigs);
             SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(ItemConfigRPC, ItemInfoConfigSendConfigs);
             SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize);
@@ -273,8 +276,6 @@ namespace EpicLoot.Config
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingCostsRPC, EnchantCostConfigSendConfigs);
             SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(ItemNamesRPC, MagicItemNamesSendConfigs);
-            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, AdventureDataSendConfigs);
             SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(LegendariesRPC, LegendarySendConfigs);
             SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize);
@@ -290,6 +291,7 @@ namespace EpicLoot.Config
         {
             var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename);
             var result = JsonConvert.DeserializeObject<T>(jsonFile);
+            // EpicLoot.Log($"deserialized object: {result}");
             setupMethod(result);
         }
 
