@@ -350,6 +350,8 @@ namespace EpicLoot
                 Log($"Adding localization: {localization_name[2]}");
                 Localization.AddJsonFile(localization_name[2], cleaned_localization);
             }
+            // Load the localization patches and additional languages
+            ELConfig.StartupProcessModifiedLocalizations();
         }
 
         private static void InitializeAbilities()
