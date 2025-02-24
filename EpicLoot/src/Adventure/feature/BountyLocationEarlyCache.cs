@@ -96,7 +96,7 @@ namespace EpicLoot.src.Adventure.feature
                 }
                 if (cache_ready >= PotentialBiomeLocations.Count()) { break; }
                 // fail safe, exit coroutine.
-                if (tries >= 80) { break; }
+                if (tries >= 100) { yield break; }
                 // Sleep to prevent locking the main thread
                 if (tries % 10 == 0 && tries > 1) {
                     yield return new WaitForSeconds(1f);
@@ -107,6 +107,7 @@ namespace EpicLoot.src.Adventure.feature
                     if (tries == 20) { target_biome = Biome.BlackForest; }
                     if (tries == 40) { target_biome = Biome.Mountain; }
                     if (tries == 60) { target_biome = Biome.Mistlands; }
+                    if (tries == 80) { target_biome = Biome.AshLands; }
                     radiusRange = GetTreasureMapSpawnRadiusRange(target_biome, adventure_save);
                 }
                 tries++;
@@ -127,8 +128,10 @@ namespace EpicLoot.src.Adventure.feature
                 if (spawn_location_biome == Heightmap.Biome.None) {
                     continue;
                 }
-                EpicLoot.Log($"Adding {spawn_location_biome} location.");
-                PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
+                if (PotentialBiomeLocations[spawn_location_biome].Count() < 4) {
+                    EpicLoot.Log($"Adding {spawn_location_biome} location.");
+                    PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
+                }
             }
             yield break;
         }

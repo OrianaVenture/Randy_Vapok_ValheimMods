@@ -268,7 +268,7 @@ namespace EpicLoot
                         $"<color={magicBlockColor2}>({str5})</color>");
                     if (item.m_shared.m_timedBlockBonus > 1.0)
                     {
-                        text.Append($"\n$item_deflection: " +
+                        text.Append($"\n$item_blockforce: " +
                             $"<color={magicParryColor}>{item.GetDeflectionForce(qualityLevel)}</color>");
 
                         var timedBlockBonus = item.m_shared.m_timedBlockBonus;
