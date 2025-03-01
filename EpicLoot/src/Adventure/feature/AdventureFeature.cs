@@ -1,11 +1,6 @@
-﻿using EpicLoot.src.General;
-using Microsoft.SqlServer.Server;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using static MeleeWeaponTrail;
 using Object = UnityEngine.Object;
 using Random = System.Random;
 

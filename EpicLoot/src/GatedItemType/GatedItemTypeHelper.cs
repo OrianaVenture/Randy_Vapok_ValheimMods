@@ -3,7 +3,6 @@ using System.Linq;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.src.General;
-using HarmonyLib;
 using Jotunn.Managers;
 
 namespace EpicLoot.GatedItemType
@@ -102,7 +101,7 @@ namespace EpicLoot.GatedItemType
                     }
                 }
                 if (ItemsByTypeAndBoss.ContainsKey(info.Type)) {
-                    EpicLoot.Log("Duplicate entry in ItemByTypeAndBoss.");
+                    //EpicLoot.Log("Duplicate entry in ItemByTypeAndBoss.");
                 } else { ItemsByTypeAndBoss.Add(info.Type, itemsByBoss); }
 
             }
@@ -120,20 +119,20 @@ namespace EpicLoot.GatedItemType
         // This is used for gambling, and will return a random item from the category
         public static string GetItemFromCategory(string itemCategory, GatedItemTypeMode mode, List<string> already_selected, int depth = 4)
         {
-            EpicLoot.Log($"Getting {itemCategory} with gating style {mode}");
+            //EpicLoot.Log($"Getting {itemCategory} with gating style {mode}");
             switch (mode) {
                 case GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems:
                     List<string> player_defeated_bosses = DeterminePlayerDefeatedBiomes(true);
                     if (player_defeated_bosses.Count == 0) {
                         return FallbackItemsByCategory[itemCategory];
                     }
-                    EpicLoot.Log($"Player has defeated the following bosses: {string.Join(",", player_defeated_bosses)}");
+                    //EpicLoot.Log($"Player has defeated the following bosses: {string.Join(",", player_defeated_bosses)}");
                     if (ItemsByTypeAndBoss.ContainsKey(itemCategory))
                     {
                         string item = null;
                         foreach (var defeated_boss in player_defeated_bosses)
                         {
-                            EpicLoot.Log($"Checking {itemCategory} for boss {defeated_boss}");
+                            //EpicLoot.Log($"Checking {itemCategory} for boss {defeated_boss}");
                             item = getGatedWeaponFromList(itemCategory, defeated_boss, already_selected, mode, false, true);
                             if (item != null) { return item; }
                         }
@@ -142,7 +141,7 @@ namespace EpicLoot.GatedItemType
                             return getGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], player_defeated_bosses.First(), already_selected, mode, true, true);
                         }
                     } else {
-                        EpicLoot.LogWarning($"Item Category [{itemCategory}] not found in ItemInfo.");
+                        //EpicLoot.LogWarning($"Item Category [{itemCategory}] not found in ItemInfo.");
                         return null;
                     }
                     break;
@@ -161,13 +160,13 @@ namespace EpicLoot.GatedItemType
                         {
                             if (BossOrder.IndexOf(defeated_boss) < highest_boss_index)
                             {
-                                EpicLoot.Log($"Setting defeated boss {defeated_boss} index: {BossOrder.IndexOf(defeated_boss)}");
+                                //EpicLoot.Log($"Setting defeated boss {defeated_boss} index: {BossOrder.IndexOf(defeated_boss)}");
                                 highest_boss_index = BossOrder.IndexOf(defeated_boss);
                             }
                         }
                         if (mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems) {
                             if (highest_boss_index - 1 >= 0) {
-                                EpicLoot.Log($"current highest boss {BossOrder[highest_boss_index]} being set to next boss: {BossOrder[highest_boss_index - 1]}");
+                                //EpicLoot.Log($"current highest boss {BossOrder[highest_boss_index]} being set to next boss: {BossOrder[highest_boss_index - 1]}");
                                 highest_boss = BossOrder[highest_boss_index - 1];
                             } else {
                                 highest_boss = BossOrder.Last();
@@ -176,7 +175,7 @@ namespace EpicLoot.GatedItemType
                             highest_boss = BossOrder[highest_boss_index];
                         }
                     }
-                    EpicLoot.Log($"Checking {itemCategory} for boss {highest_boss}");
+                    //EpicLoot.Log($"Checking {itemCategory} for boss {highest_boss}");
                     return getGatedWeaponFromList(itemCategory, highest_boss, already_selected, mode, true, true);
                 case GatedItemTypeMode.Unlimited:
                     // Go through each biome level and look for recipes the player knows, those are valid drops for unlimited mode
@@ -191,13 +190,13 @@ namespace EpicLoot.GatedItemType
                     break;
             }
             // No valid item from this category found
-            EpicLoot.LogWarning($"No valid item found in [{itemCategory}], using fallback.");
+            //EpicLoot.LogWarning($"No valid item found in [{itemCategory}], using fallback.");
             return FallbackItemsByCategory[itemCategory];
         }
 
         private static string getGatedWeaponFromList(string itemCategory, string boss, List<string> already_selected, GatedItemTypeMode mode, bool should_fallback = false, bool duplicate_instead_of_fallthrough = false, bool gaurentee_item = false)
         {
-            EpicLoot.Log($"Checking {itemCategory} for tier with {boss} - {ItemsByTypeAndBoss[itemCategory].ContainsKey(boss)}");
+            //EpicLoot.Log($"Checking {itemCategory} for tier with {boss} - {ItemsByTypeAndBoss[itemCategory].ContainsKey(boss)}");
             string valid_fallback_items = null;
             if (ItemsByTypeAndBoss[itemCategory].ContainsKey(boss))
             {
@@ -212,13 +211,13 @@ namespace EpicLoot.GatedItemType
                         valid_fallback_items = weapon;
                         continue;
                     }
-                    EpicLoot.Log($"Selected {weapon}");
+                    //EpicLoot.Log($"Selected {weapon}");
                     return weapon;
                 }
             }
             // We fall back to the ungated item
             if (valid_fallback_items != null && duplicate_instead_of_fallthrough) {
-                EpicLoot.Log($"Selected Duplicate fallback {valid_fallback_items}");
+                //EpicLoot.Log($"Selected Duplicate fallback {valid_fallback_items}");
                 return valid_fallback_items;
             }
             if (should_fallback) {
@@ -226,7 +225,7 @@ namespace EpicLoot.GatedItemType
                 return getGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], boss, already_selected, mode, false, true);
             }
             if (gaurentee_item) {
-                EpicLoot.Log($"Selecting hardfallback {FallbackItemsByCategory[itemCategory]}");
+                //EpicLoot.Log($"Selecting hardfallback {FallbackItemsByCategory[itemCategory]}");
                 return FallbackItemsByCategory[itemCategory];
             } else {
                 return null;
@@ -241,27 +240,27 @@ namespace EpicLoot.GatedItemType
         // Always returns the highest tier item in a category, with fallback, and randomization
         private static string GetGatedItemID(string itemID, GatedItemTypeMode mode, int depth = 2)
         {
-            EpicLoot.Log($"Checking GatedItemID for {itemID}");
+            //EpicLoot.Log($"Checking GatedItemID for {itemID}");
             if (string.IsNullOrEmpty(itemID)) {
-                EpicLoot.LogError($"Tried to get gated itemID with null or empty itemID!");
+                //EpicLoot.LogError($"Tried to get gated itemID with null or empty itemID!");
                 return null;
             }
             // We are in ungated mode
             if (mode == GatedItemTypeMode.Unlimited) {
-                EpicLoot.Log($"Unlimited gating mode {itemID}");
+                //EpicLoot.Log($"Unlimited gating mode {itemID}");
                 return itemID;
             }
             // Passed item is not gated, return it immediately
             if (!CheckIfItemIDNeedsGate(mode, itemID, out GatedItemDetails itemDetails))
             {
-                EpicLoot.Log($"Item is not gated {itemID}");
+                //EpicLoot.Log($"Item is not gated {itemID}");
                 return itemID;
             }
             List<string> defeated_bosses = DeterminePlayerDefeatedBiomes();
             // The fact that we got to this point means the selected item is gated, and we are trying to select a fallback
             bool at_tier = false;
             foreach(string boss in ReverseBossOrder) {
-                EpicLoot.Log($"checking tier: ({boss}) - {at_tier == true} || {itemDetails.reqBosses.Contains(boss) == true}");
+                //EpicLoot.Log($"checking tier: ({boss}) - {at_tier == true} || {itemDetails.reqBosses.Contains(boss) == true}");
                 // Is item current tier?
                 if (at_tier == true || itemDetails.reqBosses.Contains(boss) == true) {
                     at_tier = true;
@@ -269,7 +268,7 @@ namespace EpicLoot.GatedItemType
                     continue;
                 }
                 if (defeated_bosses.Contains(boss) != true) {
-                    EpicLoot.Log($"Player has not defeated {boss}, reducing tier.");
+                    //EpicLoot.Log($"Player has not defeated {boss}, reducing tier.");
                     continue;
                 }
                 // One of the tiers below, but same item type
@@ -277,7 +276,7 @@ namespace EpicLoot.GatedItemType
                     string potentialItem = GatedItemFromListWithCritiera(mode, AllItemsWithDetails[itemID].category, boss, depth);
                     if (potentialItem != null) {
                         // Selected item is valid and not gated
-                        EpicLoot.Log($"Gate selected alternative: {potentialItem}");
+                        //EpicLoot.Log($"Gate selected alternative: {potentialItem}");
                         return potentialItem;
                     } else {
                         // Selected item is gated or not valid, we try the fallback x times
@@ -285,7 +284,7 @@ namespace EpicLoot.GatedItemType
                         for (int i = 0; i < depth; i++) {
                             potentialItem = GatedItemFromCriteriaIsValid(mode, current_category, boss);
                             if (potentialItem != null) {
-                                EpicLoot.Log($"Gate selected fallback alternative: {potentialItem}");
+                                //EpicLoot.Log($"Gate selected fallback alternative: {potentialItem}");
                                 return potentialItem;
                             }
                             // select the fallback for our current category
@@ -295,7 +294,7 @@ namespace EpicLoot.GatedItemType
                 }
             }
             // We were not able to select an item
-            EpicLoot.Log($"Unable to determine gating for {itemID}, returning a fallback.");
+            //EpicLoot.Log($"Unable to determine gating for {itemID}, returning a fallback.");
             return FallbackItemsByCategory.First().Value;
         }
 
@@ -355,7 +354,7 @@ namespace EpicLoot.GatedItemType
             var defeated_bosses = new List<string>();
             List<BountyBossConfig> PlayerBossProgression = AdventureDataManager.Config.Bounties.Bosses;
             if (PlayerBossProgression == null || PlayerBossProgression.Count == 0) {
-                EpicLoot.Log("Player has not defeated any bosses.");
+                //EpicLoot.Log("Player has not defeated any bosses.");
                 return defeated_bosses; 
             }
             foreach ( var boss in PlayerBossProgression ) {
@@ -373,7 +372,7 @@ namespace EpicLoot.GatedItemType
             if ( reverse) {
                 defeated_bosses.Reverse();
             }
-            EpicLoot.Log($"Defeated bosses {string.Join(",", defeated_bosses)}");
+            //EpicLoot.Log($"Defeated bosses {string.Join(",", defeated_bosses)}");
             return defeated_bosses;
         }
 
@@ -402,7 +401,7 @@ namespace EpicLoot.GatedItemType
         private static bool GateEvaluation(GatedItemTypeMode mode, string itemName)
         {
             if (Player.m_localPlayer == null) {
-                EpicLoot.Log($"Local player unset, item is gated.");
+                //EpicLoot.Log($"Local player unset, item is gated.");
                 return true;
             }
             switch (mode)

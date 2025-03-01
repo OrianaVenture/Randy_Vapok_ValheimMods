@@ -99,7 +99,8 @@ namespace EpicLoot.Adventure.Feature
                     ZNetScene.instance.Destroy(itemDrop.gameObject);
                 }
             }
-            EpicLoot.Log($"Gamble Selected Items: {string.Join(",", selectedItems)}");
+            // Gives an a idea of what items were selected for the potential pool
+            // EpicLoot.Log($"Gamble Selected Items: {string.Join(",", selectedItems)}");
             return availableGambles;
         }
 

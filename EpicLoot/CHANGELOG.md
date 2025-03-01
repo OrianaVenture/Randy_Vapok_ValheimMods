@@ -1,17 +1,36 @@
-## Version 0.10.7
+## Version 0.11.0
 
 * Now requires Jotunn
 * Fixed doublejump allowing infinite jumping
-* Reduced default scan radius for adventure mode to help mitigate bounties not spawning in the Ashlands
-* Remove UI Locking during Bounty and Treasure Map generation
-* Bounty and Treasure map generation can now run for much longer without massively degrading performance
-* Improved bounty and treasure spawning to help prevent spawns inside of rocks, under terrain, and in other hard to reach places
-* Fixed a bug which caused the tooltip UI to constantly flicker when hovering over items
+* Bounty and treasure chest spawning overhauled
+    * Bounty creature spawning now includes creatures validation, bounties for creatures that don't exist in the world will not be generated 
+    * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater
+* Gambling fixes
+    * Gambling no longer picks the same items all of the time
+    * Mod items no longer are automatically picked
+    * Gambling is largely biome dependent now but has a chance to pick from a previous biome
 * Internalized all of the json files for the mod
+    * Updated the structure of iteminfo.json to specify fallback categories and failsafe fallback items seperately
+    * Localizations are now loadable from Bepinex/config/EpicLoot/localizations
 * Added Requirement check that server AND clients must have the mod installed and running for multiplayer
-* Improved server syncing of configurations to allow reloading patches without restarting the server
-    * Configurations are now virtualized and not dumped to disk when received from a host/server.
-    * This allows hot-reloading of patches, and servers to have their own configurations not shared by the client, that will be loaded on connect.
+* Some Art asset optimizations, download size reduced by 50%
+* Fixed UI tooltip spasm when too large for the screen
+    * Tooltips too large will be resized to fit the screen
+* Patches are now live-reloadable from the Bepinex/config/EpicLoot/patches folder
+    * Improved server syncing of configurations to allow reloading patches without restarting the server
+* New patch action: "MultiAdd" which allows patching the same values into multiple locations
+* Fixes Enchanting table having the wrong text for initial level and unlock
+* Fixes Augment UI having infinity symbols when used with AzuCraftyBoxes
+* Optimizations to how loot beams work
+    * Up to a 20x improvement in performance
+* Adds new magic effects
+    * EitrWeave | parry blocks restore a little eitr
+    * BulkUp | Converts part (up to 100%) of your health regen into bonus health
+    * Spellsword | Adds an eitr cost to the weapon, increases damage
+* Fixes block armor and parry armor being renamed to legacy values in the tooltip
+* Fixes terminal command lucktest, provides examples
+* Adds a terminal command 'printconfig' which allows logging any of the current configurations available. Must be an admin.
+    * This allows inspected the result of patch operations and what configs a client has recieved from the server
 
 
 ## Version 0.10.6

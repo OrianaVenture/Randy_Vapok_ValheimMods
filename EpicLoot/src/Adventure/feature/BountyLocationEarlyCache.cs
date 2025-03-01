@@ -36,7 +36,7 @@ namespace EpicLoot.src.Adventure.feature
             if (!PotentialBiomeLocations.ContainsKey(biome)) { PotentialBiomeLocations.Add(biome, new List<Vector3>() { }); }
 
             while (PotentialBiomeLocations[biome].Count() < 3) {
-                EpicLoot.Log($"Finding {biome} spawn point, currently stored: {PotentialBiomeLocations[biome].Count()} < 3");
+                // EpicLoot.Log($"Finding {biome} spawn point, currently stored: {PotentialBiomeLocations[biome].Count()} < 3");
                 if (tries % 10 == 0 && tries > 1) {
                     yield return new WaitForSeconds(1f);
                 }
@@ -50,14 +50,14 @@ namespace EpicLoot.src.Adventure.feature
                     yield return new WaitForEndOfFrame();
                 }
                 bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
-                EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
+                // EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
                 if (!valid_location) {
                     continue;
                 }
                 if (!PotentialBiomeLocations.ContainsKey(spawn_location_biome)) { 
                     PotentialBiomeLocations.Add(spawn_location_biome, new List<Vector3>() { });
                 }
-                EpicLoot.Log($"Adding {spawn_location_biome} location.");
+                // EpicLoot.Log($"Adding {spawn_location_biome} location.");
                 PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
                 // We want to run the loop to select a location once and trigger the bounty/treasure to continue
                 // then we keep adding a few locations so future iterations are much faster.
@@ -121,7 +121,7 @@ namespace EpicLoot.src.Adventure.feature
                     yield return new WaitForEndOfFrame();
                 }
                 bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
-                EpicLoot.Log($"Found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
+                // EpicLoot.Log($"Found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
                 if (!valid_location) {
                     continue;
                 }
@@ -129,7 +129,7 @@ namespace EpicLoot.src.Adventure.feature
                     continue;
                 }
                 if (PotentialBiomeLocations[spawn_location_biome].Count() < 4) {
-                    EpicLoot.Log($"Adding {spawn_location_biome} location.");
+                    // EpicLoot.Log($"Adding {spawn_location_biome} location.");
                     PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
                 }
             }
@@ -144,7 +144,7 @@ namespace EpicLoot.src.Adventure.feature
             locations.RemoveAt(0);
             PotentialBiomeLocations[biome] = locations;
             ZoneSystem.instance.GetGroundData(ref selected_location, out var normal, out var foundBiome, out var biomeArea, out var hmap);
-            EpicLoot.Log($"selected: x:{selected_location.x}, y:{selected_location.y}, z:{selected_location.z}");
+            // EpicLoot.Log($"selected: x:{selected_location.x}, y:{selected_location.y}, z:{selected_location.z}");
             // Place the spawn creator decently above terrain and ground objects.
             // This is to allow re-checking the location for validity once everything is loaded.
             selected_location.y += 100f;
@@ -153,9 +153,9 @@ namespace EpicLoot.src.Adventure.feature
 
         internal static Vector3 SelectWorldPoint(Tuple<float, float> range, int attempt)
         {
-            // This uses a modulus operator to create oscilation between zero and 5, making our attempted range size vary.
-            // This prevents us from running into the issue where we attempt to spawn outside of the map- assuming the default scan range is sane.
-            int interval_range = attempt % 5;
+            // This uses a modulus operator to create oscilation between zero and 10, making our attempted range size vary.
+            // This prevents us from running into the issue where we attempt to spawn outside of the map perpetually assuming the default scan range is sane.
+            int interval_range = attempt % 10;
             var randomPoint = UnityEngine.Random.insideUnitCircle;
             var mag = randomPoint.magnitude;
             var normalized = randomPoint.normalized;
@@ -178,7 +178,7 @@ namespace EpicLoot.src.Adventure.feature
             // Ashlands biome, and location is in lava | Don't spawn in lava
             if (foundBiome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(location) > 0.6f)
             {
-                EpicLoot.Log("Spawn Point rejected: In lava");
+                // EpicLoot.Log("Spawn Point rejected: In lava");
                 return false;
             }
 
@@ -186,19 +186,19 @@ namespace EpicLoot.src.Adventure.feature
             // 5f is a buffer here becasue the swamp is very low to the water level
             if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 5f)
             {
-                EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, groundHeight:{groundHeight})");
+                // EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, groundHeight:{groundHeight})");
                 return false;
             }
 
             // Is too near to player base
             if (EffectArea.IsPointInsideArea(location, EffectArea.Type.PlayerBase, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius))
             {
-                EpicLoot.Log("Spawn Point rejected: Too close to player base");
+                // EpicLoot.Log("Spawn Point rejected: Too close to player base");
                 return false;
             }
 
             // Is too near to player ward
-            // This is kind of expensive, so lets avoid it if we can
+            // This is kind of expensive, so lets avoid it if we can, this will also trigger excessively in the Ashlands as ruins are considered player structure zones
             //var tooCloseToWard = PrivateArea.m_allAreas.Any(x => x.IsInside(location, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius));
             //if (tooCloseToWard)
             //{

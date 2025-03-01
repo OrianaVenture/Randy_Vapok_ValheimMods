@@ -241,7 +241,7 @@
       { "Biome": "AshLands",    "Cost": 700, "ForestTokens": 35, "MinRadius": 8000, "MaxRadius": 15000 }
     ],
     "StartRadiusMin": 0,
-    "StartRadiusMax": 250,
+    "StartRadiusMax": 500,
     "IncreaseRadiusCount": 3,
     "RadiusInterval": 50,
     "MinimapAreaRadius": 45,

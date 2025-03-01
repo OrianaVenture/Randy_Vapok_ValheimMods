@@ -10,7 +10,6 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.Patching;
 using EpicLoot_UnityLib;
 using Jotunn.Entities;
-using Jotunn.Extensions;
 using Jotunn.Managers;
 using Newtonsoft.Json;
 using System;
@@ -18,7 +17,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -296,10 +294,7 @@ namespace EpicLoot.Config
             MaxInProgressBounties = BindServerConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
         }
 
-        public static void InitializeConfig()
-        {
-            // LoadJsonFile<IDictionary<string, object>>("translations.json", LoadTranslations, ConfigType.Nonsynced);
-
+        public static void InitializeConfig() {
             SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, LootConfigSendConfigs);
             SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
@@ -324,8 +319,6 @@ namespace EpicLoot.Config
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, EnchantingTableUpgradeSendConfigs);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
-            // Post startup localizations need to patch into the existing localization system for runtime reloads
-            // SetupLocalizationConfigFileWatch(LocalizationDir);
         }
 
         public static string GetLocalizationDirectoryPath() {
@@ -424,49 +417,6 @@ namespace EpicLoot.Config
             }
         }
 
-
-
-        //internal static void UpdateLocalizations(object s, FileSystemEventArgs e)
-        //{
-        //    var fileInfo = new FileInfo(e.FullPath);
-        //    if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory)) {
-        //        SetupLocalizationConfigFileWatch(e.FullPath);
-        //        EpicLoot.Log($"Adding subdirectory localization filewatcher: {e.FullPath}");
-        //        return;
-        //    }
-        //    if (!fileInfo.FullName.Contains(".json")) {
-        //        EpicLoot.Log($"File: {fileInfo} is not a supported format, ignoring.");
-        //        return;
-        //    }
-        //    EpicLoot.Log($"Processing localization file update: {fileInfo}");
-        //    string language = e.FullPath.Trim().Split(Path.DirectorySeparatorChar).Last().Split('.').First();
-        //    if (!LocalizationLanguages.Contains(language)) {
-        //        EpicLoot.LogWarning($"{language} is not a supported language [{string.Join(", ", LocalizationLanguages.ToArray())}]");
-        //        return;
-        //    }
-        //    Dictionary<string, string> localization_updates = new Dictionary<string, string>();
-        //    if (e.ChangeType != WatcherChangeTypes.Deleted) {
-        //        string contents = File.ReadAllText(e.FullPath);
-        //        string cleaned_localization = Regex.Replace(contents, @"\/\/.*\n", "");
-        //        localization_updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(cleaned_localization);
-        //    }
-
-        //    switch (e.ChangeType)
-        //    {
-        //        case WatcherChangeTypes.Created:
-        //            CheckAndUpdateLocalization(localization_updates, language);
-        //            break;
-        //        case WatcherChangeTypes.Changed:
-        //        case WatcherChangeTypes.Renamed:
-        //            // RemoveLocalizationRestoreDefaultForLanguage(language);
-        //            CheckAndUpdateLocalization(localization_updates, language);
-        //            break;
-        //        case WatcherChangeTypes.Deleted:
-        //            RemoveLocalizationRestoreDefaultForLanguage(language);
-        //            break;
-        //    }
-        //}
-
         internal static void CheckAndUpdateLocalization(Dictionary<string, string> localization_updates, string language)
         {
             foreach (var localization in localization_updates)
@@ -488,19 +438,6 @@ namespace EpicLoot.Config
             LocalizationManager.Instance.GetLocalization().AddJsonFile(language, cleaned_localization);
         }
 
-        //internal static void SetupLocalizationConfigFileWatch(string path)
-        //{
-        //    var localizationWatcher = new FileSystemWatcher(path);
-        //    localizationWatcher.Created += new FileSystemEventHandler(UpdateLocalizations);
-        //    localizationWatcher.Changed += new FileSystemEventHandler(UpdateLocalizations);
-        //    localizationWatcher.Renamed += new RenamedEventHandler(UpdateLocalizations);
-        //    localizationWatcher.Deleted += new FileSystemEventHandler(UpdateLocalizations);
-        //    localizationWatcher.NotifyFilter = NotifyFilters.LastWrite;
-        //    // newPatchWatcher.IncludeSubdirectories = true;
-        //    localizationWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
-        //    localizationWatcher.EnableRaisingEvents = true;
-        //}
-
         public static void SetupPatchConfigFileWatch(string path)
         {
             var newPatchWatcher = new FileSystemWatcher(path);
@@ -518,77 +455,77 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Loot Configs.");
+            //EpicLoot.Log("Recieved Loot Configs.");
             LootRoller.UpdateLootConfigs(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMagicConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Magic Effect Configs.");
+            //EpicLoot.Log("Recieved Magic Effect Configs.");
             MagicItemEffectDefinitions.Initialize(ClientRecieveParseJsonConfig<MagicItemEffectsList>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemInfoConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Item Info Configs.");
+            //EpicLoot.Log("Recieved Item Info Configs.");
             GatedItemTypeHelper.Initialize(ClientRecieveParseJsonConfig<ItemInfoConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveRecipesConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Recipe Configs.");
+            //EpicLoot.Log("Recieved Recipe Configs.");
             RecipesHelper.Initialize(ClientRecieveParseJsonConfig<RecipesConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingCostsConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Enchanting Cost Configs.");
+            //EpicLoot.Log("Recieved Enchanting Cost Configs.");
             EnchantCostsHelper.Initialize(ClientRecieveParseJsonConfig<EnchantingCostsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemNameConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Item Name Configs.");
+            //EpicLoot.Log("Recieved Item Name Configs.");
             MagicItemNames.Initialize(ClientRecieveParseJsonConfig<ItemNameConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Adventure Configs.");
+            //EpicLoot.Log("Recieved Adventure Configs.");
             AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveLegendaryItemConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Legendary Item Configs.");
+            //EpicLoot.Log("Recieved Legendary Item Configs.");
             UniqueLegendaryHelper.Initialize(ClientRecieveParseJsonConfig<LegendaryItemConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAbilityConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Ability Configs.");
+            //EpicLoot.Log("Recieved Ability Configs.");
             AbilityDefinitions.Initialize(ClientRecieveParseJsonConfig<AbilityConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMaterialConversionConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Material Conversion Configs.");
+            //EpicLoot.Log("Recieved Material Conversion Configs.");
             MaterialConversions.Initialize(ClientRecieveParseJsonConfig<MaterialConversionsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
-            EpicLoot.Log("Recieved Enchanting Upgrade Configs.");
+            //EpicLoot.Log("Recieved Enchanting Upgrade Configs.");
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
             yield return null;
         }
@@ -605,7 +542,7 @@ namespace EpicLoot.Config
 
         public static ZPackage LootConfigSendConfigs()
         {
-            EpicLoot.Log("Sending Loot configuration.");
+            //EpicLoot.Log("Sending Loot configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(LootRoller.Config));
             return package;
@@ -613,7 +550,7 @@ namespace EpicLoot.Config
 
         public static ZPackage MagicEffectsSendConfigs()
         {
-            EpicLoot.Log("Sending MagicItem configuration.");
+            //EpicLoot.Log("Sending MagicItem configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions()));
             return package;
@@ -621,7 +558,7 @@ namespace EpicLoot.Config
 
         public static ZPackage ItemInfoConfigSendConfigs()
         {
-            EpicLoot.Log("Sending ItemInfo configuration.");
+            //EpicLoot.Log("Sending ItemInfo configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(GatedItemTypeHelper.gatedConfig));
             return package;
@@ -629,7 +566,7 @@ namespace EpicLoot.Config
 
         public static ZPackage RecipesConfigSendConfigs()
         {
-            EpicLoot.Log("Sending Recipe configuration.");
+            //EpicLoot.Log("Sending Recipe configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(RecipesHelper.Config));
             return package;
@@ -637,7 +574,7 @@ namespace EpicLoot.Config
 
         public static ZPackage EnchantCostConfigSendConfigs()
         {
-            EpicLoot.Log("Sending EnchantCost configuration.");
+            //EpicLoot.Log("Sending EnchantCost configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(EnchantCostsHelper.Config));
             return package;
@@ -645,7 +582,7 @@ namespace EpicLoot.Config
 
         public static ZPackage MagicItemNamesSendConfigs()
         {
-            EpicLoot.Log("Sending MagicItemNames configuration.");
+            //EpicLoot.Log("Sending MagicItemNames configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(MagicItemNames.Config));
             return package;
@@ -653,7 +590,7 @@ namespace EpicLoot.Config
 
         public static ZPackage AdventureDataSendConfigs()
         {
-            EpicLoot.Log("Sending AdventureData configuration.");
+            //EpicLoot.Log("Sending AdventureData configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(AdventureDataManager.Config));
             return package;
@@ -661,7 +598,7 @@ namespace EpicLoot.Config
 
         public static ZPackage LegendarySendConfigs()
         {
-            EpicLoot.Log("Sending Legendary configuration.");
+            //EpicLoot.Log("Sending Legendary configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config));
             return package;
@@ -669,7 +606,7 @@ namespace EpicLoot.Config
 
         public static ZPackage AbilitiesSendConfigs()
         {
-            EpicLoot.Log("Sending Abilities configuration.");
+            //EpicLoot.Log("Sending Abilities configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(AbilityDefinitions.Config));
             return package;
@@ -677,7 +614,7 @@ namespace EpicLoot.Config
 
         public static ZPackage MaterialConversionSendConfigs()
         {
-            EpicLoot.Log("Sending MaterialConversion configuration.");
+            //EpicLoot.Log("Sending MaterialConversion configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(MaterialConversions.Config));
             return package;
@@ -685,7 +622,7 @@ namespace EpicLoot.Config
 
         public static ZPackage EnchantingTableUpgradeSendConfigs()
         {
-            EpicLoot.Log("Sending EnchantingTableUpgrade configuration.");
+            //EpicLoot.Log("Sending EnchantingTableUpgrade configuration.");
             ZPackage package = new ZPackage();
             package.Write(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config));
             return package;

@@ -20,7 +20,6 @@ using EpicLoot.src.Adventure.bounties;
 using EpicLoot.src.General;
 using HarmonyLib;
 using JetBrains.Annotations;
-using Jotunn;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
@@ -95,7 +94,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.10.7";
+        public const string Version = "0.11.0";
 
         public static readonly List<ItemDrop.ItemData.ItemType> AllowedMagicItemTypes = new List<ItemDrop.ItemData.ItemType>
         {

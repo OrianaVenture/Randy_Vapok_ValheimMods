@@ -22,7 +22,6 @@ namespace EpicLoot.Crafting
 
         public static void Initialize(EnchantingCostsConfig config)
         {
-            EpicLoot.Log($"Set Enchanting Costs: {config.EnchantCosts.Count}");
             Config = config;
         }
 

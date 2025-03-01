@@ -352,7 +352,7 @@ namespace EpicLoot
                 GameObject itemPrefab = null;
 
                 try {
-                    itemPrefab = PrefabManager.Instance.GetPrefab(itemID);
+                    itemPrefab = ObjectDB.instance.GetItemPrefab(itemID);
                 } catch (Exception e) {
                     EpicLoot.LogWarning($"Unable to get Gated Item Prefab for [{itemID ?? "Invalid Item"}]. Continuing.");
                     EpicLoot.LogWarning($"Error: {e.Message}");

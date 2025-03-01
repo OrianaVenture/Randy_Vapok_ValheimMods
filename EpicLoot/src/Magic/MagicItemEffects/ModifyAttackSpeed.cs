@@ -25,7 +25,7 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(Game __instance)
         {
-            EpicLoot.Log($"Applying ModifyAttackSpeed patch");
+            // EpicLoot.Log($"Applying ModifyAttackSpeed patch");
             if (appliedAttackSpeed == false)
             {
                 AnimationSpeedManager.Add((character, speed) => ModifyAttackSpeed(character, speed));

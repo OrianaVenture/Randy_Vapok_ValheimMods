@@ -13,11 +13,9 @@ using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using EpicLoot_UnityLib;
-using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using static Valheim.UI.RadialMenuAnimationManager;
 
 namespace EpicLoot.Patching
 {
