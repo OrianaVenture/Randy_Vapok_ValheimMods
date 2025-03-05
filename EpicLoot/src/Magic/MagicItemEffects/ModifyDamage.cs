@@ -8,12 +8,8 @@ namespace EpicLoot.MagicItemEffects
     {
         public static void Postfix(ItemDrop.ItemData __instance, ref HitData.DamageTypes __result)
         {
-            if (Player.m_localPlayer == null)
-            {
-                return;
-            }
-
-            if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
+            if (Player.m_localPlayer &&
+                Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
             {
                 var modifier = 1 + CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
                 if (modifier > 0)

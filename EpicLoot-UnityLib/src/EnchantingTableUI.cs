@@ -37,11 +37,35 @@ namespace EpicLoot_UnityLib
             var uiSFX = GameObject.Find("sfx_gui_button");
             if (uiSFX)
             {
-                Audio.outputAudioMixerGroup = 
+                Audio.outputAudioMixerGroup =
                     uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
             }
 
+            instance.SetupTabs();
+
             AugaFixup(this);
+        }
+
+        private static void CreateUI(EnchantingTable source)
+        {
+            if (StoreGui.instance == null)
+            {
+                return;
+            }
+
+            var inGameGui = StoreGui.instance.transform.parent;
+            var siblingIndex = StoreGui.instance.transform.GetSiblingIndex() + 1;
+            var enchantingUI = Instantiate(source.EnchantingUIPrefab, inGameGui);
+            enchantingUI.transform.SetSiblingIndex(siblingIndex);
+
+            // TODO: Reduce duplicate code, mock this inside unity in the future
+            var existingBackground = StoreGui.instance.m_rootPanel.transform.Find("border (1)");
+            var panel = enchantingUI.transform.Find("Panel");
+            if (existingBackground != null & panel != null)
+            {
+                var image = existingBackground.GetComponent<Image>();
+                panel.GetComponent<Image>().material = image.material;
+            }
         }
 
         private void SetupTabs()
@@ -59,20 +83,16 @@ namespace EpicLoot_UnityLib
             TabActivation(this);
         }
 
-        public static void Show(GameObject enchantingUiPrefab, EnchantingTable source)
+        public static void Show(EnchantingTable source)
         {
-            bool firstSetup = false;
-            if (instance == null && StoreGui.instance != null)
+            if (instance == null)
             {
-                var inGameGui = StoreGui.instance.transform.parent;
-                var siblingIndex = StoreGui.instance.transform.GetSiblingIndex() + 1;
-                var enchantingUI = Instantiate(enchantingUiPrefab, inGameGui);
-                enchantingUI.transform.SetSiblingIndex(siblingIndex);
-                firstSetup = true;
+                CreateUI(source);
             }
 
             if (instance == null)
             {
+                Debug.LogError("Enchanting Table UI not setup properly!");
                 return;
             }
 
@@ -84,11 +104,6 @@ namespace EpicLoot_UnityLib
             foreach (var panel in instance.Panels)
             {
                 panel.DeselectAll();
-            }
-
-            if (firstSetup)
-            {
-                instance.SetupTabs();
             }
         }
 
@@ -144,8 +159,8 @@ namespace EpicLoot_UnityLib
 
             _hiddenFrames = 0;
 
-            var disallowClose = (Chat.instance != null && Chat.instance.HasFocus()) || 
-                Console.IsVisible() || Menu.IsVisible() || (TextViewer.instance != null && 
+            var disallowClose = (Chat.instance != null && Chat.instance.HasFocus()) ||
+                Console.IsVisible() || Menu.IsVisible() || (TextViewer.instance != null &&
                 TextViewer.instance.IsVisible()) || Player.m_localPlayer.InCutscene();
 
             if (disallowClose)

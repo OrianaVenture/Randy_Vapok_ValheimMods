@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EpicLoot.Integrations.HarmonyPatches
 {
-    [HarmonyPatch(typeof(ItemStand), "DropItem")]
+    [HarmonyPatch(typeof(ItemStand), nameof(ArmorStand.DropItem))]
     public static class ItemStand_Patch
     {
         public static bool Prefix(ItemStand __instance)

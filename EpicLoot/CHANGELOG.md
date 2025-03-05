@@ -32,6 +32,16 @@
 * Adds a terminal command 'printconfig' which allows logging any of the current configurations available. Must be an admin.
     * This allows inspected the result of patch operations and what configs a client has recieved from the server
 
+## Version 0.10.7
+
+* Update for game version 0.220.3.
+* Upgraded unity project to version 2022.3.50.
+* Added additional null check for ModifyDamage_ItemData_GetDamage_Patch.
+* Corrected panel lighting for the enchanting table to match other UI elements.
+* Added checks to interval settings to prevent divide by zero errors.
+* Updated ServerSync to version 1.18.
+* New external dependency for JsonDotNET 13.0.3. You must install this for the mod to function!
+
 
 ## Version 0.10.6
 

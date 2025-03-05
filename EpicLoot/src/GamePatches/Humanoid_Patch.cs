@@ -6,7 +6,7 @@ namespace EpicLoot
     public class Humanoid_Patch
     {
         // Had to rewrite this method to deal with items that have no vis
-        [HarmonyPatch("SetupVisEquipment")]
+        [HarmonyPatch(nameof(Humanoid.SetupVisEquipment))]
         [HarmonyPrefix]
         public static bool SetupVisEquipment_Prefix(Humanoid __instance, VisEquipment visEq, bool isRagdoll)
         {

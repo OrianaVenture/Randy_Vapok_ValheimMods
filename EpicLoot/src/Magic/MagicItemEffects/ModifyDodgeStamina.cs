@@ -2,7 +2,7 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    [HarmonyPatch(typeof(Player), "UpdateDodge")]
+    [HarmonyPatch(typeof(Player), nameof(Player.UpdateDodge))]
     public static class ModifyDodgeStamina_Player_UpdateDodge_Patch
     {
         public static void Prefix(Player __instance, ref float __state)

@@ -62,11 +62,23 @@ namespace EpicLoot.Adventure.Feature
 
         protected static int GetNextMultiple(int n, int multiple)
         {
+            // TODO: Disable features when interval is set to or less than 0.
+            if (multiple == 0)
+            {
+                return 0;
+            }
+
             return ((n / multiple) + 1) * multiple;
         }
 
         protected static int GetCurrentInterval(int intervalDays)
         {
+            // TODO: Disable features when interval is set to or less than 0.
+            if (intervalDays == 0)
+            {
+                return 0;
+            }
+
             var currentDay = EnvMan.instance.GetCurrentDay();
             return currentDay / intervalDays;
         }

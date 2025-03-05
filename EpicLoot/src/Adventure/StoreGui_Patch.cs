@@ -8,7 +8,7 @@ namespace EpicLoot.Adventure
     {
         public static GameObject MerchantPanel;
 
-        [HarmonyPatch("Show")]
+        [HarmonyPatch(nameof(StoreGui.Show))]
         [HarmonyPostfix]
         public static void Show_Postfix(StoreGui __instance)
         {
@@ -37,7 +37,7 @@ namespace EpicLoot.Adventure
             MerchantPanel.gameObject.SetActive(true);
         }
 
-        [HarmonyPatch("Hide")]
+        [HarmonyPatch(nameof(StoreGui.Hide))]
         [HarmonyPostfix]
         public static void Hide(StoreGui __instance)
         {
@@ -49,7 +49,7 @@ namespace EpicLoot.Adventure
             MerchantPanel.SetActive(false);
         }
 
-        [HarmonyPatch("OnDestroy")]
+        [HarmonyPatch(nameof(StoreGui.OnDestroy))]
         [HarmonyPostfix]
         public static void OnDestroy(StoreGui __instance)
         {

@@ -33,6 +33,8 @@ For more information please see the [wiki on thunderstore](https://thunderstore.
 Epic Loot Team Members:
   * [Vapok](https://github.com/Vapok) - Joined in Dec 2022, made hundreds of changes and bugfixes since.
   * [OrianaVenture](https://github.com/OrianaVenture) - Joined in Dec 2023, helping with maintenance and improvements.
+  * [Warp](https://github.com/jneb802) - Joined in Oct 2024, helped design new magic effects.
+  * [MidnightFX](https://github.com/MidnightsFX) - Joined in Oct 2024, helping with maintenance and improvements.
 
 Contibutions from the following modders were invaluable and appreciated: 
   * [blaxxun (CLLC)](https://www.nexusmods.com/valheim/mods/495) - bugfixes, config sync, various magic item effects
