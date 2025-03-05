@@ -203,8 +203,8 @@ namespace EpicLoot.GatedItemType
                 List<string> category_weapons = ItemsByTypeAndBoss[itemCategory][boss];
                 category_weapons.shuffleList();
                 bool needs_gate = true;
-                foreach (var weapon in category_weapons)
-                {
+                foreach (var weapon in category_weapons) {
+                    EpicLoot.Log($"Checking {weapon}");
                     // Don't select the same thing twice
                     needs_gate = CheckIfItemNeedsGate(mode, weapon);
                     if (already_selected.Contains(weapon)) {
@@ -247,20 +247,25 @@ namespace EpicLoot.GatedItemType
             }
             // We are in ungated mode
             if (mode == GatedItemTypeMode.Unlimited) {
-                //EpicLoot.Log($"Unlimited gating mode {itemID}");
+                EpicLoot.Log($"Unlimited gating mode, selecting {itemID}");
                 return itemID;
             }
             // Passed item is not gated, return it immediately
             if (!CheckIfItemIDNeedsGate(mode, itemID, out GatedItemDetails itemDetails))
             {
-                //EpicLoot.Log($"Item is not gated {itemID}");
+                EpicLoot.Log($"Item is not gated {itemID}");
                 return itemID;
+            }
+            // Select the first category as a fallback category, which we use if nothing is set
+            string current_category = ItemsByTypeAndBoss.First().Key;
+            if (itemDetails != null) {
+                current_category = itemDetails.category;
             }
             List<string> defeated_bosses = DeterminePlayerDefeatedBiomes();
             // The fact that we got to this point means the selected item is gated, and we are trying to select a fallback
             bool at_tier = false;
             foreach(string boss in ReverseBossOrder) {
-                //EpicLoot.Log($"checking tier: ({boss}) - {at_tier == true} || {itemDetails.reqBosses.Contains(boss) == true}");
+                EpicLoot.Log($"checking tier: ({boss}) - {at_tier == true} || {itemDetails.reqBosses.Contains(boss) == true}");
                 // Is item current tier?
                 if (at_tier == true || itemDetails.reqBosses.Contains(boss) == true) {
                     at_tier = true;
@@ -268,19 +273,25 @@ namespace EpicLoot.GatedItemType
                     continue;
                 }
                 if (defeated_bosses.Contains(boss) != true) {
-                    //EpicLoot.Log($"Player has not defeated {boss}, reducing tier.");
+                    EpicLoot.Log($"Player has not defeated {boss}, reducing tier.");
                     continue;
                 }
+
+                // Fallback for categories which do not exist
+                if (ItemsByTypeAndBoss.ContainsKey(current_category) == false) {
+                    current_category = ItemsByTypeAndBoss.First().Key;
+                }
+
                 // One of the tiers below, but same item type
-                if (ItemsByTypeAndBoss[AllItemsWithDetails[itemID].category].ContainsKey(boss)) {
-                    string potentialItem = GatedItemFromListWithCritiera(mode, AllItemsWithDetails[itemID].category, boss, depth);
+                if (ItemsByTypeAndBoss[current_category].ContainsKey(boss)) {
+                    string potentialItem = GatedItemFromListWithCritiera(mode, current_category, boss, depth);
                     if (potentialItem != null) {
                         // Selected item is valid and not gated
-                        //EpicLoot.Log($"Gate selected alternative: {potentialItem}");
+                        EpicLoot.Log($"Gate selected alternative: {potentialItem}");
                         return potentialItem;
                     } else {
                         // Selected item is gated or not valid, we try the fallback x times
-                        string current_category = AllItemsWithDetails[itemID].category;
+                        
                         for (int i = 0; i < depth; i++) {
                             potentialItem = GatedItemFromCriteriaIsValid(mode, current_category, boss);
                             if (potentialItem != null) {
@@ -294,7 +305,7 @@ namespace EpicLoot.GatedItemType
                 }
             }
             // We were not able to select an item
-            //EpicLoot.Log($"Unable to determine gating for {itemID}, returning a fallback.");
+            EpicLoot.Log($"Unable to determine gating for {itemID}, returning a fallback.");
             return FallbackItemsByCategory.First().Value;
         }
 
