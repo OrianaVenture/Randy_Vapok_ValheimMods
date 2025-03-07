@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using Common;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static EpicLoot.src.data.CustomZNet;
 
 namespace EpicLoot.Adventure
 {
@@ -21,6 +25,7 @@ namespace EpicLoot.Adventure
         public TreasureMapState State;
         public SerializableVector3 Position;
         public SerializableVector3 MinimapCircleOffset;
+        public long PlayerID;
     }
 
     [Serializable]
@@ -126,20 +131,9 @@ namespace EpicLoot.Adventure
             result.Slain = pkg.ReadBool();
             return result;
         }
-
-        public static BountyInfo FromBountyID(string ID)
-        {
-            try
-            {
-                return Player.m_localPlayer.GetAdventureSaveData().Bounties.Where(b => b.ID == ID).Single();
-            }
-            catch
-            {
-                EpicLoot.LogError($"Bounty {ID} not found");
-                return null;
-            }
-        }
     }
+
+    
 
     [Serializable]
     public class AdventureSaveDataList
@@ -158,29 +152,20 @@ namespace EpicLoot.Adventure
         [NonSerialized] public bool DebugMode;
         [NonSerialized] public int IntervalOverride;
 
-        public bool PurchasedTreasureMap(int interval, Heightmap.Biome biome, Vector3 position, Vector3 circleOffset)
+        public bool PurchasedTreasureMap(TreasureMapChestInfo chestInfo)
         {
             if (!DebugMode)
             {
-                if (HasPurchasedTreasureMap(interval, biome))
+                if (HasPurchasedTreasureMap(chestInfo.Interval, chestInfo.Biome))
                 {
-                    EpicLoot.LogError($"Player has already purchased treasure map! (interval={interval} biome={biome})");
+                    EpicLoot.LogError($"Player has already purchased treasure map! (interval={chestInfo.Interval} biome={chestInfo.Biome})");
                     return false;
                 }
             }
             else if (IntervalOverride != 0)
             {
-                interval = IntervalOverride;
+                chestInfo.Interval = IntervalOverride;
             }
-
-            var chestInfo = new TreasureMapChestInfo()
-            {
-                Interval = interval,
-                Biome = biome,
-                State = TreasureMapState.Purchased,
-                Position = position,
-                MinimapCircleOffset = circleOffset,
-            };
 
             TreasureMaps.Add(chestInfo);
 

@@ -132,6 +132,9 @@ namespace EpicLoot
         public static string FrostDamageAOE = nameof(FrostDamageAOE);
         public static string DoubleMagicShot = nameof(DoubleMagicShot);
         public static string TripleBowShot = nameof(TripleBowShot);
+        public static string SpellSword = nameof(SpellSword);
+        public static string BulkUp = nameof(BulkUp);
+        public static string EitrWeave = nameof(EitrWeave);
 
         public static string Bulwark = nameof(Bulwark);
         public static string Undying = nameof(Undying);

@@ -12,9 +12,9 @@ namespace EpicLoot.Adventure
 
         public string LootTableName => $"TreasureMapChest_{Biome}";
 
-        public void Setup(Player player, Heightmap.Biome biome, int treasureMapInterval)
+        public void Setup(long playerID, Heightmap.Biome biome, int treasureMapInterval)
         {
-            Reinitialize(biome, treasureMapInterval, false, player.GetPlayerID());
+            Reinitialize(biome, treasureMapInterval, false, playerID);
 
             var container = GetComponent<Container>();
             if (container == null || container.m_nview == null)
@@ -30,7 +30,7 @@ namespace EpicLoot.Adventure
 
                 zdo.Set("TreasureMapChest.Interval", Interval);
                 zdo.Set("TreasureMapChest.Biome", Biome.ToString());
-                zdo.Set("creator", player.GetPlayerID());
+                zdo.Set("creator", playerID);
 
                 var items = LootRoller.RollLootTable(LootTableName, 1, LootTableName, transform.position);
                 items.ForEach(item => container.m_inventory.AddItem(item));

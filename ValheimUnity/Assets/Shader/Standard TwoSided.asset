@@ -56776,9 +56776,10 @@ Shader:
   errors: []
   m_CompileInfo:
     m_Snippets:
-      43306:
+      6103:
         serializedVersion: 3
-        m_Code: "#line 36 \"\"\n#ifdef DUMMY_PREPROCESSOR_TO_WORK_AROUND_HLSL_COMPILER_LINE_HANDLING\n#endif\n\n#include
+        m_Code: "#define FOG_LINEAR_KEYWORD_DECLARED 1\n#define FOG_EXP_KEYWORD_DECLARED
+          1\n#define FOG_EXP2_KEYWORD_DECLARED 1\n#line 36 \"\"\n#ifdef DUMMY_PREPROCESSOR_TO_WORK_AROUND_HLSL_COMPILER_LINE_HANDLING\n#endif\n\n#include
           \"HLSLSupport.cginc\"\n#define UNITY_INSTANCED_LOD_FADE\n#define UNITY_INSTANCED_SH\n#define
           UNITY_INSTANCED_LIGHTMAPSTS\n#define UNITY_INSTANCED_RENDERER_BOUNDS\n#include
           \"UnityShaderVariables.cginc\"\n#include \"UnityShaderUtilities.cginc\"\n#line
@@ -56811,6 +56812,7 @@ Shader:
           #if USING_FOG\n                    col.rgb = lerp(unity_FogColor.rgb, col.rgb,
           IN.fog);\n            #endif\n\n            return col;\n        }\n\n        "
         m_AssetPath: Assets/DefaultResourcesExtra
+        m_AssetName: Normal-VertexLit.shader
         m_PlatformMask: 4294967295
         m_HardwareTierVariantsMask: 0
         m_StartLine: 38
@@ -56820,9 +56822,11 @@ Shader:
           Hash: 920497038f5dd2da5588e28dc8a9447f
         m_CodeHash:
           serializedVersion: 2
-          Hash: fbbbfce9a7891b2363f32ab6b7f83391
+          Hash: 10c6726568e882119261a70151173723
         m_FromOther: 1
         m_ForceSyncCompilation: 0
+        m_UseDxcAPIs: 0
+        m_NeverUseDxcAPIs: 0
         m_Language: 0
         m_VariantsUserGlobal0:
         - - __
@@ -56876,9 +56880,10 @@ Shader:
           requirements: 536870912
         m_NonStrippedUserKeywords: FOG_LINEAR FOG_EXP FOG_EXP2
         m_BuiltinKeywords: 
-      107013:
+      107529:
         serializedVersion: 3
-        m_Code: "#line 121 \"\"\n#ifdef DUMMY_PREPROCESSOR_TO_WORK_AROUND_HLSL_COMPILER_LINE_HANDLING\n#endif\n\n#include
+        m_Code: "#define INSTANCING_ON_KEYWORD_DECLARED 1\n#line 121 \"\"\n#ifdef
+          DUMMY_PREPROCESSOR_TO_WORK_AROUND_HLSL_COMPILER_LINE_HANDLING\n#endif\n\n#include
           \"HLSLSupport.cginc\"\n#define UNITY_INSTANCED_LOD_FADE\n#define UNITY_INSTANCED_SH\n#define
           UNITY_INSTANCED_LIGHTMAPSTS\n#define UNITY_INSTANCED_RENDERER_BOUNDS\n#include
           \"UnityShaderVariables.cginc\"\n#include \"UnityShaderUtilities.cginc\"\n#line
@@ -56891,6 +56896,7 @@ Shader:
           UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);\n    TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)\n   
           return o;\n}\n\nfloat4 frag( v2f i ) : SV_Target\n{\n    SHADOW_CASTER_FRAGMENT(i)\n}\n"
         m_AssetPath: Assets/DefaultResourcesExtra
+        m_AssetName: Normal-VertexLit.shader
         m_PlatformMask: 4294967295
         m_HardwareTierVariantsMask: 0
         m_StartLine: 123
@@ -56900,9 +56906,11 @@ Shader:
           Hash: 920497038f5dd2da5588e28dc8a9447f
         m_CodeHash:
           serializedVersion: 2
-          Hash: 5e4bbceef728f69bcf48c44141869353
+          Hash: e1ca7d4a5d4ee08f9bdc1e61d44b7e44
         m_FromOther: 1
         m_ForceSyncCompilation: 0
+        m_UseDxcAPIs: 0
+        m_NeverUseDxcAPIs: 0
         m_Language: 0
         m_VariantsUserGlobal0:
         - - __
@@ -57025,6 +57033,7 @@ Shader:
           = lerp (unity_FogColor.rgb, col.rgb, IN.fog);\n  #endif\n  return col;\n}\n\n//
           texenvs\n//! TexEnv0: 02010103 01060004 [_MainTex] [ffffffff]\n"
         m_AssetPath: 
+        m_AssetName: 
         m_PlatformMask: 4294967295
         m_HardwareTierVariantsMask: 0
         m_StartLine: 1
@@ -57037,6 +57046,8 @@ Shader:
           Hash: d04141a236e8bbcee3767e44a019df75
         m_FromOther: 1
         m_ForceSyncCompilation: 0
+        m_UseDxcAPIs: 0
+        m_NeverUseDxcAPIs: 0
         m_Language: 0
         m_VariantsUserGlobal0:
         - - _

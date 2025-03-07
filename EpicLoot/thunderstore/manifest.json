@@ -6,5 +6,6 @@
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2202",
     "ValheimModding-JsonDotNET-13.0.3"
+    "ValheimModding-Jotunn-2.22.0"
   ]
 }

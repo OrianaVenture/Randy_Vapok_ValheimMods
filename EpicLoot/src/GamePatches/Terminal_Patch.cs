@@ -183,12 +183,6 @@ namespace EpicLoot
                 var player = Player.m_localPlayer;
                 FixResistances(player);
             }));
-            new Terminal.ConsoleCommand("lucktest", "", (args =>
-            {
-                var lootTable = args.Length > 1 ? args[1] : "Greydwarf";
-                var luckFactor = args.Length > 2 ? float.Parse(args[2]) : 0;
-                LootRoller.PrintLuckTest(lootTable, luckFactor);
-            }));
             new Terminal.ConsoleCommand("lootres", "", (args =>
             {
                 var lootTable = args.Length > 1 ? args[1] : "Greydwarf";
@@ -490,40 +484,9 @@ namespace EpicLoot
                 return;
             }
 
-            if (string.IsNullOrEmpty(itemType))
-            {
-                var dummyMagicItem = new MagicItem { Rarity = rarity };
-                var allowedItems = new List<ItemDrop>();
-                foreach (var itemName in GatedItemTypeHelper.ItemInfoByID.Keys)
-                {
-                    var itemPrefab = ObjectDB.instance.GetItemPrefab(itemName);
-                    if (itemPrefab == null)
-                    {
-                       continue;
-                    }
-
-                    var itemDrop = itemPrefab.GetComponent<ItemDrop>();
-                    if (itemDrop == null)
-                    {
-                        continue;
-                    }
-
-                    var itemData = itemDrop.m_itemData;
-                    itemData.m_dropPrefab = itemPrefab;
-                    var checkRequirements = itemInfo.Requirements.CheckRequirements(itemData, dummyMagicItem);
-
-                    if (checkRequirements)
-                    {
-                        allowedItems.Add(itemDrop);
-                    }
-                }
-                itemType = allowedItems.LastOrDefault()?.name;
-            }
-            
-            if (string.IsNullOrEmpty(itemType))
-            {
-                EpicLoot.LogWarning($"No Item Type Found for LegendaryID {legendaryID} - This would've made a Club.");
-                return;
+            if (string.IsNullOrEmpty(itemType)) {
+                int selected = UnityEngine.Random.Range(0, GatedItemTypeHelper.ItemCategories.Count);
+                itemType = GatedItemTypeHelper.ItemCategories[selected];
             }
 
             LootTable loot = new LootTable

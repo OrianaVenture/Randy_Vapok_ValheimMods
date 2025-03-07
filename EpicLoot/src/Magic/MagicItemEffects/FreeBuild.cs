@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using BepInEx;
+using EpicLoot.Config;
 using HarmonyLib;
 using JetBrains.Annotations;
 
@@ -48,7 +49,7 @@ namespace EpicLoot.MagicItemEffects
 
         private static bool CanBeFreeBuilt(Piece piece)
         {
-            if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.Unlimited)
+            if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.Unlimited)
             {
                 return true;
             }
@@ -58,42 +59,42 @@ namespace EpicLoot.MagicItemEffects
             switch (piece.m_craftingStation.name)
             {
                 case "forge":
-                    if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
+                    if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
                     {
                         requiredKey = "defeated_eikthyr";
                     }
-                    else if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
+                    else if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
                     {
                         requiredKey = "";
                     }
                     break;
                 case "piece_stonecutter":
-                    if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
+                    if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
                     {
                         requiredKey = "defeated_gdking";
                     }
-                    else if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
+                    else if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
                     {
                         requiredKey = "defeated_eikthyr";
                     }
                     break;
                 case "piece_artisanstation":
-                    if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
+                    if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
                     {
                         requiredKey = "defeated_dragon";
                     }
-                    else if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
+                    else if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
                     {
                         requiredKey = "defeated_bonemass";
                     }
                     break;
                 case "blackforge":
                 case "piece_magetable":
-                    if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
+                    if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksCurrentBiomePieces)
                     {
                         requiredKey = "defeated_goblinking";
                     }
-                    else if (EpicLoot.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
+                    else if (ELConfig.GatedFreebuildMode.Value == GatedItemType.GatedPieceTypeMode.BossKillUnlocksNextBiomePieces)
                     {
                         requiredKey = "defeated_dragon";
                     }

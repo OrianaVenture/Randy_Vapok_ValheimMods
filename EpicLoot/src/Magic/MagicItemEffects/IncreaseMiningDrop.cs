@@ -23,10 +23,13 @@ public class IncreaseMiningDrop : IncreaseDrop
     {
         public static void Postfix(Humanoid __instance)
         {
-            if (__instance == Player.m_localPlayer && __instance.m_nview.GetZDO().GetInt(Instance.ZDOVar) != 0)
+            if (__instance == Player.m_localPlayer && __instance.m_nview.IsValid())
             {
-                EpicLoot.Log("Resetting mining drop variable");
-                __instance.m_nview.GetZDO().Set(Instance.ZDOVar, 0);
+                if (__instance.m_nview.GetZDO().GetInt(Instance.ZDOVar) != 0)
+                {
+                    EpicLoot.Log("Resetting mining drop variable");
+                    __instance.m_nview.GetZDO().Set(Instance.ZDOVar, 0);
+                }
             }
         }
     }

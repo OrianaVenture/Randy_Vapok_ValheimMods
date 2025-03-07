@@ -243,8 +243,8 @@
     "StartRadiusMin": 0,
     "StartRadiusMax": 500,
     "IncreaseRadiusCount": 3,
-    "RadiusInterval": 100,
-    "MinimapAreaRadius": 60,
+    "RadiusInterval": 50,
+    "MinimapAreaRadius": 45,
     "SaleItems": [
       { "Item": "RunestoneMagic",     "ForestTokenCost": 5 },
       { "Item": "RunestoneRare",      "ForestTokenCost": 10 },

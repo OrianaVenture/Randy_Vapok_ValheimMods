@@ -26,6 +26,11 @@ namespace EpicLoot.Adventure
             Bounties = new BountiesAdventureFeature();
         }
 
+        public static void UpdateAventureData(AdventureDataConfig config)
+        {
+            Config = config;
+        }
+
         public static Sprite GetTrophyIconForMonster(string monsterID, bool isGold)
         {
             if (_cachedTrophySprites.TryGetValue(monsterID, out var sprite))

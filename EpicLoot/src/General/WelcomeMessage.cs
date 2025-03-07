@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.Config;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,7 +70,7 @@ namespace EpicLoot
     {
         public static void Postfix(FejdStartup __instance)
         {
-            if (EpicLoot.AlwaysShowWelcomeMessage.Value || !WelcomeMessage.PlayerHasSeenMessage())
+            if (ELConfig.AlwaysShowWelcomeMessage.Value || !WelcomeMessage.PlayerHasSeenMessage())
             {
                 var welcomeMessage = Object.Instantiate(EpicLoot.Assets.WelcomMessagePrefab, __instance.transform, false);
                 welcomeMessage.name = "WelcomeMessage";

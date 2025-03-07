@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
@@ -7,12 +6,8 @@ namespace EpicLoot.MagicItemEffects
     [HarmonyPatch]
     public static class DoubleJump
     {
-        public const string DoubleJumpChargeKey = "DoubleJump";
-
-        public static bool IsJumping;
-        public static bool IsDoubleJumping;
-        public static bool FirstCallToIsOnGround;
-        public static readonly Dictionary<Character, bool> GroundContactTracker = new Dictionary<Character, bool>();
+        // This can use the magic effect system to track more charges in the future
+        public static int multi_jump_combo = 0;
 
         [HarmonyPatch(typeof(Character), nameof(Character.Jump))]
         public static class Character_Jump_Patch
@@ -21,131 +16,71 @@ namespace EpicLoot.MagicItemEffects
             {
                 if (__instance.IsPlayer())
                 {
-                    IsJumping = true;
-                    IsDoubleJumping = false;
-                    FirstCallToIsOnGround = false;
-                }
-
-                return true;
-            }
-
-            public static void Postfix(Character __instance)
-            {
-                if (__instance.IsPlayer())
-                {
-                    IsJumping = false;
-                    IsDoubleJumping = false;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(Character), nameof(Character.IsOnGround))]
-        public static class Character_IsOnGround_Patch
-        {
-            public static void Postfix(Character __instance, ref bool __result)
-            {
-                if (!FirstCallToIsOnGround && __instance.IsPlayer() && !__result && IsJumping && HasDoubleJumpCharge(__instance))
-                {
-                    FirstCallToIsOnGround = true;
-
-                    __result = true;
-                    IsDoubleJumping = true;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(Player), nameof(Player.OnJump))]
-        public static class Player_OnJump_Patch
-        {
-            public static void Postfix(Player __instance)
-            {
-                if (IsJumping && IsDoubleJumping)
-                {
-                    UseDoubleJumpCharge(__instance);
-
-                    var audioSource = __instance.GetComponent<AudioSource>();
-                    if (audioSource == null)
+                    if (Player.m_localPlayer == null)
                     {
-                        audioSource = __instance.gameObject.AddComponent<AudioSource>();
-                        audioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
+                        // skip to normal jumping
+                        return true;
+                    }
+                    if (__instance.IsOnGround()) {
+                        multi_jump_combo = 0;
+                    } else {
+                        multi_jump_combo++;
+                    }
+                    // You can't keep jumping
+                    // EpicLoot.Log($"multi_jump_combo: {multi_jump_combo} > {Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.DoubleJump)}");
+                    if (multi_jump_combo > Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.DoubleJump))
+                    {
+                        return false;
+                    } else {
+                        // We can jump, our current jump combo is zero, the first jump is a normal one.
+                        if (multi_jump_combo == 0) { return true; }
+                        // We can jump, our current jump combo is greater than zero, we can multi-jump.
+                        MultiJump(__instance, multi_jump_combo);
+                        // skip the original jump, since we already multi-jumped
+                        return false;
                     }
 
-                    audioSource.PlayOneShot(EpicLoot.Assets.DoubleJumpSFX);
                 }
-            }
-        }
-
-        //UpdateGroundContact
-        [HarmonyPatch(typeof(Character), nameof(Character.ResetGroundContact))]
-        public static class Character_ResetGroundContact_Patch
-        {
-            public static bool Prefix(Character __instance)
-            {
-                if (!__instance.IsPlayer())
-                {
-                    return true;
-                }
-
-                GroundContactTracker.TryGetValue(__instance, out var previousGroundContact);
-
-                if (__instance.m_groundContact && previousGroundContact != __instance.m_groundContact)
-                {
-                    ResetDoubleJumpCharges(__instance);
-                }
-
-                GroundContactTracker[__instance] = __instance.m_groundContact;
-
                 return true;
             }
         }
 
-        [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.EquipItem))]
-        public static class Humanoid_EquipItem_Patch
+        public static void MultiJump(Character player, float jumpsize)
         {
-            public static void Postfix(Humanoid __instance)
-            {
-                ResetDoubleJumpCharges(__instance);
-            }
-        }
-
-        [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.UnequipItem))]
-        public static class Humanoid_UnequipItem_Patch
-        {
-            public static void Postfix(Humanoid __instance)
-            {
-                ResetDoubleJumpCharges(__instance);
-            }
-        }
-
-        public static bool HasDoubleJumpCharge(Character character)
-        {
-            var doubleJumpCharges = character.m_nview.GetZDO().GetInt(DoubleJumpChargeKey);
-            return doubleJumpCharges > 0;
-        }
-
-        public static void UseDoubleJumpCharge(Character character)
-        {
-            var doubleJumpCharges = character.m_nview.GetZDO().GetInt(DoubleJumpChargeKey);
-            character.m_nview.GetZDO().Set(DoubleJumpChargeKey, doubleJumpCharges - 1);
-        }
-
-        public static void ResetDoubleJumpCharges(Character character)
-        {
-            if (character == null || character.m_nview == null || !character.m_nview.IsValid())
+            if (player.IsEncumbered() || player.InDodge() || player.IsKnockedBack() || player.IsStaggering())
             {
                 return;
             }
 
-            var player = character.IsPlayer() ? character as Player : null;
-            if (player != null && player.HasActiveMagicEffect(MagicEffectType.DoubleJump, out float effectValue))
+            if (!player.HaveStamina(player.m_jumpStaminaUsage))
             {
-                // TODO: multiple charges
-                const int doubleJumpCharges = 1;
-                character.m_nview.GetZDO().Set(DoubleJumpChargeKey, doubleJumpCharges);
+                Hud.instance.StaminaBarEmptyFlash();
+                return;
             }
-            else
+
+            float speed = player.m_speed;
+            player.m_seman.ApplyStatusEffectSpeedMods(ref speed, player.m_currentVel);
+            float player_jum_skill_factor = 0f;
+            Skills skills = player.GetSkills();
+            if (skills != null)
             {
-                character.m_nview.GetZDO().Set(DoubleJumpChargeKey, 0);
+                player_jum_skill_factor = skills.GetSkillFactor(Skills.SkillType.Jump);
+                player.RaiseSkill(Skills.SkillType.Jump);
+            }
+
+            Vector3 jump = player.m_body.velocity;
+            // We just want to go upwards, the jump value will keep some of our other velocities
+            Vector3 player_vector_up = (new Vector3() + Vector3.up).normalized;
+            player_vector_up.y += (0.2f * jumpsize); // this increases velocity upwards slightly for each multi-jump
+            float player_skill_jump_with_offset = 1f + player_jum_skill_factor * 0.4f;
+            float full_player_jumpforce = player.m_jumpForce * player_skill_jump_with_offset;
+            // float player_normal_direction_velocity_travel = Vector3.Dot(player_vector_up, jump);
+            jump += player_vector_up * full_player_jumpforce;
+
+            player.m_seman.ApplyStatusEffectJumpMods(ref jump);
+            if (!(jump.x <= 0f) || !(jump.y <= 0f) || !(jump.z <= 0f))
+            {
+                player.ForceJump(jump);
             }
         }
     }

@@ -69,6 +69,7 @@ namespace EpicLoot.Adventure.Feature
 
             var availableOtherItems = CollectItems(AdventureDataManager.Config.SecretStash.OtherItems);
             results.AddRange(availableOtherItems);
+            results = SortListByRarity(results);
 
             return results;
         }

@@ -586,8 +586,8 @@ namespace EpicLoot
             EquippedValues.Remove(player);
         }
 
-        public static float? Get(Player player, string effect, Func<float?> calculate)
-        {
+        public static float? Get(Player player, string effect, Func<float?> calculate) {
+            if (effect == null) { return 0f; } // default fail out if the requested key is null
             var values = EquippedValues.GetOrCreateValue(player);
             if (values.TryGetValue(effect, out float? value))
             {
