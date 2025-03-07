@@ -14,8 +14,6 @@ Adds three new portals to provide a lore-friendly and balanced way to reduce the
   * **Black Marble Portal:** Allows teleporting anything
     * *Requires:* 20 Black Marble, BlackMetal 5, 2 Refined Eitr
 
-Includes ServerSync.
-
 ## Configuration:
 
 ### Ancient Portal
@@ -44,3 +42,5 @@ Includes ServerSync.
 ## Installation:
   * Nexus: Drop the AdvancedPortals.dll right into your BepInEx/plugins folder
   * ThunderStore: Use r2modman to install, or manually drop the dll into your BepInEx/plugins folder
+
+This mod needs to be on both the client and server; the mod will enforce installation. Players without the mod will NOT be able to connect to the server. Config Syncing is included with Jotunn. The server with enforce the same mod configuration for all players. Live changes to the configurations will should take immediate effect.

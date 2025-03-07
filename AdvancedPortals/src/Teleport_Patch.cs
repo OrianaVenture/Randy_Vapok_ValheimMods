@@ -1,82 +1,99 @@
 ﻿using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using UnityEngine;
 
-namespace AdvancedPortals
+namespace AdvancedPortals;
+
+[HarmonyPatch]
+public static class Teleport_Patch
 {
-    [HarmonyPatch]
-    public static class Teleport_Patch
+    [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.Teleport))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> TeleportWorld_Teleport_Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        public static AdvancedPortal CurrentAdvancedPortal;
+        return new CodeMatcher(instructions)
+            .MatchForward(
+                useEnd: false,
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(TeleportWorld), nameof(TeleportWorld.m_allowAllItems))))
+            .Advance(offset: 1)
+            .SetInstructionAndAdvance(Transpilers.EmitDelegate<Func<TeleportWorld, bool>>(CanTeleport))
+            .InstructionEnumeration();
+    }
 
-        public static void Generic_Prefix(TeleportWorld __instance)
+    [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.UpdatePortal))]
+    [HarmonyTranspiler]
+    public static IEnumerable<CodeInstruction> TeleportWorld_UpdatePortal_Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        return new CodeMatcher(instructions)
+            .MatchForward(
+                useEnd: false,
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(TeleportWorld), nameof(TeleportWorld.m_allowAllItems))))
+            .Advance(offset: 1)
+            .SetInstructionAndAdvance(Transpilers.EmitDelegate<Func<TeleportWorld, bool>>(CanTeleport))
+            .InstructionEnumeration();
+    }
+
+    // Fixup for Target Portal
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(TeleportWorldTrigger), nameof(TeleportWorldTrigger.OnTriggerEnter))]
+    public static void TeleportWorldTrigger_OnTriggerEnter_Prefix(TeleportWorldTrigger __instance, out bool __state)
+    {
+        __state = __instance.m_teleportWorld.m_allowAllItems;
+
+        if (!AdvancedPortals.TargetPortalInstalled)
         {
-            CurrentAdvancedPortal = __instance.GetComponent<AdvancedPortal>();
+            return;
         }
 
-        public static void Generic_Postfix()
+        if (__instance.m_teleportWorld is AdvancedPortal)
         {
-            CurrentAdvancedPortal = null;
+            __instance.m_teleportWorld.m_allowAllItems = CanTeleport(__instance.m_teleportWorld);
+        }
+    }
+
+    // Fixup for Target Portal
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(TeleportWorldTrigger), nameof(TeleportWorldTrigger.OnTriggerEnter))]
+    public static void TeleportWorldTrigger_OnTriggerEnter_Postfix(TeleportWorldTrigger __instance, bool __state)
+    {
+        if (!AdvancedPortals.TargetPortalInstalled)
+        {
+            return;
         }
 
-        [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.UpdatePortal))]
-        [HarmonyPrefix]
-        public static void TeleportWorld_UpdatePortal_Prefix(TeleportWorld __instance)
+        __instance.m_teleportWorld.m_allowAllItems = __state;
+    }
+
+    static bool CanTeleport(TeleportWorld portal)
+    {
+        if (portal.m_allowAllItems)
         {
-            CurrentAdvancedPortal = __instance.GetComponent<AdvancedPortal>();
+            return true;
         }
 
-        [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.SetText))]
-        [HarmonyPostfix]
-        public static void TeleportWorld_SetText_Postfix()
+        if (portal is not AdvancedPortal)
         {
-            Game.instance.ConnectPortals();
-        }
-
-        
-        [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.UpdatePortal))]
-        [HarmonyPostfix]
-        public static void TeleportWorld_UpdatePortal_Postfix()
-        {
-            CurrentAdvancedPortal = null;
-        }
-
-        [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.Teleport))]
-        [HarmonyPrefix]
-        public static void TeleportWorld_Teleport_Prefix(TeleportWorld __instance)
-        {
-            CurrentAdvancedPortal = __instance.GetComponent<AdvancedPortal>();
-        }
-
-        [HarmonyPatch(typeof(TeleportWorld), nameof(TeleportWorld.Teleport))]
-        [HarmonyPostfix]
-        public static void TeleportWorld_Teleport_Postfix()
-        {
-            CurrentAdvancedPortal = null;
-        }
-
-        [HarmonyPatch(typeof(Inventory), nameof(Inventory.IsTeleportable))]
-        [HarmonyPrefix]
-        public static bool Inventory_IsTeleportable_Pretfix(Inventory __instance, ref bool __result)
-        {
-            if (CurrentAdvancedPortal == null)
-                return true;
-
-            if (CurrentAdvancedPortal.AllowEverything)
-            {
-                __result = true;
-                return false;
-            }
-
-            foreach (var itemData in __instance.GetAllItems())
-            {
-                if (!itemData.m_shared.m_teleportable && itemData.m_dropPrefab != null && !CurrentAdvancedPortal.AllowedItems.Contains(itemData.m_dropPrefab.name))
-                {
-                    __result = false;
-                    return false;
-                }
-            }
-
-            __result = true;
             return false;
         }
+
+        var inventory = Player.m_localPlayer.m_inventory;
+
+        string portalName = Utils.GetPrefabName(portal.gameObject.name);
+        foreach (var itemData in inventory.GetAllItems())
+        {
+            if (!itemData.m_shared.m_teleportable &&
+                (itemData.m_dropPrefab != null &&
+                !(AdvancedPortal.AllowedItem(portalName, itemData.m_dropPrefab.name))))
+            {
+                Debug.Log($"{itemData.m_dropPrefab.name} Not allowed!");
+                return false;
+            }
+        }
+
+        return true;
     }
 }

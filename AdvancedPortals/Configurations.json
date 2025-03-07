@@ -1,0 +1,86 @@
+[
+    {
+        "Prefab": "portal_ancient",
+        "Config": {
+            "Name": "Ancient $piece_portal",
+            "Description": "$piece_portal_description",
+            "PieceTable": "Hammer",
+            "Category": "Misc",
+            "CraftingStation": "piece_workbench",
+            "AllowedInDungeons": false,
+            "Requirements": [
+                {
+                    "Item": "ElderBark",
+                    "Amount": 20,
+                    "Recover": true
+                },
+                {
+                    "Item": "Iron",
+                    "Amount": 5,
+                    "Recover": true
+                },
+                {
+                    "Item": "SurtlingCore",
+                    "Amount": 2,
+                    "Recover": true
+                }
+            ]
+        }
+    },
+    {
+        "Prefab": "portal_obsidian",
+        "Config": {
+            "Name": "$item_obsidian $piece_portal",
+            "Description": "$piece_portal_description",
+            "PieceTable": "Hammer",
+            "Category": "Misc",
+            "CraftingStation": "piece_workbench",
+            "AllowedInDungeons": false,
+            "Requirements": [
+                {
+                    "Item": "Obsidian",
+                    "Amount": 20,
+                    "Recover": true
+                },
+                {
+                    "Item": "Silver",
+                    "Amount": 5,
+                    "Recover": true
+                },
+                {
+                    "Item": "SurtlingCore",
+                    "Amount": 2,
+                    "Recover": true
+                }
+            ]
+        }
+    },
+    {
+        "Prefab": "portal_blackmarble",
+        "Config": {
+            "Name": "$item_blackmarble $piece_portal",
+            "Description": "$piece_portal_description",
+            "PieceTable": "Hammer",
+            "Category": "Misc",
+            "CraftingStation": "piece_workbench",
+            "AllowedInDungeons": false,
+            "Requirements": [
+                {
+                    "Item": "BlackMarble",
+                    "Amount": 20,
+                    "Recover": true
+                },
+                {
+                    "Item": "BlackMetal",
+                    "Amount": 5,
+                    "Recover": true
+                },
+                {
+                    "Item": "Eitr",
+                    "Amount": 2,
+                    "Recover": true
+                }
+            ]
+        }
+    }
+]

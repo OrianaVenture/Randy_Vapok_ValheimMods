@@ -48,15 +48,16 @@
     <Reference Include="CreatureLevelControlAPI">
       <HintPath>$(SolutionDir)Libs\CreatureLevelControlAPI.dll</HintPath>
     </Reference>
+    <Reference Include="Jotunn, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>false</SpecificVersion>
+      <HintPath>..\Libs\Jotunn.dll</HintPath>
+    </Reference>
     <Reference Include="LitJSON, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)Packages\LitJson.0.10.0\lib\net45\LitJSON.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)Packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ServerSync">
-      <HintPath>$(SolutionDir)Libs\ServerSync.dll</HintPath>
     </Reference>
     <Reference Include="Splatform, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\Splatform_publicized.dll</HintPath>

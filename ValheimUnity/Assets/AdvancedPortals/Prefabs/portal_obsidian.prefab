@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 6412271363265385480, guid: a316647cb5205a346a0ca4ac8a000ad7,
@@ -254,5 +255,60 @@ PrefabInstance:
       propertyPath: InitialModule.startColor.minColor.r
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorTargetfound.a
+      value: 0.7490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorTargetfound.b
+      value: 4.867144
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorTargetfound.g
+      value: 3.1433637
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorTargetfound.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorUnconnected.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorUnconnected.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_colorUnconnected.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_connected.m_effectPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_connected.m_effectPrefabs.Array.data[0].m_prefab
+      value: 
+      objectReference: {fileID: 6456743901401800552, guid: c9abb6e33c9171d4b9aaeecb2e50175b,
+        type: 3}
+    - target: {fileID: 9163354101205157741, guid: a316647cb5205a346a0ca4ac8a000ad7,
+        type: 3}
+      propertyPath: m_connected.m_effectPrefabs.Array.data[0].m_enabled
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 6444190999684362091, guid: a316647cb5205a346a0ca4ac8a000ad7, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a316647cb5205a346a0ca4ac8a000ad7, type: 3}

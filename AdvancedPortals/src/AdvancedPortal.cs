@@ -1,28 +1,31 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace AdvancedPortals
+namespace AdvancedPortals;
+
+public class AdvancedPortal : TeleportWorld
 {
-    public class AdvancedPortal : MonoBehaviour
+    public static Dictionary<string, HashSet<string>> AllowedItems = new Dictionary<string, HashSet<string>>();
+
+    private void Awake()
     {
-        public List<string> AllowedItems = new List<string>();
-        public bool AllowEverything;
-        private ZNetView _nview;
-        public string DefaultName;
-        private void Awake()
+        base.Awake();
+    }
+
+    public static void SetAllowedItems(string key, HashSet<string> items)
+    {
+        if (AllowedItems.ContainsKey(key))
         {
-            _nview = GetComponent<ZNetView>();
-
-            if (_nview == null || _nview.GetZDO() == null)
-                return;
-
-            ZDOMan.instance.AddPortal(_nview.GetZDO());
+            AllowedItems[key] = items;
         }
-
-        private void Start()
+        else
         {
-            ZDOMan.instance.ConvertPortals();
-            ZDOMan.instance.ConnectPortals();
+            AllowedItems.Add(key, items);
         }
+    }
+
+    public static bool AllowedItem(string portalName, string item)
+    {
+        return AllowedItems[portalName].Contains(item);
     }
 }

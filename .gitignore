@@ -82,6 +82,7 @@ ValheimUnity/Assets/ExternalLibraries/EpicLoot-UnityLib.dll
 ValheimUnity/AssetBundles
 ValheimUnity/Assets/ExternalLibraries/*.dll
 ValheimUnity/Assets/ExternalLibraries/valheim/*.dll
+ValheimUnity/Assets/ExternalLibraries/Bepinex/*.dll
 ValheimUnity/UserSettings
 
 # Manual adds
