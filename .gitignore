@@ -12,6 +12,7 @@
 */bin/
 */obj/
 /packages/
+Libs/
 
 
 # Never ignore Asset meta data
