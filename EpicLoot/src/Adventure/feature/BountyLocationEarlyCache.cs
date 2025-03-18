@@ -20,10 +20,10 @@ namespace EpicLoot.src.Adventure.feature
             bool spawn_set = false;
             // The ideal scenario, this is what happens most of the time.
             // When this is not triggered its because there is no data yet for the biome
-            if (PotentialBiomeLocations.ContainsKey(biome) && PotentialBiomeLocations[biome].Count() > 1)
-            {
+            if (PotentialBiomeLocations.ContainsKey(biome) && PotentialBiomeLocations[biome].Count() > 1) {
                 SelectSpawnPoint(biome, onComplete);
                 spawn_set = true;
+                yield break;
             }
 
             // Initial setup for the selected biome- and likely other biomes.
@@ -35,14 +35,14 @@ namespace EpicLoot.src.Adventure.feature
             // If this biome key does not exist, add it.
             if (!PotentialBiomeLocations.ContainsKey(biome)) { PotentialBiomeLocations.Add(biome, new List<Vector3>() { }); }
 
-            while (PotentialBiomeLocations[biome].Count() < 3) {
+            while (spawn_set == false) {
                 // EpicLoot.Log($"Finding {biome} spawn point, currently stored: {PotentialBiomeLocations[biome].Count()} < 3");
                 if (tries % 10 == 0 && tries > 1) {
                     yield return new WaitForSeconds(1f);
                 }
                 tries++;
 
-                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries);
+                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries, biome);
                 // Ensure the location is spawned.
                 var zoneId = ZoneSystem.GetZone(temp_spawnPoint);
                 while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _)) {
@@ -50,21 +50,19 @@ namespace EpicLoot.src.Adventure.feature
                     yield return new WaitForEndOfFrame();
                 }
                 bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
-                // EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
-                if (!valid_location) {
+                EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint} - valid? {valid_location}");
+                if (valid_location == false) {
                     continue;
                 }
-                if (!PotentialBiomeLocations.ContainsKey(spawn_location_biome)) { 
+                if (!PotentialBiomeLocations.ContainsKey(spawn_location_biome)) {
                     PotentialBiomeLocations.Add(spawn_location_biome, new List<Vector3>() { });
                 }
-                // EpicLoot.Log($"Adding {spawn_location_biome} location.");
+                EpicLoot.Log($"Adding {spawn_location_biome} location.");
                 PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
                 // We want to run the loop to select a location once and trigger the bounty/treasure to continue
-                // then we keep adding a few locations so future iterations are much faster.
                 
                 //only follow through with the spawn point for the biome we are looking for, since we might find other valid spawnpoints for other biomes first.
-                if (spawn_set == false && spawn_location_biome == biome)
-                {
+                if (spawn_location_biome == biome) {
                     SelectSpawnPoint(biome, onComplete);
                     spawn_set = true;
                 }
@@ -84,6 +82,7 @@ namespace EpicLoot.src.Adventure.feature
             var adventure_save = Player.m_localPlayer.GetAdventureSaveData();
             Tuple<float, float> radiusRange = GetTreasureMapSpawnRadiusRange(Heightmap.Biome.Meadows, adventure_save);
             int tries = 0;
+            Heightmap.Biome target_biome = Biome.Meadows;
             // Populate the cache with locations for all biomes
             while (true) {
                 // Check if all biomes have the required number of keys
@@ -103,7 +102,7 @@ namespace EpicLoot.src.Adventure.feature
                 }
                 // Modulate the radius outwards as we progress to ensure that we get varied spawn locations
                 if (tries % 20 == 0 && tries > 1) {
-                    Heightmap.Biome target_biome = Biome.Meadows;
+                    
                     if (tries == 20) { target_biome = Biome.BlackForest; }
                     if (tries == 40) { target_biome = Biome.Mountain; }
                     if (tries == 60) { target_biome = Biome.Mistlands; }
@@ -112,7 +111,7 @@ namespace EpicLoot.src.Adventure.feature
                 }
                 tries++;
 
-                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries);
+                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries, target_biome);
                 // Ensure the location is spawned.
                 var zoneId = ZoneSystem.GetZone(temp_spawnPoint);
                 while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _))
@@ -129,7 +128,7 @@ namespace EpicLoot.src.Adventure.feature
                     continue;
                 }
                 if (PotentialBiomeLocations[spawn_location_biome].Count() < 4) {
-                    // EpicLoot.Log($"Adding {spawn_location_biome} location.");
+                    EpicLoot.Log($"Adding {spawn_location_biome} location.");
                     PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
                 }
             }
@@ -144,24 +143,35 @@ namespace EpicLoot.src.Adventure.feature
             locations.RemoveAt(0);
             PotentialBiomeLocations[biome] = locations;
             ZoneSystem.instance.GetGroundData(ref selected_location, out var normal, out var foundBiome, out var biomeArea, out var hmap);
-            // EpicLoot.Log($"selected: x:{selected_location.x}, y:{selected_location.y}, z:{selected_location.z}");
+            EpicLoot.Log($"selected: x:{selected_location.x}, y:{selected_location.y}, z:{selected_location.z}");
             // Place the spawn creator decently above terrain and ground objects.
             // This is to allow re-checking the location for validity once everything is loaded.
             selected_location.y += 100f;
             onComplete?.Invoke(true, selected_location, normal);
         }
 
-        internal static Vector3 SelectWorldPoint(Tuple<float, float> range, int attempt)
-        {
-            // This uses a modulus operator to create oscilation between zero and 10, making our attempted range size vary.
+        internal static Vector3 SelectWorldPoint(Tuple<float, float> range, int attempt, Heightmap.Biome biome) {
+            // This uses a modulus operator to create oscilation between zero and 20, making our attempted range size vary.
             // This prevents us from running into the issue where we attempt to spawn outside of the map perpetually assuming the default scan range is sane.
-            int interval_range = attempt % 10;
-            var randomPoint = UnityEngine.Random.insideUnitCircle;
-            var mag = randomPoint.magnitude;
-            var normalized = randomPoint.normalized;
-            var actualMag = Mathf.Lerp(range.Item1 + (interval_range * 500), range.Item2 + (interval_range * 500), mag);
-            randomPoint = normalized * actualMag;
-            return new Vector3(randomPoint.x, 0, randomPoint.y);
+            int interval_range = attempt % 20;
+            
+            if (biome == Heightmap.Biome.AshLands || biome == Heightmap.Biome.DeepNorth) {
+                // For biomes that are situated in specific areas (eg top/bottom of the world)
+                float ash_or_dn = 1f;
+                if (biome == Heightmap.Biome.AshLands) { ash_or_dn = -1f; }
+                float natural_y =  UnityEngine.Random.Range(range.Item1 + (interval_range * 250), range.Item2 + (interval_range * 250));
+                float y_direction = natural_y * ash_or_dn;
+                float x_direction = UnityEngine.Random.Range(-1f * (range.Item1/2), (range.Item1 / 2));
+                return new Vector3(x_direction, 0, y_direction);
+            } else {
+                // For biomes that are scattered throughout the world
+                var randomPoint = UnityEngine.Random.insideUnitCircle;
+                var mag = randomPoint.magnitude;
+                var normalized = randomPoint.normalized;
+                var actualMag = Mathf.Lerp(range.Item1 + (interval_range * 250), range.Item2 + (interval_range * 250), mag);
+                randomPoint = normalized * actualMag;
+                return new Vector3(randomPoint.x, 0, randomPoint.y);
+            }
         }
 
         internal static bool IsSpawnLocationValid(Vector3 location, out Heightmap.Biome biome)
@@ -178,7 +188,7 @@ namespace EpicLoot.src.Adventure.feature
             // Ashlands biome, and location is in lava | Don't spawn in lava
             if (foundBiome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(location) > 0.6f)
             {
-                // EpicLoot.Log("Spawn Point rejected: In lava");
+                EpicLoot.Log("Spawn Point rejected: In lava");
                 return false;
             }
 
@@ -186,14 +196,14 @@ namespace EpicLoot.src.Adventure.feature
             // 5f is a buffer here becasue the swamp is very low to the water level
             if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 5f)
             {
-                // EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, groundHeight:{groundHeight})");
+                EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, groundHeight:{groundHeight})");
                 return false;
             }
 
             // Is too near to player base
             if (EffectArea.IsPointInsideArea(location, EffectArea.Type.PlayerBase, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius))
             {
-                // EpicLoot.Log("Spawn Point rejected: Too close to player base");
+                EpicLoot.Log("Spawn Point rejected: Too close to player base");
                 return false;
             }
 
@@ -205,7 +215,7 @@ namespace EpicLoot.src.Adventure.feature
             //    EpicLoot.Log("Spawn Point rejected: too close to player ward");
             //    return false;
             //}
-
+            EpicLoot.Log($"Spawn Point ({location}-{biome}) Valid.");
             return true;
         }
 

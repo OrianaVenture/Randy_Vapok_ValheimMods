@@ -215,7 +215,7 @@ namespace EpicLoot
                     var totalattackDrawStamina = attackDrawStaminaPercentage * item.m_shared.m_attack.m_drawStaminaDrain;
                     if (item.m_shared.m_attack.m_drawStaminaDrain > 0.0)
                         text.Append($"\n$item_staminahold: " +
-                            $"<color={attackDrawStaminaColor}>{totalattackDrawStamina:#.#}/s");
+                            $"<color={attackDrawStaminaColor}>{totalattackDrawStamina:#.#}/s</color>");
 
                     var baseBlockPower1 = item.GetBaseBlockPower(qualityLevel);
                     var blockPowerTooltipValue = item.GetBlockPowerTooltip(qualityLevel);

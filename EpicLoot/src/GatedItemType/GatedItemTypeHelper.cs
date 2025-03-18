@@ -240,7 +240,7 @@ namespace EpicLoot.GatedItemType
         // Always returns the highest tier item in a category, with fallback, and randomization
         private static string GetGatedItemID(string itemID, GatedItemTypeMode mode, int depth = 2)
         {
-            //EpicLoot.Log($"Checking GatedItemID for {itemID}");
+            EpicLoot.Log($"Checking {mode} for {itemID}");
             if (string.IsNullOrEmpty(itemID)) {
                 //EpicLoot.LogError($"Tried to get gated itemID with null or empty itemID!");
                 return null;
@@ -415,6 +415,9 @@ namespace EpicLoot.GatedItemType
                 //EpicLoot.Log($"Local player unset, item is gated.");
                 return true;
             }
+            List<string> reqbosses = null;
+            string reqboss = null;
+            GatedItemDetails details;
             switch (mode)
             {
                 case GatedItemTypeMode.Unlimited:
@@ -424,24 +427,26 @@ namespace EpicLoot.GatedItemType
                 case GatedItemTypeMode.PlayerMustHaveCraftedItem:
                     return !Player.m_localPlayer.m_knownMaterial.Contains(itemName);
                 case GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems:
+                    AllItemsWithDetails.TryGetValue(itemName, out details);
+                    if (details != null) {
+                        reqbosses = details.reqBosses;
+                        reqboss = details.reqBoss;
+                    }
+                    if (reqbosses == null && reqboss == null) { return false; }
+                    foreach (var boss in reqbosses) {
+                        if (ZoneSystem.instance.GetGlobalKey(boss)) {
+                            return false;
+                        }
+                    }
+                    return true;
                 case GatedItemTypeMode.BossKillUnlocksNextBiomeItems:
-                    List<string> reqbosses = null;
-                    string reqboss = null;
-                    GatedItemDetails details;
                     AllItemsWithDetails.TryGetValue(itemName, out details);
                     if (details != null) {
                         reqbosses = details.reqBosses;
                         reqboss = details.reqBoss;
                     }
                     if (reqbosses == null) { return false; }
-                    if (mode == GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems) {
-                        foreach(var boss in reqbosses) {
-                            if (ZoneSystem.instance.GetGlobalKey(boss)) {
-                                return false;
-                            }
-                        }
-                        return false;
-                    }
+
                     var prevBossKey = Bosses.GetPrevBossKey(reqboss);
                     // No previous boss || the player has the previous boss key?
                     if (string.IsNullOrEmpty(prevBossKey) || ZoneSystem.instance.GetGlobalKey(prevBossKey)) {
