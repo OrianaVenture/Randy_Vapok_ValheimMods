@@ -7,9 +7,12 @@ namespace EpicLoot.src.GamePatches
     [HarmonyPatch]
     public static class PatchOnHoverFix
     {
+        public static string comparision_title = "";
+        public static string comparision_tooltip = "";
+        public static bool comparision_added = false;
 
         [HarmonyPatch(typeof(InventoryGrid), nameof(InventoryGrid.CreateItemTooltip))]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         public static void Postfix(UITooltip __instance, UITooltip tooltip)
         {
             if (UITooltip.m_tooltip == null) { return; }
@@ -34,6 +37,25 @@ namespace EpicLoot.src.GamePatches
                 text_g.fontSize = 14;
                 text_g.fontSizeMax = 15;
                 text_g.fontSizeMin = 12;
+            }
+
+            // Render the comparision tooltip next to our primary tooltip, regardless of size of the original tooltip
+            if (comparision_tooltip != "" && comparision_added != true) {
+                GameObject org_tt = UITooltip.m_tooltip.transform.Find("Bkg").gameObject;
+                RectTransform org_bktransform = UITooltip.m_tooltip.transform.Find("Bkg").GetComponent<RectTransform>();
+                GameObject new_tt = UnityEngine.Object.Instantiate(org_tt, UITooltip.m_tooltip.transform);
+                // Test and determine why the topic is not being set properly
+                // GameObject new_tt = UnityEngine.Object.Instantiate(org_tt);
+                new_tt.transform.position = new Vector3(org_tt.transform.position.x + 5 + (org_bktransform.sizeDelta.x * 1.35f), org_tt.transform.position.y, org_tt.transform.position.z);
+                
+                GameObject text_go = new_tt.transform.Find("Text").gameObject;
+                TextMeshProUGUI text_g = text_go.GetComponent<TextMeshProUGUI>();
+                text_g.text = Localization.instance.Localize(comparision_tooltip);
+
+                GameObject title_go = new_tt.transform.Find("Topic").gameObject;
+                TextMeshProUGUI title_g = title_go.GetComponent<TextMeshProUGUI>();
+                title_g.text = Localization.instance.Localize(comparision_title);
+                comparision_added = true;
             }
         }
     }

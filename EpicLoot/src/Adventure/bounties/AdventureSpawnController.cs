@@ -1,5 +1,4 @@
 ﻿using EpicLoot.Adventure;
-using EpicLoot.Config;
 using EpicLoot.src.data;
 using System;
 using System.Collections;
@@ -19,7 +18,10 @@ namespace EpicLoot.src.Adventure.bounties
         private static Vector3ZNetProperty spawnpoint { get; set; }
 
         private static int current_updates = 0;
+        private static bool started_placement = false;
         private static Vector3 defaultspawn = new Vector3(1, 1, 1);
+        private static BountyInfo defaultbounty = new BountyInfo();
+        private static TreasureMapChestInfo defaulttreasure = new TreasureMapChestInfo();
 
         public void Awake()
         {
@@ -31,8 +33,8 @@ namespace EpicLoot.src.Adventure.bounties
             }
             if ((bool)zNetView)
             {
-                bounty = new BountyInfoZNetProperty("bount_spawn", zNetView, new BountyInfo());
-                treasure = new TreasureMapChestInfoZNetProperty("treasure_spawn", zNetView, new TreasureMapChestInfo());
+                bounty = new BountyInfoZNetProperty("bount_spawn", zNetView, defaultbounty);
+                treasure = new TreasureMapChestInfoZNetProperty("treasure_spawn", zNetView, defaulttreasure);
                 placed = new BoolZNetProperty("placed", zNetView, false);
                 searching_for_spawn = new BoolZNetProperty("searching_for_spawn", zNetView, false);
                 spawnpoint = new Vector3ZNetProperty("spawnpoint", zNetView, defaultspawn);
@@ -64,17 +66,15 @@ namespace EpicLoot.src.Adventure.bounties
             }
 
             // We've waited a small period of time, things should be all spawned in, lets evaluate if our spawn point is still good.
-            EpicLoot.Log($"Checking if location search is happening. {current_updates}");
-            if (searching_for_spawn.Get() == false)
-            {
+            // EpicLoot.Log($"Checking if location search is happening. {current_updates}");
+            if (started_placement == false) {
                 EpicLoot.Log("Starting search for valid spawn location.");
                 searching_for_spawn.Set(true);
-                if (bounty.Get().PlayerID > 0)
-                {
+                started_placement = true;
+                if (bounty.Get().PlayerID > 0) {
                     StartCoroutine(DetermineSpawnPoint(bounty.Get().Position, bounty.Get().Biome));
                 }
-                if (treasure.Get().PlayerID > 0)
-                {
+                if (treasure.Get().PlayerID > 0) {
                     StartCoroutine(DetermineSpawnPoint(treasure.Get().Position, treasure.Get().Biome, true));
                 }
             }
@@ -88,12 +88,12 @@ namespace EpicLoot.src.Adventure.bounties
             }
 
 
-            if (bounty.Get().PlayerID > 0 && placed.Get() == false)
+            if (bounty.Get() != defaultbounty && placed.Get() == false)
             {
                 EpicLoot.Log("Spawning bounty");
                 SpawnBountyTargets(bounty.Get());
             }
-            if (treasure.Get().PlayerID > 0 && placed.Get() == false)
+            if (treasure.Get() != defaulttreasure && placed.Get() == false)
             {
                 EpicLoot.Log("Spawning Treasure");
                 SpawnChest(treasure.Get());
@@ -153,7 +153,7 @@ namespace EpicLoot.src.Adventure.bounties
                 var bountyTarget = creature.AddComponent<BountyTarget>();
                 bountyTarget.Initialize(bounty, prefab.name, isAdd);
             }
-            placed.Set(true);
+            placed.ForceSet(true);
         }
 
         private static void SpawnChest(TreasureMapChestInfo treasure)
@@ -171,7 +171,7 @@ namespace EpicLoot.src.Adventure.bounties
             tpiece.m_randomTarget = false;
             tpiece.m_targetNonPlayerBuilt = false;
             treasureChest.Setup(treasure.PlayerID, treasure.Biome, treasure.Interval);
-            placed.Set(true);
+            placed.ForceSet(true);
         }
 
 
@@ -192,8 +192,11 @@ namespace EpicLoot.src.Adventure.bounties
             float current_min_z = startingSpawnPoint.z - range_increment;
             Vector3 determined_spawn = startingSpawnPoint;
             int spawn_location_attempts = 0;
-            while (true)
-            {
+            while (true) {
+                if (spawnpoint.Get() != defaultspawn) {
+                    // We've already found a spawn point, no need to continue
+                    yield break;
+                }
                 if (spawn_location_attempts % 10 == 0 && spawn_location_attempts > 1) {
                     // Sleep to let other things still happen
                     yield return new WaitForSeconds(1f);
@@ -260,7 +263,7 @@ namespace EpicLoot.src.Adventure.bounties
 
                 // Prevent spawning in Lava
                 // This is a slightly modified lava check which is a little more strict and should give us more spacing away from the lavas edge
-                if (biome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(determined_spawn) > 0.45f)
+                if (biome == Heightmap.Biome.AshLands && spawn_location_attempts < 5 && hmap.GetVegetationMask(determined_spawn) > 0.45f)
                 {
                     EpicLoot.Log($"Selected spawn is in lava, retrying.");
                     spawn_location_attempts += 1;
@@ -272,7 +275,7 @@ namespace EpicLoot.src.Adventure.bounties
             }
 
             EpicLoot.Log($"Selected Spawn point X {determined_spawn.x}, Y {determined_spawn.y}, Z {determined_spawn.z}");
-            spawnpoint.Set(determined_spawn);
+            spawnpoint.ForceSet(determined_spawn);
             yield break;
         }
     }

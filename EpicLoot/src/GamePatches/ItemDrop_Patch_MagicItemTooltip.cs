@@ -3,6 +3,7 @@ using System.Text;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.MagicItemEffects;
+using EpicLoot.src.GamePatches;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -23,11 +24,14 @@ namespace EpicLoot
                 Player.m_localPlayer.HasEquipmentOfType(item.m_shared.m_itemType) && ZInput.GetKey(KeyCode.LeftControl))
             {
                 var otherItem = Player.m_localPlayer.GetEquipmentOfType(item.m_shared.m_itemType);
-                tooltipText = item.GetTooltip() + $"<color=#AAA><i>$mod_epicloot_currentlyequipped:" +
-                    $"</i></color>\n<size=18>{otherItem.GetDecoratedName()}</size>\n" + otherItem.GetTooltip();
-            }
-            else
-            {
+                tooltipText = item.GetTooltip();
+                // Set the comparision tooltip to be shown side-by-side with our original tooltip
+                PatchOnHoverFix.comparision_title = $"<color=#AAA><i>$mod_epicloot_currentlyequipped:" +
+                    $"</i></color>" + otherItem.GetDecoratedName();
+                PatchOnHoverFix.comparision_tooltip = otherItem.GetTooltip();
+            } else {
+                PatchOnHoverFix.comparision_tooltip = "";
+                PatchOnHoverFix.comparision_added = false;
                 tooltipText = item.GetTooltip();
             }
             tooltip.Set(item.GetDecoratedName(), tooltipText);

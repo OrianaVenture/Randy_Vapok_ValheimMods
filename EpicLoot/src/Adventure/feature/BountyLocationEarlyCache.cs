@@ -49,7 +49,7 @@ namespace EpicLoot.src.Adventure.feature
                     // slow down this loop until the zone is spawned.
                     yield return new WaitForEndOfFrame();
                 }
-                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
+                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, tries, out Heightmap.Biome spawn_location_biome);
                 EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint} - valid? {valid_location}");
                 if (valid_location == false) {
                     continue;
@@ -119,7 +119,7 @@ namespace EpicLoot.src.Adventure.feature
                     // slow down this loop until the zone is spawned.
                     yield return new WaitForEndOfFrame();
                 }
-                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, out Heightmap.Biome spawn_location_biome);
+                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, tries, out Heightmap.Biome spawn_location_biome);
                 // EpicLoot.Log($"Found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
                 if (!valid_location) {
                     continue;
@@ -159,7 +159,7 @@ namespace EpicLoot.src.Adventure.feature
                 // For biomes that are situated in specific areas (eg top/bottom of the world)
                 float ash_or_dn = 1f;
                 if (biome == Heightmap.Biome.AshLands) { ash_or_dn = -1f; }
-                float natural_y =  UnityEngine.Random.Range(range.Item1 + (interval_range * 250), range.Item2 + (interval_range * 250));
+                float natural_y =  UnityEngine.Random.Range(range.Item1 + (interval_range * 90), range.Item1 + (interval_range * 90) + 100f);
                 float y_direction = natural_y * ash_or_dn;
                 float x_direction = UnityEngine.Random.Range(-1f * (range.Item1/2), (range.Item1 / 2));
                 return new Vector3(x_direction, 0, y_direction);
@@ -174,7 +174,7 @@ namespace EpicLoot.src.Adventure.feature
             }
         }
 
-        internal static bool IsSpawnLocationValid(Vector3 location, out Heightmap.Biome biome)
+        internal static bool IsSpawnLocationValid(Vector3 location, int attempts, out Heightmap.Biome biome)
         {
             biome = Heightmap.Biome.None;
 
@@ -185,13 +185,16 @@ namespace EpicLoot.src.Adventure.feature
             float groundHeight = location.y;
 
 
-            // Ashlands biome, and location is in lava | Don't spawn in lava
-            if (foundBiome == Heightmap.Biome.AshLands && hmap.GetVegetationMask(location) > 0.6f)
-            {
-                EpicLoot.Log("Spawn Point rejected: In lava");
-                return false;
+            // Ashlands biome, and location is in lava | Try not to spawn in lava
+            // After enough failures we will just spawn in lava
+            if (foundBiome == Heightmap.Biome.AshLands && attempts < 20) {
+                if (hmap.IsLava(location))
+                {
+                    EpicLoot.Log("Spawn Point rejected: In lava");
+                    return false;
+                }
             }
-
+                
             var waterLevel = ZoneSystem.instance.m_waterLevel;
             // 5f is a buffer here becasue the swamp is very low to the water level
             if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 5f)
@@ -238,7 +241,7 @@ namespace EpicLoot.src.Adventure.feature
             var maxSearchRange = biomeInfoConfig.MaxRadius;
             var searchBandWidth = AdventureDataManager.Config.TreasureMap.StartRadiusMax - AdventureDataManager.Config.TreasureMap.StartRadiusMin;
             var numberOfBounties = AdventureDataManager.CheatNumberOfBounties >= 0 ? AdventureDataManager.CheatNumberOfBounties : saveData.NumberOfTreasureMapsOrBountiesStarted;
-            var increments = numberOfBounties / AdventureDataManager.Config.TreasureMap.IncreaseRadiusCount;
+            var increments = (numberOfBounties / AdventureDataManager.Config.TreasureMap.IncreaseRadiusCount) % 20;
             var min1 = minSearchRange + (AdventureDataManager.Config.TreasureMap.StartRadiusMin + increments * AdventureDataManager.Config.TreasureMap.RadiusInterval);
             var max1 = min1 + searchBandWidth;
             var min = Mathf.Clamp(min1, minSearchRange, maxSearchRange - searchBandWidth);
