@@ -5,6 +5,7 @@
 * Bounty and treasure chest spawning overhauled
     * Bounty creature spawning now includes creatures validation, bounties for creatures that don't exist in the world will not be generated 
     * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater
+    * Bounties and treasure for the Ashland and deep north now work consistently
 * Gambling fixes
     * Gambling no longer picks the same items all of the time
     * Mod items no longer are automatically picked
@@ -16,6 +17,7 @@
 * Some Art asset optimizations, download size reduced by 50%
 * Fixed UI tooltip spasm when too large for the screen
     * Tooltips too large will be resized to fit the screen
+    * Comparision tooltip is now shown side by side instead of below
 * Patches are now live-reloadable from the Bepinex/config/EpicLoot/patches folder
     * Improved server syncing of configurations to allow reloading patches without restarting the server
 * New patch action: "MultiAdd" which allows patching the same values into multiple locations
