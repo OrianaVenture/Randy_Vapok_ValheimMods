@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\JotunnLib.2.21.3\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.21.3\build\JotunnLib.props')" />
+  <Import Project="..\packages\JotunnLib.2.24.3\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.24.3\build\JotunnLib.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Paths.props" />
   <PropertyGroup>
@@ -40,180 +40,9 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="src\Adventure\bounties\AdventureSpawnController.cs" />
-    <Compile Include="src\Adventure\feature\AdventureFeature.cs" />
-    <Compile Include="src\Adventure\feature\Bosses.cs" />
-    <Compile Include="src\Adventure\feature\Bounties.cs" />
-    <Compile Include="src\Adventure\feature\BountiesListPanel.cs" />
-    <Compile Include="src\Adventure\feature\BountyLedger.cs" />
-    <Compile Include="src\Adventure\feature\BountyLocationEarlyCache.cs" />
-    <Compile Include="src\Adventure\feature\Gamble.cs" />
-    <Compile Include="src\Adventure\feature\GambleListPanel.cs" />
-    <Compile Include="src\Adventure\feature\MerchantListPanel.cs" />
-    <Compile Include="src\Adventure\feature\SecretStash.cs" />
-    <Compile Include="src\Adventure\feature\SecretStashListPanel.cs" />
-    <Compile Include="src\Adventure\feature\TreasureMapListPanel.cs" />
-    <Compile Include="src\Adventure\feature\TreasureMaps.cs" />
-    <Compile Include="src\General\Extensions.cs" />
-    <Compile Include="src\integrations\HarmonyPatches\ArmorStand_Patch.cs" />
-    <Compile Include="src\integrations\HarmonyPatches\ItemStand_Patch.cs" />
-    <Compile Include="src\Loot\LootBeams\AlwaysPointUp.cs" />
-    <Compile Include="src\Loot\LootBeams\BeamColorSetter.cs" />
-    <Compile Include="src\Loot\LootBeams\LootBeam.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\AddCarryWeight.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\AddEitrLeech.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\AddLifeSteal.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\AddSkillLevel.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\AvoidDamageTaken.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Bloodlust.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\BulkUp.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\CoinHoarder.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Comfortable.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\DecreaseForsakenCooldown.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\DoubleJump.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\EitrWeaving.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Executioner.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ExplosiveArrows.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\FeatherFall.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\FreeBuild.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\FrostAOE.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Immovable.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseDrop.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseEitr.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseHealth.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseHeatResistance.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseMiningDrop.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseStamina.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\IncreaseTreeDrop.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Indestructible.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\MagicEffectsHelper.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyArmor.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyAttackEitr.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyAttackHealth.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyAttackSpeed.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyAttackStamina.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyBackstab.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyBlockPower.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyBlockStaminaUse.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyDamage.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyDiscoveryRadius.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyDodgeStamina.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyDrawStamina.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyDurability.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyEitrRegen.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyHealthRegen.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyJumpStaminaUsage.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyMovementSpeed.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyParry.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyParryWindow.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyResistance.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyRunStaminaDrain.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyStaggerDamage.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyStaggerDuration.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyStaminaRegen.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifySummonDamage.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifySummonHealth.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyWispRange.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ModifyWithLowHealth.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\MultiShot.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Opportunist.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Paralyze.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\QuickDraw.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\QuickLearner.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\RecallWeapon.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ReduceWeight.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\ReflectDamage.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Riches.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Slow.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\SpellSword.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\StaggerOnDamageTaken.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Throwable.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Undying.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Warmth.cs" />
-    <Compile Include="src\Magic\MagicItemEffects\Waterproof.cs" />
     <Compile Include="src\*.cs" />
-    <Compile Include="src\Abilities\Ability.cs" />
-    <Compile Include="src\Abilities\AbilityBar.cs" />
-    <Compile Include="src\Abilities\AbilityConfig.cs" />
-    <Compile Include="src\Abilities\AbilityController.cs" />
-    <Compile Include="src\Abilities\AbilityDefinitions.cs" />
-    <Compile Include="src\Abilities\AbilityFactory.cs" />
-    <Compile Include="src\Abilities\PlayerExtensions_Abilities.cs" />
-    <Compile Include="src\Adventure\AbandonBountyDialog.cs" />
-    <Compile Include="src\Adventure\AdventureComponent.cs" />
-    <Compile Include="src\Adventure\AdventureDataConfig.cs" />
-    <Compile Include="src\Adventure\AdventureDataManager.cs" />
-    <Compile Include="src\Adventure\AdventureSaveData.cs" />
-    <Compile Include="src\Adventure\BaseMerchantPanelListElement.cs" />
-    <Compile Include="src\Adventure\BountyListElement.cs" />
-    <Compile Include="src\Adventure\BountyManagmentSystem.cs" />
-    <Compile Include="src\Adventure\BountyTarget.cs" />
-    <Compile Include="src\Adventure\BuyListElement.cs" />
-    <Compile Include="src\Adventure\CharacterDrop_Patch.cs" />
-    <Compile Include="src\Adventure\MerchantPanel.cs" />
-    <Compile Include="src\Adventure\MessageHud_Patch.cs" />
-    <Compile Include="src\Adventure\MinimapController.cs" />
-    <Compile Include="src\Adventure\PlayerExtensions_Adventure.cs" />
-    <Compile Include="src\Adventure\SE_CustomFinder.cs" />
-    <Compile Include="src\Adventure\StoreGui_Patch.cs" />
-    <Compile Include="src\Adventure\TreasureMapChest.cs" />
-    <Compile Include="src\Adventure\TreasureMapListElement.cs" />
-    <Compile Include="src\Config\ELConfig.cs" />
-    <Compile Include="src\CraftingV2\EnchantingTable_Patch.cs" />
-    <Compile Include="src\CraftingV2\EnchantingUIAugaFixup.cs" />
-    <Compile Include="src\CraftingV2\EnchantingUIController.cs" />
-    <Compile Include="src\CraftingV2\EnchantingUI_Patches.cs" />
-    <Compile Include="src\CraftingV2\MaterialConversions.cs" />
-    <Compile Include="src\Crafting\AugmentChoiceDialog.cs" />
-    <Compile Include="src\Crafting\AugmentHelper.cs" />
-    <Compile Include="src\Crafting\AugmentsAvailableDialog.cs" />
-    <Compile Include="src\Crafting\CraftingItemExtensions.cs" />
-    <Compile Include="src\Crafting\CraftingTabs.cs" />
-    <Compile Include="src\Crafting\CraftSuccessDialog.cs" />
-    <Compile Include="src\Crafting\EnchantCostsConfig.cs" />
-    <Compile Include="src\Crafting\EnchantCostsHelper.cs" />
-    <Compile Include="src\Crafting\EnchantHelper.cs" />
-    <Compile Include="src\Crafting\ItemDrop_Patch.cs" />
-    <Compile Include="src\Crafting\Player_Patch.cs" />
-    <Compile Include="src\Crafting\RecipesHelper.cs" />
-    <Compile Include="src\Crafting\TransferMagicalEffects.cs" />
-    <Compile Include="src\data\CustomDataManager.cs" />
-    <Compile Include="src\data\CustomZNet.cs" />
-    <Compile Include="src\data\EIDFLegacy.cs" />
-    <Compile Include="src\GamePatches\Attack_Patch.cs" />
-    <Compile Include="src\GamePatches\CharacterDrop_Patch.cs" />
-    <Compile Include="src\GamePatches\Container_Patch.cs" />
-    <Compile Include="src\GamePatches\GameCamera_Patch.cs" />
-    <Compile Include="src\GamePatches\Humanoid_Patch.cs" />
-    <Compile Include="src\GamePatches\ItemDrop_Patch.cs" />
-    <Compile Include="src\GamePatches\ItemDrop_Patch_MagicItemTooltip.cs" />
-    <Compile Include="src\GamePatches\Multiplayer_Player_Patch.cs" />
-    <Compile Include="src\GamePatches\ObjectDB_Patch.cs" />
-    <Compile Include="src\GamePatches\Terminal_Patch.cs" />
-    <Compile Include="src\GamePatches\TextsDialog_Patch.cs" />
-    <Compile Include="src\GamePatches\UIFix_Patch.cs" />
-    <Compile Include="src\GamePatches\VisEquipment_Patch.cs" />
-    <Compile Include="src\GamePatches\ZNetScene_Patch.cs" />
-    <Compile Include="src\GamePatches\ZNet_Patch.cs" />
-    <Compile Include="src\GatedItemType\GatedItemTypeHelper.cs" />
-    <Compile Include="src\GatedItemType\ItemInfoConfig.cs" />
-    <Compile Include="src\General\DebugText.cs" />
-    <Compile Include="src\General\TerminalCommands.cs" />
-    <Compile Include="src\General\WelcomeMessage.cs" />
-    <Compile Include="src\Healing\AddHealingQueueToPlayerPatch.cs" />
-    <Compile Include="src\Healing\HealingQueueMono.cs" />
-    <Compile Include="src\LegendarySystem\LegendaryItemConfig.cs" />
-    <Compile Include="src\LegendarySystem\UniqueLegendaryHelper.cs" />
-    <Compile Include="src\Loot\LootConfig.cs" />
-    <Compile Include="src\Loot\LootRoller.cs" />
-    <Compile Include="src\Magic\MagicItem.cs" />
-    <Compile Include="src\Magic\MagicItemComponent.cs" />
-    <Compile Include="src\Magic\MagicItemEffectDefinition.cs" />
-    <Compile Include="src\Magic\MagicItemEffectDefinitions_Setup.cs" />
-    <Compile Include="src\Magic\MagicItemNames.cs" />
-    <Compile Include="src\Patching\FilePatching.cs" />
-    <Compile Include="EpicLoot.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\*\*.cs" />
+    <Compile Include="src\*\*\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\epicloot">
@@ -256,8 +85,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Jotunn, Version=2.21.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\JotunnLib.2.21.3\lib\net462\Jotunn.dll</HintPath>
+    <Reference Include="Jotunn, Version=2.24.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JotunnLib.2.24.3\lib\net462\Jotunn.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
@@ -272,7 +101,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets'))" />
-    <Error Condition="!Exists('..\packages\JotunnLib.2.21.3\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.21.3\build\JotunnLib.props'))" />
+    <Error Condition="!Exists('..\packages\JotunnLib.2.24.3\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.24.3\build\JotunnLib.props'))" />
   </Target>
   <Target Name="CopyToThunderstore">
     <Message Text="Copying to Thunderstore Deployment" Importance="high" />

@@ -90,18 +90,12 @@ namespace EpicLoot.src.Adventure.bounties
                 return;
             }
 
-
             if (is_bounty.Get() == true) {
                 EpicLoot.Log("Spawning bounty");
                 SpawnBountyTargets(bounty.Get());
             } else {
-                if (treasure.Get() != defaulttreasure) {
-                    EpicLoot.Log("Spawning Treasure");
-                    SpawnChest(treasure.Get());
-                } else {
-                    EpicLoot.Log("Attempting bounty spawn fallback. Adventure was set as a treasure but did not contain treasure data.");
-                    SpawnBountyTargets(bounty.Get());
-                }
+                EpicLoot.Log("Spawning Treasure");
+                SpawnChest(treasure.Get());
             }
             if (placed.Get() == true) {
                 EpicLoot.Log("Destroying AdventureSpawnController");
