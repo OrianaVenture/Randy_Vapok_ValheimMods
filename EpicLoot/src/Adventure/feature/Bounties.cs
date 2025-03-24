@@ -239,6 +239,7 @@ namespace EpicLoot.Adventure.Feature
             bounty.Position = spawnPoint;
             // Pass the bounty data to this object, save it to the ZNetView
             created_go.GetComponent<AdventureSpawnController>().SetBounty(bounty);
+            created_go.GetComponent<AdventureSpawnController>().SetIsBounty();
             Minimap.instance.ShowPointOnMap(spawnPoint + offset);
         }
 

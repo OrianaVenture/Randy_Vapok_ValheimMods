@@ -17,11 +17,13 @@ namespace EpicLoot.src.Adventure.bounties
         private static BoolZNetProperty searching_for_spawn { get; set; }
         private static Vector3ZNetProperty spawnpoint { get; set; }
 
+        private static BoolZNetProperty is_bounty { get; set; }
+
         private static int current_updates = 0;
         private static bool started_placement = false;
-        private static Vector3 defaultspawn = new Vector3(1, 1, 1);
-        private static BountyInfo defaultbounty = new BountyInfo();
-        private static TreasureMapChestInfo defaulttreasure = new TreasureMapChestInfo();
+        private static Vector3 defaultspawn = new(1, 1, 1);
+        private static BountyInfo defaultbounty = new();
+        private static TreasureMapChestInfo defaulttreasure = new();
 
         public void Awake()
         {
@@ -35,6 +37,7 @@ namespace EpicLoot.src.Adventure.bounties
             {
                 bounty = new BountyInfoZNetProperty("bount_spawn", zNetView, defaultbounty);
                 treasure = new TreasureMapChestInfoZNetProperty("treasure_spawn", zNetView, defaulttreasure);
+                is_bounty = new BoolZNetProperty("is_bounty", zNetView, false);
                 placed = new BoolZNetProperty("placed", zNetView, false);
                 searching_for_spawn = new BoolZNetProperty("searching_for_spawn", zNetView, false);
                 spawnpoint = new Vector3ZNetProperty("spawnpoint", zNetView, defaultspawn);
@@ -88,18 +91,19 @@ namespace EpicLoot.src.Adventure.bounties
             }
 
 
-            if (bounty.Get() != defaultbounty && placed.Get() == false)
-            {
+            if (is_bounty.Get() == true) {
                 EpicLoot.Log("Spawning bounty");
                 SpawnBountyTargets(bounty.Get());
+            } else {
+                if (treasure.Get() != defaulttreasure) {
+                    EpicLoot.Log("Spawning Treasure");
+                    SpawnChest(treasure.Get());
+                } else {
+                    EpicLoot.Log("Attempting bounty spawn fallback. Adventure was set as a treasure but did not contain treasure data.");
+                    SpawnBountyTargets(bounty.Get());
+                }
             }
-            if (treasure.Get() != defaulttreasure && placed.Get() == false)
-            {
-                EpicLoot.Log("Spawning Treasure");
-                SpawnChest(treasure.Get());
-            }
-            if (placed.Get())
-            {
+            if (placed.Get() == true) {
                 EpicLoot.Log("Destroying AdventureSpawnController");
                 ZNetScene.instance.Destroy(this.gameObject);
             }
@@ -109,6 +113,12 @@ namespace EpicLoot.src.Adventure.bounties
         {
             // EpicLoot.Log("Setting BountyInfo");
             bounty.ForceSet(bountyInfo);
+        }
+
+        public void SetIsBounty()
+        {
+            // EpicLoot.Log("Setting IsBounty");
+            is_bounty.ForceSet(true);
         }
 
         public void SetTreasure(TreasureMapChestInfo treasureInfo)
@@ -123,7 +133,7 @@ namespace EpicLoot.src.Adventure.bounties
             var mainPrefab = ZNetScene.instance.GetPrefab(bounty.Target.MonsterID);
             if (mainPrefab == null)
             {
-                EpicLoot.LogError($"Could not find prefab for bounty target! BountyID: " +
+                EpicLoot.LogWarning($"Could not find prefab for bounty target! BountyID: " +
                     $"{bounty.ID}, MonsterID: {bounty.Target.MonsterID}");
                 return;
             }
