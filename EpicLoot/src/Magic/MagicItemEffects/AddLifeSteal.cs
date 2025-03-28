@@ -1,5 +1,4 @@
-﻿using System;
-using EpicLoot.Healing;
+﻿using EpicLoot.Healing;
 using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects

@@ -19,7 +19,6 @@ namespace EpicLoot.MagicItemEffects
         }
     }
 
-    //public override bool StartAttack(Character target, bool secondaryAttack)
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.StartAttack))]
     public static class Throwable_Humanoid_StartAttack_Patch
     {
@@ -31,7 +30,8 @@ namespace EpicLoot.MagicItemEffects
             }
 
             __instance.ClearActionQueue();
-            if (__instance.InAttack() && !__instance.HaveQueuedChain() || __instance.InDodge() || !__instance.CanMove() || __instance.IsKnockedBack() || __instance.IsStaggering() || __instance.InMinorAction())
+            if (__instance.InAttack() && !__instance.HaveQueuedChain() || __instance.InDodge() ||
+                !__instance.CanMove() || __instance.IsKnockedBack() || __instance.IsStaggering() || __instance.InMinorAction())
             {
                 return true;
             }
@@ -63,7 +63,9 @@ namespace EpicLoot.MagicItemEffects
 
             var attack = spearPrefab.GetComponent<ItemDrop>().m_itemData.m_shared.m_secondaryAttack.Clone();
 
-            if (!attack.Start(__instance, __instance.m_body, __instance.m_zanim, __instance.m_animEvent, __instance.m_visEquipment, currentWeapon, __instance.m_previousAttack, __instance.m_timeSinceLastAttack, __instance.GetAttackDrawPercentage()))
+            if (!attack.Start(__instance, __instance.m_body, __instance.m_zanim, __instance.m_animEvent,
+                __instance.m_visEquipment, currentWeapon, __instance.m_previousAttack,
+                __instance.m_timeSinceLastAttack, __instance.GetAttackDrawPercentage()))
             {
                 return false;
             }
@@ -86,14 +88,15 @@ namespace EpicLoot.MagicItemEffects
                 __instance.m_weapon.m_shared.m_triggerEffect = new EffectList();
             }
         }
-            
+
         public static void Postfix(Attack __instance, EffectList __state)
         {
             if (__instance.m_weapon.IsMagic() && __instance.m_weapon.GetMagicItem().HasEffect(MagicEffectType.Throwable))
             {
                 if (__instance.m_weapon.m_lastProjectile.GetComponent<Projectile>() is Projectile projectile)
                 {
-                    projectile.m_spawnOnHitEffects = new EffectList { m_effectPrefabs = projectile.m_spawnOnHitEffects.m_effectPrefabs.Concat(__state.m_effectPrefabs).ToArray() };
+                    projectile.m_spawnOnHitEffects = new EffectList { m_effectPrefabs =
+                        projectile.m_spawnOnHitEffects.m_effectPrefabs.Concat(__state.m_effectPrefabs).ToArray() };
                     projectile.m_aoe = __instance.m_weapon.m_shared.m_attack.m_attackRayWidth;
                 }
 
@@ -107,7 +110,8 @@ namespace EpicLoot.MagicItemEffects
     {
         public static void Postfix(Attack __instance)
         {
-            if (__instance.m_weapon.m_lastProjectile != null && __instance.m_weapon.IsMagic() && __instance.m_weapon.GetMagicItem().HasEffect(MagicEffectType.Throwable))
+            if (__instance.m_weapon.m_lastProjectile != null && __instance.m_weapon.IsMagic() &&
+                __instance.m_weapon.GetMagicItem().HasEffect(MagicEffectType.Throwable))
             {
                 var existingMesh = __instance.m_weapon.m_lastProjectile.transform.Find("spear");
                 if (existingMesh != null)

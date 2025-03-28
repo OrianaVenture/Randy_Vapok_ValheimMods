@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void ModifyJumpStaminaUsage(float baseStaminaUse, ref float staminaUse)
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyJumpStaminaUsage))]
     public static class ModifyJumpStaminaUse_SEMan_ModifyJumpStaminaUsage_Patch
     {

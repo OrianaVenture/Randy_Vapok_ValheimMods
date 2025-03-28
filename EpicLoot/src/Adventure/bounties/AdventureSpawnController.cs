@@ -1,12 +1,11 @@
-﻿using EpicLoot.Adventure;
-using EpicLoot.src.data;
+﻿using EpicLoot.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Heightmap;
 
-namespace EpicLoot.src.Adventure.bounties
+namespace EpicLoot.Adventure
 {
     internal class AdventureSpawnController : MonoBehaviour
     {

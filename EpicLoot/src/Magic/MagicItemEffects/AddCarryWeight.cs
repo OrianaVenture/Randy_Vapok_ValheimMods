@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void ModifyMaxCarryWeight(float baseLimit, ref float limit)
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyMaxCarryWeight))]
     public static class AddCarryWeight_SEMan_ModifyMaxCarryWeight_Patch
     {

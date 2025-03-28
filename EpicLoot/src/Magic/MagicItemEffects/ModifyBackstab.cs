@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-// ReSharper disable UnusedMember.Local
 
 namespace EpicLoot.MagicItemEffects
 {

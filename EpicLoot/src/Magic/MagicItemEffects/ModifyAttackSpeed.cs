@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 
 namespace EpicLoot.MagicItemEffects
 {
-
     [HarmonyPatch(typeof(Game), nameof(Game.Awake))]
     public static class ModifyAttackSpeed_ApplyAnimationHandler_Patch
     {

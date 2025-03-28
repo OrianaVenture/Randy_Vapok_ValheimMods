@@ -1,5 +1,4 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
 using Random = UnityEngine.Random;
 
@@ -12,26 +11,20 @@ namespace EpicLoot.MagicItemEffects
         private static void Postfix(Character __instance, HitData hit)
         {
             if (hit == null || __instance == null)
-                return; 
+            {
+                return;
+            }
 
             var attacker = hit.GetAttacker();
 
-            try
-            {
-                if (__instance is Player player &&
+            if (__instance is Player player &&
                     attacker != null && attacker != __instance && !attacker.IsStaggering() &&
                     player.HasActiveMagicEffect(MagicEffectType.StaggerOnDamageTaken, out float effectValue, 0.01f))
-                {
-                    if (Random.Range(0f, 1f) < effectValue)
-                    {
-                        attacker.Stagger(-attacker.transform.forward);
-                    }
-                }
-
-            }
-            catch (NullReferenceException)
             {
-                EpicLoot.LogWarning($"[StaggerOnDamageTaken] Caught null exception. Everything is fine.");
+                if (Random.Range(0f, 1f) < effectValue)
+                {
+                    attacker.Stagger(-attacker.transform.forward);
+                }
             }
         }
     }

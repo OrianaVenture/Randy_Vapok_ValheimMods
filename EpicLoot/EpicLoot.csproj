@@ -43,22 +43,14 @@
     <Compile Include="src\*.cs" />
     <Compile Include="src\*\*.cs" />
     <Compile Include="src\*\*\*.cs" />
+    <Compile Include="EpicLoot.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\epicloot">
       <Link>epicloot</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\abilities.json" />
-    <EmbeddedResource Include="config\adventuredata.json" />
-    <EmbeddedResource Include="config\enchantcosts.json" />
-    <EmbeddedResource Include="config\enchantingupgrades.json" />
-    <EmbeddedResource Include="config\iteminfo.json" />
-    <EmbeddedResource Include="config\itemnames.json" />
-    <EmbeddedResource Include="config\legendaries.json" />
-    <EmbeddedResource Include="config\loottables.json" />
-    <EmbeddedResource Include="config\magiceffects.json" />
-    <EmbeddedResource Include="config\materialconversions.json" />
-    <EmbeddedResource Include="config\recipes.json" />
+    <EmbeddedResource Include="config\*.json" />
     <EmbeddedResource Include="localizations\English.json" />
     <None Include="info.md" />
     <None Include="packages.config" />

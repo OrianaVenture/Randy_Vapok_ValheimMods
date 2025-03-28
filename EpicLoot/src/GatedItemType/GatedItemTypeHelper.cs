@@ -2,7 +2,7 @@
 using System.Linq;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
-using EpicLoot.src.General;
+using EpicLoot.General;
 using Jotunn.Managers;
 
 namespace EpicLoot.GatedItemType

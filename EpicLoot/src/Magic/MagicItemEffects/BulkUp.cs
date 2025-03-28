@@ -1,12 +1,9 @@
-﻿
-using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using static Player;
 
 namespace EpicLoot.MagicItemEffects
 {
-
-    //public void ModifyHealthRegen(ref float regenMultiplier)
     [HarmonyPatch]
     public static class Bulkup_Effect
     {

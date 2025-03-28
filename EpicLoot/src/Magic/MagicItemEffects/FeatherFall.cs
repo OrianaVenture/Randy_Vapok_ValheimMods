@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 
 namespace EpicLoot.MagicItemEffects
 {
-    //UpdateEquipmentStatusEffects
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.UpdateEquipmentStatusEffects))]
     public class FeatherFall_Humanoid_UpdateEquipmentStatusEffects_Patch
     {

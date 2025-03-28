@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EpicLoot.src.General
+namespace EpicLoot.General
 {
     internal static class Extensions
     {

@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void ModifyStaminaRegen(ref float staminaMultiplier)
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyStaminaRegen))]
     public static class ModifyStaminaRegen_SEMan_ModifyStaminaRegen_Patch
     {

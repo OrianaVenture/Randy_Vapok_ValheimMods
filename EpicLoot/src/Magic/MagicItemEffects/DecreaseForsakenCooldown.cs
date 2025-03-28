@@ -1,5 +1,4 @@
 using HarmonyLib;
-using static Utils;
 
 namespace EpicLoot.MagicItemEffects;
 

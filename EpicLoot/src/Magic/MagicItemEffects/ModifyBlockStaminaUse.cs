@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public override bool BlockAttack(HitData hit, Character attacker)
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.BlockAttack))]
     public static class ModifyBlockStaminaUse_Humanoid_BlockAttack_Patch
     {

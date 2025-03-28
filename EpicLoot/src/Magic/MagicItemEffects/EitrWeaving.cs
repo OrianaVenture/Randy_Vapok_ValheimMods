@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace EpicLoot.src.Magic.MagicItemEffects
+namespace EpicLoot.MagicItemEffects
 {
     [HarmonyPatch]
     public static class EitrWeaving

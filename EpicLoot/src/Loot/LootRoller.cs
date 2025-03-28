@@ -11,7 +11,6 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
-using Jotunn.Managers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;

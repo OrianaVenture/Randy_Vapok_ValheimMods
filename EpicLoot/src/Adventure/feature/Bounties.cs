@@ -6,8 +6,6 @@ using System.Text;
 using BepInEx;
 using Common;
 using EpicLoot.Config;
-using EpicLoot.src.Adventure.bounties;
-using EpicLoot.src.Adventure.feature;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using Jotunn.Managers;

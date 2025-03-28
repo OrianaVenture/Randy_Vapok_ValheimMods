@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.Crafting;
-using EpicLoot.src.Adventure.feature;
 using EpicLoot_UnityLib;
 using TMPro;
 using UnityEngine;

@@ -1,12 +1,11 @@
-﻿using EpicLoot.Adventure;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Heightmap;
 
-namespace EpicLoot.src.Adventure.feature
+namespace EpicLoot.Adventure.Feature
 {
     internal static class BountyLocationEarlyCache
     {
