@@ -734,7 +734,6 @@ namespace EpicLoot.CraftingV2
             return result;
         }
 
-
         private static List<InventoryItemListElement> DisenchantItem(ItemDrop.ItemData item)
         {
             List<InventoryItemListElement> bonusItems = new List<InventoryItemListElement>();

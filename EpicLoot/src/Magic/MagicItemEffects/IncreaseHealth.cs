@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void GetTotalFoodValue(out float hp, out float stamina)
     [HarmonyPatch(typeof(Player), nameof(Player.GetTotalFoodValue))]
     public static class IncreaseHealth_Player_GetTotalFoodValue_Patch
     {
@@ -12,7 +11,6 @@ namespace EpicLoot.MagicItemEffects
         }
     }
 
-    //public float GetBaseFoodHP() => 25f;
     [HarmonyPatch(typeof(Player), nameof(Player.GetBaseFoodHP))]
     public static class IncreaseHealth_Player_GetBaseFoodHP_Patch
     {

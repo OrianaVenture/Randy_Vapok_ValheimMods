@@ -25,38 +25,57 @@ namespace EpicLoot.Adventure.Feature
             RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GamblesCount, results);
 
             var forestTokenGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
+            RollOnListNTimes(random, availableGambles,
+                AdventureDataManager.Config.Gamble.ForestTokenGamblesCount, forestTokenGambles);
             foreach (var forestTokenGamble in forestTokenGambles)
             {
-                forestTokenGamble.Cost.Coins = (int)(forestTokenGamble.Cost.Coins * AdventureDataManager.Config.Gamble.ForestTokenGambleCoinsCost);
-                forestTokenGamble.Cost.ForestTokens = random.Next(AdventureDataManager.Config.Gamble.ForestTokenGambleCostMin, AdventureDataManager.Config.Gamble.ForestTokenGambleCostMax + 1);
-                forestTokenGamble.GuaranteedRarity = true;
-                forestTokenGamble.Rarity = ItemRarity.Rare;
-                results.Add(forestTokenGamble);
+                SecretStashItemInfo config = new SecretStashItemInfo(
+                    forestTokenGamble.ItemID, forestTokenGamble.Item, forestTokenGamble.Cost);
+                config.Cost.Coins = (int)(forestTokenGamble.Cost.Coins *
+                    AdventureDataManager.Config.Gamble.ForestTokenGambleCoinsCost);
+                config.Cost.ForestTokens = random.Next(
+                    AdventureDataManager.Config.Gamble.ForestTokenGambleCostMin,
+                    AdventureDataManager.Config.Gamble.ForestTokenGambleCostMax + 1);
+                config.Cost.IronBountyTokens = 0;
+                config.Cost.GoldBountyTokens = 0;
+                config.GuaranteedRarity = true;
+                config.Rarity = ItemRarity.Rare;
+                results.Add(config);
             }
 
             var ironBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
+            RollOnListNTimes(random, availableGambles,
+                AdventureDataManager.Config.Gamble.IronBountyGamblesCount, ironBountyGambles);
             foreach (var ironBountyGamble in ironBountyGambles)
             {
-                ironBountyGamble.Cost.Coins = (int)(ironBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.IronBountyGambleCoinsCost);
-                ironBountyGamble.Cost.IronBountyTokens = AdventureDataManager.Config.Gamble.IronBountyGambleCost;
-                ironBountyGamble.GuaranteedRarity = true;
-                ironBountyGamble.Rarity = ItemRarity.Epic;
-                results.Add(ironBountyGamble);
+                SecretStashItemInfo config = new SecretStashItemInfo(
+                    ironBountyGamble.ItemID, ironBountyGamble.Item, ironBountyGamble.Cost);
+                config.Cost.Coins = (int)(ironBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.IronBountyGambleCoinsCost);
+                config.Cost.ForestTokens = 0;
+                config.Cost.IronBountyTokens = AdventureDataManager.Config.Gamble.IronBountyGambleCost;
+                config.Cost.GoldBountyTokens = 0;
+                config.GuaranteedRarity = true;
+                config.Rarity = ItemRarity.Epic;
+                results.Add(config);
             }
-
 
             var goldBountyGambles = new List<SecretStashItemInfo>();
-            RollOnListNTimes(random, availableGambles, AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
+            RollOnListNTimes(random, availableGambles,
+                AdventureDataManager.Config.Gamble.GoldBountyGamblesCount, goldBountyGambles);
             foreach (var goldBountyGamble in goldBountyGambles)
             {
-                goldBountyGamble.Cost.Coins = (int)(goldBountyGamble.Cost.Coins * AdventureDataManager.Config.Gamble.GoldBountyGambleCoinsCost);
-                goldBountyGamble.Cost.GoldBountyTokens = AdventureDataManager.Config.Gamble.GoldBountyGambleCost;
-                goldBountyGamble.GuaranteedRarity = true;
-                goldBountyGamble.Rarity = ItemRarity.Legendary;
-                results.Add(goldBountyGamble);
+                SecretStashItemInfo config = new SecretStashItemInfo(
+                    goldBountyGamble.ItemID, goldBountyGamble.Item, goldBountyGamble.Cost);
+                config.Cost.Coins = (int)(goldBountyGamble.Cost.Coins *
+                    AdventureDataManager.Config.Gamble.GoldBountyGambleCoinsCost);
+                config.Cost.ForestTokens = 0;
+                config.Cost.IronBountyTokens = 0;
+                config.Cost.GoldBountyTokens = AdventureDataManager.Config.Gamble.GoldBountyGambleCost;
+                config.GuaranteedRarity = true;
+                config.Rarity = ItemRarity.Legendary;
+                results.Add(config);
             }
+
             // Order by rarity
             results = SortListByRarity(results);
 

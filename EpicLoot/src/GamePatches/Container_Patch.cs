@@ -3,7 +3,6 @@ using HarmonyLib;
 
 namespace EpicLoot
 {
-    //public void AddDefaultItems()
     [HarmonyPatch(typeof(Container), nameof(Container.AddDefaultItems))]
     public static class Container_AddDefaultItems_Patch
     {

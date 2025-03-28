@@ -68,12 +68,13 @@ namespace EpicLoot.Adventure
 
                 if (RequiredComponentTypes != null)
                 {
+                    allowed = false;
                     foreach (var allowedComponentType in RequiredComponentTypes)
                     {
                         var c = instance.GetComponent(allowedComponentType);
-                        if (c == null)
+                        if (c != null)
                         {
-                            allowed = false;
+                            allowed = true;
                             break;
                         }
                     }

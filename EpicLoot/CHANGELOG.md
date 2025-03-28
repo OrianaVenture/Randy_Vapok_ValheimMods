@@ -1,38 +1,33 @@
 ## Version 0.11.0
 
-* Now requires Jotunn
-* Fixed doublejump allowing infinite jumping
-* Bounty and treasure chest spawning overhauled
-    * Bounty creature spawning now includes creatures validation, bounties for creatures that don't exist in the world will not be generated 
-    * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater
-    * Bounties and treasure for the Ashland and deep north now work consistently
-* Gambling fixes
-    * Gambling no longer picks the same items all of the time
-    * Mod items no longer are automatically picked
-    * Gambling is largely biome dependent now but has a chance to pick from a previous biome
-* Internalized all of the json files for the mod
-    * Updated the structure of iteminfo.json to specify fallback categories and failsafe fallback items seperately
-    * Localizations are now loadable from Bepinex/config/EpicLoot/localizations
-* Added Requirement check that server AND clients must have the mod installed and running for multiplayer
-* Some Art asset optimizations, download size reduced by 50%
-* Fixed UI tooltip spasm when too large for the screen
-    * Tooltips too large will be resized to fit the screen
-    * Comparision tooltip is now shown side by side instead of below
-* Patches are now live-reloadable from the Bepinex/config/EpicLoot/patches folder
-    * Improved server syncing of configurations to allow reloading patches without restarting the server
-* New patch action: "MultiAdd" which allows patching the same values into multiple locations
-* Fixes Enchanting table having the wrong text for initial level and unlock
-* Fixes Augment UI having infinity symbols when used with AzuCraftyBoxes
-* Optimizations to how loot beams work
-    * Up to a 20x improvement in performance
-* Adds new magic effects
-    * EitrWeave | parry blocks restore a little eitr
-    * BulkUp | Converts part (up to 100%) of your health regen into bonus health
-    * Spellsword | Adds an eitr cost to the weapon, increases damage
-* Fixes block armor and parry armor being renamed to legacy values in the tooltip
-* Fixes terminal command lucktest, provides examples
-* Adds a terminal command 'printconfig' which allows logging any of the current configurations available. Must be an admin.
+* New external dependency for Jotunn. You must install this for the mod to function!
+    * Added version requirement check such that server AND clients must have the mod installed and running for multiplayer.
+* Changes to how json files are handled:
+    * Improves installation process, all default json files are now embedded in the mod. You can no longer change them directly!
+    * Localization files are now loadable from Bepinex/config/EpicLoot/localizations.
+    * iteminfo.json file: New field "UngatedFallback" added to allow specifying fallback categories and failsafe fallback items seperately.
+    * Patch files are now live-reloadable from the Bepinex/config/EpicLoot/patches folder without restarting the server.
+    * New patch action "MultiAdd" which allows patching the same values into multiple locations.
+* Added a terminal command "printconfig" which allows logging any of the current configurations available. Must be an admin.
     * This allows inspected the result of patch operations and what configs a client has recieved from the server
+* Bug Fixes:
+    * Magic effect DoubleJump fixed to prevent infinite jumping.
+    * Gambling system reworked to allow better, more random, item selection.
+    * Fixed UI tooltip spasm when too large for the screen, now resizes and included side-by side placement for comparison tooltip.
+    * Enchanting table UI now has the correct text for initial level and unlock.
+    * Fixed Augment UI having infinity symbols when used with AzuCraftyBoxes mod.
+    * Block armor and parry armor no longer renamed to legacy values in the tooltip.
+    * "lucktest" terminal command reworked, provides examples.
+* Optimizations to some Art assets (download size reduced by 50%).
+* Optimizations to how loot beams work (Up to a 20x improvement in performance).
+* 3 New magic effects with new translations available (see Github for these new translation keys):
+    * EitrWeave: parry blocks restore a little eitr
+    * BulkUp: Converts part (up to 100%) of your health regen into bonus health
+    * Spellsword: Adds an eitr cost to the weapon, increases damage
+* Bounty and treasure chest spawning overhauled:
+    * Bounty spawning validation, bounties for creatures that don't exist in the world will not be generated.
+    * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater.
+    * Bounties and treasure for the Ashland and deep north should work more consistently.
 
 ## Version 0.10.7
 
@@ -43,7 +38,6 @@
 * Added checks to interval settings to prevent divide by zero errors.
 * Updated ServerSync to version 1.18.
 * New external dependency for JsonDotNET 13.0.3. You must install this for the mod to function!
-
 
 ## Version 0.10.6
 

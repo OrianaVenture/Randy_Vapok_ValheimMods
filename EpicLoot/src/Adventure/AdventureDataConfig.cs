@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EpicLoot.Adventure
 {
@@ -80,6 +81,19 @@ namespace EpicLoot.Adventure
         public float RadiusInterval = 500;
         public float MinimapAreaRadius = 100;
         public List<SecretStashItemConfig> SaleItems = new List<SecretStashItemConfig>();
+        
+        [NonSerialized]
+        private static Heightmap.Biome[] _biomeList;
+
+        public Heightmap.Biome[] GetBiomeList()
+        {
+            if (_biomeList == null)
+            {
+                _biomeList = BiomeInfo.Select(item => item.Biome).ToArray();
+            }
+
+            return _biomeList;
+        }
     }
 
     [Serializable]

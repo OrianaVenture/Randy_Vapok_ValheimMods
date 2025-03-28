@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void ModifyHealthRegen(ref float regenMultiplier)
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyRunStaminaDrain))]
     public static class ModifySprintStaminaUse_SEMan_ModifyRunStaminaDrain_Patch
     {

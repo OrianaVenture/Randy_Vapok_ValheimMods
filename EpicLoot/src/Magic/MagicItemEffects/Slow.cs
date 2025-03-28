@@ -2,7 +2,6 @@
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
-// ReSharper disable UnusedMember.Local
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -13,7 +12,7 @@ namespace EpicLoot.MagicItemEffects
         public float Multiplier;
         public float TimeToLive;
 
-        private void Start()
+        public void Start()
         {
             var character = GetComponent<Character>();
 
@@ -23,7 +22,7 @@ namespace EpicLoot.MagicItemEffects
             character.m_swimSpeed *= Multiplier;
         }
 
-        private void FixedUpdate()
+        public void FixedUpdate()
         {
             TimeToLive -= Time.fixedDeltaTime;
             if (TimeToLive > 0)

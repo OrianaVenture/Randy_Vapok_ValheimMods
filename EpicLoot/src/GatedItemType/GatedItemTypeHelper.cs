@@ -2,7 +2,7 @@
 using System.Linq;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
-using EpicLoot.src.General;
+using EpicLoot.General;
 using Jotunn.Managers;
 
 namespace EpicLoot.GatedItemType
@@ -133,12 +133,12 @@ namespace EpicLoot.GatedItemType
                         foreach (var defeated_boss in player_defeated_bosses)
                         {
                             //EpicLoot.Log($"Checking {itemCategory} for boss {defeated_boss}");
-                            item = getGatedWeaponFromList(itemCategory, defeated_boss, already_selected, mode, false, true);
+                            item = GetGatedWeaponFromList(itemCategory, defeated_boss, already_selected, mode, false, true);
                             if (item != null) { return item; }
                         }
                         // we couldn't find anything within the primary category on the target item types, check the fallback category
                         if (item == null) {
-                            return getGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], player_defeated_bosses.First(), already_selected, mode, true, true);
+                            return GetGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], player_defeated_bosses.First(), already_selected, mode, true, true);
                         }
                     } else {
                         //EpicLoot.LogWarning($"Item Category [{itemCategory}] not found in ItemInfo.");
@@ -176,13 +176,13 @@ namespace EpicLoot.GatedItemType
                         }
                     }
                     //EpicLoot.Log($"Checking {itemCategory} for boss {highest_boss}");
-                    return getGatedWeaponFromList(itemCategory, highest_boss, already_selected, mode, true, true);
+                    return GetGatedWeaponFromList(itemCategory, highest_boss, already_selected, mode, true, true);
                 case GatedItemTypeMode.Unlimited:
                     // Go through each biome level and look for recipes the player knows, those are valid drops for unlimited mode
                     List<string> unlimited_mode_bosses = BossOrder;
                     unlimited_mode_bosses.Reverse();
                     foreach (var boss in unlimited_mode_bosses) {
-                        string item = getGatedWeaponFromList(itemCategory, boss, already_selected, GatedItemTypeMode.PlayerMustKnowRecipe, false, true);
+                        string item = GetGatedWeaponFromList(itemCategory, boss, already_selected, GatedItemTypeMode.PlayerMustKnowRecipe, false, true);
                         if (item != null) {
                             return item;
                         }
@@ -194,7 +194,7 @@ namespace EpicLoot.GatedItemType
             return FallbackItemsByCategory[itemCategory];
         }
 
-        private static string getGatedWeaponFromList(string itemCategory, string boss, List<string> already_selected, GatedItemTypeMode mode, bool should_fallback = false, bool duplicate_instead_of_fallthrough = false, bool gaurentee_item = false)
+        private static string GetGatedWeaponFromList(string itemCategory, string boss, List<string> already_selected, GatedItemTypeMode mode, bool should_fallback = false, bool duplicate_instead_of_fallthrough = false, bool gaurentee_item = false)
         {
             //EpicLoot.Log($"Checking {itemCategory} for tier with {boss} - {ItemsByTypeAndBoss[itemCategory].ContainsKey(boss)}");
             string valid_fallback_items = null;
@@ -204,7 +204,7 @@ namespace EpicLoot.GatedItemType
                 category_weapons.shuffleList();
                 bool needs_gate = true;
                 foreach (var weapon in category_weapons) {
-                    EpicLoot.Log($"Checking {weapon}");
+                    //EpicLoot.Log($"Checking {weapon}");
                     // Don't select the same thing twice
                     needs_gate = CheckIfItemNeedsGate(mode, weapon);
                     if (already_selected.Contains(weapon)) {
@@ -222,7 +222,7 @@ namespace EpicLoot.GatedItemType
             }
             if (should_fallback) {
                 // Try one more time with the fallback for this category instead, this will not trigger an infinite loop since it will not fallback itself
-                return getGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], boss, already_selected, mode, false, true);
+                return GetGatedWeaponFromList(FallsbackCategoryByCategory[itemCategory], boss, already_selected, mode, false, true);
             }
             if (gaurentee_item) {
                 //EpicLoot.Log($"Selecting hardfallback {FallbackItemsByCategory[itemCategory]}");
@@ -240,7 +240,7 @@ namespace EpicLoot.GatedItemType
         // Always returns the highest tier item in a category, with fallback, and randomization
         private static string GetGatedItemID(string itemID, GatedItemTypeMode mode, int depth = 2)
         {
-            EpicLoot.Log($"Checking {mode} for {itemID}");
+            //EpicLoot.Log($"Checking {mode} for {itemID}");
             if (string.IsNullOrEmpty(itemID)) {
                 //EpicLoot.LogError($"Tried to get gated itemID with null or empty itemID!");
                 return null;

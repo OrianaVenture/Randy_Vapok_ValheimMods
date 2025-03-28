@@ -16,5 +16,4 @@ public class IncreaseHeatResistance
             __result += __instance.GetTotalActiveMagicEffectValue(MagicEffectType.IncreaseHeatResistance, 0.01f);
         }
     }
-    
 }

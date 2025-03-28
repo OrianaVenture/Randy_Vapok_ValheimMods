@@ -1,13 +1,11 @@
-﻿
-using static EpicLoot.src.data.CustomZNet;
-using UnityEngine.InputSystem;
+﻿using static EpicLoot.Data.CustomZNet;
 using EpicLoot.Adventure;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace EpicLoot.src.data
+namespace EpicLoot.Data
 {
     internal class CustomZNet
     {

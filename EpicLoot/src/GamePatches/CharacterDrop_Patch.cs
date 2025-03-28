@@ -11,7 +11,6 @@ namespace EpicLoot
         public static bool InstantDropsEnabled { get; set; } = false;
     }
 
-    //public void OnDeath()
     [HarmonyPatch(typeof(CharacterDrop), nameof(CharacterDrop.OnDeath))]
     public static class CharacterDrop_OnDeath_Patch
     {
@@ -23,7 +22,6 @@ namespace EpicLoot
             }
         }
     }
-
 
     [HarmonyPatch(typeof(Ragdoll), nameof(Ragdoll.Setup))]
     public static class Ragdoll_Setup_Patch
@@ -94,6 +92,7 @@ namespace EpicLoot
                 }
             }
         }
+
         public static void Postfix(CharacterDrop __instance, ref List<KeyValuePair<GameObject, int>> __result)
         {
             if (__instance.m_character != null && __instance.m_character.IsBoss() && EpicLoot.GetBossTrophyDropMode() != BossDropMode.Default)
@@ -121,11 +120,12 @@ namespace EpicLoot
                             case BossDropMode.OnePerPlayerOnServer:
                                 dropCount = playerList.Count;
                                 break;
-
                             case BossDropMode.OnePerPlayerNearBoss:
-                                dropCount = Math.Max(Player.GetPlayersInRangeXZ(__instance.m_character.transform.position,  EpicLoot.GetBossTrophyDropPlayerRange()), playerList.Count(x => Vector3.Distance(x.m_position, __instance.m_character.transform.position) <= EpicLoot.GetBossTrophyDropPlayerRange()));
+                                Vector3 position = __instance.m_character.transform.position;
+                                float range = EpicLoot.GetBossTrophyDropPlayerRange();
+                                dropCount = Math.Max(Player.GetPlayersInRangeXZ(position, range),
+                                    playerList.Count(x => Vector3.Distance(x.m_position, position) <= range));
                                 break;
-
                             default:
                                 dropCount = 1;
                                 break;

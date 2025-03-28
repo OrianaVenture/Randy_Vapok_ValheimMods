@@ -117,7 +117,7 @@ namespace EpicLoot.MagicItemEffects
             if (MultiShot.isTripleShotActive)
             {
                 MultiShot.isTripleShotActive = false;
-                return inventory.RemoveItem(item, amount * 3); // TODO fix
+                return inventory.RemoveItem(item, amount * 3); // TODO fix?
             }
 
             return inventory.RemoveItem(item, amount);

@@ -22,13 +22,13 @@ public class BountyManagmentSystem : MonoBehaviour
     private static string _ledgerSaveDirectory = Path.Combine(Paths.ConfigPath, "EpicLoot", "BountySaves");
     private static string _ledgerSaveFile = Path.Combine(_ledgerSaveDirectory, $"{LedgerIdentifier}.{ZNet.m_world.m_uid}.dat");
 
-    private void Awake()
+    public void Awake()
     {
         Directory.CreateDirectory(_ledgerSaveDirectory);
         _instance = this;
     }
-    
-    private void Start()
+
+    public void Start()
     {
         LoadBounties();
     }

@@ -16,8 +16,7 @@ using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.src.Adventure.bounties;
-using EpicLoot.src.General;
+using EpicLoot.General;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Entities;
@@ -51,7 +50,7 @@ namespace EpicLoot
         BossKillUnlocksNextBiomeBounties
     }
 
-    public class Assets
+    public class EpicAssets
     {
         public AssetBundle AssetBundle;
         public Sprite EquippedSprite;
@@ -126,19 +125,18 @@ namespace EpicLoot
             { "Gray",   "#dbcadb" },
         };
 
-        public static readonly Assets Assets = new Assets();
-        public static readonly List<GameObject> RegisteredPrefabs = new List<GameObject>();
-        public static readonly List<GameObject> RegisteredItemPrefabs = new List<GameObject>();
-        public static readonly Dictionary<GameObject, PieceDef> RegisteredPieces = new Dictionary<GameObject, PieceDef>();
-        private static readonly Dictionary<string, Action<ItemDrop>> _customItemSetupActions = new Dictionary<string, Action<ItemDrop>>();
-        private static readonly Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
+        public static EpicAssets Assets = new EpicAssets();
+        public static List<GameObject> RegisteredPrefabs = new List<GameObject>();
+        public static List<GameObject> RegisteredItemPrefabs = new List<GameObject>();
+        public static Dictionary<GameObject, PieceDef> RegisteredPieces = new Dictionary<GameObject, PieceDef>();
+        private static Dictionary<string, Action<ItemDrop>> _customItemSetupActions = new Dictionary<string, Action<ItemDrop>>();
+        private static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
         public static bool AlwaysDropCheat = false;
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
         public static bool HasAuga;
         public static bool HasAdventureBackpacks;
         public static bool AugaTooltipNoTextBoxes;
-        
 
         public static event Action AbilitiesInitialized;
         public static event Action LootTableLoaded;
@@ -149,7 +147,7 @@ namespace EpicLoot
         internal ELConfig cfg;
 
         [UsedImplicitly]
-        private void Awake()
+        public void Awake()
         {
             _instance = this;
 
@@ -397,6 +395,12 @@ namespace EpicLoot
         {
             var assetBundle = LoadAssetBundle("epicloot");
 
+            if (assetBundle == null || Assets == null)
+            {
+                LogErrorForce("Unable to load asset bundle! This mod will not behave as expected!");
+                return;
+            }
+
             Assets.AssetBundle = assetBundle;
             Assets.EquippedSprite = assetBundle.LoadAsset<Sprite>("Equipped");
             Assets.AugaEquippedSprite = assetBundle.LoadAsset<Sprite>("AugaEquipped");
@@ -478,8 +482,15 @@ namespace EpicLoot
 
             LoadAllZNetAssets(assetBundle);
 
+            GameObject bounty_spawner = assetBundle.LoadAsset<GameObject>(
+                "Assets/EpicLoot/Prefabs/Adventure/EL_SpawnController.prefab");
 
-            GameObject bounty_spawner = assetBundle.LoadAsset<GameObject>("Assets/EpicLoot/Prefabs/Adventure/EL_SpawnController.prefab");
+            if (bounty_spawner == null)
+            {
+                LogErrorForce("Unable to bounty spawner asset! This mod will not behave as expected!");
+                return;
+            }
+
             bounty_spawner.AddComponent<AdventureSpawnController>();
             CustomPrefab prefab_obj = new CustomPrefab(bounty_spawner, false);
             PrefabManager.Instance.AddPrefab(prefab_obj);
@@ -790,8 +801,8 @@ namespace EpicLoot
             andvaranautFinder.m_startMessage = "$mod_epicloot_item_andvaranaut_startmsg";
 
             // Setup restrictions
-            andvaranautFinder.RequiredComponentTypes = new List<Type> { typeof(TreasureMapChest) };
-            wishboneFinder.DisallowedComponentTypes = new List<Type> { typeof(TreasureMapChest) };
+            andvaranautFinder.RequiredComponentTypes = new List<Type> { typeof(TreasureMapChest), typeof(BountyTarget) };
+            wishboneFinder.DisallowedComponentTypes = new List<Type> { typeof(TreasureMapChest), typeof(BountyTarget) };
 
             // Add to list
             ObjectDB.instance.m_StatusEffects.Remove(originalFinder);
@@ -1385,6 +1396,7 @@ namespace EpicLoot
         {
             return ELConfig._bossTrophyDropPlayerRange.Value;
         }
+
         public static float GetBossCryptKeyPlayerRange()
         {
             return ELConfig._bossCryptKeyDropPlayerRange.Value;

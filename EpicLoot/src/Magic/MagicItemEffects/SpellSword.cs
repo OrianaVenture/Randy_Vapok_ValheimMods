@@ -1,24 +1,24 @@
-﻿using EpicLoot.MagicItemEffects;
-using HarmonyLib;
+﻿using HarmonyLib;
 
-namespace EpicLoot.src.Magic.MagicItemEffects
+namespace EpicLoot.MagicItemEffects
 {
-
     [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackStamina))]
-    public static class Attack_GetAttackStamina_Prefix_Patch
+    public static class Attack_GetAttackStamina_Prefix_Patch_SpellSword
     {
-        public static bool Prefix(Attack __instance, ref float __result)
+        [HarmonyPriority(Priority.LowerThanNormal)]
+        public static bool Prefix(Attack __instance, ref float __result, bool __runOriginal)
         {
-            if (__instance.m_character is Player player &&
+            if (__result != 0f &&
+                __result > 2 &&
+                __instance.m_character is Player player &&
                 MagicEffectsHelper.HasActiveMagicEffectOnWeapon(
                     player, __instance.m_weapon, MagicEffectType.SpellSword, out float effectValue))
             {
-                if (__result > 2) {
-                    __result = __result / 2;
-                    return false;
-                }
+                __result = __result / 2;
+                return false;
             }
-            return true;
+
+            return __runOriginal;
         }
     }
 
@@ -33,7 +33,11 @@ namespace EpicLoot.src.Magic.MagicItemEffects
                     player, __instance.m_weapon, MagicEffectType.SpellSword, out float effectValue))
             {
                 float base_cost = __instance.m_attackStamina;
-                if (base_cost == 0f) { base_cost = 4; }
+                if (base_cost == 0f)
+                {
+                    base_cost = 4;
+                }
+
                 __instance.m_attackEitr = __instance.m_attackEitr + (__instance.m_attackStamina / 2);
             }
         }

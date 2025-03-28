@@ -364,7 +364,7 @@ namespace EpicLoot
             if (ItemUsesDrawStaminaOnAttack != null)
             {
                 bool drawStamina = itemData.m_shared.m_attack.m_drawStaminaDrain > 0 ||
-                    ItemUsesDrawStaminaOnAttack == itemData.m_shared.m_secondaryAttack.m_drawStaminaDrain > 0;
+                    itemData.m_shared.m_secondaryAttack.m_drawStaminaDrain > 0;
 
                 if (ItemUsesDrawStaminaOnAttack.Value != drawStamina)
                 {

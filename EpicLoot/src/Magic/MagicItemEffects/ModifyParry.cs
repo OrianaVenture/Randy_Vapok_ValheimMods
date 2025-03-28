@@ -3,7 +3,6 @@ using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public float GetDeflectionForce(int quality)
     [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetDeflectionForce), typeof(int))]
     public static class ModifyParry_ItemData_GetDeflectionForce_Patch
     {
@@ -27,7 +26,6 @@ namespace EpicLoot.MagicItemEffects
         }
     }
 
-    //public override bool BlockAttack(HitData hit, Character attacker)
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.BlockAttack))]
     public static class ModifyParry_Humanoid_BlockAttack_Patch
     {

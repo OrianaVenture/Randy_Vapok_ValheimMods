@@ -6,7 +6,6 @@ namespace EpicLoot.MagicItemEffects
     {
         public static int AddingStatusFromEnv;
 
-        //public void UpdateEnvStatusEffects(float dt)
         [HarmonyPatch(typeof(Player), nameof(Player.UpdateEnvStatusEffects))]
         public static class Waterproof_Player_UpdateEnvStatusEffects_Patch
         {

@@ -3,7 +3,7 @@ using HarmonyLib;
 namespace EpicLoot.MagicItemEffects
 {
     [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackStamina))]
-    public static class Attack_GetAttackStamina_Prefix_Patch
+    public static class Attack_GetAttackStamina_Prefix_Patch_Bloodlust
     {
         public static bool Prefix(Attack __instance, ref float __result)
         {

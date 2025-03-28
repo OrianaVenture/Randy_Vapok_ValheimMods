@@ -1,224 +1,278 @@
-﻿using EpicLoot.Adventure;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Heightmap;
 
-namespace EpicLoot.src.Adventure.feature
+namespace EpicLoot.Adventure.Feature
 {
     internal static class BountyLocationEarlyCache
     {
         // This could be shifted to multiple variable zsynced lists to preserve the generated values for future use.
-        public static Dictionary<Heightmap.Biome, List<Vector3>> PotentialBiomeLocations = new Dictionary<Heightmap.Biome, List<Vector3>> { };
+        public static Dictionary<Heightmap.Biome, List<Vector3>> PotentialBiomeLocations =
+            new Dictionary<Heightmap.Biome, List<Vector3>> { };
+        private static int _minimumLocationKeys = 3;
 
-        internal static IEnumerator LazyCacheGetBiomePoint(Heightmap.Biome biome, AdventureSaveData saveData, Action<bool, Vector3, Vector3> onComplete) {
-            // MerchantPanel.ShowInputBlocker(true);
-            var radiusRange = GetTreasureMapSpawnRadiusRange(biome, saveData);
-            var tries = 0;
-            bool spawn_set = false;
-            // The ideal scenario, this is what happens most of the time.
-            // When this is not triggered its because there is no data yet for the biome
-            if (PotentialBiomeLocations.ContainsKey(biome) && PotentialBiomeLocations[biome].Count() > 1) {
+        private static int _cacheTriesPerBiome = 10;
+        private static int _maximumTries = 100;
+
+        private static Dictionary<Heightmap.Biome, Tuple<float, float>> GetRadiusRanges()
+        {
+            var adventureSave = Player.m_localPlayer.GetAdventureSaveData();
+            Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = new();
+            Heightmap.Biome[] biomeList = AdventureDataManager.Config.TreasureMap.GetBiomeList();
+
+            for (int i = 0; i < biomeList.Length; i++)
+            {
+                var biomeConfig = GetBiomeInfoConfig(biomeList[i]);
+                radiusRanges.Add(biomeList[i],
+                    new Tuple<float, float> (biomeConfig.MinRadius, biomeConfig.MaxRadius));
+                    //GetTreasureMapSpawnRadiusRange(BiomeList[i], adventureSave));
+            }
+
+            return radiusRanges;
+        }
+
+        internal static void TryAddBiomePoint(Heightmap.Biome biome, Vector3 point)
+        {
+            if (!PotentialBiomeLocations.ContainsKey(biome))
+            {
+                PotentialBiomeLocations.Add(biome, new List<Vector3>() { });
+            }
+            else if (PotentialBiomeLocations[biome].Count >= _minimumLocationKeys)
+            {
+                return;
+            }
+
+            PotentialBiomeLocations[biome].Add(point);
+            EpicLoot.Log($"Adding valid location to cache for: {biome} at {point}");
+        }
+
+        public static IEnumerator TryGetBiomePoint(
+            Heightmap.Biome biome, AdventureSaveData saveData, Action<bool, Vector3> onComplete)
+        {
+            Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = GetRadiusRanges();
+
+            // Check if any valid cached
+            if (PotentialBiomeLocations.ContainsKey(biome) && PotentialBiomeLocations[biome].Count > 1)
+            {
                 SelectSpawnPoint(biome, onComplete);
-                spawn_set = true;
                 yield break;
             }
 
-            // Initial setup for the selected biome- and likely other biomes.
-            // We don't need to build a large cache here because we just need to get a spawnpoint setup so that we can return it
-            // The following run will expand the cache
-            // Ultimately we don't need a lot of locations cached because the user can only accept them so often.
-
-
-            // If this biome key does not exist, add it.
-            if (!PotentialBiomeLocations.ContainsKey(biome)) { PotentialBiomeLocations.Add(biome, new List<Vector3>() { }); }
-
-            while (spawn_set == false) {
-                // EpicLoot.Log($"Finding {biome} spawn point, currently stored: {PotentialBiomeLocations[biome].Count()} < 3");
-                if (tries % 10 == 0 && tries > 1) {
-                    yield return new WaitForSeconds(1f);
-                }
-                tries++;
-
-                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries, biome);
-                // Ensure the location is spawned.
-                var zoneId = ZoneSystem.GetZone(temp_spawnPoint);
-                while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _)) {
-                    // slow down this loop until the zone is spawned.
-                    yield return new WaitForEndOfFrame();
-                }
-                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, tries, out Heightmap.Biome spawn_location_biome);
-                EpicLoot.Log($"Trying to find a spawn point for biome {biome}: found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint} - valid? {valid_location}");
-                if (valid_location == false) {
-                    continue;
-                }
-                if (!PotentialBiomeLocations.ContainsKey(spawn_location_biome)) {
-                    PotentialBiomeLocations.Add(spawn_location_biome, new List<Vector3>() { });
-                }
-                EpicLoot.Log($"Adding {spawn_location_biome} location.");
-                PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
-                // We want to run the loop to select a location once and trigger the bounty/treasure to continue
-                
-                //only follow through with the spawn point for the biome we are looking for, since we might find other valid spawnpoints for other biomes first.
-                if (spawn_location_biome == biome) {
-                    SelectSpawnPoint(biome, onComplete);
-                    spawn_set = true;
-                }
-            }
-            yield break;
+            yield return AddBiomePointLazyCache(radiusRanges, biome, true, onComplete);
         }
 
-        internal static IEnumerator PopulateCacheFromStart(int minimum_location_keys = 3)
+        public static IEnumerator PopulateCacheFromStart()
         {
             // Can't setup the cache without a player
-            if (Player.m_localPlayer == null) { yield break; }
-            // Populate the biome list first
-            Heightmap.Biome[] biomes = Enum.GetValues(typeof(Heightmap.Biome)).Cast<Heightmap.Biome>().ToArray();
-            foreach (var biome in biomes) {
-                if (!PotentialBiomeLocations.ContainsKey(biome)) { PotentialBiomeLocations.Add(biome, new List<Vector3>() { }); }
+            if (Player.m_localPlayer == null)
+            {
+                yield break;
             }
-            var adventure_save = Player.m_localPlayer.GetAdventureSaveData();
-            Tuple<float, float> radiusRange = GetTreasureMapSpawnRadiusRange(Heightmap.Biome.Meadows, adventure_save);
-            int tries = 0;
-            Heightmap.Biome target_biome = Biome.Meadows;
-            // Populate the cache with locations for all biomes
-            while (true) {
+
+            // Clear old data
+            PotentialBiomeLocations = new Dictionary<Heightmap.Biome, List<Vector3>> { };
+            Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = GetRadiusRanges();
+
+            int index = 0;
+            Heightmap.Biome[] biomeList = AdventureDataManager.Config.TreasureMap.GetBiomeList();
+
+            while (index < biomeList.Length)
+            {
+                Heightmap.Biome targetBiome = biomeList[index];
+
+                Tuple<float, float> radiusRange = radiusRanges[targetBiome];
+
+                yield return AddBiomePointLazyCache(radiusRanges, targetBiome);
+
+                index++;
+
                 // Check if all biomes have the required number of keys
-                int cache_ready = 0;
-                foreach (var biome in biomes) {
-                    if (biome == Heightmap.Biome.None || biome == Heightmap.Biome.All) { continue; }
-                    if (PotentialBiomeLocations[biome].Count() < minimum_location_keys) {
-                        cache_ready += 1;
+                bool isReady = true;
+                foreach (var biome in biomeList)
+                {
+                    if (biome == Heightmap.Biome.None || biome == Heightmap.Biome.All)
+                    {
+                        continue;
+                    }
+
+                    if (!PotentialBiomeLocations.ContainsKey(biome) ||
+                        PotentialBiomeLocations[biome].Count < _minimumLocationKeys)
+                    {
+                        isReady = false;
+                        break;
                     }
                 }
-                if (cache_ready >= PotentialBiomeLocations.Count()) { break; }
-                // fail safe, exit coroutine.
-                if (tries >= 100) { yield break; }
-                // Sleep to prevent locking the main thread
-                if (tries % 10 == 0 && tries > 1) {
-                    yield return new WaitForSeconds(1f);
-                }
-                // Modulate the radius outwards as we progress to ensure that we get varied spawn locations
-                if (tries % 20 == 0 && tries > 1) {
-                    
-                    if (tries == 20) { target_biome = Biome.BlackForest; }
-                    if (tries == 40) { target_biome = Biome.Mountain; }
-                    if (tries == 60) { target_biome = Biome.Mistlands; }
-                    if (tries == 80) { target_biome = Biome.AshLands; }
-                    radiusRange = GetTreasureMapSpawnRadiusRange(target_biome, adventure_save);
-                }
-                tries++;
 
-                var temp_spawnPoint = SelectWorldPoint(radiusRange, tries, target_biome);
-                // Ensure the location is spawned.
-                var zoneId = ZoneSystem.GetZone(temp_spawnPoint);
-                while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _))
+                if (isReady)
                 {
-                    // slow down this loop until the zone is spawned.
-                    yield return new WaitForEndOfFrame();
-                }
-                bool valid_location = IsSpawnLocationValid(temp_spawnPoint, tries, out Heightmap.Biome spawn_location_biome);
-                // EpicLoot.Log($"Found {spawn_location_biome} - Attempt: {tries} - Location: {temp_spawnPoint}");
-                if (!valid_location) {
-                    continue;
-                }
-                if (spawn_location_biome == Heightmap.Biome.None) {
-                    continue;
-                }
-                if (PotentialBiomeLocations[spawn_location_biome].Count() < 4) {
-                    EpicLoot.Log($"Adding {spawn_location_biome} location.");
-                    PotentialBiomeLocations[spawn_location_biome].Add(temp_spawnPoint);
+                    break;
                 }
             }
-            yield break;
         }
 
-        internal static void SelectSpawnPoint(Heightmap.Biome biome, Action<bool, Vector3, Vector3> onComplete)
+        public static IEnumerator AddBiomePointLazyCache(Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges,
+            Heightmap.Biome biome, bool requireSelection = false,
+            Action<bool, Vector3> onComplete = null)
         {
-            // MerchantPanel.ShowInputBlocker(false);
+            int tries = 0;
+
+            while (true)
+            {
+                // Fail safe, exit coroutine.
+                if ((!requireSelection && tries > _cacheTriesPerBiome) || tries > _maximumTries)
+                {
+                    yield break;
+                }
+
+                // Prevent locking main thread.
+                if (tries % 20 == 0 && tries > 1)
+                {
+                    yield return new WaitForSeconds(1f);
+                }
+                var range = radiusRanges.ContainsKey(biome) ? radiusRanges[biome] :
+                    new Tuple<float, float>(0f, 10500f); // todo find dynamically
+                var spawnPoint = SelectWorldPoint(range, tries, biome);
+                var zoneId = ZoneSystem.GetZone(spawnPoint);
+                while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _))
+                {
+                    // Wait until the zone is spawned.
+                    yield return new WaitForEndOfFrame();
+                }
+
+                if (!IsSpawnLocationValid(spawnPoint, out Heightmap.Biome spawnLocationBiome))
+                {
+                    tries++;
+                    continue;
+                }
+
+                if (requireSelection && spawnLocationBiome == biome)
+                {
+                    EpicLoot.Log($"Returning callback valid location for: {biome} at {spawnPoint}");
+                    spawnPoint.y += 100f;
+                    onComplete?.Invoke(true, spawnPoint);
+                    yield break;
+                }
+                else
+                {
+                    if (radiusRanges.ContainsKey(spawnLocationBiome))
+                    {
+                        var min = radiusRanges[spawnLocationBiome].Item1;
+                        var max = radiusRanges[spawnLocationBiome].Item2;
+                        var mag = new Vector2(spawnPoint.x, spawnPoint.z).magnitude;
+                        if (mag < min || mag > max)
+                        {
+                            EpicLoot.Log($"Out of range location for: {spawnLocationBiome} at {spawnPoint}, " +
+                                $"magnitude {mag}. Min {min}, Max {max}");
+                            continue;
+                        }
+                    }
+
+                    TryAddBiomePoint(spawnLocationBiome, spawnPoint);
+                }
+
+                tries++;
+            }
+        }
+
+        internal static void SelectSpawnPoint(Heightmap.Biome biome, Action<bool, Vector3> onComplete)
+        {
             List<Vector3> locations = PotentialBiomeLocations[biome];
-            Vector3 selected_location = locations.First();
+            Vector3 selectedLocation = locations.First();
             locations.RemoveAt(0);
             PotentialBiomeLocations[biome] = locations;
-            ZoneSystem.instance.GetGroundData(ref selected_location, out var normal, out var foundBiome, out var biomeArea, out var hmap);
-            EpicLoot.Log($"selected: x:{selected_location.x}, y:{selected_location.y}, z:{selected_location.z}");
-            // Place the spawn creator decently above terrain and ground objects.
-            // This is to allow re-checking the location for validity once everything is loaded.
-            selected_location.y += 100f;
-            onComplete?.Invoke(true, selected_location, normal);
+
+            ZoneSystem.instance.GetGroundData(
+                ref selectedLocation, out var normal, out var foundBiome, out var biomeArea, out var hmap);
+            EpicLoot.Log($"Selected from cache: {selectedLocation}");
+            selectedLocation.y += 100f;
+            onComplete?.Invoke(true, selectedLocation);
         }
 
-        internal static Vector3 SelectWorldPoint(Tuple<float, float> range, int attempt, Heightmap.Biome biome) {
-            // This uses a modulus operator to create oscilation between zero and 20, making our attempted range size vary.
-            // This prevents us from running into the issue where we attempt to spawn outside of the map perpetually assuming the default scan range is sane.
-            int interval_range = attempt % 20;
-            
-            if (biome == Heightmap.Biome.AshLands || biome == Heightmap.Biome.DeepNorth) {
+        internal static Vector3 SelectWorldPoint(Tuple<float, float> range, int intervalRange, Heightmap.Biome biome)
+        {
+            var minimumDistance = range.Item1;
+            var maximumDistance = range.Item2;
+
+            // TODO: Ask for clarification behind this math
+            if (biome == Heightmap.Biome.AshLands || biome == Heightmap.Biome.DeepNorth)
+            {
                 // For biomes that are situated in specific areas (eg top/bottom of the world)
-                float ash_or_dn = 1f;
-                if (biome == Heightmap.Biome.AshLands) { ash_or_dn = -1f; }
-                float natural_y =  UnityEngine.Random.Range(range.Item1 + (interval_range * 90), range.Item1 + (interval_range * 90) + 100f);
-                float y_direction = natural_y * ash_or_dn;
-                float x_direction = UnityEngine.Random.Range(-1f * (range.Item1/2), (range.Item1 / 2));
-                return new Vector3(x_direction, 0, y_direction);
-            } else {
+                float direction = 1f;
+                if (biome == Heightmap.Biome.AshLands)
+                {
+                    direction = -1f;
+                }
+
+                float naturalY =  UnityEngine.Random.Range(minimumDistance + (intervalRange * 90),
+                    minimumDistance + (intervalRange * 90) + 100f);
+                float yDirection = naturalY * direction;
+                float xDirection = UnityEngine.Random.Range(-1f * (minimumDistance / 2), (minimumDistance / 2));
+                return new Vector3(xDirection, 0, yDirection);
+            }
+            else
+            {
                 // For biomes that are scattered throughout the world
                 var randomPoint = UnityEngine.Random.insideUnitCircle;
-                var mag = randomPoint.magnitude;
-                var normalized = randomPoint.normalized;
-                var actualMag = Mathf.Lerp(range.Item1 + (interval_range * 250), range.Item2 + (interval_range * 250), mag);
-                randomPoint = normalized * actualMag;
+                var magnitude = Mathf.Lerp(minimumDistance,
+                    maximumDistance, randomPoint.magnitude);
+                randomPoint = randomPoint * magnitude;
                 return new Vector3(randomPoint.x, 0, randomPoint.y);
             }
         }
 
-        internal static bool IsSpawnLocationValid(Vector3 location, int attempts, out Heightmap.Biome biome)
+        internal static bool IsSpawnLocationValid(Vector3 location, out Heightmap.Biome biome)
         {
-            biome = Heightmap.Biome.None;
+            ZoneSystem.instance.GetGroundData(
+                ref location, out var normal, out biome, out var biomeArea, out var hmap);
 
-            ZoneSystem.instance.GetGroundData(ref location, out var normal, out var foundBiome, out var biomeArea, out var hmap);
-            // set the biome this relates to
-            biome = foundBiome;
-
-            float groundHeight = location.y;
-
+            if (biome == Heightmap.Biome.None || hmap == null)
+            {
+                return false;
+            }
 
             // Ashlands biome, and location is in lava | Try not to spawn in lava
             // After enough failures we will just spawn in lava
-            if (foundBiome == Heightmap.Biome.AshLands && attempts < 20) {
+            if (biome == Heightmap.Biome.AshLands)
+            {
                 if (hmap.IsLava(location))
                 {
-                    EpicLoot.Log("Spawn Point rejected: In lava");
+                    //EpicLoot.Log("Spawn Point rejected: In lava");
                     return false;
                 }
             }
-                
+
+            float groundHeight = location.y;
             var waterLevel = ZoneSystem.instance.m_waterLevel;
             // 5f is a buffer here becasue the swamp is very low to the water level
-            if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 5f)
+            if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 2f)
             {
-                EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, groundHeight:{groundHeight})");
+                //EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, " +
+                //    $"groundHeight:{groundHeight})");
                 return false;
             }
 
             // Is too near to player base
-            if (EffectArea.IsPointInsideArea(location, EffectArea.Type.PlayerBase, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius))
+            if (EffectArea.IsPointInsideArea(location, EffectArea.Type.PlayerBase,
+                AdventureDataManager.Config.TreasureMap.MinimapAreaRadius))
             {
-                EpicLoot.Log("Spawn Point rejected: Too close to player base");
+                EpicLoot.Log($"Spawn Point {location} rejected: Too close to player base");
                 return false;
             }
 
             // Is too near to player ward
-            // This is kind of expensive, so lets avoid it if we can, this will also trigger excessively in the Ashlands as ruins are considered player structure zones
-            //var tooCloseToWard = PrivateArea.m_allAreas.Any(x => x.IsInside(location, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius));
-            //if (tooCloseToWard)
-            //{
-            //    EpicLoot.Log("Spawn Point rejected: too close to player ward");
-            //    return false;
-            //}
-            EpicLoot.Log($"Spawn Point ({location}-{biome}) Valid.");
+            // This is kind of expensive, so lets avoid it if we can,
+            // this will also trigger excessively in the Ashlands as ruins are considered player structure zones
+            var tooCloseToWard = PrivateArea.m_allAreas.Any(
+                x => x.IsInside(location, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius));
+            if (tooCloseToWard)
+            {
+                EpicLoot.Log($"Spawn Point {location} rejected: Too close to player ward");
+                return false;
+            }
+
+            //EpicLoot.Log($"Spawn Point ({location}-{biome}) Valid.");
             return true;
         }
 
@@ -239,14 +293,21 @@ namespace EpicLoot.src.Adventure.feature
 
             var minSearchRange = biomeInfoConfig.MinRadius;
             var maxSearchRange = biomeInfoConfig.MaxRadius;
-            var searchBandWidth = AdventureDataManager.Config.TreasureMap.StartRadiusMax - AdventureDataManager.Config.TreasureMap.StartRadiusMin;
-            var numberOfBounties = AdventureDataManager.CheatNumberOfBounties >= 0 ? AdventureDataManager.CheatNumberOfBounties : saveData.NumberOfTreasureMapsOrBountiesStarted;
+            var searchBandWidth = AdventureDataManager.Config.TreasureMap.StartRadiusMax -
+                AdventureDataManager.Config.TreasureMap.StartRadiusMin;
+            var numberOfBounties = AdventureDataManager.CheatNumberOfBounties >= 0 ?
+                AdventureDataManager.CheatNumberOfBounties : saveData.NumberOfTreasureMapsOrBountiesStarted;
             var increments = (numberOfBounties / AdventureDataManager.Config.TreasureMap.IncreaseRadiusCount) % 20;
-            var min1 = minSearchRange + (AdventureDataManager.Config.TreasureMap.StartRadiusMin + increments * AdventureDataManager.Config.TreasureMap.RadiusInterval);
+            var min1 = minSearchRange +
+                (AdventureDataManager.Config.TreasureMap.StartRadiusMin +
+                    increments * AdventureDataManager.Config.TreasureMap.RadiusInterval);
             var max1 = min1 + searchBandWidth;
             var min = Mathf.Clamp(min1, minSearchRange, maxSearchRange - searchBandWidth);
             var max = Mathf.Clamp(max1, minSearchRange + searchBandWidth, maxSearchRange);
-            EpicLoot.Log($"Got biome info for biome ({biome}) - Overall search range: {minSearchRange}-{maxSearchRange}. Current increments: {increments}. Current search band: {min}-{max} (width={searchBandWidth})");
+            EpicLoot.Log($"Got biome info for biome ({biome}) - " +
+                $"Overall search range: {minSearchRange}-{maxSearchRange}. " +
+                $"Current increments: {increments}. " +
+                $"Current search band: {min}-{max} (width={searchBandWidth})");
             return new Tuple<float, float>(min, max);
         }
 

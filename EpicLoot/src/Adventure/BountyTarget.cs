@@ -22,9 +22,24 @@ namespace EpicLoot.Adventure
             _character.m_onDeath += OnDeath;
             _zdo = _character.m_nview.GetZDO();
 
+            var beacon = gameObject.AddComponent<Beacon>();
+            beacon.m_range = EpicLoot.GetAndvaranautRange();
+
             if (HasBeenSetup())
             {
                 Reinitialize();
+            }
+            else
+            {
+                if (_zdo.IsOwner())
+                {
+                    var ai = gameObject.GetComponent<BaseAI>();
+                    if (ai)
+                    {
+                        ai.SetAlerted(true);
+                        //ai.SetAggravated(true, BaseAI.AggravatedReason.Damage);
+                    }
+                }
             }
         }
 
@@ -186,9 +201,9 @@ namespace EpicLoot.Adventure
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(zdo.GetString(BountyIDKey)))
+                if (!instance.gameObject.GetComponent<BountyTarget>() && !string.IsNullOrEmpty(zdo.GetString(BountyIDKey)))
                 {
-                    var bountyTarget = instance.gameObject.AddComponent<BountyTarget>();
+                    instance.gameObject.AddComponent<BountyTarget>();
                 }
             }
         }

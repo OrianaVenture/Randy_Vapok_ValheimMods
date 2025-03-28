@@ -2,7 +2,6 @@
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public void ModifyEitrRegen(ref float eitrMultiplier)
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen))]
     public static class ModifyEitrRegen_SEMan_ModifyEitrRegen_Patch
     {

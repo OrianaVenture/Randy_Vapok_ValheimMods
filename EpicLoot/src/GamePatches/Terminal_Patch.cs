@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Common;
 using EpicLoot.Abilities;
@@ -246,6 +245,7 @@ namespace EpicLoot
             player.StartCoroutine(TestTreasureMapCoroutine(saveData, biome, player, count));
         }
 
+        // TODO: update these tests
         private static IEnumerator TestTreasureMapCoroutine(AdventureSaveData saveData, Heightmap.Biome biome, Player player, int count)
         {
             var biomes = new[] { Heightmap.Biome.Meadows, Heightmap.Biome.BlackForest, Heightmap.Biome.Swamp,

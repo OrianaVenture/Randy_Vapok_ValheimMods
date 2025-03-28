@@ -20,7 +20,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using CodeInstruction = HarmonyLib.CodeInstruction;
 using Object = UnityEngine.Object;
-// ReSharper disable RedundantAssignment
 
 namespace EpicLoot
 {
@@ -909,7 +908,6 @@ namespace EpicLoot
         }
     }
 
-    //void UpdateIcons(Player player)
     [HarmonyPatch(typeof(HotkeyBar), nameof(HotkeyBar.UpdateIcons), typeof(Player))]
     public static class HotkeyBar_UpdateIcons_Patch
     {

@@ -6,8 +6,6 @@ using System.Text;
 using BepInEx;
 using Common;
 using EpicLoot.Config;
-using EpicLoot.src.Adventure.bounties;
-using EpicLoot.src.Adventure.feature;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using Jotunn.Managers;
@@ -209,20 +207,21 @@ namespace EpicLoot.Adventure.Feature
         {
             player.Message(MessageHud.MessageType.Center, "$mod_epicloot_bounties_locatingmsg");
             var saveData = player.GetAdventureSaveData();
-            yield return BountyLocationEarlyCache.LazyCacheGetBiomePoint(bounty.Biome, saveData, (success, spawnPoint, _) =>
+            yield return BountyLocationEarlyCache.TryGetBiomePoint(bounty.Biome, saveData, (success, spawnPoint) =>
             {
                 if (success)
                 {
-                    var offset2 = UnityEngine.Random.insideUnitCircle *
-                        (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
-                    var offset = new Vector3(offset2.x, 0, offset2.y);
-                    saveData.AcceptedBounty(bounty, spawnPoint, offset);
+                    //var offset2 = UnityEngine.Random.insideUnitCircle *
+                    //    (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
+                    //var offset = new Vector3(offset2.x, 0, offset2.y);
+                    saveData.AcceptedBounty(bounty, spawnPoint, Vector3.zero);
                     saveData.NumberOfTreasureMapsOrBountiesStarted++;
 
                     // Spawn monster initializer
-                    SpawnBountyInitilizer(bounty, spawnPoint, offset);
+                    SpawnBountyInitilizer(bounty, spawnPoint, Vector3.zero);
                 }
-                else {
+                else
+                {
                     // Sleep for a tiny bit before trying again
                     // we also want to consider if this has failed repeatedly we should give up or reset parameters of the scan to get a new location
                     callback?.Invoke(false, Vector3.zero);
@@ -230,7 +229,7 @@ namespace EpicLoot.Adventure.Feature
             });
         }
 
-         private static void SpawnBountyInitilizer(BountyInfo bounty, Vector3 spawnPoint, Vector3 offset)
+        private static void SpawnBountyInitilizer(BountyInfo bounty, Vector3 spawnPoint, Vector3 offset)
         {
             Quaternion rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
             GameObject gameObject = PrefabManager.Instance.GetPrefab("EL_SpawnController");

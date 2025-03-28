@@ -1,13 +1,9 @@
-﻿using EpicLoot.src.Adventure.bounties;
-using EpicLoot.src.Adventure.feature;
-using Jotunn.Managers;
+﻿using Jotunn.Managers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Heightmap;
-using static ZDOMan;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot.Adventure.Feature
@@ -62,7 +58,7 @@ namespace EpicLoot.Adventure.Feature
         {
             player.Message(MessageHud.MessageType.Center, "$mod_epicloot_treasuremap_locatingmsg");
             var saveData = player.GetAdventureSaveData();
-            yield return BountyLocationEarlyCache.LazyCacheGetBiomePoint(biome, saveData, (success, spawnPoint, normal) =>
+            yield return BountyLocationEarlyCache.TryGetBiomePoint(biome, saveData, (success, spawnPoint) =>
             {
                 if (success)
                 {
@@ -91,7 +87,8 @@ namespace EpicLoot.Adventure.Feature
             };
             asc.SetTreasure(treasure_details);
 
-            var offset2 = UnityEngine.Random.insideUnitCircle * (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
+            var offset2 = UnityEngine.Random.insideUnitCircle * 
+                (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
             var offset = new Vector3(offset2.x, 0, offset2.y);
             saveData.PurchasedTreasureMap(treasure_details);
 

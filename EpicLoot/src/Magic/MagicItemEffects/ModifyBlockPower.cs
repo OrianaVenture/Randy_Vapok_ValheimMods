@@ -3,7 +3,6 @@ using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
-    //public float GetBaseBlockPower(int quality) => this.m_shared.m_blockPower + (float) Mathf.Max(0, quality - 1) * this.m_shared.m_blockPowerPerLevel;
     [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetBaseBlockPower), typeof(int))]
     public static class ModifyBlockPower_ItemData_GetBaseBlockPower_Patch
     {
