@@ -147,11 +147,10 @@ namespace EpicLoot.Adventure
                 }
             }
 
-            for (var index = 0; index < prefabs.Count; index++)
-            {
+            for (var index = 0; index < prefabs.Count; index++) {
                 var prefab = prefabs[index];
                 var isAdd = index > 0;
-
+                EpicLoot.Log($"Spawning bounty target: {prefab.name} at {spawnPoint}");
                 var creature = UnityEngine.Object.Instantiate(prefab, spawnPoint, Quaternion.identity);
                 var bountyTarget = creature.AddComponent<BountyTarget>();
                 bountyTarget.Initialize(bounty, prefab.name, isAdd);
@@ -166,6 +165,7 @@ namespace EpicLoot.Adventure
             const string treasureChestPrefabName = "piece_chest_wood";
             var treasureChestPrefab = ZNetScene.instance.GetPrefab(treasureChestPrefabName);
             ZoneSystem.instance.GetGroundData(ref spawnPoint, out var normal, out var foundBiome, out var biomeArea, out var hmap);
+            EpicLoot.Log($"Spawning treasure at {spawnPoint}");
             var treasureChestObject = UnityEngine.Object.Instantiate(treasureChestPrefab, spawnPoint, Quaternion.FromToRotation(Vector3.up, normal));
             var treasureChest = treasureChestObject.AddComponent<TreasureMapChest>();
             Piece tpiece = treasureChestObject.GetComponent<Piece>();
