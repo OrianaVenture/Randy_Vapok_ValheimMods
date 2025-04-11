@@ -207,14 +207,11 @@ namespace EpicLoot.Adventure
             Heightmap.Biome biome, bool allowWaterSpawn = false)
         {
             yield return new WaitForSeconds(5);
-            yield return null;
 
             while (!ZNetScene.instance.IsAreaReady(startingSpawnPoint))
             {
                 yield return new WaitForSeconds(1f);
             }
-
-            yield return null;
 
             // TODO: If bounties get their own minimap area radius config this must choose the correct one
             float radius = AdventureDataManager.Config.TreasureMap.MinimapAreaRadius;
@@ -233,7 +230,6 @@ namespace EpicLoot.Adventure
                     EpicLoot.Log($"Attempts sleeping!!!! We need this check?");
                     // Sleep to avoid locking the thread
                     yield return new WaitForSeconds(1f);
-                    yield return null;
                 }
 
                 ZoneSystem.instance.GetGroundData(
@@ -253,8 +249,7 @@ namespace EpicLoot.Adventure
                 //LayerMask terrain = LayerMask.GetMask("terrain");
                 //lmsk = ~(lmsk); // Invert default bitshift to avoid colliding with masked layers, but still collide with everything else
                 //Physics.Raycast(determinedSpawn + Vector3.up * 5f, Vector3.down, out var solidHit, 1000f, lmsk);
-
-                if (ZoneSystem.instance.FindFloor(determinedSpawn, out solidHeight))
+                if (ZoneSystem.instance.FindFloor(new Vector3(determinedSpawn.x, determinedSpawn.y + 100f, determinedSpawn.z), out solidHeight))
                 {
                     //solidHeight = solidHit.transform.position.y;
                     float terrainDiff = solidHeight - terrainHeight;
