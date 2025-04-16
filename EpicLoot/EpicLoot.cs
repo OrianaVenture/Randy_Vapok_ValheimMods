@@ -25,7 +25,7 @@ using Jotunn.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
+using Jotunn.Configs;
 
 namespace EpicLoot
 {
@@ -125,11 +125,26 @@ namespace EpicLoot
             { "Gray",   "#dbcadb" },
         };
 
+        public static string[] MagicMaterials = new string[]
+        {
+            "Runestone",
+            "Shard",
+            "Dust",
+            "Reagent",
+            "Essence"
+        };
+
+        public static string[] ItemNames = new string[]
+        {
+            "LeatherBelt",
+            "SilverRing",
+            "GoldRubyRing",
+            "ForestToken",
+            "IronBountyToken",
+            "GoldBountyToken"
+        };
+
         public static EpicAssets Assets = new EpicAssets();
-        public static List<GameObject> RegisteredPrefabs = new List<GameObject>();
-        public static List<GameObject> RegisteredItemPrefabs = new List<GameObject>();
-        public static Dictionary<GameObject, PieceDef> RegisteredPieces = new Dictionary<GameObject, PieceDef>();
-        private static Dictionary<string, Action<ItemDrop>> _customItemSetupActions = new Dictionary<string, Action<ItemDrop>>();
         private static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
         public static bool AlwaysDropCheat = false;
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
@@ -343,9 +358,9 @@ namespace EpicLoot
                 // This will clean comments out of the localization files
                 string cleaned_localization = Regex.Replace(localization, @"\/\/.*\n", "");
                 // Log($"Cleaned Localization: {cleaned_localization}");
-                var localization_name = embeddedResouce.Split('.');
-                Log($"Adding localization: {localization_name[2]}");
-                Localization.AddJsonFile(localization_name[2], cleaned_localization);
+                var name = embeddedResouce.Split('.');
+                Log($"Adding localization: {name[2]}");
+                Localization.AddJsonFile(name[2], cleaned_localization);
             }
             // Load the localization patches and additional languages
             ELConfig.StartupProcessModifiedLocalizations();
@@ -432,68 +447,15 @@ namespace EpicLoot
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
-            LoadCraftingMaterialAssets(assetBundle, "Runestone");
+            LoadCraftingMaterialAssets();
+            LoadPieces();
+            LoadItems();
+            LoadBountySpawner();
 
-            LoadCraftingMaterialAssets(assetBundle, "Shard");
-            LoadCraftingMaterialAssets(assetBundle, "Dust");
-            LoadCraftingMaterialAssets(assetBundle, "Reagent");
-            LoadCraftingMaterialAssets(assetBundle, "Essence");
+            //LoadAllZNetAssets(assetBundle); // TODO: ensure all assets needed are loaded
 
-            LoadBuildPiece(assetBundle, "piece_enchanter", new PieceDef()
-            {
-                Table = "_HammerPieceTable",
-                CraftingStation = "piece_workbench",
-                Resources = new List<RecipeRequirementConfig>
-                {
-                    new RecipeRequirementConfig { item = "Stone", amount = 10 },
-                    new RecipeRequirementConfig { item = "SurtlingCore", amount = 3 },
-                    new RecipeRequirementConfig { item = "Copper", amount = 3 },
-                }
-            });
-            LoadBuildPiece(assetBundle, "piece_augmenter", new PieceDef()
-            {
-                Table = "_HammerPieceTable",
-                CraftingStation = "piece_workbench",
-                Resources = new List<RecipeRequirementConfig>
-                {
-                    new RecipeRequirementConfig { item = "Obsidian", amount = 10 },
-                    new RecipeRequirementConfig { item = "Crystal", amount = 3 },
-                    new RecipeRequirementConfig { item = "Bronze", amount = 3 },
-                }
-            });
-            LoadBuildPiece(assetBundle, "piece_enchantingtable", new PieceDef() {
-                Table = "_HammerPieceTable",
-                CraftingStation = "piece_workbench",
-                Resources = new List<RecipeRequirementConfig>
-                {
-                    new RecipeRequirementConfig { item = "FineWood", amount = 10 },
-                    new RecipeRequirementConfig { item = "SurtlingCore", amount = 1 }
-                }
-            });
-
-            LoadItem(assetBundle, "LeatherBelt");
-            LoadItem(assetBundle, "SilverRing");
-            LoadItem(assetBundle, "GoldRubyRing");
-            LoadItem(assetBundle, "Andvaranaut", SetupAndvaranaut);
-
-            LoadItem(assetBundle, "ForestToken");
-            LoadItem(assetBundle, "IronBountyToken");
-            LoadItem(assetBundle, "GoldBountyToken");
-
-            LoadAllZNetAssets(assetBundle);
-
-            GameObject bounty_spawner = assetBundle.LoadAsset<GameObject>(
-                "Assets/EpicLoot/Prefabs/Adventure/EL_SpawnController.prefab");
-
-            if (bounty_spawner == null)
-            {
-                LogErrorForce("Unable to bounty spawner asset! This mod will not behave as expected!");
-                return;
-            }
-
-            bounty_spawner.AddComponent<AdventureSpawnController>();
-            CustomPrefab prefab_obj = new CustomPrefab(bounty_spawner, false);
-            PrefabManager.Instance.AddPrefab(prefab_obj);
+            PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
+            PrefabManager.OnPrefabsRegistered += SetupStatusEffects;
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object
@@ -516,167 +478,105 @@ namespace EpicLoot
             }
         }
 
-        private static void LoadItem(AssetBundle assetBundle, string assetName, Action<ItemDrop> customSetupAction = null)
+        private static void LoadPieces()
         {
-            var prevForceDisable = ZNetView.m_forceDisableInit;
-            ZNetView.m_forceDisableInit = true;
-            var prefab = assetBundle.LoadAsset<GameObject>(assetName);
-            ZNetView.m_forceDisableInit = prevForceDisable;
-            RegisteredItemPrefabs.Add(prefab);
-            RegisteredPrefabs.Add(prefab);
-            if (customSetupAction != null)
+            GameObject enchanter = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchanter");
+            PieceConfig enchanterPC = new PieceConfig();
+            enchanterPC.PieceTable = "Hammer";
+            enchanterPC.Category = "Misc";
+            enchanterPC.AllowedInDungeons = false;
+            enchanterPC.Requirements = new RequirementConfig[]
             {
-                _customItemSetupActions.Add(prefab.name, customSetupAction);
+                new RequirementConfig() { Item = "Stone", Amount = 10, Recover = true },
+                new RequirementConfig() { Item = "SurtlingCore", Amount = 3, Recover = true },
+                new RequirementConfig() { Item = "Copper", Amount = 3, Recover = true },
+                new RequirementConfig() { Item = "SwordCheat", Amount = 1, Recover = false }
+            };
+            PieceManager.Instance.AddPiece(new CustomPiece(enchanter, true, enchanterPC));
+
+            GameObject augmenter = Assets.AssetBundle.LoadAsset<GameObject>("piece_augmenter");
+            PieceConfig augmenterPC = new PieceConfig();
+            augmenterPC.PieceTable = "Hammer";
+            augmenterPC.Category = "Misc";
+            augmenterPC.AllowedInDungeons = false;
+            augmenterPC.Requirements = new RequirementConfig[]
+            {
+                new RequirementConfig() { Item = "Obsidian", Amount = 10, Recover = true },
+                new RequirementConfig() { Item = "Crystal", Amount = 3, Recover = true },
+                new RequirementConfig() { Item = "Bronze", Amount = 3, Recover = true },
+                new RequirementConfig() { Item = "SwordCheat", Amount = 1, Recover = false }
+            };
+            PieceManager.Instance.AddPiece(new CustomPiece(augmenter, true, augmenterPC));
+
+            GameObject table = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchantingtable");
+            PieceConfig tablePC = new PieceConfig();
+            tablePC.PieceTable = "Hammer";
+            tablePC.Category = "Misc";
+            tablePC.Requirements = new RequirementConfig[]
+            {
+                new RequirementConfig() { Item = "FineWood", Amount = 10, Recover = true },
+                new RequirementConfig() { Item = "SurtlingCore", Amount = 1, Recover = true }
+            };
+            PieceManager.Instance.AddPiece(new CustomPiece(table, true, tablePC));
+        }
+
+        private static void LoadItems()
+        {
+            foreach (var item in ItemNames)
+            {
+                var go = Assets.AssetBundle.LoadAsset<GameObject>(item);
+                var customItem = new CustomItem(go, false);
+                ItemManager.Instance.AddItem(customItem);
             }
         }
 
-        private static void LoadBuildPiece(AssetBundle assetBundle, string assetName, PieceDef pieceDef)
+        private static void LoadBountySpawner()
         {
-            var prefab = assetBundle.LoadAsset<GameObject>(assetName);
-            RegisteredPieces.Add(prefab, pieceDef);
-            RegisteredPrefabs.Add(prefab);
-        }
+            GameObject bounty_spawner = Assets.AssetBundle.LoadAsset<GameObject>("EL_SpawnController");
 
-        private static void LoadCraftingMaterialAssets(AssetBundle assetBundle, string type)
-        {
-            var prefabs = new GameObject[5];
-            foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
+            if (bounty_spawner == null)
             {
-                var assetName = $"{type}{rarity}";
-                var prefab = assetBundle.LoadAsset<GameObject>(assetName);
-                if (prefab == null)
-                {
-                    LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
-                    continue;
-                }
-                prefabs[(int) rarity] = prefab;
-                RegisteredPrefabs.Add(prefab);
-                RegisteredItemPrefabs.Add(prefab);
+                LogErrorForce("Unable to find bounty spawner asset! This mod will not behave as expected!");
             }
-            Assets.CraftingMaterialPrefabs.Add(type, prefabs);
+            else
+            {
+                bounty_spawner.AddComponent<AdventureSpawnController>();
+                CustomPrefab prefab_obj = new CustomPrefab(bounty_spawner, false);
+                PrefabManager.Instance.AddPrefab(prefab_obj);
+            }
         }
 
-        private void LoadAllZNetAssets(AssetBundle assetBundle)
+        private static void LoadCraftingMaterialAssets()
         {
-            var znetAssets = assetBundle.LoadAllAssets();
-            foreach (var asset in znetAssets)
+            foreach (string type in MagicMaterials)
             {
-                if (asset is GameObject assetGo && assetGo.GetComponent<ZNetView>() != null)
+                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
                 {
-                    if (!_assetCache.ContainsKey(asset.name))
-                        _assetCache.Add(asset.name, assetGo);
-                    
-                    if (!RegisteredPrefabs.Contains(assetGo))
-                        RegisteredPrefabs.Add(assetGo);
+                    var assetName = $"{type}{rarity}";
+                    var prefab = Assets.AssetBundle.LoadAsset<GameObject>(assetName);
+                    if (prefab == null)
+                    {
+                        LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
+                        continue;
+                    }
+
+                    var itemDrop = prefab.GetComponent<ItemDrop>();
+                    if (itemDrop != null && itemDrop.m_itemData.IsMagicCraftingMaterial())
+                    {
+                        //Set icons for crafting materials
+                        itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
+                    }
+
+                    CustomItem custom = new CustomItem(prefab, false);
+                    ItemManager.Instance.AddItem(custom);
                 }
             }
         }
 
         [UsedImplicitly]
-        private void OnDestroy()
+        public void OnDestroy()
         {
             _instance = null;
-        }
-
-        public static void TryRegisterPrefabs(ZNetScene zNetScene)
-        {
-            if (zNetScene == null || zNetScene.m_prefabs == null || zNetScene.m_prefabs.Count <= 0)
-            {
-                return;
-            }
-
-            foreach (var prefab in RegisteredPrefabs)
-            {
-                if (!zNetScene.m_prefabs.Contains(prefab))
-                {
-                    zNetScene.m_prefabs.Add(prefab);
-                }
-            }
-        }
-
-        public static void TryRegisterPieces(List<PieceTable> pieceTables, List<CraftingStation> craftingStations)
-        {
-            foreach (var entry in RegisteredPieces)
-            {
-                var prefab = entry.Key;
-                if (prefab == null)
-                {
-                    LogError($"Tried to register piece but prefab was null!");
-                    continue;
-                }
-
-                var pieceDef = entry.Value;
-                if (pieceDef == null)
-                {
-                    LogError($"Tried to register piece ({prefab}) but pieceDef was null!");
-                    continue;
-                }
-
-                var piece = prefab.GetComponent<Piece>();
-                if (piece == null)
-                {
-                    LogError($"Tried to register piece ({prefab}) but Piece component was missing!");
-                    continue;
-                }
-
-                var pieceTable = pieceTables.Find(x => x.name == pieceDef.Table);
-                if (pieceTable == null)
-                {
-                    LogError($"Tried to register piece ({prefab}) but could not find piece table " +
-                        $"({pieceDef.Table}) (pieceTables({pieceTables.Count})= " +
-                        $"{string.Join(", ", pieceTables.Select(x =>x.name))})!");
-                    continue;
-                }
-
-                if (pieceTable.m_pieces.Contains(prefab))
-                {
-                    continue;
-                }
-
-                pieceTable.m_pieces.Add(prefab);
-
-                var pieceStation = craftingStations.Find(x => x.name == pieceDef.CraftingStation);
-                piece.m_craftingStation = pieceStation;
-
-                var resources = new List<Piece.Requirement>();
-                foreach (var resource in pieceDef.Resources)
-                {
-                    var resourcePrefab = ObjectDB.instance.GetItemPrefab(resource.item);
-                    resources.Add(new Piece.Requirement()
-                    {
-                        m_resItem = resourcePrefab.GetComponent<ItemDrop>(),
-                        m_amount = resource.amount
-                    });
-                }
-                piece.m_resources = resources.ToArray();
-
-                var stationExt = prefab.GetComponent<StationExtension>();
-                if (stationExt != null && !string.IsNullOrEmpty(pieceDef.ExtendStation))
-                {
-                    var stationPrefab = pieceTable.m_pieces.Find(x => x.name == pieceDef.ExtendStation);
-                    if (stationPrefab != null)
-                    {
-                        var station = stationPrefab.GetComponent<CraftingStation>();
-                        stationExt.m_craftingStation = station;
-                    }
-
-                    var otherExt = pieceTable.m_pieces.Find(x => x.GetComponent<StationExtension>() != null);
-                    if (otherExt != null)
-                    {
-                        var otherStationExt = otherExt.GetComponent<StationExtension>();
-                        var otherPiece = otherExt.GetComponent<Piece>();
-
-                        stationExt.m_connectionPrefab = otherStationExt.m_connectionPrefab;
-                        piece.m_placeEffect.m_effectPrefabs = otherPiece.m_placeEffect.m_effectPrefabs.ToArray();
-                    }
-                }
-                else
-                {
-                    var workshopPrefab = pieceTable.m_pieces.FirstOrDefault(x => x.name == "piece_workshop");
-                    if (workshopPrefab != null && workshopPrefab.GetComponent<Piece>() is Piece otherPiece)
-                        piece.m_placeEffect.m_effectPrefabs = otherPiece.m_placeEffect.m_effectPrefabs.ToArray();
-                }
-            }
         }
 
         public static bool IsObjectDBReady()
@@ -686,101 +586,11 @@ namespace EpicLoot
                 ObjectDB.instance.GetItemPrefab("Amber") != null;
         }
 
-        public static void TryRegisterItems()
+        private static void SetupAndvaranaut()
         {
-            if (!IsObjectDBReady())
-            {
-                return;
-            }
+            var go = Assets.AssetBundle.LoadAsset<GameObject>("Andvaranaut");
+            ItemDrop prefab = go.GetComponent<ItemDrop>();
 
-            
-            foreach (var prefab in RegisteredItemPrefabs)
-            {
-                var itemDrop = prefab.GetComponent<ItemDrop>();
-                if (itemDrop != null)
-                {
-                    //Set icons for crafting materials
-
-                    if (itemDrop.m_itemData.IsMagicCraftingMaterial() || itemDrop.m_itemData.IsRunestone())
-                    {
-                        var rarity = itemDrop.m_itemData.GetRarity();
-                        
-                        if (itemDrop.m_itemData.IsMagicCraftingMaterial())
-                        {
-                            itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
-                        }
-                    }
-                }
-            }
-
-            foreach (var prefab in RegisteredItemPrefabs)
-            {
-                var itemDrop = prefab.GetComponent<ItemDrop>();
-                if (itemDrop != null)
-                {
-                    if (ObjectDB.instance.GetItemPrefab(prefab.name.GetStableHashCode()) == null)
-                    {
-                        ObjectDB.instance.m_items.Add(prefab);
-                    }
-                }
-            }
-
-            foreach (var prefab in RegisteredItemPrefabs)
-            {
-                var itemDrop = prefab.GetComponent<ItemDrop>();
-                if (itemDrop != null)
-                {
-                    if (_customItemSetupActions.TryGetValue(prefab.name, out var action))
-                    {
-                        action?.Invoke(itemDrop);
-                    }
-                }
-            }
-
-            ObjectDB.instance.UpdateRegisters();
-
-            var pieceTables = new List<PieceTable>();
-            foreach (var itemPrefab in ObjectDB.instance.m_items)
-            {
-                var itemDrop = itemPrefab.GetComponent<ItemDrop>();
-                if (itemDrop == null)
-                {
-                    LogError($"An item without an ItemDrop ({itemPrefab}) exists in ObjectDB.instance.m_items! " +
-                        $"Don't do this!");
-                    continue;
-                }
-                var item = itemDrop.m_itemData;
-                if (item != null && item.m_shared.m_buildPieces != null && 
-                    !pieceTables.Contains(item.m_shared.m_buildPieces))
-                {
-                    pieceTables.Add(item.m_shared.m_buildPieces);
-                }
-            }
-
-            var craftingStations = new List<CraftingStation>();
-            foreach (var pieceTable in pieceTables)
-            {
-                craftingStations.AddRange(pieceTable.m_pieces
-                    .Where(x => x.GetComponent<CraftingStation>() != null)
-                    .Select(x => x.GetComponent<CraftingStation>()));
-            }
-
-            TryRegisterPieces(pieceTables, craftingStations);
-            SetupStatusEffects();
-        }
-
-        public static void TryRegisterRecipes()
-        {
-            if (!IsObjectDBReady())
-            {
-                return;
-            }
-
-            RecipesHelper.SetupRecipes();
-        }
-
-        private static void SetupAndvaranaut(ItemDrop prefab)
-        {
             var andvaranaut = prefab.m_itemData;
             var wishbone = ObjectDB.instance.GetItemPrefab("Wishbone").GetComponent<ItemDrop>().m_itemData;
 
@@ -822,6 +632,11 @@ namespace EpicLoot
             magicItem.Effects.Add(new MagicItemEffect(MagicEffectType.Andvaranaut));
 
             prefab.m_itemData.SaveMagicItem(magicItem);
+
+            var customItem = new CustomItem(go, false);
+            ItemManager.Instance.AddItem(customItem);
+
+            PrefabManager.OnPrefabsRegistered -= SetupAndvaranaut;
         }
 
         private static void SetupStatusEffects()
@@ -833,9 +648,8 @@ namespace EpicLoot
             paralyzed.m_name = "mod_epicloot_se_paralyze";
 
             ObjectDB.instance.m_StatusEffects.Add(paralyzed);
+            PrefabManager.OnPrefabsRegistered -= SetupStatusEffects;
         }
-
-        
 
         public static AssetBundle LoadAssetBundle(string filename)
         {
@@ -904,7 +718,7 @@ namespace EpicLoot
 
         public static string GetMagicEffectPip(bool hasBeenAugmented)
         {
-            return HasAuga ? (hasBeenAugmented ? "♢" : "♦") : (hasBeenAugmented ? "◇" : "◆");
+            return HasAuga ? (hasBeenAugmented ? "▾" : "♦") : (hasBeenAugmented ? "▼" : "◆"); // //🞠🞛
         }
 
         private static bool IsNotRestrictedItem(ItemDrop.ItemData item)
@@ -928,74 +742,6 @@ namespace EpicLoot
         public static string GetCharacterCleanName(Character character)
         {
             return character.name.Replace("(Clone)", "").Trim();
-        }
-
-        public static void OnCharacterDeath(CharacterDrop characterDrop)
-        {
-            if (!CanCharacterDropLoot(characterDrop.m_character))
-            {
-                return;
-            }
-
-            var characterName = GetCharacterCleanName(characterDrop.m_character);
-            var level = characterDrop.m_character.GetLevel();
-            var dropPoint = characterDrop.m_character.GetCenterPoint() +
-                characterDrop.transform.TransformVector(characterDrop.m_spawnOffset);
-
-            OnCharacterDeath(characterName, level, dropPoint);
-        }
-
-        public static bool CanCharacterDropLoot(Character character)
-        {
-            return character != null && !character.IsTamed();
-        }
-
-        public static void OnCharacterDeath(string characterName, int level, Vector3 dropPoint)
-        {
-            var lootTables = LootRoller.GetLootTable(characterName);
-            if (lootTables != null && lootTables.Count > 0)
-            {
-                var loot = LootRoller.RollLootTableAndSpawnObjects(lootTables, level, characterName, dropPoint);
-                Log($"Rolling on loot table: {characterName} (lvl {level}), " +
-                    $"spawned {loot.Count} items at drop point({dropPoint}).");
-                DropItems(loot, dropPoint);
-                foreach (var l in loot)
-                {
-                    var itemData = l.GetComponent<ItemDrop>().m_itemData;
-                    var magicItem = itemData.GetMagicItem();
-                    if (magicItem != null)
-                    {
-                        Log($"  - {itemData.m_shared.m_name} <{l.transform.position}>: " +
-                            $"{string.Join(", ", magicItem.Effects.Select(x => x.EffectType.ToString()))}");
-                    }
-                }
-            }
-            else
-            {
-                Log($"Could not find loot table for: {characterName} (lvl {level})");
-            }
-        }
-
-        public static void DropItems(List<GameObject> loot, Vector3 centerPos, float dropHemisphereRadius = 0.5f)
-        {
-            foreach (var item in loot)
-            {
-                var vector3 = Random.insideUnitSphere * dropHemisphereRadius;
-                vector3.y = Mathf.Abs(vector3.y);
-                item.transform.position = centerPos + vector3;
-                item.transform.rotation = Quaternion.Euler(0.0f, Random.Range(0, 360), 0.0f);
-
-                var rigidbody = item.GetComponent<Rigidbody>();
-                if (rigidbody != null)
-                {
-                    var insideUnitSphere = Random.insideUnitSphere;
-                    if (insideUnitSphere.y < 0.0)
-                    {
-                        insideUnitSphere.y = -insideUnitSphere.y;
-                    }
-                    rigidbody.AddForce(insideUnitSphere * 5f, ForceMode.VelocityChange);
-                }
-            }
         }
 
         private void PrintInfo()
@@ -1427,74 +1173,12 @@ namespace EpicLoot
             return ELConfig._adventureModeEnabled.Value;
         }
 
-        private static string Clean(string name)
-        {
-            return name.Replace("'", "").Replace(",", "").Trim().Replace(" ", "_").ToLowerInvariant();
-        }
-
-        private static void ReplaceValueList(List<string> values, string field, string label, 
-            MagicItemEffectDefinition effectDef, Dictionary<string, string> translations, ref string magicEffectsJson)
-        {
-            var newValues = new List<string>();
-            for (var index = 0; index < values.Count; index++)
-            {
-                var value = values[index];
-                string key;
-                if (value.StartsWith("$"))
-                {
-                    key = value;
-                }
-                else
-                {
-                    key = GetId(effectDef, $"{field}{index + 1}");
-                    AddTranslation(translations, key, value);
-                }
-                newValues.Add(key);
-            }
-
-            if (newValues.Count > 0)
-            {
-                var old = $"\"{label}\": [ {string.Join(", ", values.Select(x => $"\"{x}\""))} ]";
-                var toReplace = $"\"{label}\": [\n        {string.Join(",\n        ",
-                    newValues.Select(x => (x.StartsWith("$") ? $"\"{x}\"" : $"\"${x}\"")))}\n      ]";
-                magicEffectsJson = ReplaceTranslation(magicEffectsJson, old, toReplace);
-            }
-        }
-
-        private static string GetId(MagicItemEffectDefinition effectDef, string field)
-        {
-            return $"mod_epicloot_me_{effectDef.Type.ToLowerInvariant()}_{field.ToLowerInvariant()}";
-        }
-
-        private static void AddTranslation(Dictionary<string, string> translations, string key, string value)
-        {
-            translations.Add(key, value);
-        }
-
-        private static string ReplaceTranslation(string jsonFile, string original, string locId)
-        {
-            return jsonFile.Replace(original, locId);
-        }
-
-        private static string SetupTranslation(MagicItemEffectDefinition effectDef, string value, string field,
-            string replaceFormat, Dictionary<string, string> translations, string jsonFile)
-        {
-            if (string.IsNullOrEmpty(value) || value.StartsWith("$"))
-            {
-                return jsonFile;
-            }
-
-            var key = GetId(effectDef, field);
-            AddTranslation(translations, key, value);
-            return ReplaceTranslation(jsonFile, string.Format(replaceFormat, value),
-                string.Format(replaceFormat, $"${key}"));
-        }
-
         public static float GetWorldLuckFactor()
         {
             return _instance._worldLuckFactor;
         }
 
+        // TODO, why isn't this used?
         public static void SetWorldLuckFactor(float luckFactor)
         {
             _instance._worldLuckFactor = luckFactor;

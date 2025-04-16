@@ -9,7 +9,9 @@ namespace EpicLoot.Crafting
     {
         public static void Postfix(ItemDrop __instance)
         {
-            if (__instance.m_itemData.IsMagicCraftingMaterial())
+            bool isMagic = __instance.m_itemData.IsMagicCraftingMaterial();
+            bool isRunestone = __instance.m_itemData.IsRunestone();
+            if (isMagic || isRunestone)
             {
                 var particleContainer = __instance.transform.Find("Particles");
                 if (particleContainer != null)
@@ -17,9 +19,10 @@ namespace EpicLoot.Crafting
                     particleContainer.gameObject.AddComponent<AlwaysPointUp>();
                 }
 
-                var rarity = __instance.m_itemData.GetCraftingMaterialRarity();
+                ItemRarity rarity = isRunestone ? __instance.m_itemData.GetRunestoneRarity() :
+                    __instance.m_itemData.GetCraftingMaterialRarity();
                 var magicColor = EpicLoot.GetRarityColor(rarity);
-                var variant = EpicLoot.GetRarityIconIndex(rarity);
+                var variant = isRunestone ? 0 : EpicLoot.GetRarityIconIndex(rarity);
 
                 if (ColorUtility.TryParseHtmlString(magicColor, out var rgbaColor))
                 {
@@ -27,23 +30,6 @@ namespace EpicLoot.Crafting
                 }
 
                 __instance.m_itemData.m_variant = variant;
-            }
-            else if (__instance.m_itemData.IsRunestone())
-            {
-                var particleContainer = __instance.transform.Find("Particles");
-                if (particleContainer != null)
-                {
-                    particleContainer.gameObject.AddComponent<AlwaysPointUp>();
-                }
-
-                var rarity = __instance.m_itemData.GetRunestoneRarity();
-                var magicColor = EpicLoot.GetRarityColor(rarity);
-                if (ColorUtility.TryParseHtmlString(magicColor, out var rgbaColor))
-                {
-                    __instance.gameObject.AddComponent<BeamColorSetter>().SetColor(rgbaColor);
-                }
-
-                __instance.m_itemData.m_variant = 0;
             }
         }
     }

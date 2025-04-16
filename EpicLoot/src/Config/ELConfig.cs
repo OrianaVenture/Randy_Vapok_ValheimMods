@@ -121,6 +121,7 @@ namespace EpicLoot.Config
             "Ukrainian",
             "Latvian"
         };
+
         public ELConfig(ConfigFile Config)
         {
             // ensure all the config values are created
@@ -294,7 +295,8 @@ namespace EpicLoot.Config
             MaxInProgressBounties = BindServerConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
         }
 
-        public static void InitializeConfig() {
+        public static void InitializeConfig()
+        {
             SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, LootConfigSendConfigs);
             SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
@@ -321,7 +323,8 @@ namespace EpicLoot.Config
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
         }
 
-        public static string GetLocalizationDirectoryPath() {
+        public static string GetLocalizationDirectoryPath()
+        {
             var localizationFolder = Path.Combine(Paths.ConfigPath, "EpicLoot", "localizations");
             var dirInfo = Directory.CreateDirectory(localizationFolder);
             return dirInfo.FullName;
@@ -337,7 +340,8 @@ namespace EpicLoot.Config
 
         private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
         {
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false) {
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+            {
                 EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
                 return;
             }
@@ -393,11 +397,13 @@ namespace EpicLoot.Config
             }
         }
 
-        public static void StartupProcessModifiedLocalizations() {
+        public static void StartupProcessModifiedLocalizations()
+        {
 
             string[] files = Directory.GetFiles(LocalizationDir, "*", SearchOption.AllDirectories);
             EpicLoot.Log($"Processing localization startup file patches: {files}");
-            foreach (var file in files) {
+            foreach (var file in files)
+            {
                 if (!file.Contains(".json")) {
                     EpicLoot.Log($"File: {file} is not a supported format, ignoring.");
                     continue;
@@ -451,7 +457,6 @@ namespace EpicLoot.Config
             newPatchWatcher.EnableRaisingEvents = true;
             // newPatchWatcher.Filter = "*.json";
         }
-
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
@@ -652,7 +657,7 @@ namespace EpicLoot.Config
                     description,
                     acceptableValues,
                 new ConfigurationManagerAttributes { IsAdminOnly = true, IsAdvanced = advanced })
-                );
+            );
         }
     }
 }

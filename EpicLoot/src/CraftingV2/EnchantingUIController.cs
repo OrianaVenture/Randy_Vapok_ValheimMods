@@ -82,7 +82,7 @@ namespace EpicLoot.CraftingV2
             }
 
             featureActive = (tabEnum & ELConfig.EnchantingTableActivatedTabs.Value) != 0;
-            
+
             return ELConfig.EnchantingTableUpgradesActive.Value;
         }
 
@@ -90,7 +90,7 @@ namespace EpicLoot.CraftingV2
         {
             if (ui == null || ui.TabHandler == null)
                 return;
-            
+
             for (int i = 0; i < ui.TabHandler.transform.childCount; i++)
             {
                 var tabGo = ui.TabHandler.transform.GetChild(i).gameObject;
@@ -126,9 +126,14 @@ namespace EpicLoot.CraftingV2
         private static void SetMagicItem(MultiSelectItemListElement element, ItemDrop.ItemData item, UITooltip tooltip)
         {
             if (element.ItemIcon != null)
+            {
                 element.ItemIcon.sprite = item.GetIcon();
+            }
+
             if (element.ItemName != null)
+            {
                 element.ItemName.text = item.GetDecoratedName();
+            }
 
             if (element.MagicBG != null)
             {
@@ -136,7 +141,9 @@ namespace EpicLoot.CraftingV2
                 element.MagicBG.enabled = useMagicBG;
 
                 if (useMagicBG)
+                {
                     element.MagicBG.color = item.GetRarityColor();
+                }
             }
 
             if (tooltip)

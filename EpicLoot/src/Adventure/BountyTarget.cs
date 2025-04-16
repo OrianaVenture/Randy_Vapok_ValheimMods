@@ -225,5 +225,23 @@ namespace EpicLoot.Adventure
                 StartBountyTarget(__instance);
             }
         }
+
+        /// <summary>
+        /// Remove the beacon of bounty targets when they take damage.
+        /// </summary>
+        [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.OnDamaged))]
+        [HarmonyPatch(typeof(Character), nameof(Character.OnDamaged))]
+        public static class Character_OnDamaged_Patch
+        {
+            public static void Postfix(Character __instance)
+            {
+                var target = __instance.GetComponent<BountyTarget>();
+                if (target)
+                {
+                    var beacon = __instance.GetComponent<Beacon>();
+                    UnityEngine.Object.Destroy(beacon);
+                }
+            }
+        }
     }
 }

@@ -188,7 +188,7 @@ namespace EpicLoot
             return RollLootTable(lootTable, level, objectName, dropPoint);
         }
 
-        private static List<GameObject> RollLootTableInternal(IEnumerable<LootTable> lootTables, 
+        private static List<GameObject> RollLootTableInternal(IEnumerable<LootTable> lootTables,
             int level, string objectName, Vector3 dropPoint, bool initializeObject)
         {
             var results = new List<GameObject>();

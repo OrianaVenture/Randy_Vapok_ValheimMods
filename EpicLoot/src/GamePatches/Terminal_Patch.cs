@@ -9,6 +9,7 @@ using EpicLoot.Crafting;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using HarmonyLib;
+using Jotunn.Managers;
 using UnityEngine;
 using Random = System.Random;
 
@@ -283,16 +284,17 @@ namespace EpicLoot
 
         private static void SpawnMagicCraftingMaterials()
         {
-            foreach (var itemPrefab in EpicLoot.RegisteredItemPrefabs)
+            foreach (string type in EpicLoot.MagicMaterials)
             {
-                var itemDrop = UnityEngine.Object.Instantiate(itemPrefab, Player.m_localPlayer.transform.position + Player.m_localPlayer.transform.forward * 2f + Vector3.up, Quaternion.identity).GetComponent<ItemDrop>();
-                if (itemDrop.m_itemData.IsMagicCraftingMaterial() || itemDrop.m_itemData.IsRunestone())
+                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
                 {
+                    var assetName = $"{type}{rarity}";
+                    var itemPrefab = PrefabManager.Instance.GetPrefab(assetName);
+                    var transform = Player.m_localPlayer.transform;
+                    var itemDrop = UnityEngine.Object.Instantiate(itemPrefab,
+                        transform.position + transform.forward * 2f + Vector3.up,
+                        Quaternion.identity).GetComponent<ItemDrop>();
                     itemDrop.m_itemData.m_stack = itemDrop.m_itemData.m_shared.m_maxStackSize / 2;
-                }
-                else
-                {
-                    ZNetScene.instance.Destroy(itemDrop.gameObject);
                 }
             }
         }

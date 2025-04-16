@@ -37,32 +37,25 @@ namespace EpicLoot_UnityLib
 
         public void Awake()
         {
-            _nview = GetComponent<ZNetView>();
-            
-            if (_nview == null || _nview.GetZDO() == null)
-                return;
-            
-            var wearTear = GetComponent<WearNTear>();
-            if (wearTear != null)
-            {
-                wearTear.m_destroyedEffect.m_effectPrefabs = new EffectList.EffectData[]
-                {
-                    new() { m_prefab = ZNetScene.instance.GetPrefab("vfx_SawDust") },
-                    new() { m_prefab = ZNetScene.instance.GetPrefab("sfx_wood_destroyed") }
-                };
-                wearTear.m_hitEffect.m_effectPrefabs = new EffectList.EffectData[1]
-                {
-                    new() { m_prefab = ZNetScene.instance.GetPrefab("vfx_SawDust") }
-                };
-            }
-            
-            _nview.Register<ZDOID, int, int>("el.TableUpgradeRequest", RPC_TableUpgradeRequest);
-            _nview.Register<ZDOID, int, int, bool>("el.TableUpgradeResponse", RPC_TableUpgradeResponse);
-            
-            InitFeatureLevels();
         }
 
-        //Function RequestTableUpgrade
+        public void Start()
+        {
+            _nview = GetComponent<ZNetView>();
+
+            if (_nview == null || !_nview.IsValid())
+            {
+                return;
+            }
+
+            _nview.Register<ZDOID, int, int>("el.TableUpgradeRequest", RPC_TableUpgradeRequest);
+            _nview.Register<ZDOID, int, int, bool>("el.TableUpgradeResponse", RPC_TableUpgradeResponse);
+
+            InitFeatureLevels();
+
+            Refresh();
+        }
+
         public void RequestTableUpgrade(EnchantingFeature feature, int toLevel, Action<bool> responseCallback)
         {
             var tableZDO = _nview.GetZDO().m_uid;
@@ -75,13 +68,12 @@ namespace EpicLoot_UnityLib
             });
             _nview.InvokeRPC("el.TableUpgradeRequest",tableZDO, (int)feature, toLevel);
         }
-           
-        //Function for RPC_TableUpgradeRequest
+
         private void RPC_TableUpgradeRequest(long sender, ZDOID tableZDO, int featureI, int toLevel)
         {
             if (!_nview.IsOwner())
                 return;
-            
+
             var instance = ZNetScene.instance.FindInstance(tableZDO);
             if (instance == null)
                 return;
@@ -103,8 +95,7 @@ namespace EpicLoot_UnityLib
                 _nview.InvokeRPC(sender,"el.TableUpgradeResponse",tableZDO, featureI, toLevel, false);
             }
         }
-        
-        //FUnction for RPC_TableUpgradeResponse
+
         private void RPC_TableUpgradeResponse(long sender, ZDOID tableZDO, int featureI, int toLevel, bool success)
         {
             //Only sent to Sender of Request.
@@ -120,7 +111,8 @@ namespace EpicLoot_UnityLib
                     _upgradeRequests.Remove(request);
                     if (Player.m_localPlayer != null)
                     {
-                        if (toLevel == 0) {
+                        if (toLevel == 0)
+                        {
                             Player.m_localPlayer.Message(MessageHud.MessageType.Center,
                                 Localization.instance.Localize("$mod_epicloot_unlockmessage",
                                 EnchantingTableUpgrades.GetFeatureName(feature)));
@@ -195,14 +187,14 @@ namespace EpicLoot_UnityLib
         {
             if (!UpgradesActive(feature, out var featureActive))
             {
-                return FeatureLevelOne;
+                return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
-            
+
             if (!featureActive)
             {
                 return FeatureUnavailableSentinel;
             }
-            
+
             return EnchantingTableUpgrades.Config.DefaultFeatureLevels.TryGetValue(feature, out var level) ?
                 level : FeatureUnavailableSentinel;
         }
@@ -224,14 +216,14 @@ namespace EpicLoot_UnityLib
 
             if (!UpgradesActive(feature, out var featureActive))
             {
-                return FeatureLevelOne;
+                return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
-            
+
             if (!featureActive)
             {
                 return FeatureUnavailableSentinel;
             }
-            
+
             var featureName = feature.ToString();
             var level = _nview.GetZDO().GetInt(FormatFeatureName(featureName), FeatureUnavailableSentinel);
             //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
@@ -247,7 +239,7 @@ namespace EpicLoot_UnityLib
 
             if (!UpgradesActive(feature, out var featureActive))
             {
-                level = FeatureLevelOne;
+                level = featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
             else
             {

@@ -32,6 +32,10 @@ namespace EpicLoot_UnityLib
         public void Awake()
         {
             instance = this;
+        }
+
+        public void Start()
+        {
             Localization.instance.Localize(transform);
 
             var uiSFX = GameObject.Find("sfx_gui_button");
@@ -80,6 +84,7 @@ namespace EpicLoot_UnityLib
                     featureStatus.Refresh();
                 }
             }
+
             TabActivation(this);
         }
 

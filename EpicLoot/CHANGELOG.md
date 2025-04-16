@@ -18,6 +18,7 @@
     * Fixed Augment UI having infinity symbols when used with AzuCraftyBoxes mod.
     * Block armor and parry armor no longer renamed to legacy values in the tooltip.
     * "lucktest" terminal command reworked, provides examples.
+    * Enchanting Table should no longer drop extra materials when destroyed in some cases.
 * Optimizations to some Art assets (download size reduced by 50%).
 * Optimizations to how loot beams work (Up to a 20x improvement in performance).
 * 3 New magic effects with new translations available (see Github for these new translation keys):
@@ -28,6 +29,9 @@
     * Bounty spawning validation, bounties for creatures that don't exist in the world will not be generated.
     * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater.
     * Bounties and treasure for the Ashland and deep north should work more consistently.
+* Added CheatSword as a requirement to place the decorative pieces (piece_enchanter, piece_augmenter) to hide them by default.
+* Augment symbol changed to a filled in triangle rather than an empty diamond.
+* Bounties now ping when using the Andvaranaut until they take first damage.
 
 ## Version 0.10.7
 

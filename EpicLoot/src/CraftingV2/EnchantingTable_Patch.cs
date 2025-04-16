@@ -1,4 +1,5 @@
 ﻿using System;
+using EpicLoot.Config;
 using EpicLoot_UnityLib;
 using HarmonyLib;
 using UnityEngine;
@@ -13,20 +14,32 @@ namespace EpicLoot.CraftingV2
         {
             var table = __instance.GetComponent<EnchantingTable>();
             if (table == null)
+            {
                 return;
+            }
+
+            if (!ELConfig.EnchantingTableUpgradesActive.Value)
+            {
+                // Do not drop upgrade costs when disabled
+                return;
+            }
 
             foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
             {
                 if (!table.IsFeatureAvailable(feature) || table.IsFeatureLocked(feature))
+                {
                     continue;
+                }
 
                 var currentLevel = table.GetFeatureLevel(feature);
+
                 for (var i = 0; i <= currentLevel; ++i)
                 {
                     var cost = EnchantingTableUpgrades.GetUpgradeCost(feature, i);
                     foreach (var item in cost)
                     {
-                        var itemDrop = Object.Instantiate(item.Item.m_dropPrefab, __instance.transform.position + Vector3.up, Quaternion.identity).GetComponent<ItemDrop>();
+                        var itemDrop = Object.Instantiate(item.Item.m_dropPrefab,
+                            __instance.transform.position + Vector3.up, Quaternion.identity).GetComponent<ItemDrop>();
                         itemDrop.SetStack(item.Item.m_stack);
                     }
                 }

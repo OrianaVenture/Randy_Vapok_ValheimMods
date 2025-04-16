@@ -98,7 +98,8 @@ namespace EpicLoot_UnityLib
             return featureDescriptions[(int)feature];
         }
 
-        public static string GetFeatureUpgradeLevelDescription(EnchantingTable table, EnchantingFeature feature, int level)
+        public static string GetFeatureUpgradeLevelDescription(EnchantingTable table,
+            EnchantingFeature feature, int level)
         {
             var featureUpgradeDescriptions = new []
             {
@@ -111,7 +112,8 @@ namespace EpicLoot_UnityLib
             };
 
             var values = table.GetFeatureValue(feature, level);
-            return Localization.instance.Localize(featureUpgradeDescriptions[(int)feature], values.Item1.ToString("0.#"), values.Item2.ToString("0.#"));
+            return Localization.instance.Localize(featureUpgradeDescriptions[(int)feature],
+                values.Item1.ToString("0.#"), values.Item2.ToString("0.#"));
         }
 
         public static int GetFeatureMaxLevel(EnchantingFeature feature)
@@ -139,7 +141,8 @@ namespace EpicLoot_UnityLib
 
             if (level < 0 || level >= upgradeCosts.Count)
             {
-                Debug.LogWarning($"[EpicLoot] Warning: tried to get enchanting feature upgrade cost for level that does not exist ({feature}, {level})");
+                Debug.LogWarning($"[EpicLoot] Warning: tried to get enchanting feature upgrade cost for " +
+                    $"level that does not exist ({feature}, {level})");
                 return result;
             }
 
@@ -152,14 +155,16 @@ namespace EpicLoot_UnityLib
                 var prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
                 if (prefab == null)
                 {
-                    Debug.LogWarning($"[EpicLoot] Tried to add unknown item ({itemAmountConfig.Item}) to upgrade cost for feature ({feature}, {level})");
+                    Debug.LogWarning($"[EpicLoot] Tried to add unknown item ({itemAmountConfig.Item}) " +
+                        $"to upgrade cost for feature ({feature}, {level})");
                     continue;
                 }
 
                 var itemDrop = prefab.GetComponent<ItemDrop>();
                 if (itemDrop == null)
                 {
-                    Debug.LogWarning($"[EpicLoot] Tried to add item without ItemDrop ({itemAmountConfig.Item}) to upgrade cost for feature ({feature}, {level})");
+                    Debug.LogWarning($"[EpicLoot] Tried to add item without ItemDrop ({itemAmountConfig.Item}) " +
+                        $"to upgrade cost for feature ({feature}, {level})");
                     continue;
                 }
 
