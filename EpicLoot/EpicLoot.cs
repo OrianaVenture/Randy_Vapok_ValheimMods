@@ -483,7 +483,7 @@ namespace EpicLoot
             GameObject enchanter = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchanter");
             PieceConfig enchanterPC = new PieceConfig();
             enchanterPC.PieceTable = "Hammer";
-            enchanterPC.Category = "Misc";
+            enchanterPC.Category = PieceCategories.Misc;
             enchanterPC.AllowedInDungeons = false;
             enchanterPC.Requirements = new RequirementConfig[]
             {
@@ -497,7 +497,7 @@ namespace EpicLoot
             GameObject augmenter = Assets.AssetBundle.LoadAsset<GameObject>("piece_augmenter");
             PieceConfig augmenterPC = new PieceConfig();
             augmenterPC.PieceTable = "Hammer";
-            augmenterPC.Category = "Misc";
+            augmenterPC.Category = PieceCategories.Misc;
             augmenterPC.AllowedInDungeons = false;
             augmenterPC.Requirements = new RequirementConfig[]
             {
@@ -511,7 +511,7 @@ namespace EpicLoot
             GameObject table = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchantingtable");
             PieceConfig tablePC = new PieceConfig();
             tablePC.PieceTable = "Hammer";
-            tablePC.Category = "Misc";
+            tablePC.Category = PieceCategories.Crafting;
             tablePC.Requirements = new RequirementConfig[]
             {
                 new RequirementConfig() { Item = "FineWood", Amount = 10, Recover = true },

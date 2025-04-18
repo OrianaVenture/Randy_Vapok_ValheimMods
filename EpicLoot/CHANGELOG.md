@@ -9,7 +9,7 @@
     * Patch files are now live-reloadable from the Bepinex/config/EpicLoot/patches folder without restarting the server.
     * New patch action "MultiAdd" which allows patching the same values into multiple locations.
 * Added a terminal command "printconfig" which allows logging any of the current configurations available. Must be an admin.
-    * This allows inspected the result of patch operations and what configs a client has recieved from the server
+    * This allows inspected the result of patch operations and what configs a client has received from the server
 * Bug Fixes:
     * Magic effect DoubleJump fixed to prevent infinite jumping.
     * Gambling system reworked to allow better, more random, item selection.
