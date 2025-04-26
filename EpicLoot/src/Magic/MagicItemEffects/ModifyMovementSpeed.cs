@@ -8,16 +8,14 @@ namespace EpicLoot.MagicItemEffects
         public static void Postfix(Player __instance)
         {
             float penalty = GetSpeedPenalty(__instance);
-            for (int i = 0; i < __instance.m_equipmentModifierValues.Length; i++)
-            {
-                __instance.m_equipmentModifierValues[i] -= penalty;
 
-                ModifyWithLowHealth.Apply(__instance, MagicEffectType.ModifyMovementSpeed, effect =>
-                {
-                    __instance.m_equipmentModifierValues[i] += __instance.GetTotalActiveMagicEffectValue(effect, 0.01f);
-                });
-            }
-            
+            __instance.m_equipmentModifierValues[0] -= penalty;
+
+            ModifyWithLowHealth.Apply(__instance, MagicEffectType.ModifyMovementSpeed, effect =>
+            {
+                __instance.m_equipmentModifierValues[0] += __instance.GetTotalActiveMagicEffectValue(effect, 0.01f);
+            });
+
         }
 
         public static float GetSpeedPenalty(Player __instance)
