@@ -2,6 +2,7 @@
 using System.Linq;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
+using EpicLoot.Config;
 using EpicLoot.General;
 using Jotunn.Managers;
 
@@ -232,9 +233,25 @@ namespace EpicLoot.GatedItemType
             } 
         }
 
-        public static string GetGatedItemID(string itemName, int depth = 2)
+        public static string GetGatedItemIDfromItemOrCategoryOverride(string itemName, GatedItemTypeMode gatedMode, int depth = 2)
         {
-            return GetGatedItemID(itemName, EpicLoot.GetGatedItemTypeMode(), depth);
+            return GetGatedItemString(itemName, gatedMode, depth);
+        }
+
+        public static string GetGatedItemIDfromItemOrCategory(string itemName, int depth = 2)
+        {
+            return GetGatedItemString(itemName, EpicLoot.GetGatedItemTypeMode(), depth);
+        }
+
+        private static string GetGatedItemString(string itemName, GatedItemTypeMode gatedMode, int depth)
+        {
+            if (ItemsByTypeAndBoss.ContainsKey(itemName))
+            {
+                // Its a category, not an item
+                return GetItemFromCategory(itemName, gatedMode, new List<string> { }, depth);
+            }
+
+            return GetGatedItemID(itemName, gatedMode, depth);
         }
 
         // Always returns the highest tier item in a category, with fallback, and randomization

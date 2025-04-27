@@ -20,6 +20,7 @@
     * "lucktest" terminal command reworked, provides examples.
     * Enchanting Table should no longer drop extra materials when destroyed in some cases.
     * Movement speed bonuses no longer cause stamina cost increases.
+    * Fixes misspelling of augmenting in the upgrade menu.
 * Optimizations to some Art assets (download size reduced by 50%).
 * Optimizations to how loot beams work (Up to a 20x improvement in performance).
 * 3 New magic effects with new translations available (see Github for these new translation keys):

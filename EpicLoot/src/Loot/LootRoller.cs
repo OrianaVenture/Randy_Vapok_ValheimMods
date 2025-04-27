@@ -346,7 +346,7 @@ namespace EpicLoot
                     }
                 }
 
-                var itemID = (CheatDisableGating) ? lootDrop.Item : GatedItemTypeHelper.GetGatedItemID(lootDrop.Item, 2);
+                var itemID = (CheatDisableGating) ? GatedItemTypeHelper.GetGatedItemIDfromItemOrCategoryOverride(lootDrop.Item, GatedItemTypeMode.Unlimited, 2) : GatedItemTypeHelper.GetGatedItemIDfromItemOrCategory(lootDrop.Item, 2);
 
                 GameObject itemPrefab = null;
 
