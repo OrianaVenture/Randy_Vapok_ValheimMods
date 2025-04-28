@@ -1,5 +1,4 @@
-﻿using EpicLoot.Healing;
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -50,22 +49,7 @@ namespace EpicLoot.MagicItemEffects
             var healOn = hit.m_damage.GetTotalDamage() * lifeStealMultiplier;
 
             EpicLoot.Log("lifesteal " + healOn);
-            var healFromQueue = false;
-            if (attacker.IsPlayer())
-            {
-                var healingQueue = attacker.GetComponent<HealingQueueMono>();
-                if (healingQueue != null)
-                {
-                    healFromQueue = true;
-                    healingQueue.HealRequests.Add(healOn);
-                }
-            }
-
-            if (!healFromQueue)
-            {
-                // mostly for NPC with lifeSteal weapon
-                attacker.Heal(healOn);
-            }
+            attacker.Heal(healOn);
         }
     }
 }

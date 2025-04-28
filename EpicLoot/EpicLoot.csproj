@@ -108,8 +108,6 @@
     <Compile Include="src\General\Extensions.cs" />
     <Compile Include="src\General\TerminalCommands.cs" />
     <Compile Include="src\General\WelcomeMessage.cs" />
-    <Compile Include="src\Healing\AddHealingQueueToPlayerPatch.cs" />
-    <Compile Include="src\Healing\HealingQueueMono.cs" />
     <Compile Include="src\LegendarySystem\LegendaryItemConfig.cs" />
     <Compile Include="src\LegendarySystem\UniqueLegendaryHelper.cs" />
     <Compile Include="src\Loot\LootConfig.cs" />
