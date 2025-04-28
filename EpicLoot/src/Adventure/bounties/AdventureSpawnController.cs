@@ -81,12 +81,12 @@ namespace EpicLoot.Adventure
                 EpicLoot.Log("Starting search for valid spawn location.");
                 searchingForSpawn.Set(true);
                 startedPlacement = true;
-                if (bounty.Get().PlayerID > 0)
+                if (bounty.Get().PlayerID != 0)
                 {
                     StartCoroutine(DeterminespawnPoint(bounty.Get().Position, bounty.Get().Biome));
                 }
 
-                if (treasure.Get().PlayerID > 0)
+                if (treasure.Get().PlayerID != 0)
                 {
                     StartCoroutine(DeterminespawnPoint(treasure.Get().Position, treasure.Get().Biome, true));
                 }

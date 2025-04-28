@@ -323,7 +323,7 @@ namespace EpicLoot.GatedItemType
             }
             // We were not able to select an item
             EpicLoot.Log($"Unable to determine gating for {itemID}, returning a fallback.");
-            return FallbackItemsByCategory.First().Value;
+            return FallbackItemsByCategory[current_category];
         }
 
         // Check the list of items for the current tier of the selected type, up to a maximum number to test
@@ -415,6 +415,10 @@ namespace EpicLoot.GatedItemType
         private static bool CheckIfItemIDNeedsGate(GatedItemTypeMode mode, string itemName, out GatedItemDetails itemGatingDetails)
         {
             AllItemsWithDetails.TryGetValue(itemName, out itemGatingDetails);
+            if (itemGatingDetails == null) {
+                EpicLoot.Log($"Item {itemName} was not found in the iteminfo configuration and gating cant be determined. Item will be allowed to drop.");
+                return false;
+            }
             return GateEvaluation(mode, itemName);
         }
 
