@@ -272,27 +272,40 @@ namespace EpicLoot.Config
                 "newly crafted item. Default: False.");
 
             // Debug
-            AlwaysShowWelcomeMessage = Config.Bind("Debug", "AlwaysShowWelcomeMessage", false, "Just a debug flag for testing the welcome message, do not use.");
-            OutputPatchedConfigFiles = Config.Bind("Debug", "OutputPatchedConfigFiles", false, "Just a debug flag for testing the patching system, do not use.");
+            AlwaysShowWelcomeMessage = Config.Bind("Debug", "AlwaysShowWelcomeMessage", false,
+                "Just a debug flag for testing the welcome message, do not use.");
+            OutputPatchedConfigFiles = Config.Bind("Debug", "OutputPatchedConfigFiles", false,
+                "Just a debug flag for testing the patching system, do not use.");
 
             // Abilities
             AbilityKeyCodes[0] = Config.Bind("Abilities", "Ability Hotkey 1", "g", "Hotkey for Ability Slot 1.");
             AbilityKeyCodes[1] = Config.Bind("Abilities", "Ability Hotkey 2", "h", "Hotkey for Ability Slot 2.");
             AbilityKeyCodes[2] = Config.Bind("Abilities", "Ability Hotkey 3", "j", "Hotkey for Ability Slot 3.");
-            AbilityBarAnchor = Config.Bind("Abilities", "Ability Bar Anchor", TextAnchor.LowerLeft, "The point on the HUD to anchor the ability bar. Changing this also changes the pivot of the ability bar to that corner. For reference: the ability bar size is 208 by 64.");
-            AbilityBarPosition = Config.Bind("Abilities", "Ability Bar Position", new Vector2(150, 170), "The position offset from the Ability Bar Anchor at which to place the ability bar.");
-            AbilityBarLayoutAlignment = Config.Bind("Abilities", "Ability Bar Layout Alignment", TextAnchor.LowerLeft, "The Ability Bar is a Horizontal Layout Group. This value indicates how the elements inside are aligned. Choices with 'Center' in them will keep the items centered on the bar, even if there are fewer than the maximum allowed. 'Left' will be left aligned, and similar for 'Right'.");
+            AbilityBarAnchor = Config.Bind("Abilities", "Ability Bar Anchor", TextAnchor.LowerLeft,
+                "The point on the HUD to anchor the ability bar. Changing this also changes the pivot of the ability bar to that corner. " +
+                "For reference: the ability bar size is 208 by 64.");
+            AbilityBarPosition = Config.Bind("Abilities", "Ability Bar Position", new Vector2(150, 170),
+                "The position offset from the Ability Bar Anchor at which to place the ability bar.");
+            AbilityBarLayoutAlignment = Config.Bind("Abilities", "Ability Bar Layout Alignment", TextAnchor.LowerLeft,
+                "The Ability Bar is a Horizontal Layout Group. This value indicates how the elements inside are aligned. " +
+                "Choices with 'Center' in them will keep the items centered on the bar, even if there are fewer than the maximum allowed. " +
+                "'Left' will be left aligned, and similar for 'Right'.");
             AbilityBarIconSpacing = Config.Bind("Abilities", "Ability Bar Icon Spacing", 8.0f, "The number of units between the icons on the ability bar.");
 
             // Enchanting Table
-            EnchantingTableUpgradesActive = BindServerConfig("Enchanting Table", "Upgrades Active", true, "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
-            EnchantingTableActivatedTabs = BindServerConfig("Enchanting Table", $"Table Features Active", EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant | EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
+            EnchantingTableUpgradesActive = BindServerConfig("Enchanting Table", "Upgrades Active", true,
+                "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
+            EnchantingTableActivatedTabs = BindServerConfig("Enchanting Table", $"Table Features Active",
+                EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant |
+                EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
             EnchantingTableUpgradesActive.SettingChanged += (_, _) => EnchantingTableUI.UpdateUpgradeActivation();
             EnchantingTableActivatedTabs.SettingChanged += (_, _) => EnchantingTableUI.UpdateTabActivation();
 
             // Bounty Management
-            EnableLimitedBountiesInProgress = BindServerConfig("Bounty Management", "Enable Bounty Limit", false, "Toggles limiting bounties. Players unable to purchase if enabled and maximum bounty in-progress count is met");
-            MaxInProgressBounties = BindServerConfig("Bounty Management", "Max Bounties Per Player", 5, "Max amount of in-progress bounties allowed per player.");
+            EnableLimitedBountiesInProgress = BindServerConfig("Bounty Management", "Enable Bounty Limit", false,
+                "Toggles limiting bounties. Players unable to purchase if enabled and maximum bounty in-progress count is met");
+            MaxInProgressBounties = BindServerConfig("Bounty Management", "Max Bounties Per Player", 5,
+                "Max amount of in-progress bounties allowed per player.");
         }
 
         public static void InitializeConfig()
@@ -399,7 +412,6 @@ namespace EpicLoot.Config
 
         public static void StartupProcessModifiedLocalizations()
         {
-
             string[] files = Directory.GetFiles(LocalizationDir, "*", SearchOption.AllDirectories);
             EpicLoot.Log($"Processing localization startup file patches: {files}");
             foreach (var file in files)
@@ -565,7 +577,7 @@ namespace EpicLoot.Config
         {
             //EpicLoot.Log("Sending ItemInfo configuration.");
             ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(GatedItemTypeHelper.gatedConfig));
+            package.Write(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig));
             return package;
         }
 

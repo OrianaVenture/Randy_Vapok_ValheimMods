@@ -24,11 +24,15 @@ namespace EpicLoot.Adventure
             Gamble = new GambleAdventureFeature();
             TreasureMaps = new TreasureMapsAdventureFeature();
             Bounties = new BountiesAdventureFeature();
+
+            Config.TreasureMap.UpdateBiomeList();
         }
 
         public static void UpdateAventureData(AdventureDataConfig config)
         {
             Config = config;
+
+            Config.TreasureMap.UpdateBiomeList();
         }
 
         public static Sprite GetTrophyIconForMonster(string monsterID, bool isGold)

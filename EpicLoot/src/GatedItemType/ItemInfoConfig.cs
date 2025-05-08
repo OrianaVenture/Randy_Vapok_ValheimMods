@@ -8,7 +8,8 @@ namespace EpicLoot.GatedItemType
     {
         public string Type;
         public string Fallback;
-        public string UngatedFallback;
+        public string ItemFallback;
+        [Obsolete]
         public List<string> Items = new List<string>();
         public Dictionary<string, List<string>> ItemsByBoss = new Dictionary<string, List<string>>();
     }

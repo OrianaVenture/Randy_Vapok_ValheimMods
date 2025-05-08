@@ -486,9 +486,10 @@ namespace EpicLoot
                 return;
             }
 
-            if (string.IsNullOrEmpty(itemType)) {
-                int selected = UnityEngine.Random.Range(0, GatedItemTypeHelper.ItemCategories.Count);
-                itemType = GatedItemTypeHelper.ItemCategories[selected];
+            if (string.IsNullOrEmpty(itemType))
+            {
+                int selected = UnityEngine.Random.Range(0, GatedItemTypeHelper.ItemsByTypeAndBoss.Keys.Count);
+                itemType = GatedItemTypeHelper.ItemsByTypeAndBoss.ElementAt(selected).Key;
             }
 
             LootTable loot = new LootTable

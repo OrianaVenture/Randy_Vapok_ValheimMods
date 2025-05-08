@@ -120,7 +120,7 @@ namespace EpicLoot.General
                         EpicLoot.LogWarningForce(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config, Formatting.Indented));
                         break;
                     case "iteminfo":
-                        EpicLoot.LogWarningForce(JsonConvert.SerializeObject(GatedItemTypeHelper.gatedConfig, Formatting.Indented));
+                        EpicLoot.LogWarningForce(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig, Formatting.Indented));
                         break;
                     case "itemnames":
                         EpicLoot.LogWarningForce(JsonConvert.SerializeObject(MagicItemNames.Config, Formatting.Indented));

@@ -95,6 +95,9 @@ namespace EpicLoot
         public const string DisplayName = "Epic Loot";
         public const string Version = "0.11.0";
 
+        private static string ConfigFileName = PluginId + ".cfg";
+        private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
+
         public static readonly List<ItemDrop.ItemData.ItemType> AllowedMagicItemTypes = new List<ItemDrop.ItemData.ItemType>
         {
             ItemDrop.ItemData.ItemType.Helmet,
@@ -192,6 +195,7 @@ namespace EpicLoot
             LootTableLoaded?.Invoke();
 
             TerminalCommands.AddTerminalCommands();
+            SetupWatcher();
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)
@@ -576,6 +580,7 @@ namespace EpicLoot
         [UsedImplicitly]
         public void OnDestroy()
         {
+            Config.Save();
             _instance = null;
         }
 
@@ -1182,6 +1187,40 @@ namespace EpicLoot
         public static void SetWorldLuckFactor(float luckFactor)
         {
             _instance._worldLuckFactor = luckFactor;
+        }
+
+        private void SetupWatcher()
+        {
+            FileSystemWatcher watcher = new(BepInEx.Paths.ConfigPath, ConfigFileName);
+            watcher.Changed += ReadConfigValues;
+            watcher.Created += ReadConfigValues;
+            watcher.Renamed += ReadConfigValues;
+            watcher.IncludeSubdirectories = true;
+            watcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private DateTime _lastReloadTime;
+        private const long RELOAD_DELAY = 10000000; // One second
+
+        private void ReadConfigValues(object sender, FileSystemEventArgs e)
+        {
+            var now = DateTime.Now;
+            var time = now.Ticks - _lastReloadTime.Ticks;
+            if (!File.Exists(ConfigFileFullPath) || time < RELOAD_DELAY) return;
+
+            try
+            {
+                Log("Attempting to reload configuration...");
+                Config.Reload();
+            }
+            catch
+            {
+                Log($"There was an issue loading {ConfigFileName}");
+                return;
+            }
+
+            _lastReloadTime = now;
         }
     }
 }

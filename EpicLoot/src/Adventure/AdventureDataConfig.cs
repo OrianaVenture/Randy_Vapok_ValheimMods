@@ -94,6 +94,11 @@ namespace EpicLoot.Adventure
 
             return _biomeList;
         }
+
+        public void UpdateBiomeList()
+        {
+            _biomeList = BiomeInfo.Select(item => item.Biome).ToArray();
+        }
     }
 
     [Serializable]
@@ -122,7 +127,7 @@ namespace EpicLoot.Adventure
         public int RewardCoins;
         public List<BountyTargetAddConfig> Adds = new List<BountyTargetAddConfig>();
     }
-    
+
     [Serializable]
     public class BountyBossConfig
     {
@@ -148,7 +153,7 @@ namespace EpicLoot.Adventure
         public List<BountyBossConfig> Bosses = new List<BountyBossConfig>();
         public BountyTargetNameConfig Names;
     }
-        
+
     [Serializable]
     public class AdventureDataConfig
     {
