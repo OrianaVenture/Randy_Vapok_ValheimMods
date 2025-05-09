@@ -28,6 +28,8 @@
     * BulkUp: Converts part (up to 100%) of your health regen into bonus health
     * Spellsword: Adds an eitr cost to the weapon, increases damage
 * Bounty and treasure chest spawning overhauled:
+    * Spawn locations are now pre-selected and cached upon interacting with the merchant, decreasing wait times for accepting bounties and treasure maps.
+    * Deprecated use of IncreaseRadiusCount and RadiusInterval algorithm parameters for selecting suitable locations. (To be reviewed, may add back)
     * Bounty spawning validation, bounties for creatures that don't exist in the world will not be generated.
     * Bounties and treasure chests should no longer spawn inside of rocks, underground or deep underwater.
     * Bounties and treasure for the Ashland and deep north should work more consistently.

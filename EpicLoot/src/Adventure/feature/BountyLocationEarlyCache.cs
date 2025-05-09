@@ -27,7 +27,6 @@ namespace EpicLoot.Adventure.Feature
                 var biomeConfig = GetBiomeInfoConfig(biomeList[i]);
                 radiusRanges.Add(biomeList[i],
                     new Tuple<float, float> (biomeConfig.MinRadius, biomeConfig.MaxRadius));
-                    //GetTreasureMapSpawnRadiusRange(BiomeList[i], adventureSave));
             }
 
             return radiusRanges;
@@ -45,7 +44,6 @@ namespace EpicLoot.Adventure.Feature
             }
 
             PotentialBiomeLocations[biome].Add(point);
-            EpicLoot.Log($"Adding valid location to cache for: {biome} at {point}");
         }
 
         public static IEnumerator TryGetBiomePoint(
@@ -132,7 +130,7 @@ namespace EpicLoot.Adventure.Feature
                     yield return new WaitForSeconds(1f);
                 }
                 var range = radiusRanges.ContainsKey(biome) ? radiusRanges[biome] :
-                    new Tuple<float, float>(0f, 10500f); // todo find dynamically
+                    new Tuple<float, float>(0f, WorldGenerator.waterEdge);
                 var spawnPoint = SelectWorldPoint(range, tries, biome);
                 var zoneId = ZoneSystem.GetZone(spawnPoint);
                 while (!ZoneSystem.instance.SpawnZone(zoneId, ZoneSystem.SpawnMode.Client, out _))
@@ -149,7 +147,7 @@ namespace EpicLoot.Adventure.Feature
 
                 if (requireSelection && spawnLocationBiome == biome)
                 {
-                    EpicLoot.Log($"Returning callback valid location for: {biome} at {spawnPoint}");
+                    EpicLoot.Log($"Returning callback for Add Biome valid location: {biome} at {spawnPoint}");
                     spawnPoint.y += 100f;
                     onComplete?.Invoke(true, spawnPoint);
                     yield break;
@@ -163,8 +161,6 @@ namespace EpicLoot.Adventure.Feature
                         var mag = new Vector2(spawnPoint.x, spawnPoint.z).magnitude;
                         if (mag < min || mag > max)
                         {
-                            EpicLoot.Log($"Out of range location for: {spawnLocationBiome} at {spawnPoint}, " +
-                                $"magnitude {mag}. Min {min}, Max {max}");
                             continue;
                         }
                     }
@@ -185,7 +181,6 @@ namespace EpicLoot.Adventure.Feature
 
             ZoneSystem.instance.GetGroundData(
                 ref selectedLocation, out var normal, out var foundBiome, out var biomeArea, out var hmap);
-            EpicLoot.Log($"Selected from cache: {selectedLocation}");
             selectedLocation.y += 100f;
             onComplete?.Invoke(true, selectedLocation);
         }
@@ -195,7 +190,6 @@ namespace EpicLoot.Adventure.Feature
             var minimumDistance = range.Item1;
             var maximumDistance = range.Item2;
 
-            // TODO: Ask for clarification behind this math
             if (biome == Heightmap.Biome.AshLands || biome == Heightmap.Biome.DeepNorth)
             {
                 // For biomes that are situated in specific areas (eg top/bottom of the world)
@@ -233,23 +227,16 @@ namespace EpicLoot.Adventure.Feature
             }
 
             // Ashlands biome, and location is in lava | Try not to spawn in lava
-            // After enough failures we will just spawn in lava
-            if (biome == Heightmap.Biome.AshLands)
+            if (biome == Heightmap.Biome.AshLands && hmap.IsLava(location))
             {
-                if (hmap.IsLava(location))
-                {
-                    //EpicLoot.Log("Spawn Point rejected: In lava");
-                    return false;
-                }
+                return false;
             }
 
             float groundHeight = location.y;
             var waterLevel = ZoneSystem.instance.m_waterLevel;
-            // 5f is a buffer here becasue the swamp is very low to the water level
+            // Small buffer allowing spawns in shallow water
             if (biome != Heightmap.Biome.Ocean && ZoneSystem.instance.m_waterLevel > groundHeight + 2f)
             {
-                //EpicLoot.Log($"Spawn Point rejected: too deep underwater (waterLevel:{waterLevel}, " +
-                //    $"groundHeight:{groundHeight})");
                 return false;
             }
 
@@ -257,26 +244,22 @@ namespace EpicLoot.Adventure.Feature
             if (EffectArea.IsPointInsideArea(location, EffectArea.Type.PlayerBase,
                 AdventureDataManager.Config.TreasureMap.MinimapAreaRadius))
             {
-                EpicLoot.Log($"Spawn Point {location} rejected: Too close to player base");
                 return false;
             }
 
             // Is too near to player ward
-            // This is kind of expensive, so lets avoid it if we can,
-            // this will also trigger excessively in the Ashlands as ruins are considered player structure zones
             var tooCloseToWard = PrivateArea.m_allAreas.Any(
                 x => x.IsInside(location, AdventureDataManager.Config.TreasureMap.MinimapAreaRadius));
             if (tooCloseToWard)
             {
-                EpicLoot.Log($"Spawn Point {location} rejected: Too close to player ward");
                 return false;
             }
 
-            //EpicLoot.Log($"Spawn Point ({location}-{biome}) Valid.");
             return true;
         }
 
-        private static Tuple<float, float> GetTreasureMapSpawnRadiusRange(Heightmap.Biome biome, AdventureSaveData saveData)
+        // TODO: Decide if we want to keep the RadiusInterval and IncreaseRadiusCount configs
+        /*private static Tuple<float, float> GetTreasureMapSpawnRadiusRange(Heightmap.Biome biome, AdventureSaveData saveData)
         {
             var biomeInfoConfig = GetBiomeInfoConfig(biome);
             if (biomeInfoConfig == null)
@@ -309,7 +292,7 @@ namespace EpicLoot.Adventure.Feature
                 $"Current increments: {increments}. " +
                 $"Current search band: {min}-{max} (width={searchBandWidth})");
             return new Tuple<float, float>(min, max);
-        }
+        }*/
 
         private static TreasureMapBiomeInfoConfig GetBiomeInfoConfig(Heightmap.Biome biome)
         {

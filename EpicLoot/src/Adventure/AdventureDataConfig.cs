@@ -77,7 +77,9 @@ namespace EpicLoot.Adventure
         public List<TreasureMapBiomeInfoConfig> BiomeInfo = new List<TreasureMapBiomeInfoConfig>();
         public float StartRadiusMin = 0;
         public float StartRadiusMax = 500;
+        [Obsolete] // TODO evaluate if should keep
         public int IncreaseRadiusCount = 3;
+        [Obsolete] // TODO evaluate if should keep
         public float RadiusInterval = 500;
         public float MinimapAreaRadius = 100;
         public List<SecretStashItemConfig> SaleItems = new List<SecretStashItemConfig>();

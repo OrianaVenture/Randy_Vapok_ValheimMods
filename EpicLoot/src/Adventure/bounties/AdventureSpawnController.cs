@@ -42,43 +42,24 @@ namespace EpicLoot.Adventure
                 searchingForSpawn = new BoolZNetProperty("searchingForSpawn", zNetView, false);
                 spawnPoint = new Vector3ZNetProperty("spawnPoint", zNetView, defaultSpawn);
             }
-
-            EpicLoot.Log("Adventure Spawner Awake");
         }
 
         public void Update()
         {
-            if (zNetView.IsValid() != true)
+            if (!(bool)zNetView || !zNetView.IsValid() || !zNetView.IsOwner())
             {
                 return;
             }
 
-            if (zNetView.IsOwner() != true)
-            {
-                // Only want these things to happen once.
-                return;
-            }
-
-            if ((bool)zNetView == false)
-            {
-                return;
-            }
-
-            // We've got to skip at least some updates because slow object spawning means that
-            // we can spawn inside of things- if those things are not spawned already
-            // Zonesystem.Instance.IsZoneLoaded? - instead?
             if (currentUpdates < 300)
             {
                 currentUpdates += 1;
                 return;
             }
 
-            // We've waited a small period of time, things should be all spawned in,
-            // lets evaluate if our spawn point is still good.
-            // EpicLoot.Log($"Checking if location search is happening. {currentUpdates}");
             if (startedPlacement == false)
             {
-                EpicLoot.Log("Starting search for valid spawn location.");
+                EpicLoot.Log("Starting search for valid spawn location...");
                 searchingForSpawn.Set(true);
                 startedPlacement = true;
                 if (bounty.Get().PlayerID != 0)
@@ -92,47 +73,38 @@ namespace EpicLoot.Adventure
                 }
             }
 
-            // spawnPoint is still unset, we are waiting for the coroutine to finish
-            // EpicLoot.Log("Checking is spawn point is set.");
             if (searchingForSpawn.Get() == true && spawnPoint.Get() == defaultSpawn)
             {
-                //EpicLoot.Log("Waiting for spawn point to be set.");
                 return;
             }
 
             if (isBounty.Get() == true)
             {
-                EpicLoot.Log("Spawning bounty");
                 SpawnBountyTargets(bounty.Get());
             }
             else
             {
-                EpicLoot.Log("Spawning Treasure");
                 SpawnChest(treasure.Get());
             }
 
             if (placed.Get() == true)
             {
-                EpicLoot.Log("Destroying AdventureSpawnController");
                 ZNetScene.instance.Destroy(this.gameObject);
             }
         }
 
         public void SetBounty(BountyInfo bountyInfo)
         {
-            EpicLoot.Log("Setting BountyInfo");
             bounty.ForceSet(bountyInfo);
         }
 
         public void SetIsBounty()
         {
-            EpicLoot.Log("Setting IsBounty");
             isBounty.ForceSet(true);
         }
 
         public void SetTreasure(TreasureMapChestInfo treasureInfo)
         {
-            EpicLoot.Log("Setting TreasureInfo");
             treasure.ForceSet(treasureInfo);
         }
 
@@ -172,7 +144,6 @@ namespace EpicLoot.Adventure
                 var bountyTarget = creature.AddComponent<BountyTarget>();
                 bountyTarget.Initialize(bounty, prefab.name, isAdd);
 
-                // TODO: validate this, or change to set alerted so bounties move around?
                 var randomSpacing = UnityEngine.Random.insideUnitSphere * 4f;
                 point += randomSpacing;
                 ZoneSystem.instance.FindFloor(point, out var floorHeight);
@@ -224,10 +195,8 @@ namespace EpicLoot.Adventure
                 var offset = UnityEngine.Random.insideUnitCircle * (radius * 0.8f);
                 determinedSpawn = startingSpawnPoint + new Vector3(offset.x, 0, offset.y);
 
-                EpicLoot.Log($"Finding new spawn location {determinedSpawn}, attempt {spawnLocationAttempts + 1}.");
                 if (spawnLocationAttempts > 1 && spawnLocationAttempts % 10 == 0)
                 {
-                    EpicLoot.Log($"Attempts sleeping!!!! We need this check?");
                     // Sleep to avoid locking the thread
                     yield return new WaitForSeconds(1f);
                 }
@@ -237,7 +206,6 @@ namespace EpicLoot.Adventure
 
                 if (hmap == null || foundBiome != biome)
                 {
-                    EpicLoot.LogError($"Could not find ground data!!!!");
                     spawnLocationAttempts += 1;
                     continue;
                 }
@@ -245,13 +213,8 @@ namespace EpicLoot.Adventure
                 float terrainHeight = determinedSpawn.y;
                 float solidHeight = StartingHeight;
 
-                //LayerMask lmsk = LayerMask.GetMask("TransparentFX", "character"); //"Default",
-                //LayerMask terrain = LayerMask.GetMask("terrain");
-                //lmsk = ~(lmsk); // Invert default bitshift to avoid colliding with masked layers, but still collide with everything else
-                //Physics.Raycast(determinedSpawn + Vector3.up * 5f, Vector3.down, out var solidHit, 1000f, lmsk);
                 if (ZoneSystem.instance.FindFloor(new Vector3(determinedSpawn.x, determinedSpawn.y + 100f, determinedSpawn.z), out solidHeight))
                 {
-                    //solidHeight = solidHit.transform.position.y;
                     float terrainDiff = solidHeight - terrainHeight;
 
                     // Prevent spawns in objects and too high off the ground
@@ -268,13 +231,9 @@ namespace EpicLoot.Adventure
                 }
                 else
                 {
-                    EpicLoot.LogError($"Could not find solid floor!!!!");
                     spawnLocationAttempts += 1;
                     continue;
                 }
-
-                EpicLoot.Log($"Adventure Spawn Point terrain: {terrainHeight} " +
-                    $"solid: {solidHeight} veg: {hmap.GetVegetationMask(determinedSpawn)} biome: {biome}");
 
                 // Prevents spawning in a body of water
                 if ((biome != Heightmap.Biome.Ocean || !allowWaterSpawn) &&
@@ -297,8 +256,6 @@ namespace EpicLoot.Adventure
 
             if (determinedSpawn.y >= StartingHeight - 1f)
             {
-                // ERROR!
-                EpicLoot.LogError($"Selected Spawn point too high, needs a fix!!!!");
                 determinedSpawn.y = 400f;
             }
 

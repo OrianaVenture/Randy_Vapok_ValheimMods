@@ -456,8 +456,6 @@ namespace EpicLoot
             LoadItems();
             LoadBountySpawner();
 
-            //LoadAllZNetAssets(assetBundle); // TODO: ensure all assets needed are loaded
-
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             PrefabManager.OnPrefabsRegistered += SetupStatusEffects;
         }

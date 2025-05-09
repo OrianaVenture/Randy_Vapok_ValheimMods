@@ -83,18 +83,21 @@ namespace EpicLoot.Adventure.Feature
 
             // When we build the list of potential targets we only want to include those that are in the game, regardless of what the config says
             List<BountyTargetConfig> targetable_bounty_configs = new List<BountyTargetConfig>();
-            foreach (var potential_bounty in AdventureDataManager.Config.Bounties.Targets) {
-                if (PrefabManager.Instance.GetPrefab(potential_bounty.TargetID) == null) {
+            foreach (var potential_bounty in AdventureDataManager.Config.Bounties.Targets)
+            {
+                if (PrefabManager.Instance.GetPrefab(potential_bounty.TargetID) == null)
+                {
                     EpicLoot.Log($"Could not find bounty prefab {potential_bounty.TargetID}");
                     continue;
-                } else {
+                }
+                else
+                {
                     targetable_bounty_configs.Add(potential_bounty);
                 }
             }
 
             foreach (var targetConfig in targetable_bounty_configs)
             {
-
                 if ((bossBountiesGated && !defeatedBossBiomes.Contains(targetConfig.Biome)) ||
                     !player.m_knownBiome.Contains(targetConfig.Biome))
                 {
@@ -211,9 +214,6 @@ namespace EpicLoot.Adventure.Feature
             {
                 if (success)
                 {
-                    //var offset2 = UnityEngine.Random.insideUnitCircle *
-                    //    (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
-                    //var offset = new Vector3(offset2.x, 0, offset2.y);
                     saveData.AcceptedBounty(bounty, spawnPoint, Vector3.zero);
                     saveData.NumberOfTreasureMapsOrBountiesStarted++;
 

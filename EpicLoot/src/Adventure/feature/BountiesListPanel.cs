@@ -31,7 +31,7 @@ namespace EpicLoot.Adventure.Feature
             var saveData = Player.m_localPlayer.GetAdventureSaveData();
             var bountyInProgressCount = saveData.GetInProgressBounties().Count;
             bool allowedToBuy = !(ELConfig.EnableLimitedBountiesInProgress.Value &&
-                                  bountyInProgressCount >= ELConfig.MaxInProgressBounties.Value);
+                bountyInProgressCount >= ELConfig.MaxInProgressBounties.Value);
 
             if (MerchantPanel.AcceptBountyText != null)
             {
