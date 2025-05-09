@@ -5,7 +5,7 @@
 * Changes to how json files are handled:
     * Improves installation process, all default json files are now embedded in the mod. You can no longer change them directly!
     * Localization files are now loadable from Bepinex/config/EpicLoot/localizations.
-    * iteminfo.json file: New field "UngatedFallback" added to allow specifying fallback categories and failsafe fallback items seperately.
+    * iteminfo.json file: New field "UngatedFallback" added to allow specifying fallback categories and failsafe fallback items separately.
     * Patch files are now live-reloadable from the Bepinex/config/EpicLoot/patches folder without restarting the server.
     * New patch action "MultiAdd" which allows patching the same values into multiple locations.
 * Added a terminal command "printconfig" which allows logging any of the current configurations available. Must be an admin.
