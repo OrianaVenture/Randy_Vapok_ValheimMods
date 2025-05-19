@@ -306,47 +306,47 @@ namespace EpicLoot.Patching
             {
                 case "loottables.json":
                     LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patched_json));
-                    if (network_updates) { ELConfig.LootConfigSendConfigs(); }
+                    if (network_updates) { ELConfig.SendLootConfigs(); }
                     break;
                 case "magiceffects.json":
                     MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patched_json));
-                    if (network_updates) { ELConfig.MagicEffectsSendConfigs(); }
+                    if (network_updates) { ELConfig.SendMagicEffectConfigs(); }
                     break;
                 case "iteminfo.json":
                     GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patched_json));
-                    if (network_updates) { ELConfig.ItemInfoConfigSendConfigs(); }
+                    if (network_updates) { ELConfig.SendItemInfoConfigs(); }
                     break;
                 case "recipes.json":
                     RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patched_json));
-                    if (network_updates) { ELConfig.RecipesConfigSendConfigs(); }
+                    if (network_updates) { ELConfig.SendRecipesConfigs(); }
                     break;
                 case "enchantcosts.json":
                     EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patched_json));
-                    if (network_updates) { ELConfig.EnchantCostConfigSendConfigs(); }
+                    if (network_updates) { ELConfig.SendEnchantCostConfigs(); }
                     break;
                 case "itemnames.json":
                     MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patched_json));
-                    if (network_updates) { ELConfig.MagicItemNamesSendConfigs(); }
+                    if (network_updates) { ELConfig.SendMagicItemNamesConfigs(); }
                     break;
                 case "adventuredata.json":
                     AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patched_json));
-                    if (network_updates) { ELConfig.AdventureDataSendConfigs(); }
+                    if (network_updates) { ELConfig.SendAdventureDataConfigs(); }
                     break;
                 case "legendaries.json":
                     UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patched_json));
-                    if (network_updates) { ELConfig.LegendarySendConfigs(); }
+                    if (network_updates) { ELConfig.SendLegendaryConfigs(); }
                     break;
                 case "abilities.json":
                     AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patched_json));
-                    if (network_updates) { ELConfig.AbilitiesSendConfigs(); }
+                    if (network_updates) { ELConfig.SendAbilitiesConfigs(); }
                     break;
                 case "materialconversions.json":
                     MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patched_json));
-                    if (network_updates) { ELConfig.MaterialConversionSendConfigs(); }
+                    if (network_updates) { ELConfig.SendMaterialConversionConfigs(); }
                     break;
                 case "enchantingupgrades.json":
                     EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patched_json));
-                    if (network_updates) { ELConfig.EnchantingTableUpgradeSendConfigs(); }
+                    if (network_updates) { ELConfig.SendEnchantingTableUpgradeConfigs(); }
                     break;
             }
         }

@@ -311,28 +311,28 @@ namespace EpicLoot.Config
         public static void InitializeConfig()
         {
             SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, LootConfigSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, _ => SendConfig(JsonConvert.SerializeObject(LootRoller.Config)));
             SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(MagicEffectsRPC, MagicEffectsSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(MagicEffectsRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions())));
             // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
             SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, AdventureDataSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, _ => SendConfig(JsonConvert.SerializeObject(AdventureDataManager.Config)));
             SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(ItemConfigRPC, ItemInfoConfigSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(ItemConfigRPC, _ => SendConfig(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig)));
             SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(RecipesRPC, RecipesConfigSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(RecipesRPC, _ => SendConfig(JsonConvert.SerializeObject(RecipesHelper.Config)));
             SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingCostsRPC, EnchantCostConfigSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingCostsRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantCostsHelper.Config)));
             SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(ItemNamesRPC, MagicItemNamesSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(ItemNamesRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemNames.Config)));
             SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(LegendariesRPC, LegendarySendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(LegendariesRPC, _ => SendConfig(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config)));
             SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(AbilitiesRPC, AbilitiesSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(AbilitiesRPC, _ => SendConfig(JsonConvert.SerializeObject(AbilityDefinitions.Config)));
             SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(MaterialConversionRPC, MaterialConversionSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(MaterialConversionRPC, _ => SendConfig(JsonConvert.SerializeObject(MaterialConversions.Config)));
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
-            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, EnchantingTableUpgradeSendConfigs);
+            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
@@ -346,7 +346,12 @@ namespace EpicLoot.Config
         {
             var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.recipes.json");
             var result = JsonConvert.DeserializeObject<RecipesConfig>(jsonFile);
-            RecipesHelper.Initialize(result);
+            if (RecipesHelper.Config == null)
+            {
+                RecipesHelper.Initialize(result);
+            } else {
+                RecipesHelper.Initialize(RecipesHelper.Config);
+            }
             ItemManager.OnItemsRegistered -= InitializeRecipeOnReady;
         }
 
@@ -404,6 +409,7 @@ namespace EpicLoot.Config
                     //File Deleted
                     EpicLoot.Log($"Patch Deleted");
                     FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
+                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(FilePatching.ConfigFileNames);
                     break;
 
                 case WatcherChangeTypes.Changed:
@@ -457,17 +463,6 @@ namespace EpicLoot.Config
                 LocalizationManager.Instance.GetLocalization().ClearToken(language, localization.Key);
                 LocalizationManager.Instance.GetLocalization().AddTranslation(language, localization.Key, localization.Value);
             }
-        }
-
-        internal static void RemoveLocalizationRestoreDefaultForLanguage(string language)
-        {
-            LocalizationManager.Instance.GetLocalization().ClearLanguage(language);
-            // Restore default localization
-            string[] internal_assets = typeof(EpicLoot).Assembly.GetManifestResourceNames();
-            internal_assets.Select(x => x.Contains("localizations") && x.Contains(language)).ToList();
-            string default_localization = EpicLoot.ReadEmbeddedResourceFile(internal_assets.First());
-            string cleaned_localization = Regex.Replace(default_localization, @"\/\/.*\n", "");
-            LocalizationManager.Instance.GetLocalization().AddJsonFile(language, cleaned_localization);
         }
 
         public static void SetupPatchConfigFileWatch(string path)
@@ -560,81 +555,62 @@ namespace EpicLoot.Config
             return default;
         }
 
-        public static ZPackage LootConfigSendConfigs()
-        {
+        public static ZPackage SendConfig(string zpackage_content) {
             ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(LootRoller.Config));
+            package.Write(zpackage_content);
             return package;
         }
 
-        public static ZPackage MagicEffectsSendConfigs()
-        {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions()));
-            return package;
+        public static void SendLootConfigs() {
+            LootTablesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(LootRoller.Config)));
         }
 
-        public static ZPackage ItemInfoConfigSendConfigs()
-        {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig));
-            return package;
+        public static void SendMagicEffectConfigs() {
+            MagicEffectsRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions())));
         }
 
-        public static ZPackage RecipesConfigSendConfigs()
-        {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(RecipesHelper.Config));
-            return package;
+        public static void SendItemInfoConfigs() {
+            ItemConfigRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig)));
         }
 
-        public static ZPackage EnchantCostConfigSendConfigs()
+        public static void SendRecipesConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(EnchantCostsHelper.Config));
-            return package;
+            RecipesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(RecipesHelper.Config)));
         }
 
-        public static ZPackage MagicItemNamesSendConfigs()
+        public static void SendEnchantCostConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(MagicItemNames.Config));
-            return package;
+            EnchantingCostsRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(EnchantCostsHelper.Config)));
         }
 
-        public static ZPackage AdventureDataSendConfigs()
+        public static void SendMagicItemNamesConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(AdventureDataManager.Config));
-            return package;
+            ItemNamesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MagicItemNames.Config)));
         }
 
-        public static ZPackage LegendarySendConfigs()
+        public static void SendAdventureDataConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config));
-            return package;
+            AdventureDataRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(AdventureDataManager.Config)));
         }
 
-        public static ZPackage AbilitiesSendConfigs()
+        public static void SendLegendaryConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(AbilityDefinitions.Config));
-            return package;
+            LegendariesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config)));
         }
 
-        public static ZPackage MaterialConversionSendConfigs()
+        public static void SendAbilitiesConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(MaterialConversions.Config));
-            return package;
+            AbilitiesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(AbilityDefinitions.Config)));
         }
 
-        public static ZPackage EnchantingTableUpgradeSendConfigs()
+        public static void SendMaterialConversionConfigs()
         {
-            ZPackage package = new ZPackage();
-            package.Write(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config));
-            return package;
+            MaterialConversionRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MaterialConversions.Config)));
+        }
+
+        public static void SendEnchantingTableUpgradeConfigs()
+        {
+            EnchantingUpgradesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
         }
 
         public static IEnumerator OnServerRecieveConfigs(long sender, ZPackage package)

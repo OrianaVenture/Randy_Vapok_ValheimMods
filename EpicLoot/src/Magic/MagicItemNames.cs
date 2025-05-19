@@ -66,10 +66,11 @@ namespace EpicLoot
                     var prefix = GetPrefix(magicItem);
                     var suffix = GetSuffix(magicItem);
                     var fullNameFormat = Localization.instance.Localize("$mod_epicloot_fullnameformat");
-
                     return string.Format(fullNameFormat, prefix, baseName, suffix);
 
                 case ItemRarity.Epic:
+                    var adjective = GetAdjectivePartForItem(item, magicItem);
+                    var name = GetNamePartForItem(item, magicItem);
                     return BuildEpicName(item, magicItem);
 
                 case ItemRarity.Legendary:
@@ -81,6 +82,36 @@ namespace EpicLoot
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public static string BuildRarityName(ItemDrop.ItemData item, MagicItem magicItem, ItemRarity itemlevel)
+        {
+            string baseName = TranslateAndCapitalize(item.m_shared.m_name);
+            switch (itemlevel)
+            {
+                case ItemRarity.Magic:
+                    return Localization.instance.Localize("$mod_epicloot_basicmagicname") + $" {baseName}";
+                case ItemRarity.Rare:
+                    var prefix = GetPrefix(magicItem);
+                    var suffix = GetSuffix(magicItem);
+                    return $"{prefix}{baseName}{suffix}";
+                case ItemRarity.Epic:
+                    var adjective = GetAdjectivePartForItem(item, magicItem);
+                    var name = GetNamePartForItem(item, magicItem);
+                    return $"{adjective} {name}";
+                case ItemRarity.Legendary:
+                    var allowedNames = GetAllowedNamesFromListAllRequired(Config.Legendary, item, magicItem);
+                    var legname = GetRandomStringFromList(allowedNames);
+                    if (legname != null) { return legname; } // Return a unique name if this item has one
+                    return $"{Localization.instance.Localize("$mod_epicloot_basiclegendaryname")} {baseName}";
+                case ItemRarity.Mythic:
+                    itemname_format = "$mod_epicloot_basicmythicnameformat";
+                    break;
+            }
+
+
+
+            return "";
         }
 
         private static string TranslateAndCapitalize(string baseName)
@@ -207,8 +238,7 @@ namespace EpicLoot
             var allowedNames = GetAllowedNamesFromListAllRequired(Config.Legendary, item, magicItem);
             var name = GetRandomStringFromList(allowedNames);
 
-            if (!string.IsNullOrEmpty(name))
-            {
+            if (!string.IsNullOrEmpty(name)) {
                 return name;
             }
 
