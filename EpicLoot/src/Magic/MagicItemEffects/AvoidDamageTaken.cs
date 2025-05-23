@@ -19,7 +19,14 @@ namespace EpicLoot.MagicItemEffects
                     avoidanceChance += player.GetTotalActiveMagicEffectValue(effect, 0.01f);
                 });
 
-                return !(Random.Range(0f, 1f) < avoidanceChance);
+                bool avoid = Random.Range(0f, 1f) < avoidanceChance;
+
+                if (avoid)
+                {
+                    DamageText.instance.ShowText(HitData.DamageModifier.VeryResistant, hit.m_point, 0, true);
+                }
+
+                return !avoid;
             }
 
             return true;

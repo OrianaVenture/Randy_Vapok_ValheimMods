@@ -81,13 +81,12 @@ namespace EpicLoot_UnityLib
                 {
                     for (var index = 0; index < Stars.Length; index++)
                     {
-                        var star = Stars[index];
-                        star.enabled = index == 0;
+                        Stars[index].gameObject.SetActive(index == 0);
                     }
 
                     if (ManyStarsLabel != null)
                     {
-                        ManyStarsLabel.enabled = true;
+                        ManyStarsLabel.gameObject.SetActive(true);
                         ManyStarsLabel.text = $"×{level}";
                     }
                 }
@@ -95,12 +94,14 @@ namespace EpicLoot_UnityLib
                 {
                     for (var index = 0; index < Stars.Length; index++)
                     {
-                        var star = Stars[index];
-                        star.gameObject.SetActive(level > index && UpgradesActive(Feature,out _));
+                        bool active = level > index && UpgradesActive(Feature, out _);
+                        Stars[index].gameObject.SetActive(active);
                     }
 
                     if (ManyStarsLabel != null)
-                        ManyStarsLabel.enabled = false;
+                    {
+                        ManyStarsLabel.gameObject.SetActive(false);
+                    }
                 }
 
                 if (UnlockedLabel != null)

@@ -57,7 +57,6 @@ namespace EpicLoot
           
             AddItemSets(lootConfig.ItemSets);
             AddLootTables(lootConfig.LootTables);
-            EpicLoot.Log("Setup Lootroller");
         }
 
         private static void AddItemSets([NotNull] IEnumerable<LootItemSet> itemSets)

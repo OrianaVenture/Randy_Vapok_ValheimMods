@@ -256,19 +256,19 @@ namespace EpicLoot.Patching
             return dirInfo.FullName;
         }
 
-        public static string BuildPatchedConfig(string targetfile, JObject source_file_json)
+        public static string BuildPatchedConfig(string targetFile, JObject sourceJson)
         {
-            var patches = PatchesPerFile.GetValues(targetfile, true).OrderByDescending(x => x.Priority).ToList();
+            var patches = PatchesPerFile.GetValues(targetFile, true).OrderByDescending(x => x.Priority).ToList();
             if (patches.Count == 0) {
                 return null;
             }
 
             foreach (var patch in patches)
             {
-                ApplyPatch(source_file_json, patch);
+                ApplyPatch(sourceJson, patch);
             }
 
-            var output = source_file_json.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
+            var output = sourceJson.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
             return output;
         }
 
@@ -281,73 +281,90 @@ namespace EpicLoot.Patching
             }
         }
 
-        public static void ApplyPatchesToSpecificFilesWithNetworkUpdates(List<string> files_with_patch_updates)
+        public static void ApplyPatchesToSpecificFilesWithNetworkUpdates(List<string> files)
         {
             // skip update if there are no changes, this should never happen
-            if (files_with_patch_updates.Count == 0) return;
+            if (files.Count == 0) return;
 
-            EpicLoot.Log($"Applying {files_with_patch_updates.Count} patched files");
-            foreach(string file in files_with_patch_updates)
+            EpicLoot.Log($"Applying {files.Count} patched files");
+            foreach(string file in files)
             {
                 EpicLoot.Log($"Applying patchfile: {file}");
                 LoadPatchedJSON(file, true);
             }
+
             // Once the update has been provided for these files, they dont need updates again unless something changes
-            files_with_patch_updates.Clear();
+            files.Clear();
         }
 
-        internal static void LoadPatchedJSON(string patch_filename, bool network_updates = false)
+        internal static void LoadPatchedJSON(string filename, bool networkUpdates = false)
         {
-            var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + patch_filename));
-            var patched_json = BuildPatchedConfig(patch_filename, base_json_string);
-
-            // We don't want to do network updates on startup
-            switch (patch_filename)
+            string patchedString;
+            try
             {
-                case "loottables.json":
-                    LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendLootConfigs(); }
-                    break;
-                case "magiceffects.json":
-                    MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patched_json));
-                    if (network_updates) { ELConfig.SendMagicEffectConfigs(); }
-                    break;
-                case "iteminfo.json":
-                    GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendItemInfoConfigs(); }
-                    break;
-                case "recipes.json":
-                    RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendRecipesConfigs(); }
-                    break;
-                case "enchantcosts.json":
-                    EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendEnchantCostConfigs(); }
-                    break;
-                case "itemnames.json":
-                    MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendMagicItemNamesConfigs(); }
-                    break;
-                case "adventuredata.json":
-                    AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendAdventureDataConfigs(); }
-                    break;
-                case "legendaries.json":
-                    UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendLegendaryConfigs(); }
-                    break;
-                case "abilities.json":
-                    AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendAbilitiesConfigs(); }
-                    break;
-                case "materialconversions.json":
-                    MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendMaterialConversionConfigs(); }
-                    break;
-                case "enchantingupgrades.json":
-                    EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patched_json));
-                    if (network_updates) { ELConfig.SendEnchantingTableUpgradeConfigs(); }
-                    break;
+                JObject sourceJson = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
+                patchedString = BuildPatchedConfig(filename, sourceJson);
+            }
+            catch (Exception e)
+            {
+                EpicLoot.LogError($"Failed to read embedded resource for file {filename}: {e.Message}");
+                return;
+            }
+
+            try
+            {
+                // We don't want to do network updates on startup
+                switch (filename)
+                {
+                    case "loottables.json":
+                        LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendLootConfigs(); }
+                        break;
+                    case "magiceffects.json":
+                        MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patchedString));
+                        if (networkUpdates) { ELConfig.SendMagicEffectConfigs(); }
+                        break;
+                    case "iteminfo.json":
+                        GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendItemInfoConfigs(); }
+                        break;
+                    case "recipes.json":
+                        RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendRecipesConfigs(); }
+                        break;
+                    case "enchantcosts.json":
+                        EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendEnchantCostConfigs(); }
+                        break;
+                    case "itemnames.json":
+                        MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendMagicItemNamesConfigs(); }
+                        break;
+                    case "adventuredata.json":
+                        AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendAdventureDataConfigs(); }
+                        break;
+                    case "legendaries.json":
+                        UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendLegendaryConfigs(); }
+                        break;
+                    case "abilities.json":
+                        AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendAbilitiesConfigs(); }
+                        break;
+                    case "materialconversions.json":
+                        MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendMaterialConversionConfigs(); }
+                        break;
+                    case "enchantingupgrades.json":
+                        EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patchedString));
+                        if (networkUpdates) { ELConfig.SendEnchantingTableUpgradeConfigs(); }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                EpicLoot.LogError($"Failed to apply patches for file {filename}: {e.Message}");
             }
         }
 
@@ -356,7 +373,8 @@ namespace EpicLoot.Patching
             var selectedTokens = json.SelectTokens(patch.Path).ToList();
             if (patch.Require && selectedTokens.Count == 0)
             {
-                EpicLoot.LogErrorForce($"Required Patch ({patch.SourceFile}) path ({patch.Path}) failed to select any tokens in target file ({patch.TargetFile})!");
+                EpicLoot.LogErrorForce($"Required Patch ({patch.SourceFile}) path ({patch.Path}) " +
+                    $"failed to select any tokens in target file ({patch.TargetFile})!");
                 return;
             }
 
@@ -381,12 +399,16 @@ namespace EpicLoot.Patching
 
         public static void ApplyPatch_MultiAdd(JToken token, Patch patch)
         {
-            if (patch.Value == null) {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'MultiAdd' but has not supplied a Value for the added value! This patch will be ignored!");
+            if (patch.Value == null)
+            {
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'MultiAdd' " +
+                    $"but has not supplied a Value for the added value! This patch will be ignored!");
                 return;
             }
+
             int index = 0;
-            foreach (var item in patch.MultiPropertyName) {
+            foreach (var item in patch.MultiPropertyName)
+            {
                 Patch_Add(token, item, patch.Value);
                 index ++;
             }
@@ -396,12 +418,14 @@ namespace EpicLoot.Patching
         {
             if (patch.Value == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has not supplied a json Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' " +
+                    $"but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
             if (string.IsNullOrEmpty(patch.PropertyName))
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has not supplied a PropertyName for the added value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' " +
+                    $"but has not supplied a PropertyName for the added value! This patch will be ignored!");
                 return;
             }
 
@@ -411,7 +435,8 @@ namespace EpicLoot.Patching
             }
             else
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' but has selected a token that is not a json Object! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Add' " +
+                    $"but has selected a token that is not a json Object! This patch will be ignored!");
             }
         }
 
@@ -419,7 +444,8 @@ namespace EpicLoot.Patching
         {
             var jObject = ((JObject)token);
             if (jObject.ContainsKey(property) && jObject.Property(property) is JProperty jProperty) {
-                EpicLoot.LogWarningForce($"Patch has action 'Add' but a property with the name ({property}) already exists! The property's value will be overwritten");
+                EpicLoot.LogWarningForce($"Patch has action 'Add' but a property with the name ({property}) already exists! " +
+                    $"The property's value will be overwritten");
                 jProperty.Value = value;
             } else {
                 jObject.Add(property, value);
@@ -430,7 +456,8 @@ namespace EpicLoot.Patching
         {
             if (patch.Value == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Overwrite' but has not supplied a json Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Overwrite' " +
+                    $"but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
 
@@ -444,7 +471,8 @@ namespace EpicLoot.Patching
             }
             else
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Overwrite' but did not select a json Object Property or Property Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Overwrite' " +
+                    $"but did not select a json Object Property or Property Value! This patch will be ignored!");
             }
         }
 
@@ -452,7 +480,8 @@ namespace EpicLoot.Patching
         {
             if (patch.Value != null)
             {
-                EpicLoot.LogWarningForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Remove' but has supplied a json Value. (This patch will still be processed)");
+                EpicLoot.LogWarningForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Remove' " +
+                    $"but has supplied a json Value. (This patch will still be processed)");
             }
 
             token.Remove();
@@ -464,7 +493,8 @@ namespace EpicLoot.Patching
 
             if (patch.Value == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' but has not supplied a json Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' " +
+                    $"but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
 
@@ -484,7 +514,8 @@ namespace EpicLoot.Patching
                     }
                     else
                     {
-                        EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'AppendAll' but has provided a value in the source file that is not a json Array!");
+                        EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'AppendAll' " +
+                            $"but has provided a value in the source file that is not a json Array!");
                     }
                 }
                 else
@@ -495,8 +526,8 @@ namespace EpicLoot.Patching
             }
             else
             {
-
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action {actionName} but has selected a token in the target file that is not a json Array!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action {actionName} " +
+                    $"but has selected a token in the target file that is not a json Array!");
             }
         }
 
@@ -505,14 +536,16 @@ namespace EpicLoot.Patching
             var actionName = $"Insert{(after ? "After" : "Before")}";
             if (patch.Value == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' but has not supplied a json Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' " +
+                    $"but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
 
             var parent = token.Parent;
             if (parent == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' but the parent of the selected token is not a container! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' " +
+                    $"but the parent of the selected token is not a container! This patch will be ignored!");
                 return;
             }
 
@@ -527,14 +560,19 @@ namespace EpicLoot.Patching
             {
                 if (string.IsNullOrEmpty(patch.PropertyName))
                 {
-                    EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' and has selected a property of a json Object, but not provided a PropertyName! This patch will be ignored!");
+                    EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' and " +
+                        $"has selected a property of a json Object, but not provided a PropertyName! This patch will be ignored!");
                     return;
                 }
 
                 if (after)
+                {
                     token.AddAfterSelf(new JProperty(patch.PropertyName, patch.Value));
+                }
                 else
+                {
                     token.AddBeforeSelf(new JProperty(patch.PropertyName, patch.Value));
+                }
             }
         }
 
@@ -543,7 +581,8 @@ namespace EpicLoot.Patching
             const string actionName = "RemoveAll";
             if (patch.Value != null)
             {
-                EpicLoot.LogWarningForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' but has supplied a json Value! (This patch will still be processed)");
+                EpicLoot.LogWarningForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' " +
+                    $"but has supplied a json Value! (This patch will still be processed)");
             }
 
             if (token.Type == JTokenType.Array)
@@ -556,7 +595,8 @@ namespace EpicLoot.Patching
             }
             else
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' but selected token is not an Array or Object! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action '{actionName}' " +
+                    $"but selected token is not an Array or Object! This patch will be ignored!");
             }
         }
 
@@ -564,19 +604,22 @@ namespace EpicLoot.Patching
         {
             if (patch.Value == null)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' but has not supplied a json Value! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' " +
+                    $"but has not supplied a json Value! This patch will be ignored!");
                 return;
             }
 
             if (patch.Value.Type != JTokenType.Object)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' but has supplied a json Value that is not an Object! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' " +
+                    $"but has supplied a json Value that is not an Object! This patch will be ignored!");
                 return;
             }
 
             if (token.Type != JTokenType.Object)
             {
-                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' but has selected a token that is not a json Object! This patch will be ignored!");
+                EpicLoot.LogErrorForce($"Patch ({patch.SourceFile}, {patch.Path}) has action 'Merge' " +
+                    $"but has selected a token that is not a json Object! This patch will be ignored!");
                 return;
             }
             

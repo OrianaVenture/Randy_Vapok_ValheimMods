@@ -151,8 +151,9 @@ namespace EpicLoot.Adventure.Feature
         /// <summary>
         /// Randomly select N items from the list without duplicates.
         /// </summary>
-        protected static void RollOnListNTimes<T>(Random random, List<T> list, int n, List<T> results)
+        protected static void RollOnListNTimes<T>(Random random, List<T> list, int n, out List<T> results)
         {
+            results = new List<T>();
             HashSet<int> indexes = new HashSet<int>();
             if (n > list.Count)
             {

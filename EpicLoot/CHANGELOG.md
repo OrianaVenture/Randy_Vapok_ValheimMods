@@ -1,3 +1,17 @@
+## Version 0.11.4
+
+* Fixed some patches not applying properly on servers (could use more user verification).
+* Fully fixed an issue with gamble costs applying to multiple of the same item incorrectly.
+* Removed duplicate recipes from the recipes.json that are already included in materialconversions.json.
+    * This includes removing the default ability to craft trophies at the workbench. You can find them in the Convert Materials, Salvage Junk tab at the enchanting table.
+* Added junk conversion recipes for trophies: Serpent, Leech, Stone Golem, Goblin Shaman, and Morgen.
+* Adjusted some Enchanting Upgrade costs, added new ones for Ashlands (thanks Majestic for the ideas).
+* Fixes to item tooltips:
+    * Legendary/Mythic set items that are part other sets now both display.
+    * Shields now display any applicable DamageModifiers.
+* Added in world text to indicate when Feint was applied.
+* Fixed some display issues with Enchanting Table unlocks/star levels.
+
 ## Version 0.11.3
 
 * Fixed issue with loot rolling lowest tier when using fallbacks from iteminfo config.

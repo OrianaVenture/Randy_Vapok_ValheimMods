@@ -51,7 +51,7 @@ namespace EpicLoot.Adventure.Feature
             {
                 var items = availableMaterials.GetValues(section, true).ToList();
                 var rolls = AdventureDataManager.Config.SecretStash.RollsPerRarity[(int)section];
-                RollOnListNTimes(random, items, rolls, results);
+                RollOnListNTimes(random, items, rolls, out results);
             }
 
             // Remove the results that the player doesn't know about yet
@@ -66,8 +66,11 @@ namespace EpicLoot.Adventure.Feature
 
             var availableRandomItems = CollectItems(AdventureDataManager.Config.SecretStash.RandomItems,
                 (x) => x.Item, (x) => player.m_knownMaterial.Contains(x.m_shared.m_name));
+
+            var randomItems = new List<SecretStashItemInfo>();
             RollOnListNTimes(random, availableRandomItems,
-                AdventureDataManager.Config.SecretStash.RandomItemsCount, results);
+                AdventureDataManager.Config.SecretStash.RandomItemsCount, out randomItems);
+            results.AddRange(randomItems);
 
             var availableOtherItems = CollectItems(AdventureDataManager.Config.SecretStash.OtherItems);
             results.AddRange(availableOtherItems);
