@@ -299,6 +299,17 @@ namespace EpicLoot.Patching
         internal static void LoadPatchedJSON(string patch_filename, bool network_updates = false)
         {
             var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + patch_filename));
+
+            // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
+            // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
+            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + patch_filename.Replace(".json", ".yaml");
+            if (File.Exists(yaml_file)) {
+                try {
+                    base_json_string = JObject.Parse(yaml_file);
+                } catch (Exception e) {
+                    EpicLoot.LogWarningForce($"Base config file {patch_filename} is invalid, falling back to embedded default config." + e);
+                }
+            }
             var patched_json = BuildPatchedConfig(patch_filename, base_json_string);
 
             // We don't want to do network updates on startup

@@ -12,6 +12,7 @@ using EpicLoot_UnityLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization;
 
 namespace EpicLoot.Config
 {
@@ -69,6 +72,7 @@ namespace EpicLoot.Config
         public static ConfigEntry<float> _bossCryptKeyDropPlayerRange;
         public static ConfigEntry<BossDropMode> _bossWishboneDropMode;
         public static ConfigEntry<float> _bossWishboneDropPlayerRange;
+        public static ConfigEntry<string> BalanceConfigurationType;
 
         private static CustomRPC LootTablesRPC;
         private static CustomRPC MagicEffectsRPC;
@@ -121,6 +125,9 @@ namespace EpicLoot.Config
             "Ukrainian",
             "Latvian"
         };
+
+        public static IDeserializer yamldeserializer = new DeserializerBuilder().Build();
+        public static ISerializer yamlserializer = new SerializerBuilder().DisableAliases().ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults).Build();
 
         public ELConfig(ConfigFile Config)
         {
@@ -213,6 +220,11 @@ namespace EpicLoot.Config
                 "If true, magic items uses special, randomly generated names based on their rarity, type, and magic effects.");
 
             // Balance
+            BalanceConfigurationType = BindServerConfig("Balance", "Balance Template", "Default",
+                "Sets the type of balance configuration to use. " +
+                "balanced: the recommended balancing, you'll be powerful but stronger enemies will still be a huge threat. " +
+                "vanilla: uses heavy downtuning to not make you overpowered without any mods to increase difficulty." +
+                "legacy: this was the only balance option prior to 0.12, used by itself this will make you godlike.", new AcceptableValueList<string>("balanced", "legacy", "vanilla"));
             _gatedItemTypeModeConfig = BindServerConfig("Balance", "Item Drop Limits",
                 GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems,
                 "Sets how the drop system limits what item types can drop. " +
@@ -334,6 +346,7 @@ namespace EpicLoot.Config
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
+            SetupPatchConfigFileWatch(ELConfig.GetOverhaulDirectoryPath());
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
         }
@@ -346,8 +359,7 @@ namespace EpicLoot.Config
         {
             var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.recipes.json");
             var result = JsonConvert.DeserializeObject<RecipesConfig>(jsonFile);
-            if (RecipesHelper.Config == null)
-            {
+            if (RecipesHelper.Config == null) {
                 RecipesHelper.Initialize(result);
             } else {
                 RecipesHelper.Initialize(RecipesHelper.Config);
@@ -362,18 +374,40 @@ namespace EpicLoot.Config
             return dirInfo.FullName;
         }
 
-        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, bool update = false) where T : class
+        public static string GetOverhaulDirectoryPath()
         {
-            var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename);
-            var result = JsonConvert.DeserializeObject<T>(jsonFile);
+            var overhaulfolder = Path.Combine(Paths.ConfigPath, "EpicLoot", "baseconfig");
+            var dirInfo = Directory.CreateDirectory(overhaulfolder);
+            return dirInfo.FullName;
+        }
+
+        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod) where T : class
+        {
+            string yamlfilename = filename.Replace(".json", ".yaml");
+            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + '\\' + yamlfilename;
+            
+            if (File.Exists(yaml_file) == false) {
+                EpicLoot.Log($"Base config file {yaml_file} does not exist, creating it from embedded default config.");
+                var yamlfile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + yamlfilename);
+                var yamldata = yamldeserializer.Deserialize<T>(yamlfile);
+                File.WriteAllText(yaml_file, yamlserializer.Serialize(yamldata));
+            }
+            try {
+                var contents = yamldeserializer.Deserialize<T>(File.ReadAllText(yaml_file));
+                setupMethod(contents);
+                return;
+            } catch (Exception e) {
+                EpicLoot.LogWarningForce($"Base config file {yaml_file} is invalid, falling back to embedded default config." + e);
+            }
+            var filedata = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename);
+            var result = JsonConvert.DeserializeObject<T>(filedata);
             // EpicLoot.Log($"deserialized object: {result}");
             setupMethod(result);
         }
 
         private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
         {
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
-            {
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false) {
                 EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
                 return;
             }

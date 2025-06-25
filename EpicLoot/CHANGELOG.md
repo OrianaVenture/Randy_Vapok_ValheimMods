@@ -1,3 +1,8 @@
+## Version 0.12.0
+
+* 
+* Augmenting can no longer roll the same efffect more than once
+
 ## Version 0.11.3
 
 * Fixed issue with loot rolling lowest tier when using fallbacks from iteminfo config.

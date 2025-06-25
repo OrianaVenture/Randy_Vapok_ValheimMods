@@ -869,7 +869,7 @@ namespace EpicLoot
 
             var rarity = magicItem.Rarity;
             var currentEffect = magicItem.Effects[effectIndex];
-            results.Add(currentEffect);
+            
 
             var valuelessEffect = MagicItemEffectDefinitions.IsValuelessEffect(currentEffect.EffectType, rarity);
             var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, magicItem, valuelessEffect ? 
@@ -882,7 +882,18 @@ namespace EpicLoot
 
             for (var i = 0; i < augmentChoices && i < availableEffects.Count; i++)
             {
+                bool skip = false;
                 var newEffect = RollEffects(availableEffects, rarity, 1, false).FirstOrDefault();
+                foreach(var existingEffect in results) {
+                    if (existingEffect.EffectType == newEffect.EffectType) {
+                        EpicLoot.LogWarning($"Rolled an augment effect that already exists: {existingEffect.EffectType} for item: {item.m_shared.m_name}");
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
                 if (newEffect == null)
                 {
                     EpicLoot.LogError($"Rolled a null effect: item:{item.m_shared.m_name}, index:{effectIndex}");
@@ -897,7 +908,8 @@ namespace EpicLoot
                     availableEffects.RemoveAll(x => x.Type == newEffect.EffectType);
                 }
             }
-
+            results.Add(currentEffect);
+            results.Reverse();
             return results;
         }
 

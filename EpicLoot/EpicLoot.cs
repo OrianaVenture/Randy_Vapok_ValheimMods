@@ -670,11 +670,10 @@ namespace EpicLoot
         /// <returns></returns>
         internal static string ReadEmbeddedResourceFile(string filename)
         {
-            //EpicLoot.Log($"Attempting to load resource path: {filename}");
-            //foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
-            //{
-            //    EpicLoot.Log($"resource: {embeddedResouce}");
-            //}
+            EpicLoot.Log($"Attempting to load resource path: {filename}");
+            foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames()) {
+                EpicLoot.Log($"resource: {embeddedResouce}");
+            }
             using (var stream = typeof(EpicLoot).Assembly.GetManifestResourceStream(filename))
             {
                 using (var reader = new StreamReader(stream))
