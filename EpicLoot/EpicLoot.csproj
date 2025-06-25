@@ -40,6 +40,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="config\overhauls\balanced\abilities.yaml" />
     <Compile Include="src\*.cs" />
     <Compile Include="src\Abilities\Ability.cs" />
     <Compile Include="src\Abilities\AbilityBar.cs" />
@@ -128,6 +129,16 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\*.json" />
     <EmbeddedResource Include="localizations\English.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\adventuredata.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\enchantcosts.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\enchantingupgrades.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\iteminfo.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\itemnames.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\legendaries.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\loottables.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\magiceffects.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\materialconversions.yaml" />
+    <EmbeddedResource Include="config\overhauls\balanced\recipes.yaml" />
     <None Include="info.md" />
     <None Include="packages.config" />
     <None Include="thunderstore\manifest.json" />
@@ -156,6 +167,13 @@
     <Reference Include="Jotunn, Version=2.24.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JotunnLib.2.24.3\lib\net462\Jotunn.dll</HintPath>
     </Reference>
+    <Reference Include="YamlDotNet, Version=16.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.16.3.0\lib\net47\YamlDotNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="config\overhauls\legacy\" />
+    <Folder Include="config\overhauls\vanilla\" />
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -175,6 +193,11 @@
     <Message Text="Copying to Thunderstore Deployment" Importance="high" />
     <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/Thunderstore Mod Manager/DataFolder/Valheim/profiles/modtesting/BepInEx/plugins" />
     <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/com.kesomannen.gale/valheim/profiles/Modtest/BepInEx/plugins" />
+  </Target>
+  <Target Name="CopyToModManagers" AfterTargets="ILRepacker">
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Modtest\BepInEx\plugins" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Modtesting\BepInEx\plugins" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\com.kesomannen.gale\valheim\profiles\Modtest\BepInEx\plugins" />
   </Target>
   <ProjectExtensions />
 </Project>

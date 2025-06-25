@@ -16,8 +16,6 @@
       { "Item": "IronBountyToken", "Amount": 9 }
     ]
   },
-  // Sacrifice Products
-  ///////////////////////////////////////////////////////////////////////////////////////////////
   "DisenchantProducts": [
     {
       "IsMagic": true, 
@@ -219,8 +217,6 @@
       ]
     }
   ],
-  // Enchant Costs
-  ///////////////////////////////////////////////////////////////////////////////////////////////
   "EnchantCosts": [
     {
       "ItemTypes" : [ "OneHandedWeapon", "Bow", "TwoHandedWeapon", "TwoHandedWeaponLeft", "Torch", "Tool" ],
@@ -313,8 +309,6 @@
       ]
     }
   ],
-  // Augment Costs
-  ///////////////////////////////////////////////////////////////////////////////////////////////
   "AugmentCosts": [
     {
       "ItemTypes" : [ "OneHandedWeapon", "Bow", "TwoHandedWeapon", "TwoHandedWeaponLeft", "Torch", "Tool" ],

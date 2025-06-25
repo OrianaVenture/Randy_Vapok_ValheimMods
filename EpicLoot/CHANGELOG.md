@@ -1,3 +1,8 @@
+## Version 0.12.0
+
+* 
+* Augmenting can no longer roll the same efffect more than once
+
 ## Version 0.11.4
 
 * Fixed some patches not applying properly on servers (could use more user verification).
