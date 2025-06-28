@@ -651,6 +651,8 @@ namespace EpicLoot
             paralyzed.m_name = "$mod_epicloot_se_paralyze";
 
             ObjectDB.instance.m_StatusEffects.Add(paralyzed);
+
+            new StatusEffects_Utils_DodgeBuff().CreateMyStatusEffect();
             ItemManager.OnItemsRegistered -= SetupStatusEffects;
         }
 

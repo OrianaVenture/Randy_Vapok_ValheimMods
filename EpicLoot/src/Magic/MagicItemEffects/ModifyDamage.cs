@@ -128,6 +128,7 @@ namespace EpicLoot.MagicItemEffects
                     damageMod += effectValue;
                 }
             });
+
             __result.Modify(1.0f + damageMod);
 
             if (player != null && player.GetSEMan().HaveStatusEffect("BerserkerStatusEffect".GetStableHashCode()))

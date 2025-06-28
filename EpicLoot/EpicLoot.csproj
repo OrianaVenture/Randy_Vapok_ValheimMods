@@ -148,6 +148,7 @@
     <EmbeddedResource Include="..\ValheimUnity\Assets\ExternalLibraries\EpicLoot-UnityLib.dll">
       <Link>EpicLoot-UnityLib.dll</Link>
     </EmbeddedResource>
+    <Content Include="AdventureBackpacksAPI.dll" />
     <Content Include="ILRepack.targets">
       <SubType>Designer</SubType>
     </Content>
@@ -177,4 +178,8 @@
     <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/com.kesomannen.gale/valheim/profiles/Modtest/BepInEx/plugins" />
   </Target>
   <ProjectExtensions />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetDir)*.dll" "C:\Users\LC\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Modding\BepInEx\plugins" /y /i /q
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

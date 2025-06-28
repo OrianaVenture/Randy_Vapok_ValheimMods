@@ -135,6 +135,7 @@ namespace EpicLoot
         public static string SpellSword = nameof(SpellSword);
         public static string BulkUp = nameof(BulkUp);
         public static string EitrWeave = nameof(EitrWeave);
+        public static string DodgeBuff = nameof(DodgeBuff);
 
         public static string Bulwark = nameof(Bulwark);
         public static string Undying = nameof(Undying);

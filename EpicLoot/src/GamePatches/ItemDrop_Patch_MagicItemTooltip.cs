@@ -173,6 +173,13 @@ namespace EpicLoot
                     if (item.m_shared.m_attack.m_attackStamina > 0.0 && !magicItem.HasEffect(MagicEffectType.Bloodlust))
                         text.Append($"\n$item_staminause: <color={magicAttackStaminaColor}>{totalStaminaUse:#.#}</color>");
 
+                    bool DodgeBuff = magicItem.HasEffect(MagicEffectType.DodgeBuff);
+                    string DodgeBuffColor = DodgeBuff ? magicColor : "orange";
+                    if (DodgeBuff)
+                    {
+                        float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 0.01f) * 100;
+                    }
+
                     bool magicAttackEitr = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse) || magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
                     bool doubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
                     string magicAttackEitrColor = magicAttackEitr ? magicColor : "orange";

@@ -1069,6 +1069,10 @@
   "mod_epicloot_me_eitrweave_desc": "Performing a parry restores +<b><color=yellow>X</color></b> Eitr",
   "mod_epicloot_me_eitrweave_prefix1": "Weaving",
   "mod_epicloot_me_eitrweave_suffix1": "of Weaving",
+  "mod_epicloot_me_dodgebuff_prefix1": "Dodge",
+  "mod_epicloot_me_dodgebuff_suffix1": "of Dodging",
+  "mod_epicloot_me_dodgebuff_desc": "Dodge gives increased Dmg",
+  "mod_epicloot_me_dodgebuff_display": "DodgeBuff +{0}%",
 
   "mod_epicloot_set_me_bulwark": "Bulwark [Activated]: Prevent all damage for 5 seconds. Cooldown: 60 seconds.",
   "mod_epicloot_set_me_undying": "Undying [Passive]: On death, regain full health. Cooldown: 20 minutes.",
