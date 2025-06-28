@@ -27,6 +27,26 @@ namespace EpicLoot.MagicItemEffects
                 }
             }
 
+            if (Player.m_localPlayer &&
+                Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.DodgeBuff, out float dodgeBuffValue) &&
+                Player.m_localPlayer.GetSEMan().HaveStatusEffect("Adrenaline_Rush".GetStableHashCode()))
+            {
+                var modifier = 1f + (dodgeBuffValue *.01f);
+                if (modifier > 0)
+                {
+                    __result.m_damage *= modifier;
+                    __result.m_blunt *= modifier;
+                    __result.m_slash *= modifier;
+                    __result.m_pierce *= modifier;
+                    __result.m_chop *= modifier;
+                    __result.m_pickaxe *= modifier;
+                    __result.m_fire *= modifier;
+                    __result.m_frost *= modifier;
+                    __result.m_lightning *= modifier;
+                    __result.m_poison *= modifier;
+                    __result.m_spirit *= modifier;
+                }
+            }
             if (!__instance.IsMagic())
             {
                 return;
