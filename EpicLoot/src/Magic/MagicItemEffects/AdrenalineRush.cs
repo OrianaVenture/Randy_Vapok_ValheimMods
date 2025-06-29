@@ -8,28 +8,76 @@ using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.UpdateDodge))]
-    [HarmonyPatch(new Type[] { typeof(float) })]
-
-    public static class DodgeBuff
+    [HarmonyPatch(typeof(Attack), nameof(Attack.DoMeleeAttack))]
+    public class DodgeDetectionandBuffApplicationPatch
     {
-        private static void Postfix(Player __instance)
+        public static bool DodgeWasDetected = false;
+
+        static void Postfix(Attack __instance)
         {
-            int rushHash = "Adrenaline_Rush".GetStableHashCode(); 
+            DodgeWasDetected = false;
 
-            if (__instance == Player.m_localPlayer &&
-                __instance.m_dodgeInvincible &&
-                __instance.m_seman.GetStatusEffect(rushHash) == null && // Checks if that status effect is on __instance to prevent to many checks. Check back here to make refreshing the buff possible.
-                __instance.GetTotalActiveMagicEffectValue(MagicEffectType.DodgeBuff, 1f) > 0f)
+            if (__instance.m_character == Player.m_localPlayer)
+                return;
 
+            Transform transform;
+            Vector3 direction;
+            __instance.GetMeleeAttackDir(out transform, out direction);
+
+            Vector3 localDirection = __instance.m_character.transform.InverseTransformDirection(direction);
+            float halfAngle = __instance.m_attackAngle / 2f;
+            float stepSize = 4f;
+            float attackRange = __instance.m_attackRange;
+
+            Vector3 attackOrigin = transform.position + Vector3.up * __instance.m_attackHeight
+                + __instance.m_character.transform.right * __instance.m_attackOffset;
+
+            int layerMask = __instance.m_hitTerrain ? Attack.m_attackMaskTerrain : Attack.m_attackMask;
+
+            for (float angle = -halfAngle; angle <= halfAngle; angle += stepSize)
             {
-                __instance.m_seman.AddStatusEffect(rushHash);
-                Jotunn.Logger.LogInfo("Dodged detected. Buff Applied");
+                Quaternion swingRotation = Quaternion.identity;
+                if (__instance.m_attackType == Attack.AttackType.Horizontal)
+                    swingRotation = Quaternion.Euler(0f, -angle, 0f);
+                else if (__instance.m_attackType == Attack.AttackType.Vertical)
+                    swingRotation = Quaternion.Euler(angle, 0f, 0f);
+
+                Vector3 finalDir = __instance.m_character.transform.TransformDirection(swingRotation * localDirection);
+
+                RaycastHit[] hits = (__instance.m_attackRayWidth > 0f)
+                    ? Physics.SphereCastAll(attackOrigin, __instance.m_attackRayWidth, finalDir, Mathf.Max(0f, attackRange - __instance.m_attackRayWidth), layerMask, QueryTriggerInteraction.Ignore)
+                    : Physics.RaycastAll(attackOrigin, finalDir, attackRange, layerMask, QueryTriggerInteraction.Ignore);
+
+                foreach (RaycastHit hit in hits)
+                {
+                    GameObject targetGO = Projectile.FindHitObject(hit.collider);
+                    Character hitCharacter = targetGO.GetComponent<Character>();
+
+                    bool dodgedHit = hitCharacter != null &&
+                                     hitCharacter == Player.m_localPlayer &&
+                                     hitCharacter.IsDodgeInvincible();
+
+                    Player player = hitCharacter as Player;
+                    if (player != null)
+                    {
+                        int rushHash = "Adrenaline_Rush".GetStableHashCode();
+
+                        if (player.GetSEMan().GetStatusEffect(rushHash) == null &&
+                            player.GetTotalActiveMagicEffectValue(MagicEffectType.DodgeBuff, 1f) > 0f &&
+                            dodgedHit)
+                        {
+                            player.GetSEMan().AddStatusEffect(rushHash);
+                            Jotunn.Logger.LogInfo("Perfect Dodge detected. Adrenaline Rush applied.");
+                            return;
+                        }
+                    }
+
+                }
             }
         }
-    } //If character holds item with dodgebuff add status effect on dodge
+    }
 
-    public class StatusEffects_Utils_DodgeBuff // Need to make this the status effect that shows up and apply the damage to this buff
+    public class StatusEffects_Utils_DodgeBuff 
     {
         public void CreateMyStatusEffect()
         {
@@ -68,3 +116,4 @@ namespace EpicLoot.MagicItemEffects
     }
 }
 
+// ITS FUCKING WORKS!
