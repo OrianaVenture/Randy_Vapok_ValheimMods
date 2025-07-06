@@ -19881,7 +19881,7 @@ Shader:
           Hash: 920497038f5dd2da5588e28dc8a9447f
         m_CodeHash:
           serializedVersion: 2
-          Hash: 10c6726568e882119261a70151173723
+          Hash: 00000000000000000000000000000000
         m_FromOther: 1
         m_ForceSyncCompilation: 0
         m_UseDxcAPIs: 0
@@ -20102,7 +20102,7 @@ Shader:
           Hash: 00000000000000000000000000000000
         m_CodeHash:
           serializedVersion: 2
-          Hash: d04141a236e8bbcee3767e44a019df75
+          Hash: 00000000000000000000000000000000
         m_FromOther: 1
         m_ForceSyncCompilation: 0
         m_UseDxcAPIs: 0

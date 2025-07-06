@@ -383,21 +383,20 @@ namespace EpicLoot.Config
 
         public static void SychronizeConfig<T>(string filename, Action<T> setupMethod) where T : class
         {
-            string yamlfilename = filename.Replace(".json", ".yaml");
-            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + '\\' + yamlfilename;
+            string overhaul_file_location = ELConfig.GetOverhaulDirectoryPath() + '\\' + filename;
             
-            if (File.Exists(yaml_file) == false) {
-                EpicLoot.Log($"Base config file {yaml_file} does not exist, creating it from embedded default config.");
-                var yamlfile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + yamlfilename);
-                var yamldata = yamldeserializer.Deserialize<T>(yamlfile);
-                File.WriteAllText(yaml_file, yamlserializer.Serialize(yamldata));
+            if (File.Exists(overhaul_file_location) == false) {
+                EpicLoot.Log($"Base config file {overhaul_file_location} does not exist, creating it from embedded default config.");
+                var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + filename);
+                File.WriteAllText(overhaul_file_location, overhaulfiledata);
             }
             try {
-                var contents = yamldeserializer.Deserialize<T>(File.ReadAllText(yaml_file));
+                // Check if the file is valid
+                var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(overhaul_file_location));
                 setupMethod(contents);
                 return;
             } catch (Exception e) {
-                EpicLoot.LogWarningForce($"Base config file {yaml_file} is invalid, falling back to embedded default config." + e);
+                EpicLoot.LogWarningForce($"Core Config file {overhaul_file_location} is invalid, falling back to embedded default config." + e);
             }
             var filedata = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename);
             var result = JsonConvert.DeserializeObject<T>(filedata);

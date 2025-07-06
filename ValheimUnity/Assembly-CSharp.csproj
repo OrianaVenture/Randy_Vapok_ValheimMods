@@ -76,13 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\ExternalLibraries\valheim\Splatform.dll" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_googleanalytics.dll" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo projectiles\Readme.txt" />
+    <None Include="Assets\ExternalLibraries\valheim\assembly_lux.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_valheim.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\ExternalLibraries\valheim\Splatform.dll" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\Projectiles\Readme.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo AOE skills\Readme.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Lit_CenterGlow.shader" />
@@ -94,7 +95,6 @@
     <None Include="Assets\X_Wiz\AnimCtrl\OrganJarAnimationTiming.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\DissolveNoise.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\ExternalLibraries\valheim\Splatform.Steam.dll" />
     <None Include="Assets\X_Wiz\AnimCtrl\StaffOfAtom_AnimationTimings.txt" />
     <None Include="Assets\X_LootBeams\Shaders\Beams\Beam AlphaBlended.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo scene lasers\If you want to use lasers in 2D.txt" />
@@ -109,6 +109,7 @@
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Blend_Normals.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\AOE spells\Readme.txt" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_sunshafts.dll" />
+    <None Include="Assets\ExternalLibraries\valheim\Splatform.Steam.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo scene lasers\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
@@ -119,6 +120,7 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Prefabs\Magic circles\Loop version\How to use.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\ExternalLibraries\valheim\assembly_simplemeshcombine.dll" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_postprocessing.dll" />
     <None Include="Assets\ExternalLibraries\valheim\assembly_guiutils.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
@@ -478,12 +480,20 @@
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="assembly_lux">
+      <HintPath>Assets\ExternalLibraries\valheim\assembly_lux.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PlayFabParty">
       <HintPath>Assets\ExternalLibraries\valheim\PlayFabParty.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Splatform.Steam">
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.Steam.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="assembly_simplemeshcombine">
+      <HintPath>Assets\ExternalLibraries\valheim\assembly_simplemeshcombine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SoftReferenceableAssets">

@@ -172,7 +172,7 @@ namespace EpicLoot.Crafting
             }
 
             return MagicItemEffectDefinitions.GetAvailableEffects(
-                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : recipe.EffectIndex);
+                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : recipe.EffectIndex, checkaugment: true);
         }
 
         public static string GetAugmentSelectorText(MagicItem magicItem, int i, IReadOnlyList<MagicItemEffect> augmentableEffects, ItemRarity rarity)

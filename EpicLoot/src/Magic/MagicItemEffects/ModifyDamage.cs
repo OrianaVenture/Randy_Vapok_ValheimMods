@@ -11,7 +11,7 @@ namespace EpicLoot.MagicItemEffects
             if (Player.m_localPlayer &&
                 Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
             {
-                var modifier = 1 + CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
+                var modifier = CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
                 if (modifier > 0)
                 {
                     __result.m_blunt *= modifier;
@@ -121,11 +121,9 @@ namespace EpicLoot.MagicItemEffects
             }
 
             var damageMod = 0f;
-            ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyDamage, effect =>
-            {
-                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, effect, out float effectValue, 0.01f))
-                {
-                    damageMod += effectValue;
+            ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyDamage, effect => {
+                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, effect, out float effectValue, 0.01f)) {
+                    damageMod = effectValue;
                 }
             });
             __result.Modify(1.0f + damageMod);

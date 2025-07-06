@@ -68,16 +68,12 @@ namespace EpicLoot.MagicItemEffects
             if (bulkupValue > 0)
             {
                 float health_regen_from_food = 0f;
-                foreach (Food food2 in Player.m_localPlayer.m_foods)
-                {
+                foreach (Food food2 in Player.m_localPlayer.m_foods) {
                     health_regen_from_food += food2.m_item.m_shared.m_foodRegen;
                 }
                 // The bulkup bonus to health
                 // float bulk_health_bonus = (bulkupValue / 25) + 1;
                 float bulk_health_bonus = (float)Math.Sqrt(bulkupValue / 60f) + 1.2f;
-                if (bulk_health_bonus > 3f) {
-                    bulk_health_bonus = 3f;
-                }
                 health_bonus_from_effect = bulk_health_bonus * health_regen_from_food;
                 // EpicLoot.Log($"Bulkup setting bonus health {health_bonus_from_effect}");
             } else {

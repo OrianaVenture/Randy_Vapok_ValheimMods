@@ -131,6 +131,7 @@ namespace EpicLoot
         public static string[] MagicMaterials = new string[]
         {
             "Runestone",
+            "EtchedRunestone",
             "Shard",
             "Dust",
             "Reagent",
@@ -181,7 +182,7 @@ namespace EpicLoot
 
             HasAdventureBackpacks = ABAPI.IsLoaded();
 
-            LoadPatches();
+            FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
             PrintInfo();
             AddLocalizations();
@@ -343,11 +344,6 @@ namespace EpicLoot
                     Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
                 }
             }
-        }
-
-        public static void LoadPatches()
-        {
-            FilePatching.LoadAllPatches();
         }
 
         private void AddLocalizations()
@@ -681,20 +677,6 @@ namespace EpicLoot
                     return reader.ReadToEnd();
                 }
             }
-        }
-
-        internal static List<string> GetEmbeddedResourceNamesFromDirectory(string embedded_location = "EpicLoot.config.")
-        {
-            List<string> resourcenames = new List<string>();
-            foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
-            {
-                if (embeddedResouce.Contains(embedded_location))
-                {
-                    // Got to strip the starting 'EpicLoot.config.' off, so we just take the ending substring
-                    resourcenames.Add(embeddedResouce.Substring(16));
-                }
-            }
-            return resourcenames;
         }
 
         public static bool CanBeMagicItem(ItemDrop.ItemData item)

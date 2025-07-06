@@ -407,12 +407,16 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.50f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpCompress">
-      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\SharpCompress\SharpCompress.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Splatform">
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="assembly_lux">
+      <HintPath>Assets\ExternalLibraries\valheim\assembly_lux.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528\Editor\ThirdParty\SharpCompress\SharpCompress.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayFabParty">
@@ -421,6 +425,10 @@
     </Reference>
     <Reference Include="Splatform.Steam">
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.Steam.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="assembly_simplemeshcombine">
+      <HintPath>Assets\ExternalLibraries\valheim\assembly_simplemeshcombine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">

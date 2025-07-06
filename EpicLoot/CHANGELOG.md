@@ -1,7 +1,23 @@
 ## Version 0.12.0
 
-* 
-* Augmenting can no longer roll the same efffect more than once
+* Added the overhaul configuration system which provides access to directly editable configuration. Three configuration defaults are available as base templates:
+    * `Balanced` - The new default for Epic Loot. Enchantments are powerful, but not overpowered.
+    * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
+    * `Vanilla` - A configuration that is closer to the vanilla experience. Enchantments give you an edge, but are not as powerful.
+* Added the following new enchantments
+    * `DartingThoughts` - Converts a portion of max eitr into eitr regen
+    * `AddCrafterskills` - Increases crafting and cooking skills
+    * `Headhunter` - Increases chance to drop trophies from creatures
+* Augmenting can no longer roll duplicates in one reroll
+* Removed the HP modifier cap from bulkup
+* Re-tuned the algorithm for coinhoarder to require a much larger purse of coins to cause significant damage bonuses
+* Riches can now be configured as to what it drops and will now drop 1 of its entries per roll max instead of potentially all of them.
+* Triple shot can now be configured and has been rebalanced
+* Magic Double shot can now be configured and has been rebalanced
+* Eitrweave buffed significantly
+* Added a cap to elemental and physical resistances
+* Some extremely powerful enchantments have been enabled for the Legendary config
+* Optimized woodcutting and mining enchantments
 
 ## Version 0.11.4
 

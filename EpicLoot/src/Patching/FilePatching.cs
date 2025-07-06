@@ -63,8 +63,26 @@ namespace EpicLoot.Patching
     public static class FilePatching
     {
         public static string PatchesDirPath = GetPatchesDirectoryPath();
-        public static List<string> ConfigFileNames = new List<string>();
+        public static List<string> ConfigFileNames = [
+            "loottables.json",
+            "magiceffects.json",
+            "iteminfo.json",
+            "recipes.json",
+            "enchantcosts.json",
+            "itemnames.json",
+            "adventuredata.json",
+            "legendaries.json",
+            "abilities.json",
+            "materialconversions.json",
+            "enchantingupgrades.json"
+        ];
         public static MultiValueDictionary<string, Patch> PatchesPerFile = new MultiValueDictionary<string, Patch>();
+
+        public static void LoadAndApplyAllPatches()
+        {
+            LoadAllPatches();
+            ApplyAllPatches();
+        }
 
         public static void LoadAllPatches()
         {
@@ -91,9 +109,6 @@ namespace EpicLoot.Patching
                     return;
 
                 var pluginFolder = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
-
-                CheckForOldPatches(pluginFolder.Parent);
-                ConfigFileNames = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
                 ProcessPatchDirectory(patchesFolder);
             }
             catch (Exception e)
@@ -102,25 +117,6 @@ namespace EpicLoot.Patching
                 var debugPath = GetPatchesDirectoryPath(true);
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
-            }
-
-            ApplyAllPatches();
-        }
-
-        public static void CheckForOldPatches(DirectoryInfo pluginFolder)
-        {
-            var oldPatchFolder = Path.Combine(pluginFolder.FullName, "patches");
-            
-            if (Directory.Exists(oldPatchFolder))
-            {
-                if (Directory.GetFiles(oldPatchFolder, "*.json", SearchOption.AllDirectories).Length > 0)
-                {
-                    EpicLoot.LogWarningForce($"***************************************************");
-                    EpicLoot.LogWarningForce($"Epic Loot Patch Folder Has Moved To:");
-                    EpicLoot.LogWarningForce($"{PatchesDirPath}");
-                    EpicLoot.LogWarningForce($"Please move your patch files. Patch files found in this folder will not be loaded");
-                    EpicLoot.LogWarningForce($"***************************************************");
-                }
             }
         }
 

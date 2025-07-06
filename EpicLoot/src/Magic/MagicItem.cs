@@ -25,10 +25,6 @@ namespace EpicLoot
         public string EffectType { get; set; }
         public float EffectValue;
 
-        public MagicItemEffect()
-        {
-        }
-
         public MagicItemEffect(string type, float value = DefaultValue)
         {
             EffectType = type;

@@ -97,6 +97,7 @@ namespace EpicLoot
         public static string AddElementalMagicSkill = nameof(AddElementalMagicSkill);
         public static string AddBloodMagicSkill = nameof(AddBloodMagicSkill);
         public static string AddMovementSkills = nameof(AddMovementSkills);
+        public static string AddCrafterSkills = nameof(AddCrafterSkills);
         public static string ModifyStaggerDuration = nameof(ModifyStaggerDuration);
         public static string QuickLearner = nameof(QuickLearner);
         public static string RecallWeapon = nameof(RecallWeapon);
@@ -135,6 +136,8 @@ namespace EpicLoot
         public static string SpellSword = nameof(SpellSword);
         public static string BulkUp = nameof(BulkUp);
         public static string EitrWeave = nameof(EitrWeave);
+        public static string DartingThoughts = nameof(DartingThoughts);
+        public static string HeadHunter = nameof(HeadHunter);
 
         public static string Bulwark = nameof(Bulwark);
         public static string Undying = nameof(Undying);
@@ -142,6 +145,7 @@ namespace EpicLoot
         public static void Initialize()
         {
             AbilityFactory.Register("Undying", typeof(UndyingAbility));
+            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
     }
 }
