@@ -84,13 +84,8 @@
       "Description": "$mod_epicloot_me_dodgebuff_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "OneHandedWeapon",
-          "TwoHandedWeapon",
-          "TwoHandedWeaponLeft",
-          "Bow",
-          "Torch",
-          "Staff",
-          "Tool"
+          "Legs",
+          "Utility"
         ]
       },
       "ValuesPerRarity": {
@@ -5323,6 +5318,58 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_executioner_suffix1"
+      ]
+    },
+    {
+      "Type": "OffSetAttack",
+      "DisplayText": "$mod_epicloot_me_offsetattack_display",
+      "Description": "$mod_epicloot_me_offsetattack_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Helmet",
+          "Shoulder",
+          "Utility",
+          "OneHandedWeapon",
+          "TwoHandedWeapon"
+        ],
+        "ExcludedItemNames": [
+          "$item_fishingrod"
+        ],
+        "ItemUsesStaminaOnAttack": true
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 150,
+          "MaxValue": 200,
+          "Increment": 5
+        },
+        "Rare": {
+          "MinValue": 200,
+          "MaxValue": 250,
+          "Increment": 5
+        },
+        "Epic": {
+          "MinValue": 250,
+          "MaxValue": 300,
+          "Increment": 5
+        },
+        "Legendary": {
+          "MinValue": 300,
+          "MaxValue": 350,
+          "Increment": 5
+        },
+        "Mythic": {
+          "MinValue": 350,
+          "MaxValue": 400,
+          "Increment": 5
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_offsetattack_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_offsetattack_suffix1"
       ]
     },
     {

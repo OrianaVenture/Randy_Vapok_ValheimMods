@@ -177,7 +177,14 @@ namespace EpicLoot
                     string DodgeBuffColor = DodgeBuff ? magicColor : "orange";
                     if (DodgeBuff)
                     {
-                        float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 0.01f) * 100;
+                        float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 1f);
+                    }
+
+                    bool OffSetAttack = magicItem.HasEffect(MagicEffectType.OffSetAttack);
+                    string OffSetAttackColor = OffSetAttack ? magicColor : "orange";
+                    if (OffSetAttack)
+                    {
+                        float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.OffSetAttack, 1f);
                     }
 
                     bool magicAttackEitr = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse) || magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
