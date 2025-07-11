@@ -1,5 +1,4 @@
-﻿using EpicLoot;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using System;
@@ -67,6 +66,7 @@ namespace EpicLoot.MagicItemEffects
                             dodgedHit)
                         {
                             player.GetSEMan().AddStatusEffect(rushHash);
+                            AudioSource.PlayClipAtPoint(EpicLoot.Assets.DoubleJumpSFX, player.transform.position);
                             Jotunn.Logger.LogInfo("Perfect Dodge detected. Adrenaline Rush applied.");
                             return;
                         }

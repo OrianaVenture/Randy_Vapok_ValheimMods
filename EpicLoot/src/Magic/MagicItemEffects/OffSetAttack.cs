@@ -70,7 +70,7 @@ namespace EpicLoot.MagicItemEffects
                         wasMeleeHit)
                     {
                         ActiveOffSetPlayers.Add(player);
-                        Debug.Log("Local Player wasMeleeHit");
+                        //Debug.Log("Local Player wasMeleeHit");
                     }
                 }
             }
@@ -81,14 +81,11 @@ namespace EpicLoot.MagicItemEffects
         {
             var attacker = __instance.m_character;
 
-            Debug.Log($"[OnAttackTrigger] Attacker: {attacker?.GetType().Name}, Name: {attacker?.name}, CainLevel: {__instance.m_currentAttackCainLevel}");
-
             if (attacker is Player player)
             {
                 if (__instance.m_currentAttackCainLevel == 2)
                 {
                     ActiveOffSetTimers[player] = Time.time + HyperArmorDuration;
-                    Debug.Log($"OffSetAttack registered for {player.GetPlayerName()}");
                 }
                 return true;
             }
@@ -117,8 +114,8 @@ namespace EpicLoot.MagicItemEffects
                         hit.m_damage.Modify(DamageReductionMultiplier); // DR
                         hit.m_pushForce = 0f; // knock back immunity
                         hit.m_staggerMultiplier = 0f; // stagger immunity
-                        Debug.Log("OffSet DR active — damage reduced by 80%.");
-                        Debug.Log($"[DR Check] __instance: {__instance.GetType().Name}, attacker: {hit.GetAttacker()?.GetType().Name}");
+                        //Debug.Log("OffSet DR active — damage reduced by 80%.");
+                        //Debug.Log($"[DR Check] __instance: {__instance.GetType().Name}, attacker: {hit.GetAttacker()?.GetType().Name}");
                     }
 
                     // Apply stagger bonus to enemies hit by a player in OffSet window
@@ -126,7 +123,7 @@ namespace EpicLoot.MagicItemEffects
                     {
                         hit.m_staggerMultiplier *= StaggerBonusMultiplier;
                         //AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, p.transform.position); I CANT GET THE EPICLOOT ASSETBUNDLE TO BUILD PROPERLY
-                        Debug.Log("OffSet stagger bonus applied.");
+                        //Debug.Log("OffSet stagger bonus applied.");
                     }
 
                     foreach (var kvp in new List<KeyValuePair<Player, float>>(ActiveOffSetTimers))

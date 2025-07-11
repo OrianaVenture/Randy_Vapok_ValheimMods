@@ -187,6 +187,27 @@ namespace EpicLoot
                         float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.OffSetAttack, 1f);
                     }
 
+                    bool ChainLightning = magicItem.HasEffect(MagicEffectType.ChainLightning);
+                    string ChainLightningColor = OffSetAttack ? magicColor : "orange";
+                    if (ChainLightning)
+                    {
+                        float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
+                    }
+
+                    bool ReducedReloadSpeed = magicItem.HasEffect(MagicEffectType.ReducedReloadSpeed);
+                    string ReducedReloadSpeedColor = ReducedReloadSpeed ? magicColor : "orange";
+                    if (ReducedReloadSpeed)
+                    {
+                        float ReducedReloadSpeedValue = magicItem.GetTotalEffectValue(MagicEffectType.ReducedReloadSpeed, 1f);
+                    }
+
+                    bool Apportation = magicItem.HasEffect(MagicEffectType.Apportation);
+                    string ApportationColor = Apportation ? magicColor : "orange";
+                    if (Apportation)
+                    {
+                        float ApportationValue = magicItem.GetTotalEffectValue(MagicEffectType.Apportation, 1f);
+                    }
+
                     bool magicAttackEitr = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse) || magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
                     bool doubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
                     string magicAttackEitrColor = magicAttackEitr ? magicColor : "orange";
