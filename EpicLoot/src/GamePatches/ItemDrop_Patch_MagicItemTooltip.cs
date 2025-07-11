@@ -191,7 +191,7 @@ namespace EpicLoot
                     string ChainLightningColor = OffSetAttack ? magicColor : "orange";
                     if (ChainLightning)
                     {
-                        float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
+                        float ChainLightningValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
                     }
 
                     bool ReducedReloadSpeed = magicItem.HasEffect(MagicEffectType.ReducedReloadSpeed);
