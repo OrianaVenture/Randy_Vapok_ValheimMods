@@ -10,6 +10,9 @@ namespace EpicLoot_UnityLib
     public interface IListElement
     {
         ItemDrop.ItemData GetItem();
+
+        public List<string> GetEffectNames();
+        string GetEnchantName();
         int GetMax();
         string GetDisplayNameSuffix();
     }
@@ -17,7 +20,11 @@ namespace EpicLoot_UnityLib
     public class InventoryItemListElement : IListElement
     {
         public ItemDrop.ItemData Item;
+        public List<Tuple<string, float>> Effects;
+        public string EnchantName;
 
+        public List<string> GetEffectNames() => Effects?.Select(x => x.Item1).ToList() ?? new List<string>();
+        public string GetEnchantName() => EnchantName ?? string.Empty;
         public ItemDrop.ItemData GetItem() => Item;
         public int GetMax() => Item?.m_stack ?? 0;
         public string GetDisplayNameSuffix() => string.Empty;
@@ -31,6 +38,7 @@ namespace EpicLoot_UnityLib
         public bool Filterable = true;
         public bool Sortable = true;
         public bool ReadOnly = false;
+        public bool UseEnchantAsName = false;
         public Transform ListContainer;
         public MultiSelectItemListElement ElementPrefab;
         public Dropdown SortByDropdown;
@@ -354,6 +362,7 @@ namespace EpicLoot_UnityLib
                 var childToSet = ListContainer.GetChild(i);
                 var itemToSet = sortedItems[i];
                 var element = childToSet.GetComponent<MultiSelectItemListElement>();
+                element.UseEnchantAsName = UseEnchantAsName;
                 element.SuppressEvents = true;
                 element.SetItem(itemToSet);
                 if (previousSelectionAmounts.TryGetValue(itemToSet, out var previousQuantity))

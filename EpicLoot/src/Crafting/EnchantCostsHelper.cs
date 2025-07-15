@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EpicLoot.CraftingV2;
 using EpicLoot_UnityLib;
 using UnityEngine;
 
@@ -100,6 +101,44 @@ namespace EpicLoot.Crafting
                 return true;
             });
 
+            return configEntry?.Cost;
+        }
+
+        public static List<ItemAmountConfig> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)
+        {
+            bool typecheck = false;
+            ItemDrop.ItemData.ItemType itemtype = ItemDrop.ItemData.ItemType.None;
+            if (item != null) {
+                itemtype = item.m_shared.m_itemType;
+            }
+            List<RuneCostConfig> cfg = new List<RuneCostConfig>();
+            switch (operation) {
+                case RuneActions.Extract:
+                    cfg = Config.RuneExtractCosts;
+                    break;
+                case RuneActions.Etch:
+                    cfg = Config.RuneEtchCosts;
+                    break;
+            }
+
+            var configEntry = cfg.Find(x => {
+                if (x.Rarity != rarity)
+                {
+                    return false;
+                }
+
+                if (x.ItemTypes?.Count > 0 && typecheck && !x.ItemTypes.Contains(itemtype.ToString()))
+                {
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (configEntry == null) {
+                EpicLoot.LogWarning($"Could not find rune cost data for {rarity} {operation}");
+                return new List<ItemAmountConfig>();
+            }
             return configEntry?.Cost;
         }
 

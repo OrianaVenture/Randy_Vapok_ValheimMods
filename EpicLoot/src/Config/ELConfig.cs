@@ -20,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
 
 namespace EpicLoot.Config
@@ -73,6 +72,8 @@ namespace EpicLoot.Config
         public static ConfigEntry<BossDropMode> _bossWishboneDropMode;
         public static ConfigEntry<float> _bossWishboneDropPlayerRange;
         public static ConfigEntry<string> BalanceConfigurationType;
+
+        public static ConfigEntry<bool> RuneExtractDestroysItem;
 
         private static CustomRPC LootTablesRPC;
         private static CustomRPC MagicEffectsRPC;
@@ -282,6 +283,9 @@ namespace EpicLoot.Config
             TransferMagicItemToCrafts = BindServerConfig("Balance", "Transfer Enchants to Crafted Items", false,
                 "When enchanted items are used as ingredients in recipes, transfer the highest enchant to the " +
                 "newly crafted item. Default: False.");
+            RuneExtractDestroysItem = BindServerConfig("Balance", "Rune Extract Destroys Item", true,
+                "When extracting a rune from an item, the item will be destroyed. If false, the item will be returned intact. " +
+                "Default: True.");
 
             // Debug
             AlwaysShowWelcomeMessage = Config.Bind("Debug", "AlwaysShowWelcomeMessage", false,
@@ -322,28 +326,28 @@ namespace EpicLoot.Config
 
         public static void InitializeConfig()
         {
-            SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize);
+            SychronizeConfig<LootConfig>("loottables.yaml", LootRoller.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, _ => SendConfig(JsonConvert.SerializeObject(LootRoller.Config)));
-            SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
+            SychronizeConfig<MagicItemEffectsList>("magiceffects.yaml", MagicItemEffectDefinitions.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(MagicEffectsRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions())));
             // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
-            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize);
+            SychronizeConfig<AdventureDataConfig>("adventuredata.yaml", AdventureDataManager.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, _ => SendConfig(JsonConvert.SerializeObject(AdventureDataManager.Config)));
-            SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize);
+            SychronizeConfig<ItemInfoConfig>("iteminfo.yaml", GatedItemTypeHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(ItemConfigRPC, _ => SendConfig(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig)));
-            SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize);
+            SychronizeConfig<RecipesConfig>("recipes.yaml", RecipesHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(RecipesRPC, _ => SendConfig(JsonConvert.SerializeObject(RecipesHelper.Config)));
-            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize);
+            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.yaml", EnchantCostsHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingCostsRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantCostsHelper.Config)));
-            SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize);
+            SychronizeConfig<ItemNameConfig>("itemnames.yaml", MagicItemNames.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(ItemNamesRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemNames.Config)));
-            SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize);
+            SychronizeConfig<LegendaryItemConfig>("legendaries.yaml", UniqueLegendaryHelper.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(LegendariesRPC, _ => SendConfig(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config)));
-            SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize);
+            SychronizeConfig<AbilityConfig>("abilities.yaml", AbilityDefinitions.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(AbilitiesRPC, _ => SendConfig(JsonConvert.SerializeObject(AbilityDefinitions.Config)));
-            SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize);
+            SychronizeConfig<MaterialConversionsConfig>("materialconversions.yaml", MaterialConversions.Initialize);
             SynchronizationManager.Instance.AddInitialSynchronization(MaterialConversionRPC, _ => SendConfig(JsonConvert.SerializeObject(MaterialConversions.Config)));
-            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
+            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.yaml", EnchantingTableUpgrades.InitializeConfig);
             SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
             SetupPatchConfigFileWatch(ELConfig.GetOverhaulDirectoryPath());
@@ -392,7 +396,8 @@ namespace EpicLoot.Config
             }
             try {
                 // Check if the file is valid
-                var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(overhaul_file_location));
+                //var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(overhaul_file_location));
+                var contents = yamldeserializer.Deserialize<T>(File.ReadAllText(overhaul_file_location));
                 setupMethod(contents);
                 return;
             } catch (Exception e) {

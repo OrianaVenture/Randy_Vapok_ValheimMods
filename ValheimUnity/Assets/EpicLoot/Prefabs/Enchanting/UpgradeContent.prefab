@@ -3293,7 +3293,7 @@ PrefabInstance:
     - target: {fileID: 1561566536239422471, guid: b66791bd7603af84882898d31160bbc7,
         type: 3}
       propertyPath: m_Name
-      value: HelheimFeature
+      value: RuneFeature
       objectReference: {fileID: 0}
     - target: {fileID: 1778177241619833274, guid: b66791bd7603af84882898d31160bbc7,
         type: 3}
@@ -3303,7 +3303,7 @@ PrefabInstance:
     - target: {fileID: 3328148136430509462, guid: b66791bd7603af84882898d31160bbc7,
         type: 3}
       propertyPath: m_Text
-      value: $mod_epicloot_helheim
+      value: $mod_epicloot_runes
       objectReference: {fileID: 0}
     - target: {fileID: 3794416941600852635, guid: b66791bd7603af84882898d31160bbc7,
         type: 3}
@@ -4599,6 +4599,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FeatureStatus
+      objectReference: {fileID: 0}
+    - target: {fileID: 927801510413932323, guid: 12225482432812d4cb93c70bbe2845a4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6002394998332728499, guid: 12225482432812d4cb93c70bbe2845a4,
         type: 3}

@@ -22,29 +22,20 @@ namespace EpicLoot_UnityLib
 
         protected override void OnSelectedItemsChanged() {}
 
-        public override void Awake()
-        {
+        public override void Awake() {
             base.Awake();
             _featureButtons.Clear();
             
-            for (var i = 0; i < ListContainer.childCount; ++ i)
-            {
-                var child = ListContainer.GetChild(i);
-                var button = child.GetComponentInChildren<MultiSelectItemListElement>();
-                if (button != null)
-                {
-                    _featureButtons.Add(button);
-                    button.OnSelectionChanged += OnButtonSelected;
-                    if (i == 0)
-                        button.SelectMaxQuantity(true);
-                }
+            foreach(var child in ListContainer.GetComponentsInChildren<MultiSelectItemListElement>(true)) {
+                _featureButtons.Add(child);
+                child.OnSelectionChanged += OnButtonSelected;
+                child.SelectMaxQuantity(true);
             }
         }
 
         public void OnEnable()
         {
-            if (EnchantingTableUI.instance.SourceTable != null)
-            {
+            if (EnchantingTableUI.instance.SourceTable != null) {
                 EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged -= Refresh;
                 EnchantingTableUI.instance.SourceTable.OnAnyFeatureLevelChanged += Refresh;
             }

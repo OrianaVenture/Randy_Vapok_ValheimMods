@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Runtime.InteropServices.ComTypes;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace EpicLoot_UnityLib
@@ -72,17 +73,10 @@ namespace EpicLoot_UnityLib
             }
         }
 
-        private void SetupTabs()
-        {
-            for (var index = 0; index < TabHandler.m_tabs.Count; index++)
-            {
-                var tabData = TabHandler.m_tabs[index];
-                tabData.m_onClick.AddListener(PlayTabSelectSFX);
-                var featureStatus = tabData.m_button.gameObject.GetComponent<FeatureStatus>();
-                if (featureStatus != null)
-                {
-                    featureStatus.Refresh();
-                }
+        private void SetupTabs() {
+            foreach(var tab in TabHandler.m_tabs) {
+                tab.m_onClick.AddListener(PlayTabSelectSFX);
+                tab.m_button.gameObject.GetComponent<FeatureStatus>()?.Refresh();
             }
 
             TabActivation(this);

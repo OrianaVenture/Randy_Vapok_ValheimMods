@@ -162,7 +162,7 @@ namespace EpicLoot
         public static void AddMagicEffectsExplainPage(TextsDialog textsDialog)
         {
             var sortedMagicEffects = MagicItemEffectDefinitions.AllDefinitions
-                .Where(x => !x.Value.Requirements.NoLootDropRoll && !x.Value.Requirements.NoAugmentRoll)
+                .Where(x => !x.Value.Requirements.NoRoll && x.Value.CanBeAugmented)
                 .Select(x => new KeyValuePair<string, string>(string.Format(Localization.instance.Localize(x.Value.DisplayText), "<b><color=yellow>X</color></b>"), Localization.instance.Localize(x.Value.Description)))
                 .OrderBy(x => x.Key);
 

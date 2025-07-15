@@ -40,7 +40,6 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="config\overhauls\balanced\abilities.yaml" />
     <Compile Include="src\*.cs" />
     <Compile Include="src\Abilities\Ability.cs" />
     <Compile Include="src\Abilities\AbilityBar.cs" />
@@ -129,6 +128,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\*.json" />
     <EmbeddedResource Include="localizations\English.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\abilities.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\adventuredata.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\enchantcosts.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\enchantingupgrades.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\iteminfo.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\itemnames.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\legendaries.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\loottables.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\magiceffects.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\materialconversions.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\recipes.json" />
+    <EmbeddedResource Include="config\overhauls\balanced\abilities.yaml" />
     <EmbeddedResource Include="config\overhauls\balanced\adventuredata.yaml" />
     <EmbeddedResource Include="config\overhauls\balanced\enchantcosts.yaml" />
     <EmbeddedResource Include="config\overhauls\balanced\enchantingupgrades.yaml" />
@@ -147,12 +158,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj">
-      <Project>{8daba031-aea4-472f-a9aa-de8b1aa69de5}</Project>
-      <Name>EpicLoot-UnityLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="..\Libs\AugaAPI.dll">
       <Link>AugaAPI.dll</Link>
     </EmbeddedResource>
@@ -164,6 +169,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="EpicLoot-UnityLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\EpicLoot-UnityLib\bin\Release\EpicLoot-UnityLib.dll</HintPath>
+    </Reference>
     <Reference Include="Jotunn, Version=2.24.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JotunnLib.2.24.3\lib\net462\Jotunn.dll</HintPath>
     </Reference>
@@ -189,15 +198,10 @@
     <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets'))" />
     <Error Condition="!Exists('..\packages\JotunnLib.2.24.3\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.24.3\build\JotunnLib.props'))" />
   </Target>
-  <Target Name="CopyToThunderstore">
-    <Message Text="Copying to Thunderstore Deployment" Importance="high" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/Thunderstore Mod Manager/DataFolder/Valheim/profiles/modtesting/BepInEx/plugins" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/com.kesomannen.gale/valheim/profiles/Modtest/BepInEx/plugins" />
-  </Target>
   <Target Name="CopyToModManagers" AfterTargets="ILRepacker">
-    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Modtest\BepInEx\plugins" />
-    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Modtesting\BepInEx\plugins" />
-    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="C:\Users\carls\AppData\Roaming\com.kesomannen.gale\valheim\profiles\Modtest\BepInEx\plugins" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\com.kesomannen.gale\valheim\profiles\Modtest\BepInEx\plugins\" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\r2modmanPlus-local\Valheim\profiles\Modtest\BepInEx\plugins\" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Modtesting\BepInEx\plugins\" />
   </Target>
   <ProjectExtensions />
 </Project>

@@ -40,7 +40,28 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="src\*.cs" />
+    <Compile Include="src\AugmentUI.cs" />
+    <Compile Include="src\ConvertUI.cs" />
+    <Compile Include="src\DisenchantUI.cs" />
+    <Compile Include="src\EnchantBonus.cs" />
+    <Compile Include="src\EnchantingTable.cs" />
+    <Compile Include="src\EnchantingTableUI.cs" />
+    <Compile Include="src\EnchantingTableUIPanelBase.cs" />
+    <Compile Include="src\EnchantingTableUpgrades.cs" />
+    <Compile Include="src\EnchantUI.cs" />
+    <Compile Include="src\FeatureStatus.cs" />
+    <Compile Include="src\FeatureStatus3D.cs" />
+    <Compile Include="src\InventoryManagement.cs" />
+    <Compile Include="src\MultiSelectItemList.cs" />
+    <Compile Include="src\MultiSelectItemListElement.cs" />
+    <Compile Include="src\MultiSelectListFocusController.cs" />
+    <Compile Include="src\PlaySoundOnChecked.cs" />
+    <Compile Include="src\RuneUI.cs" />
+    <Compile Include="src\SacrificeUI.cs" />
+    <Compile Include="src\SelectableTextColor.cs" />
+    <Compile Include="src\SetRarityColor.cs" />
+    <Compile Include="src\TableUpgradeDecorations.cs" />
+    <Compile Include="src\UpgradeTableUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

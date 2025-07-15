@@ -65,7 +65,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_itemData.m_shared.m_icons.Array.data[0]
       value: 
-      objectReference: {fileID: 21300000, guid: c99ce2ccd8292624da0032d991c4b599,
+      objectReference: {fileID: 21300000, guid: d912b4224b2e65441855b9680fadbc51,
         type: 3}
     - target: {fileID: 4812765547126240509, guid: 6576477ba955d1d498e87413b5318733,
         type: 3}

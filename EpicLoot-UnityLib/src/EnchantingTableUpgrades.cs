@@ -11,7 +11,7 @@ namespace EpicLoot_UnityLib
         Enchant,
         Augment,
         Disenchant,
-        Helheim
+        Rune
     }
 
     [Serializable]
@@ -29,7 +29,7 @@ namespace EpicLoot_UnityLib
         public List<List<ItemAmount>> Enchant;
         public List<List<ItemAmount>> Augment;
         public List<List<ItemAmount>> Disenchant;
-        public List<List<ItemAmount>> Helheim;
+        public List<List<ItemAmount>> Rune;
     }
 
     [Serializable]
@@ -40,7 +40,7 @@ namespace EpicLoot_UnityLib
         public List<float[]> Enchant;
         public List<float[]> Augment;
         public List<float[]> Disenchant;
-        public List<float[]> Helheim;
+        public List<float[]> Rune;
     }
 
     [Serializable]
@@ -79,7 +79,7 @@ namespace EpicLoot_UnityLib
                 "$mod_epicloot_enchant",
                 "$mod_epicloot_augment",
                 "$mod_epicloot_disenchant",
-                "$mod_epicloot_helheim",
+                "$mod_epicloot_runemanagement",
             };
             return featureNames[(int)feature];
         }
@@ -93,7 +93,7 @@ namespace EpicLoot_UnityLib
                 "$mod_epicloot_featureinfo_enchant",
                 "$mod_epicloot_featureinfo_augment",
                 "$mod_epicloot_featureinfo_disenchant",
-                "$mod_epicloot_featureinfo_helheim",
+                "$mod_epicloot_featureinfo_runes",
             };
             return featureDescriptions[(int)feature];
         }
@@ -108,7 +108,7 @@ namespace EpicLoot_UnityLib
                 "$mod_epicloot_featureupgrade_enchant",
                 "$mod_epicloot_featureupgrade_augment",
                 "$mod_epicloot_featureupgrade_disenchant",
-                "$mod_epicloot_featureupgrade_helheim",
+                "$mod_epicloot_featureupgrade_runes",
             };
 
             var values = table.GetFeatureValue(feature, level);
@@ -132,7 +132,7 @@ namespace EpicLoot_UnityLib
                 EnchantingFeature.Enchant => Config.UpgradeCosts.Enchant,
                 EnchantingFeature.Augment => Config.UpgradeCosts.Augment,
                 EnchantingFeature.Disenchant => Config.UpgradeCosts.Disenchant,
-                EnchantingFeature.Helheim => Config.UpgradeCosts.Helheim,
+                EnchantingFeature.Rune => Config.UpgradeCosts.Rune,
                 _ => throw new ArgumentOutOfRangeException(nameof(feature), feature, null)
             };
 

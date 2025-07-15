@@ -12,6 +12,7 @@ namespace EpicLoot_UnityLib
         public const int FeatureUnavailableSentinel = -2;
         public const int FeatureLockedSentinel = -1;
         public const int FeatureLevelOne = 1;
+        const int uninitializedSentinel = -888;
 
         public GameObject EnchantingUIPrefab;
 
@@ -170,66 +171,59 @@ namespace EpicLoot_UnityLib
             return string.Format($"el.et.v1.{featureName}");
         }
 
-        private void InitFeatureLevels()
-        {
-            const int uninitializedSentinel = -888;
-            foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
-            {
+        private void InitFeatureLevels() {
+            foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature))) {
                 var featureName = feature.ToString();
-                if (_nview.GetZDO().GetInt(FormatFeatureName(featureName), uninitializedSentinel) == uninitializedSentinel)
-                    _nview.GetZDO().Set(FormatFeatureName(featureName), GetDefaultFeatureLevel(feature)+1);
-                //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
-                //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
+                var level = _nview.GetZDO().GetInt(FormatFeatureName(featureName), uninitializedSentinel);
+                // Debug.Log($"[EpicLoot] Initialize feature {feature} check with default {level}");
+                if (level == uninitializedSentinel) {
+                    //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
+                    //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
+                    _nview.GetZDO().Set(FormatFeatureName(featureName), GetDefaultFeatureLevel(feature) + 1);
+                }
             }
         }
 
-        private static int GetDefaultFeatureLevel(EnchantingFeature feature)
-        {
-            if (!UpgradesActive(feature, out var featureActive))
-            {
-                return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
+        private static int GetDefaultFeatureLevel(EnchantingFeature feature) {
+            // If upgrades are not active, or this feature is disabled
+            if (UpgradesActive(feature, out var featureActive) == false) {
+                if (featureActive == false) { return FeatureUnavailableSentinel; } else { return FeatureLevelOne; }
             }
-
-            if (!featureActive)
-            {
-                return FeatureUnavailableSentinel;
-            }
-
-            return EnchantingTableUpgrades.Config.DefaultFeatureLevels.TryGetValue(feature, out var level) ?
-                level : FeatureUnavailableSentinel;
+            bool foundDefaultLevel = EnchantingTableUpgrades.Config.DefaultFeatureLevels.TryGetValue(feature, out var level);
+            //Debug.Log($"[EpicLoot] GetDefaultFeatureLevel for {feature} found? {foundDefaultLevel} with level {level}");
+            if (foundDefaultLevel) { return level; }
+            return FeatureUnavailableSentinel;
         }
 
-        public void Reset()
-        {
-            foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
-            {
+        public void Reset() {
+            foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature))) {
                 SetFeatureLevel(feature, GetDefaultFeatureLevel(feature));
             }
         }
 
-        public int GetFeatureLevel(EnchantingFeature feature)
-        {
-            if (_nview == null || _nview.GetZDO() == null)
-            {
+        public int GetFeatureLevel(EnchantingFeature feature) {
+            if (_nview == null || _nview.IsValid() != true) {
                 return FeatureUnavailableSentinel;
             }
 
-            if (!UpgradesActive(feature, out var featureActive))
-            {
-                return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
+            // If upgrades are not active, or this feature is disabled
+            if (UpgradesActive(feature, out var featureActive) == false) {
+                // Debug.Log($"{feature} upgrades not active");
+                if (featureActive == false) {
+                    // Debug.Log($"{feature} feature is not active");
+                    return FeatureUnavailableSentinel;
+                } else {
+                    // Debug.Log($"{feature} feature is active and upgrades not enabled.");
+                    // Upgrades not enabled so we are always at level 1
+                    return FeatureLevelOne;
+                } 
             }
-
-            if (!featureActive)
-            {
-                return FeatureUnavailableSentinel;
-            }
-
-            var featureName = feature.ToString();
-            var level = _nview.GetZDO().GetInt(FormatFeatureName(featureName), FeatureUnavailableSentinel);
             //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
             //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
             //var returncode = level == FeatureUnavailableSentinel ? FeatureUnavailableSentinel : level - 1;
-            return level == FeatureUnavailableSentinel ? FeatureUnavailableSentinel : level - 1;
+            var level = _nview.GetZDO().GetInt(FormatFeatureName(feature.ToString()), FeatureLevelOne);
+            // Debug.Log($"{feature} feature is active and upgrades enabled lvl {level -1}");
+            return level - 1;
         }
 
         public void SetFeatureLevel(EnchantingFeature feature, int level)
@@ -258,22 +252,30 @@ namespace EpicLoot_UnityLib
 
         public bool IsFeatureAvailable(EnchantingFeature feature)
         {
-            return GetFeatureLevel(feature) > FeatureUnavailableSentinel;
+            bool isfeatavailable =  GetFeatureLevel(feature) > FeatureUnavailableSentinel;
+            // Debug.Log($"[Epicloot] {feature} available? {isfeatavailable}");
+            return isfeatavailable;
         }
 
         public bool IsFeatureLocked(EnchantingFeature feature)
         {
-            return GetFeatureLevel(feature) == FeatureLockedSentinel;
+            bool featlocked = GetFeatureLevel(feature) == FeatureLockedSentinel;
+            // Debug.Log($"[Epicloot] {feature} locked? {featlocked}");
+            return featlocked;
         }
 
         public bool IsFeatureUnlocked(EnchantingFeature feature)
         {
-            return GetFeatureLevel(feature) > FeatureLockedSentinel;
+            bool featunlocked = GetFeatureLevel(feature) > FeatureLockedSentinel;
+            // Debug.Log($"[Epicloot] {feature} unlocked? {featunlocked}");
+            return featunlocked;
         }
 
         public bool IsFeatureMaxLevel(EnchantingFeature feature)
         {
-            return GetFeatureLevel(feature) == EnchantingTableUpgrades.GetFeatureMaxLevel(feature);
+            bool featmaxlvl = GetFeatureLevel(feature) == EnchantingTableUpgrades.GetFeatureMaxLevel(feature);
+            // Debug.Log($"[Epicloot] {feature} max level? {featmaxlvl}");
+            return featmaxlvl;
         }
 
         public List<InventoryItemListElement> GetFeatureUnlockCost(EnchantingFeature feature)
@@ -318,7 +320,7 @@ namespace EpicLoot_UnityLib
                 EnchantingFeature.Enchant => EnchantingTableUpgrades.Config.UpgradeValues.Enchant,
                 EnchantingFeature.Augment => EnchantingTableUpgrades.Config.UpgradeValues.Augment,
                 EnchantingFeature.Disenchant => EnchantingTableUpgrades.Config.UpgradeValues.Disenchant,
-                EnchantingFeature.Helheim => EnchantingTableUpgrades.Config.UpgradeValues.Helheim,
+                EnchantingFeature.Rune => EnchantingTableUpgrades.Config.UpgradeValues.Rune,
                 _ => throw new ArgumentOutOfRangeException(nameof(feature), feature, null)
             };
 

@@ -47,6 +47,14 @@ namespace EpicLoot.Crafting
     }
 
     [Serializable]
+    public class RuneCostConfig
+    {
+        public ItemRarity Rarity;
+        public List<string> ItemTypes = new List<string>();
+        public List<ItemAmountConfig> Cost = new List<ItemAmountConfig>();
+    }
+
+    [Serializable]
     public class EnchantingCostsConfig
     {
         public DisenchantCostsConfig DisenchantCosts = new DisenchantCostsConfig();
@@ -54,5 +62,7 @@ namespace EpicLoot.Crafting
         public List<EnchantCostConfig> EnchantCosts = new List<EnchantCostConfig>();
         public List<AugmentCostConfig> AugmentCosts = new List<AugmentCostConfig>();
         public List<ItemAmountConfig> ReAugmentCosts = new List<ItemAmountConfig>();
+        public List<RuneCostConfig> RuneExtractCosts = new List<RuneCostConfig>();
+        public List<RuneCostConfig> RuneEtchCosts = new List<RuneCostConfig>();
     }
 }

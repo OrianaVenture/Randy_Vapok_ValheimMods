@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.Emit;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,33 +51,28 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
+            // Debug.Log($"Refreshing FeatureStatus for {Feature}");
             if (EnchantingTableUI.instance == null || EnchantingTableUI.instance.SourceTable == null)
                 return;
 
-            if (!EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature))
-            {
-                if (UnlockedContainer != null)
-                    UnlockedContainer.gameObject.SetActive(false);
-                if (LockedContainer != null)
-                    LockedContainer.gameObject.SetActive(false);
+            if (EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature) == false) {
+                // Debug.Log($"{Feature} unavailable.");
+                UnlockedContainer?.gameObject.SetActive(false);
+                LockedContainer?.gameObject.SetActive(false);
                 return;
             }
 
-            if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature))
-            {
-                if (UnlockedContainer != null)
-                    UnlockedContainer.gameObject.SetActive(false);
-                if (LockedContainer != null)
-                    LockedContainer.gameObject.SetActive(true);
-            }
-            else
-            {
-                if (UnlockedContainer != null)
-                    UnlockedContainer.gameObject.SetActive(true);
-                if (LockedContainer != null)
-                    LockedContainer.gameObject.SetActive(false);
+            if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature) == true) {
+                // Debug.Log($"{Feature} locked.");
+                UnlockedContainer?.gameObject.SetActive(false);
+                LockedContainer?.gameObject.SetActive(true);
+            } else {
+                // Debug.Log($"{Feature} unlocked.");
+                UnlockedContainer?.gameObject.SetActive(true);
+                LockedContainer?.gameObject.SetActive(false);
 
                 var level = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
+                // Debug.Log($"{Feature} level {level}.");
                 if (level > Stars.Length)
                 {
                     for (var index = 0; index < Stars.Length; index++)
@@ -98,18 +94,14 @@ namespace EpicLoot_UnityLib
                         Stars[index].gameObject.SetActive(active);
                     }
 
-                    if (ManyStarsLabel != null)
-                    {
-                        ManyStarsLabel.gameObject.SetActive(false);
-                    }
+                    ManyStarsLabel?.gameObject.SetActive(false);
                 }
 
-                if (UnlockedLabel != null)
-                    UnlockedLabel.SetActive(level == 0);
+                UnlockedLabel?.SetActive(level == 0);
             }
 
-            if (Tooltip != null && UpgradesActive(Feature, out _))
-            {
+            if (Tooltip != null && UpgradesActive(Feature, out _)) {
+                // Debug.Log($"{Feature} building tooltip.");
                 Tooltip.m_topic = Localization.instance.Localize(EnchantingTableUpgrades.GetFeatureName(Feature));
 
                 var sb = new StringBuilder();

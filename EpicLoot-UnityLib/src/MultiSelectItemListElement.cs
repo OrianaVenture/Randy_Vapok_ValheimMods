@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +25,7 @@ namespace EpicLoot_UnityLib
         public bool ReadOnly;
         public bool CheckPlayerInventory;
         public bool NoMax;
+        public bool UseEnchantAsName = false;
         public AudioSource Audio;
         public AudioClip OnClickSFX;
         public GameObject GamepadFocusIndicator;
@@ -193,6 +196,7 @@ namespace EpicLoot_UnityLib
                 if (SetMagicItem != null)
                 {
                     SetMagicItem(this, _item.GetItem(), Tooltip);
+                    CheckAndSetNameToEnchantingEffects();
                 }
                 else
                 {
@@ -200,8 +204,11 @@ namespace EpicLoot_UnityLib
                         MagicBG.enabled = false;
                     if (ItemIcon != null)
                         ItemIcon.sprite = _item.GetItem().GetIcon();
-                    if (ItemName != null)
-                        ItemName.text = Localization.instance.Localize(_item.GetItem().m_shared.m_name);
+                    if (ItemName != null) {
+                        if (CheckAndSetNameToEnchantingEffects() == false) {
+                            ItemName.text = Localization.instance.Localize(_item.GetItem().m_shared.m_name);
+                        }
+                    }
 
                     if (Tooltip != null)
                     {
@@ -217,6 +224,17 @@ namespace EpicLoot_UnityLib
             if (!sameItem)
                 Deselect(true);
             RefreshGamepadFocusIndicator();
+        }
+
+        private bool CheckAndSetNameToEnchantingEffects() {
+            if (UseEnchantAsName && _item.GetEnchantName() != string.Empty) {
+                ItemName.text = _item.GetEnchantName();
+                ItemName.alignment = TextAnchor.MiddleLeft;
+                // Adjust the text box container to give it the whole width, which is normally used for quantity
+                ItemName.GetComponent<RectTransform>().offsetMax = new Vector2(y: 0f, x: -5f);
+                return true;
+            }
+            return false;
         }
 
         public void Deselect(bool noSound)

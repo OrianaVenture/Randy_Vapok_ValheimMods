@@ -1,5 +1,8 @@
 ## Version 0.12.0
 
+* Added Runestone Extraction and Etching features to the Enchanting Table.
+    * Extraction allows you to store a singular enchantment from an item into the Runestone
+    * Runestone Etching allows you to apply the enchantment from the Runestone onto an item, overwriting an existing enchantment.
 * Added the overhaul configuration system which provides access to directly editable configuration. Three configuration defaults are available as base templates:
     * `Balanced` - The new default for Epic Loot. Enchantments are powerful, but not overpowered.
     * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
@@ -8,16 +11,19 @@
     * `DartingThoughts` - Converts a portion of max eitr into eitr regen
     * `AddCrafterskills` - Increases crafting and cooking skills
     * `Headhunter` - Increases chance to drop trophies from creatures
+* Core configuration options are available again!
+    * All core configuration values are editable directly, but will revert to internal defaults if they become invalid.
 * Augmenting can no longer roll duplicates in one reroll
-* Removed the HP modifier cap from bulkup
+* bulkup - Removed the HP bonus cap and changed scaling to be less exponential
 * Re-tuned the algorithm for coinhoarder to require a much larger purse of coins to cause significant damage bonuses
 * Riches can now be configured as to what it drops and will now drop 1 of its entries per roll max instead of potentially all of them.
 * Triple shot can now be configured and has been rebalanced
 * Magic Double shot can now be configured and has been rebalanced
 * Eitrweave buffed significantly
-* Added a cap to elemental and physical resistances
+* Added a cap to elemental and physical resistances (configurable)
 * Some extremely powerful enchantments have been enabled for the Legendary config
 * Optimized woodcutting and mining enchantments
+* Removed Deer as a bounty target, all bounty targets now will try to kill you instead of run away
 
 ## Version 0.11.4
 

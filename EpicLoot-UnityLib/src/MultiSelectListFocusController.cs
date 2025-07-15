@@ -19,6 +19,7 @@ namespace EpicLoot_UnityLib
             _focusedListIndex = 0;
             for (var index = 0; index < Lists.Count; index++)
             {
+                if (Lists[index] == null) { continue; }
                 Lists[index].GiveFocus(index == _focusedListIndex, 0);
             }
             RefreshHints();

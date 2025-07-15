@@ -19,7 +19,7 @@ namespace EpicLoot_UnityLib
         public MultiSelectItemList CostList;
 
         public delegate List<InventoryItemListElement> GetAugmentableItemsDelegate();
-        public delegate List<Tuple<string, bool>> GetAugmentableEffectsDelegate(ItemDrop.ItemData item);
+        public delegate List<Tuple<string, bool>> GetAugmentableEffectsDelegate(ItemDrop.ItemData item, bool runemode);
         public delegate string GetAvailableEffectsDelegate(ItemDrop.ItemData item, int augmentIndex);
         public delegate List<InventoryItemListElement> GetAugmentCostDelegate(ItemDrop.ItemData item, int augmentIndex);
         // Returns the augment choice dialog
@@ -252,7 +252,7 @@ namespace EpicLoot_UnityLib
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             var item = entry?.Item1.GetItem();
-            var augmentableEffects = GetAugmentableEffects(item);
+            var augmentableEffects = GetAugmentableEffects(item, false);
 
             if (augmentableEffects.Count > AugmentSelectors.Count)
             {
@@ -295,7 +295,7 @@ namespace EpicLoot_UnityLib
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             var item = entry?.Item1.GetItem();
-            var augmentableEffects = GetAugmentableEffects(item);
+            var augmentableEffects = GetAugmentableEffects(item, false);
 
             for (var index = 0; index < AugmentSelectors.Count; index++)
             {

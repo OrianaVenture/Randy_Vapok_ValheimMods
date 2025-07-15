@@ -121,8 +121,12 @@ namespace EpicLoot.MagicItemEffects
         {
             var codeMatcher = new CodeMatcher(instructions);
             codeMatcher.MatchStartForward(
-                new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(Inventory), nameof(Inventory.RemoveItem)))
-                ).RemoveInstructions(1).InsertAndAdvance(
+                new CodeMatch(OpCodes.Callvirt),
+                new CodeMatch(OpCodes.Ldarg_1),
+                new CodeMatch(OpCodes.Ldind_Ref),
+                new CodeMatch(OpCodes.Ldc_I4_1),
+                new CodeMatch(OpCodes.Callvirt)
+                ).Advance(4).RemoveInstructions(1).InsertAndAdvance(
                 Transpilers.EmitDelegate(CustomRemoveItem)
                 ).ThrowIfNotMatch("Unable to ammo removal for tripleshot.");
             return codeMatcher.Instructions();

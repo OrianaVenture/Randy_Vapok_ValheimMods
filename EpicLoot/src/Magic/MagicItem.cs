@@ -78,6 +78,18 @@ namespace EpicLoot
             return tooltip.ToString();
         }
 
+        public string GetCompactTooltip() {
+            var color = GetColorString();
+            var tooltip = new StringBuilder();
+            tooltip.Append($"<color={color}>");
+            for (var index = 0; index < Effects.Count; index++) {
+                tooltip.AppendLine($"{GetEffectText(Effects[index], Rarity, true)}");
+            }
+            tooltip.Append($"</color>");
+
+            return tooltip.ToString();
+        }
+
         public Color GetColor()
         {
             if (ColorUtility.TryParseHtmlString(GetColorString(), out Color color))

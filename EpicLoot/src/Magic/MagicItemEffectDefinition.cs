@@ -11,8 +11,7 @@ namespace EpicLoot
     [Serializable]
     public class MagicItemEffectRequirements
     {
-        public bool NoLootDropRoll = false;
-        public bool NoAugmentRoll = false; // If true, this effect will not be rolled for when augmenting an item
+        public bool NoRoll = false; // If true, this effect cant be modified with a rune
         public bool ExclusiveSelf = true;
         public List<string> ExclusiveEffectTypes = new List<string>();
         public List<string> MustHaveEffectTypes = new List<string>();
@@ -104,12 +103,9 @@ namespace EpicLoot
             return !string.IsNullOrEmpty(typeName) && ExcludedItemTypes.Contains(typeName);
         }
 
-        public bool CheckRequirements([NotNull] ItemDrop.ItemData itemData, [NotNull] MagicItem magicItem, string magicEffectType = null, bool checklootroll = true, bool checkaugmentroll = false)
+        public bool CheckRequirements([NotNull] ItemDrop.ItemData itemData, [NotNull] MagicItem magicItem, string magicEffectType = null, bool checklootroll = true, bool checkaugmentroll = false, bool checkruneroll = false)
         {
-            if (checklootroll && NoLootDropRoll) {
-                return false;
-            }
-            if (checkaugmentroll && NoAugmentRoll) {
+            if (checklootroll && NoRoll) {
                 return false;
             }
 
@@ -321,6 +317,7 @@ namespace EpicLoot
         public float SelectionWeight = 1;
         public bool CanBeAugmented = true;
         public bool CanBeDisenchanted = true;
+        public bool CanBeRuned = true;
         public string Comment;
         public List<string> Prefixes = new List<string>();
         public List<string> Suffixes = new List<string>();
@@ -334,14 +331,14 @@ namespace EpicLoot
             return Requirements?.AllowedItemTypes ?? new List<string>();
         }
 
-        public bool CheckRequirements(ItemDrop.ItemData itemData, MagicItem magicItem, bool lootroll = true, bool augmentroll = false)
+        public bool CheckRequirements(ItemDrop.ItemData itemData, MagicItem magicItem, bool lootroll = true, bool augmentroll = false, bool runeroll = false)
         {
             if (Requirements == null)
             {
                 return true;
             }
 
-            return Requirements.CheckRequirements(itemData, magicItem, Type, lootroll, augmentroll);
+            return Requirements.CheckRequirements(itemData, magicItem, Type, lootroll, augmentroll, runeroll);
         }
 
         public bool HasRarityValues()
@@ -421,7 +418,7 @@ namespace EpicLoot
                         Legendary = new MagicItemEffectDefinition.ValueDef() { Increment = 4, MaxValue = 25, MinValue = 1 },
                         Mythic = new MagicItemEffectDefinition.ValueDef() { Increment = 5, MaxValue = 30, MinValue = 1 }
                     },
-                    Requirements = new MagicItemEffectRequirements() { NoLootDropRoll = true },
+                    Requirements = new MagicItemEffectRequirements() { NoRoll = true },
                     Type = type,
                 };
             }
@@ -436,7 +433,7 @@ namespace EpicLoot
         }
 
         public static List<MagicItemEffectDefinition> GetAvailableEffects(
-            ItemDrop.ItemData itemData, MagicItem magicItem, int ignoreEffectIndex = -1, bool checklootroll = true, bool checkaugment = false)
+            ItemDrop.ItemData itemData, MagicItem magicItem, int ignoreEffectIndex = -1, bool checklootroll = true, bool checkaugment = false, bool checkruneroll = false)
         {
             MagicItemEffect effect = null;
             if (ignoreEffectIndex >= 0 && ignoreEffectIndex < magicItem.Effects.Count)
@@ -445,7 +442,7 @@ namespace EpicLoot
                 magicItem.Effects.RemoveAt(ignoreEffectIndex);
             }
 
-            var results = AllDefinitions.Values.Where(x => x.CheckRequirements(itemData, magicItem, checklootroll, checkaugment) &&
+            var results = AllDefinitions.Values.Where(x => x.CheckRequirements(itemData, magicItem, checklootroll, checkaugment, checkruneroll) &&
                 !EnchantCostsHelper.EffectIsDeprecated(x)).ToList();
 
             if (effect != null)

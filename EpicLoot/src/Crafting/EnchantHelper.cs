@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using EpicLoot.CraftingV2;
+using System.Collections.Generic;
 
 namespace EpicLoot.Crafting
 {
@@ -20,6 +21,31 @@ namespace EpicLoot.Crafting
                 if (prefab == null)
                 {
                     EpicLoot.LogWarning($"Tried to add unknown item ({itemAmountConfig.Item}) to enchant cost for item ({item.m_shared.m_name})");
+                    continue;
+                }
+                costList.Add(new KeyValuePair<ItemDrop, int>(prefab, itemAmountConfig.Amount));
+            }
+
+            return costList;
+        }
+
+        public static List<KeyValuePair<ItemDrop, int>> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)
+        {
+            //EpicLoot.Log($"Looking up cost for {item} with rarity {rarity} using operation {operation}");
+            var costList = new List<KeyValuePair<ItemDrop, int>>();
+
+            var enchantCostDef = EnchantCostsHelper.GetRuneCost(item, rarity, operation);
+            if (enchantCostDef == null)
+            {
+                return costList;
+            }
+
+            foreach (var itemAmountConfig in enchantCostDef)
+            {
+                var prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item).GetComponent<ItemDrop>();
+                if (prefab == null)
+                {
+                    EpicLoot.LogWarning($"Tried to add unknown item ({itemAmountConfig.Item}) to rune cost for item ({item.m_shared.m_name})");
                     continue;
                 }
                 costList.Add(new KeyValuePair<ItemDrop, int>(prefab, itemAmountConfig.Amount));

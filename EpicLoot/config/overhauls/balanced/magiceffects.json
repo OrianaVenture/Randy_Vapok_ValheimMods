@@ -1180,7 +1180,7 @@
           "Bow",
           "Torch"
         ],
-        "ExludedItemTypes": [
+        "ExcludedItemTypes": [
           "Staff"
         ],
         "ExcludedSkillTypes": [
@@ -1246,7 +1246,7 @@
           "Bow",
           "Torch"
         ],
-        "ExludedItemTypes": [
+        "ExcludedItemTypes": [
           "Staff"
         ],
         "ExcludedSkillTypes": [
@@ -1314,7 +1314,7 @@
           "Bow",
           "Torch"
         ],
-        "ExludedItemTypes": [
+        "ExcludedItemTypes": [
           "Staff"
         ],
         "ExcludedItemNames": [

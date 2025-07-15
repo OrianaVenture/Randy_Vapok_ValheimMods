@@ -59,6 +59,7 @@ namespace EpicLoot
         public Sprite AugaSetItemSprite;
         public Sprite GenericItemBgSprite;
         public Sprite AugaItemBgSprite;
+        public Sprite EnchantmentSparkle;
         public GameObject[] MagicItemLootBeamPrefabs = new GameObject[5];
         public readonly Dictionary<string, GameObject[]> CraftingMaterialPrefabs = new Dictionary<string, GameObject[]>();
         public Sprite SmallButtonEnchantOverlay;
@@ -182,7 +183,7 @@ namespace EpicLoot
 
             HasAdventureBackpacks = ABAPI.IsLoaded();
 
-            FilePatching.LoadAndApplyAllPatches();
+            //FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
             PrintInfo();
             AddLocalizations();
@@ -423,6 +424,7 @@ namespace EpicLoot
             Assets.AugaSetItemSprite = assetBundle.LoadAsset<Sprite>("AugaSetItem");
             Assets.GenericItemBgSprite = assetBundle.LoadAsset<Sprite>("GenericItemBg");
             Assets.AugaItemBgSprite = assetBundle.LoadAsset<Sprite>("AugaItemBG");
+            Assets.EnchantmentSparkle = assetBundle.LoadAsset<Sprite>("sparkle");
             Assets.SmallButtonEnchantOverlay = assetBundle.LoadAsset<Sprite>("SmallButtonEnchantOverlay");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Magic] = assetBundle.LoadAsset<GameObject>("MagicLootBeam");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Rare] = assetBundle.LoadAsset<GameObject>("RareLootBeam");
@@ -668,7 +670,7 @@ namespace EpicLoot
         {
             EpicLoot.Log($"Attempting to load resource path: {filename}");
             foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames()) {
-                EpicLoot.Log($"resource: {embeddedResouce}");
+                //EpicLoot.Log($"resource: {embeddedResouce}");
             }
             using (var stream = typeof(EpicLoot).Assembly.GetManifestResourceStream(filename))
             {

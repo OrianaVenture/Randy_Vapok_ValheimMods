@@ -64,17 +64,17 @@ namespace EpicLoot.Patching
     {
         public static string PatchesDirPath = GetPatchesDirectoryPath();
         public static List<string> ConfigFileNames = [
-            "loottables.json",
-            "magiceffects.json",
-            "iteminfo.json",
-            "recipes.json",
-            "enchantcosts.json",
-            "itemnames.json",
-            "adventuredata.json",
-            "legendaries.json",
-            "abilities.json",
-            "materialconversions.json",
-            "enchantingupgrades.json"
+            "loottables",
+            "magiceffects",
+            "iteminfo",
+            "recipes",
+            "enchantcosts",
+            "itemnames",
+            "adventuredata",
+            "legendaries",
+            "abilities",
+            "materialconversions",
+            "enchantingupgrades"
         ];
         public static MultiValueDictionary<string, Patch> PatchesPerFile = new MultiValueDictionary<string, Patch>();
 

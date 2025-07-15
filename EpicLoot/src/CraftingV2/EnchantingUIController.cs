@@ -1,12 +1,13 @@
-﻿using System;
+﻿using EpicLoot.Config;
+using EpicLoot.Crafting;
+using EpicLoot.Data;
+using EpicLoot_UnityLib;
+using Jotunn.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using EpicLoot.Config;
-using EpicLoot.Crafting;
-using EpicLoot.Data;
-using EpicLoot_UnityLib;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -17,13 +18,19 @@ namespace EpicLoot.CraftingV2
     public enum EnchantingTabs : uint
     {
         None = 0,
-        Sacrifice = 1 << 0,
-        ConvertMaterials = 1 << 1,
-        Enchant = 1 << 2,
-        Augment = 1 << 3,
-        Disenchant = 1 << 4,
-        //Helheim = 1 << 5,
-        Upgrade = 1 << 6
+        Sacrifice = 1,
+        ConvertMaterials = 2,
+        Enchant = 3,
+        Augment = 4,
+        Disenchant = 5,
+        Rune = 6,
+        Upgrade = 999
+    }
+
+    public enum RuneActions
+    {
+        Extract,
+        Etch
     }
 
     public class EnchantingUIController : MonoBehaviour
@@ -43,8 +50,18 @@ namespace EpicLoot.CraftingV2
             EnchantUI.GetEnchantInfo = GetEnchantInfo;
             EnchantUI.GetEnchantCost = GetEnchantCost;
             EnchantUI.EnchantItem = EnchantItemAndReturnSuccessDialog;
+            RuneUI.GetRuneModifyableItems = GetRuneModifyableItems;
+            RuneUI.GetApplyableRunes = GetApplyableRunesforItem;
+            RuneUI.ExtractItemsDestroyed = GetRuneDestructionEnabled;
+            RuneUI.GetRuneExtractCost = GetRuneExtractCost;
+            RuneUI.GetRuneEtchCost = GetRuneEtchCost;
+            RuneUI.GetItemRarity = GetItemRarity;
+            RuneUI.ItemToBeRuned = BuildEnchantedRune;
+            RuneUI.RuneEnchancedItem = RuneEnhanceItemAndReturnSuccess;
+            RuneUI.GetItemEnchants = GetEnchantmentEffects;
+            RuneUI.GetSelectedEnchantmentByIndex = GetSelectedEnchantmentNameByIndex;
             AugmentUI.GetAugmentableItems = GetAugmentableItems;
-            AugmentUI.GetAugmentableEffects = GetAugmentableEffects;
+            AugmentUI.GetAugmentableEffects = GetEnchantmentEffects;
             AugmentUI.GetAvailableEffects = GetAvailableAugmentEffects;
             AugmentUI.GetAugmentCost = GetAugmentCost;
             AugmentUI.AugmentItem = AugmentItem;
@@ -58,8 +75,6 @@ namespace EpicLoot.CraftingV2
 
         private static bool UpgradesActive(EnchantingFeature feature, out bool featureActive)
         {
-            featureActive = false;
-
             var tabEnum = EnchantingTabs.None;
 
             switch (feature)
@@ -79,10 +94,13 @@ namespace EpicLoot.CraftingV2
                 case EnchantingFeature.Sacrifice:
                     tabEnum = EnchantingTabs.Sacrifice;
                     break;
+                case EnchantingFeature.Rune:
+                    tabEnum = EnchantingTabs.Rune;
+                    break;
             }
 
             featureActive = (tabEnum & ELConfig.EnchantingTableActivatedTabs.Value) != 0;
-
+            // EpicLoot.Log($"Checking {feature} is active? {featureActive}");
             return ELConfig.EnchantingTableUpgradesActive.Value;
         }
 
@@ -91,11 +109,11 @@ namespace EpicLoot.CraftingV2
             if (ui == null || ui.TabHandler == null)
                 return;
 
-            for (int i = 0; i < ui.TabHandler.transform.childCount; i++)
-            {
+            for (int i = 0; i < ui.TabHandler.transform.childCount; i++) {
                 var tabGo = ui.TabHandler.transform.GetChild(i).gameObject;
-                var tabBitwise = 1 << i;
-                switch ((EnchantingTabs)tabBitwise)
+                Enum.TryParse(tabGo.name, out EnchantingTabs selectTab);
+                // EpicLoot.Log($"Tab Activating {tabGo.name} tab: {selectTab} is active {(ELConfig.EnchantingTableActivatedTabs.Value & selectTab) != 0}");
+                switch (selectTab)
                 {
                     case EnchantingTabs.Upgrade:
                         tabGo.SetActive(ELConfig.EnchantingTableUpgradesActive.Value);
@@ -103,7 +121,7 @@ namespace EpicLoot.CraftingV2
                     case EnchantingTabs.None:
                         break;
                     default:
-                        tabGo.SetActive((ELConfig.EnchantingTableActivatedTabs.Value & (EnchantingTabs)tabBitwise) != 0);
+                        tabGo.SetActive((ELConfig.EnchantingTableActivatedTabs.Value & selectTab) != 0);
                         break;
                 }
             }
@@ -111,12 +129,11 @@ namespace EpicLoot.CraftingV2
 
         private static void MakeFeatureUnlockTooltip(GameObject obj)
         {
+            // EpicLoot.Log($"Setting up tooltip for {obj.name}");
             if (EpicLoot.HasAuga)
             {
                 Auga.API.Tooltip_MakeSimpleTooltip(obj);
-            }
-            else
-            {
+            } else {
                 var uiTooltip = obj.GetComponent<UITooltip>();
                 uiTooltip.m_tooltipPrefab = InventoryGui.instance.m_playerGrid.m_elementPrefab
                     .GetComponent<UITooltip>().m_tooltipPrefab;
@@ -505,12 +522,193 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetAugmentableItems()
         {
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => item.CanBeAugmented())
+                .Where(item => item.CanBeAugmented() && item.IsRunestone() == false)
                 .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
         }
 
-        private static List<Tuple<string, bool>> GetAugmentableEffects(ItemDrop.ItemData item)
+        private static MagicRarityUnity GetItemRarity(ItemDrop.ItemData item)
+        {
+           ItemRarity rarity = item.GetRarity();
+            return (MagicRarityUnity)rarity;
+        }
+
+        private static List<InventoryItemListElement> GetRuneModifyableItems()
+        {
+            return InventoryManagement.Instance.GetAllItems()
+                .Where(item => item.IsMagic() && item.IsRunestone() == false)
+                .Select(item => new InventoryItemListElement() { Item = item })
+                .ToList();
+        }
+
+        private static List<InventoryItemListElement> GetApplyableRunesforItem(ItemDrop.ItemData item, string selected_effect)
+        {
+            var magicitem = item.GetMagicItem();
+            var rarity = magicitem.Rarity;
+            var selected_enchant = magicitem.GetEffects(selected_effect);
+            int selected_enchant_index = magicitem.Effects.FindIndex(x => x.EffectType == selected_effect);
+
+            // Determine if the effect has values
+            EpicLoot.Log($"ME effects: {string.Join(",",magicitem.Effects.Select(e => e.EffectType).ToList())}, selected effect filter {selected_effect}");
+
+            // Guard clause against not having any target effects selected
+            if (selected_enchant.Count == 0) { return new List<InventoryItemListElement>() { }; }
+
+            var valuelessEffect = false;
+            if (magicitem.Effects.Count > 0 && selected_effect != "")
+            {
+                var currentEffectDef = MagicItemEffectDefinitions.Get(selected_enchant.First().EffectType);
+                valuelessEffect = currentEffectDef.GetValuesForRarity(rarity) == null;
+            }
+
+            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
+                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : selected_enchant_index, checkruneroll: true);
+            var availableEffectNames = availableEffects.Select(x => x.Type).ToList();
+
+            var selectedItems = InventoryManagement.Instance.GetAllItems()
+                .Where(item => item.IsMagic() && item.IsRunestone() && item.GetMagicItem().Effects.Any(e => availableEffectNames.Contains(e.EffectType)));
+
+            List<InventoryItemListElement> returnList = new List<InventoryItemListElement>();
+            foreach(var entry in selectedItems)
+            {
+                returnList.Add(new InventoryItemListElement()
+                {
+                    Item = entry,
+                    Effects = entry.GetMagicItem().Effects.Select(c => new Tuple<string, float>(c.EffectType, c.EffectValue)).ToList(),
+                    EnchantName = entry.GetMagicItem().GetCompactTooltip()
+                });
+            }
+            
+            foreach (var entry in returnList) {
+                EpicLoot.Log($"Rune item {entry.Item.GetDecoratedName()} has effects: {string.Join(",", entry.Effects.Select(e => e.Item1))}");
+            }
+
+            return returnList;
+        }
+
+        private static List<InventoryItemListElement> GetRuneExtractCost(ItemDrop.ItemData item, MagicRarityUnity _rarity)
+        {
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Extract).Select(entry =>
+            {
+                var itemData = entry.Key.m_itemData.Clone();
+                itemData.m_dropPrefab = entry.Key.gameObject;
+                itemData.m_stack = entry.Value;
+                return new InventoryItemListElement() { Item = itemData };
+            }).ToList();
+        }
+
+        private static List<InventoryItemListElement> GetRuneEtchCost(ItemDrop.ItemData item, MagicRarityUnity _rarity)
+        {
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Etch).Select(entry =>
+            {
+                var itemData = entry.Key.m_itemData.Clone();
+                itemData.m_dropPrefab = entry.Key.gameObject;
+                itemData.m_stack = entry.Value;
+                return new InventoryItemListElement() { Item = itemData };
+            }).ToList();
+        }
+
+        private static ItemDrop.ItemData BuildEnchantedRune(ItemDrop.ItemData selectedItem, int targetEnchant) {
+            MagicItemEffect meffect = selectedItem.GetMagicItem().Effects[targetEnchant];
+            string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
+            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) to return");
+            ItemDrop basedata =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
+            ItemDrop.ItemData newitem = basedata.m_itemData.Clone();
+            MagicItemComponent magicItemComponent = newitem.Data().GetOrCreate<MagicItemComponent>();
+            MagicItem enchantmentsToRune = new MagicItem {
+                Rarity = selectedItem.GetRarity(),
+                Effects = new List<MagicItemEffect> { meffect }
+            };
+            magicItemComponent.SetMagicItem(enchantmentsToRune);
+            return newitem;
+        }
+
+        private static string GetSelectedEnchantmentNameByIndex(ItemDrop.ItemData selectedItem, int targetEnchant)
+        {
+            if (targetEnchant > selectedItem.GetMagicItem().Effects.Count) {
+                EpicLoot.LogWarning($"Tried to get enchantment {targetEnchant} from item with only {selectedItem.GetMagicItem().Effects.Count} effects");
+                return "invalid";
+            }
+
+            return selectedItem.GetMagicItem().Effects[targetEnchant].EffectType;
+        }
+
+        private static bool GetRuneDestructionEnabled()
+        {
+            return ELConfig.RuneExtractDestroysItem.Value;
+        }
+
+        private static GameObject RuneEnhanceItemAndReturnSuccess(ItemDrop.ItemData item, ItemDrop.ItemData rune, int enchantment)
+        {
+            List<MagicItemEffect> runeeffects = rune.GetMagicItem().Effects;
+
+            if (runeeffects.Count > 1)
+            {
+                foreach(var effect in runeeffects) {
+                    // Replace the target enchantment
+                    if (runeeffects.IndexOf(effect) == 0) { 
+                        item.GetMagicItem().Effects[enchantment] = effect;
+                        continue;
+                    }
+                    // Skip or replace existing effects with the same effect type
+                    if (item.GetMagicItem().Effects.Any(x => x.EffectType == effect.EffectType)) {
+                        // If the item already has this effect, but with a lower value, replace it
+                        if (item.GetMagicItem().Effects.Any(x => x.EffectValue < effect.EffectValue)) {
+                            int index_of_effect = item.GetMagicItem().Effects.FindIndex(x => x.EffectType == effect.EffectType);
+                            item.GetMagicItem().Effects[index_of_effect] = effect;
+                        }
+                        // If the item already has this effect, skip it
+                        continue;
+                    }
+                    // Add additional effects
+                    item.GetMagicItem().Effects.Add(effect);
+                }
+            } else {
+                item.GetMagicItem().Effects[enchantment] = rune.GetMagicItem().Effects[0];
+            }
+
+            CraftSuccessDialog successDialog;
+            if (EpicLoot.HasAuga)
+            {
+                var resultsPanel = Auga.API.Workbench_CreateNewResultsPanel();
+                resultsPanel.transform.SetParent(EnchantingTableUI.instance.transform);
+                resultsPanel.SetActive(false);
+                successDialog = resultsPanel.gameObject.AddComponent<CraftSuccessDialog>();
+                successDialog.NameText = successDialog.transform.Find("Topic").GetComponent<TMP_Text>();
+            }
+            else
+            {
+                successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
+            }
+
+            successDialog.Show(item.Extended());
+
+            var rt = (RectTransform)successDialog.transform;
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = new Vector2(0, 0);
+
+            if (!EpicLoot.HasAuga)
+            {
+                var frame = successDialog.transform.Find("Frame");
+                if (frame != null)
+                {
+                    var frameRT = (RectTransform)frame;
+                    frameRT.pivot = new Vector2(0.5f, 0.5f);
+                    frameRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    frameRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    frameRT.anchoredPosition = new Vector2(0, 0);
+                }
+            }
+
+            Game.instance.GetPlayerProfile().m_playerStats.m_stats[PlayerStatType.Crafts]++;
+            Gogan.LogEvent("Game", "RuneEnhanced", item.m_shared.m_name, 1);
+
+            return successDialog.gameObject;
+        }
+
+        private static List<Tuple<string, bool>> GetEnchantmentEffects(ItemDrop.ItemData item, bool runecheck = false)
         {
             var result = new List<Tuple<string, bool>>();
 
@@ -525,6 +723,7 @@ namespace EpicLoot.CraftingV2
                     var augmentableEffect = augmentableEffects[index];
                     var effectDef = MagicItemEffectDefinitions.Get(augmentableEffect.EffectType);
                     var canAugment = effectDef != null && effectDef.CanBeAugmented;
+                    if (runecheck) { canAugment = effectDef != null && effectDef.CanBeRuned; }
 
                     var text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
                     var color = EpicLoot.GetRarityColor(rarity);
