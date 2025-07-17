@@ -66,7 +66,7 @@ namespace EpicLoot.MagicItemEffects
                             dodgedHit)
                         {
                             player.GetSEMan().AddStatusEffect(rushHash);
-                            AudioSource.PlayClipAtPoint(EpicLoot.Assets.DoubleJumpSFX, player.transform.position);
+                            AudioSource.PlayClipAtPoint(EpicLoot.Assets.EvasionBuffSFX, player.transform.position);
                             Jotunn.Logger.LogInfo("Perfect Dodge detected. Adrenaline Rush applied.");
                             return;
                         }

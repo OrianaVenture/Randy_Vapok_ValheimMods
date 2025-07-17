@@ -114,17 +114,18 @@ namespace EpicLoot.MagicItemEffects
                         hit.m_damage.Modify(DamageReductionMultiplier); // DR
                         hit.m_pushForce = 0f; // knock back immunity
                         hit.m_staggerMultiplier = 0f; // stagger immunity
+                        AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, player.transform.position);
                         //Debug.Log("OffSet DR active — damage reduced by 80%.");
                         //Debug.Log($"[DR Check] __instance: {__instance.GetType().Name}, attacker: {hit.GetAttacker()?.GetType().Name}");
                     }
 
                     // Apply stagger bonus to enemies hit by a player in OffSet window
-                    if (attacker is Player p && (ActiveOffSetPlayers.Contains(p)) && ActiveOffSetTimers.TryGetValue(p, out float pEndTime) && now <= pEndTime && __instance != p)
-                    {
-                        hit.m_staggerMultiplier *= StaggerBonusMultiplier;
-                        //AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, p.transform.position); I CANT GET THE EPICLOOT ASSETBUNDLE TO BUILD PROPERLY
-                        //Debug.Log("OffSet stagger bonus applied.");
-                    }
+                    //if (attacker is Player p && (ActiveOffSetPlayers.Contains(p)) && ActiveOffSetTimers.TryGetValue(p, out float pEndTime) && now <= pEndTime && __instance != p)
+                    //{
+                    //    hit.m_staggerMultiplier *= StaggerBonusMultiplier;
+                    //    //AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, p.transform.position); I CANT GET THE EPICLOOT ASSETBUNDLE TO BUILD PROPERLY
+                    //    //Debug.Log("OffSet stagger bonus applied.");
+                    //}
 
                     foreach (var kvp in new List<KeyValuePair<Player, float>>(ActiveOffSetTimers))
                     {

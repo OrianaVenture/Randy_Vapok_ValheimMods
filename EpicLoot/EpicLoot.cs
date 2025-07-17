@@ -70,6 +70,8 @@ namespace EpicLoot
         public Sprite MapIconBounty;
         public AudioClip AbandonBountySFX;
         public AudioClip DoubleJumpSFX;
+        public AudioClip EvasionBuffSFX;
+        public AudioClip OffSetSFX;
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
@@ -447,6 +449,8 @@ namespace EpicLoot
             Assets.MapIconBounty = assetBundle.LoadAsset<Sprite>("MapIconBounty");
             Assets.AbandonBountySFX = assetBundle.LoadAsset<AudioClip>("AbandonBounty");
             Assets.DoubleJumpSFX = assetBundle.LoadAsset<AudioClip>("DoubleJump");
+            Assets.EvasionBuffSFX = assetBundle.LoadAsset<AudioClip>("evasionbuff");
+            Assets.OffSetSFX = assetBundle.LoadAsset<AudioClip>("offset");
             Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
@@ -653,6 +657,9 @@ namespace EpicLoot
             ObjectDB.instance.m_StatusEffects.Add(paralyzed);
 
             new StatusEffects_Utils_DodgeBuff().CreateMyStatusEffect();
+            ItemManager.OnItemsRegistered -= SetupStatusEffects;
+
+            new StatusUtils().CreateMyStatusEffect();
             ItemManager.OnItemsRegistered -= SetupStatusEffects;
         }
 
