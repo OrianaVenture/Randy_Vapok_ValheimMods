@@ -166,6 +166,11 @@ namespace EpicLoot
             return magicData != null && magicData.MagicItem != null;
         }
 
+        public static bool IsUnidentified(this ItemDrop.ItemData itemData)
+        {
+            return itemData.Data().Get<MagicItemComponent>()?.MagicItem?.IsUnidentified ?? false;
+        }
+
         public static bool IsMagic(this ItemDrop.ItemData itemData, out MagicItem magicItem)
         {
             magicItem = itemData.GetMagicItem();

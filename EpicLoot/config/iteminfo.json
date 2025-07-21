@@ -4,7 +4,7 @@
             "Type": "Swords",
             "Fallback": "Knives",
             "ItemFallback": "AxeStone",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -20,7 +20,7 @@
             "Type": "Axes",
             "Fallback": "Swords",
             "ItemFallback": "AxeStone",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "AxeStone", "AxeFlint" ],
@@ -36,7 +36,7 @@
             "Type": "TwoHandAxes",
             "Fallback": "Sledges",
             "ItemFallback": "Club",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -52,7 +52,7 @@
             "Type": "Knives",
             "Fallback": "Fists",
             "ItemFallback": "AxeStone",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "KnifeFlint" ],
@@ -68,7 +68,7 @@
             "Type": "Fists",
             "Fallback": "Clubs",
             "ItemFallback": "Club",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -84,7 +84,7 @@
             "Type": "Staffs",
             "Fallback": "Bows",
             "ItemFallback": "Bow",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -100,7 +100,7 @@
             "Type": "Clubs",
             "Fallback": "Staffs",
             "ItemFallback": "Club",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "Club" ],
@@ -116,7 +116,7 @@
             "Type": "Sledges",
             "Fallback": "Polearms",
             "ItemFallback": "Club",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "SledgeStagbreaker" ],
@@ -132,7 +132,7 @@
             "Type": "Polearms",
             "Fallback": "Pickaxes",
             "ItemFallback": "Club",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -148,7 +148,7 @@
             "Type": "Spears",
             "Fallback": "TwoHandAxes",
             "ItemFallback": "Bow",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "SpearFlint" ],
@@ -164,7 +164,7 @@
             "Type": "Pickaxes",
             "Fallback": "Axes",
             "ItemFallback": "AxeStone",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "PickaxeAntler" ],
@@ -180,7 +180,7 @@
             "Type": "Bows",
             "Fallback": "Spears",
             "ItemFallback": "Bow",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "Bow" ],
@@ -196,7 +196,7 @@
             "Type": "Bucklers",
             "Fallback": "TowerShields",
             "ItemFallback": "ShieldWood",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
@@ -212,7 +212,7 @@
             "Type": "RoundShields",
             "Fallback": "Bucklers",
             "ItemFallback": "ShieldWood",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "ShieldWood" ],
@@ -228,7 +228,7 @@
             "Type": "TowerShields",
             "Fallback": "RoundShields",
             "ItemFallback": "ShieldWoodTower",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "ShieldWoodTower" ],
@@ -244,7 +244,7 @@
             "Type": "ChestArmor",
             "Fallback": "LegsArmor",
             "ItemFallback": "ArmorRagsChest",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [ "ArmorRagsChest" ],
                 "defeated_eikthyr": [ "ArmorLeatherChest" ],
@@ -260,7 +260,7 @@
             "Type": "LegsArmor",
             "Fallback": "ShouldersArmor",
             "ItemFallback": "ArmorRagsLegs",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [ "ArmorRagsLegs" ],
                 "defeated_eikthyr": [ "ArmorLeatherLegs" ],
@@ -276,7 +276,7 @@
             "Type": "HeadArmor",
             "Fallback": "ChestArmor",
             "ItemFallback": "ArmorRagsLegs",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "HelmetLeather" ],
@@ -292,7 +292,7 @@
             "Type": "ShouldersArmor",
             "Fallback": "Utility",
             "ItemFallback": "ArmorRagsChest",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "CapeDeerHide" ],
@@ -308,7 +308,7 @@
             "Type": "Torches",
             "Fallback": "Clubs",
             "ItemFallback": "Torch",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "Torch" ],
@@ -324,7 +324,7 @@
             "Type": "Tools",
             "Fallback": "Axes",
             "ItemFallback": "Hammer",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "Hammer", "Hoe" ],
@@ -340,7 +340,7 @@
             "Type": "Utility",
             "Fallback": "HeadArmor",
             "ItemFallback": "Hoe",
-            "Items": [],
+            "IgnoredItems": [],
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],

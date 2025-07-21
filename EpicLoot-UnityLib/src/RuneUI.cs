@@ -82,6 +82,7 @@ namespace EpicLoot_UnityLib
             RuneExtractButton.isOn = true;
             var items = GetRuneModifyableItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
+            AvailableItems.DeselectAll();
         }
 
         public override void Update()
@@ -321,9 +322,7 @@ namespace EpicLoot_UnityLib
                 var player = Player.m_localPlayer;
                 if (!player.NoCostCheat())
                 {
-                    if (!LocalPlayerCanAffordCost(cost))
-                    {
-                        Debug.LogError("[Enchant Item] ERROR: Tried to enchant item but could not afford the cost. This should not happen!");
+                    if (!LocalPlayerCanAffordCost(cost)) {
                         return;
                     }
 

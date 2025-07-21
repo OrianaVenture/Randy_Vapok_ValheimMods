@@ -1,5 +1,9 @@
 ## Version 0.12.0
 
+* Added Unidentified items
+    * Unidentified items are a new item type that can be dropped as normal loot
+    * Unidentified items must be identified at the Enchanting Table before they can be used
+    * Unidentified items can be sacrificed for their tier materials
 * Added Runestone Extraction and Etching features to the Enchanting Table.
     * Extraction allows you to store a singular enchantment from an item into the Runestone
     * Runestone Etching allows you to apply the enchantment from the Runestone onto an item, overwriting an existing enchantment.
@@ -14,6 +18,8 @@
 * Core configuration options are available again!
     * All core configuration values are editable directly, but will revert to internal defaults if they become invalid.
 * Augmenting can no longer roll duplicates in one reroll
+* Improved randomization of item drops by type and tier
+* Sacrifice items now allows multiple items to be selected at once
 * bulkup - Removed the HP bonus cap and changed scaling to be less exponential
 * Re-tuned the algorithm for coinhoarder to require a much larger purse of coins to cause significant damage bonuses
 * Riches can now be configured as to what it drops and will now drop 1 of its entries per roll max instead of potentially all of them.

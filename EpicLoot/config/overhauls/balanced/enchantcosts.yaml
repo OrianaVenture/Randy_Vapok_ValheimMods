@@ -337,6 +337,61 @@ DisenchantProducts:
         Amount: 1
       - Item: ReagentMythic
         Amount: 1
+  - IsMagic: true
+    ItemNames:
+      - $mod_epicloot_unidentified
+    Rarity: Magic
+    Products:
+      - Item: DustMagic
+        Amount: 1
+      - Item: ReagentMagic
+        Amount: 1
+      - Item: EssenceMagic
+        Amount: 1
+  - IsMagic: true
+    ItemNames:
+      - $mod_epicloot_unidentified
+    Rarity: Rare
+    Products:
+      - Item: DustRare
+        Amount: 1
+      - Item: ReagentRare
+        Amount: 1
+      - Item: EssenceRare
+        Amount: 1
+  - IsMagic: true
+    ItemNames:
+      - $mod_epicloot_unidentified
+    Rarity: Epic
+    Products:
+      - Item: DustEpic
+        Amount: 1
+      - Item: ReagentEpic
+        Amount: 1
+      - Item: EssenceEpic
+        Amount: 1
+  - IsMagic: true
+    ItemNames:
+      - $mod_epicloot_unidentified
+    Rarity: Legendary
+    Products:
+      - Item: DustLegendary
+        Amount: 1
+      - Item: ReagentLegendary
+        Amount: 1
+      - Item: EssenceLegendary
+        Amount: 1
+  - IsMagic: true
+    ItemNames:
+      - $mod_epicloot_unidentified
+    Rarity: Mythic
+    Products:
+      - Item: DustMythic
+        Amount: 1
+      - Item: ReagentMythic
+        Amount: 1
+      - Item: EssenceMythic
+        Amount: 1
 EnchantCosts:
   - ItemTypes:
       - OneHandedWeapon
@@ -844,3 +899,179 @@ RuneEtchCosts:
         Amount: 10
       - Item: MoltenCore
         Amount: 1
+IdentifyCosts:
+  - Rarity: Magic
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  - Rarity: Rare
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  - Rarity: Epic
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  - Rarity: Legendary
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  - Rarity: Mythic
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10

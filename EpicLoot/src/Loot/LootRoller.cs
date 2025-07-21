@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BepInEx;
+﻿using BepInEx;
 using Common;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
@@ -12,7 +8,16 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
+using Jotunn.Configs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static ItemDrop;
+using static ItemDrop.ItemData;
+using static UnityEngine.EventSystems.EventTrigger;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -20,6 +25,24 @@ namespace EpicLoot
 {
     public static class LootRoller
     {
+        public enum LootRollCategories
+        {
+            random,
+            weapon,
+            armor,
+            ranged,
+            melee,
+            magic,
+            accessory
+        }
+
+        static readonly List<string> weaponsCategories = new List<string>() { "Swords", "Axes", "TwoHandAxes", "Knives", "Fists", "Staffs", "Clubs", "Sledges", "Polearms", "Spears", "Bows" };
+        static readonly List<string> armorCategories = new List<string>() { "ChestArmor", "LegsArmor", "HeadArmor", "ShouldersArmor", "TowerShields", "RoundShields", "Bucklers" };
+        static readonly List<string> rangedCategories = new List<string>() { "Bows" };
+        static readonly List<string> meleeCategories = new List<string>() { "Swords", "Axes", "TwoHandAxes", "Knives", "Fists", "Staffs", "Clubs", "Sledges", "Polearms", "Spears" };
+        static readonly List<string> magicCategories = new List<string>() { "Staffs" };
+        static readonly List<string> accessoryCategories = new List<string>() { "Utility" };
+
         public static LootConfig Config;
         public static readonly Dictionary<string, LootItemSet> ItemSets = new Dictionary<string, LootItemSet>();
         public static readonly Dictionary<string, List<LootTable>> LootTables = new Dictionary<string, List<LootTable>>();
@@ -194,6 +217,130 @@ namespace EpicLoot
                 CheatEffectCount > 0;
         }
 
+        public static List<ItemDrop.ItemData> RollLootNoTableWithSpecifics(Vector3 location, float ItemFromCurrentBiome = 0.75f, LootRollCategories itemtype = LootRollCategories.random, int numResults = 1, ItemRarity rarity = ItemRarity.Magic, bool luck = true) {
+            var luckFactor = GetLuckFactor(location);
+
+            List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
+            HashSet<string> rolledItems = new HashSet<string>();
+
+            while (results.Count < numResults) {
+                string itemTypeToRoll = "Axes";
+                var itemRollRarity = rarity;
+
+                switch (itemtype) {
+                    case LootRollCategories.random:
+                        var rndlist = GatedItemTypeHelper.ItemsByTypeAndBoss.Keys.ToList();
+                        int selected = Random.Range(0, (rndlist.Count - 1));
+                        itemTypeToRoll = rndlist[selected];
+                        break;
+                    case LootRollCategories.weapon:
+                        itemTypeToRoll = weaponsCategories[Random.Range(0, weaponsCategories.Count - 1)];
+                        break;
+                    case LootRollCategories.armor:
+                        itemTypeToRoll = armorCategories[Random.Range(0, armorCategories.Count - 1)];
+                        break;
+                    case LootRollCategories.melee:
+                        itemTypeToRoll = meleeCategories[Random.Range(0, meleeCategories.Count - 1)];
+                        break;
+                    case LootRollCategories.magic:
+                        itemTypeToRoll = magicCategories[Random.Range(0, magicCategories.Count - 1)];
+                        break;
+                    case LootRollCategories.ranged:
+                        itemTypeToRoll = rangedCategories[Random.Range(0, rangedCategories.Count - 1)];
+                        break;
+                    case LootRollCategories.accessory:
+                        itemTypeToRoll = accessoryCategories[Random.Range(0, accessoryCategories.Count - 1)];
+                        break;
+                }
+
+                if (luck == true) {
+                    var lootdrop = new LootDrop() { Rarity = [] };
+                    // TODO: Expose this as a config?
+                    switch (rarity) {
+                        case ItemRarity.Magic:
+                            lootdrop.Rarity = [99, 1, 0, 0, 0];
+                            break;
+                        case ItemRarity.Rare:
+                            lootdrop.Rarity = [0, 98, 2, 0, 0];
+                            break;
+                        case ItemRarity.Epic:
+                            lootdrop.Rarity = [0, 0, 97, 3, 0];
+                            break;
+                        case ItemRarity.Legendary:
+                            lootdrop.Rarity = [0, 0, 0, 97, 3];
+                            break;
+                        case ItemRarity.Mythic:
+                            lootdrop.Rarity = [0, 0, 0, 0, 100];
+                            break;
+                    }
+                    itemRollRarity = RollItemRarity(lootdrop, luckFactor);
+                }
+
+
+                var gatingMode = EpicLoot.GetGatedItemTypeMode();
+                if (gatingMode == GatedItemTypeMode.Unlimited) {
+                    gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
+                }
+
+                List<string> validBosses = GatedItemTypeHelper.DetermineValidBosses(gatingMode, false);
+                List<string> selectedBosses = new List<string>();
+                if (validBosses.Count > 1) {
+                    if (Random.value > ItemFromCurrentBiome) {
+                        selectedBosses.AddRange(validBosses.GetRange(0, Random.Range(1, validBosses.Count()-1)));
+                    } else {
+                        selectedBosses.Add(validBosses.First());
+                    }
+                }
+
+                var itemId = GatedItemTypeHelper.GetGatedItemFromType(itemTypeToRoll, gatingMode, rolledItems, selectedBosses, true, false, false);
+                if (itemId == null) { 
+                    continue;
+                }
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(itemId);
+                var clone = Object.Instantiate(prefab, location, new Quaternion(0, 0, 0, 0));
+                clone.SetActive(false); // Don't make the object a real thing in the world yet
+                var itemDrop = clone.GetComponent<ItemDrop>();
+                var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                if (clone == null) { continue; }
+                var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor);
+
+                if (CheatForceMagicEffect) {
+                    AddDebugMagicEffects(magicItem);
+                }
+
+                magicItemComponent.SetMagicItem(magicItem);
+                itemDrop.Save();
+                InitializeMagicItem(itemDrop.m_itemData);
+                results.Add(itemDrop.m_itemData);
+                
+            }
+
+            return results;
+        }
+
+        public static List<string> GetLootCategoryList(LootRollCategories selected_category)
+        {
+            switch (selected_category)
+            {
+                case LootRollCategories.random:
+                    return GatedItemTypeHelper.ItemsByTypeAndBoss.Keys.ToList();
+                case LootRollCategories.weapon:
+                    return weaponsCategories;
+                case LootRollCategories.armor:
+                    return armorCategories;
+                case LootRollCategories.melee:
+                    return meleeCategories;
+                case LootRollCategories.magic:
+                    return magicCategories;
+                case LootRollCategories.ranged:
+                    return rangedCategories;
+                case LootRollCategories.accessory:
+                    return accessoryCategories;
+            }
+            // fallthrough is random
+            return GatedItemTypeHelper.ItemsByTypeAndBoss.Keys.ToList();
+        }
+
         private static List<GameObject> RollLootTableInternal(LootTable lootTable,
             int level, string objectName, Vector3 dropPoint, bool initializeObject)
         {
@@ -266,6 +413,7 @@ namespace EpicLoot
                 EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
             }
 
+
             var cheatsActive = AnyItemSpawnCheatsActive();
             foreach (var ld in selectedDrops)
             {
@@ -279,6 +427,26 @@ namespace EpicLoot
                 var itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
                 var rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                 EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
+
+                // Set the drop as an unidentified item of the selected rarity
+                if (ELConfig.ItemsUnidentifiedDropRatio.Value > 0) {
+                    
+                    var clampedUnidentifiedRate = Mathf.Clamp(ELConfig.ItemsUnidentifiedDropRatio.Value, 0.0f, 1.0f);
+                    var setUnidentified = Random.Range(0.0f, 1.0f) < clampedUnidentifiedRate;
+                    EpicLoot.Log($"Checking if item should be unidentified for {lootDrop.Item} ({clampedUnidentifiedRate} {setUnidentified})");
+                    if (setUnidentified) {
+                        var rarity = RollItemRarity(lootDrop, luckFactor);
+                        GameObject prefab = ObjectDB.instance.GetItemPrefab($"Unidentified{rarity}");
+                        if (prefab == null) {
+                            EpicLoot.LogWarning($"Tried to spawn unidentified item for {lootDrop.Item} but prefab was not found!");
+                            continue;
+                        }
+                        EpicLoot.Log($"Adding {rarity} unidentified item");
+                        SpawnLootForDrop(prefab, dropPoint, initializeObject);
+                        results.Add(prefab);
+                        continue;
+                    }
+                }
 
                 if (!cheatsActive && ELConfig.ItemsToMaterialsDropRatio.Value > 0)
                 {

@@ -55,6 +55,13 @@ namespace EpicLoot.Crafting
     }
 
     [Serializable]
+    public class IdentifyCostConfig
+    {
+        public ItemRarity Rarity;
+        public Dictionary<LootRoller.LootRollCategories, List<ItemAmountConfig>> CostByIDType = new Dictionary<LootRoller.LootRollCategories, List<ItemAmountConfig>>();
+    }
+
+    [Serializable]
     public class EnchantingCostsConfig
     {
         public DisenchantCostsConfig DisenchantCosts = new DisenchantCostsConfig();
@@ -64,5 +71,6 @@ namespace EpicLoot.Crafting
         public List<ItemAmountConfig> ReAugmentCosts = new List<ItemAmountConfig>();
         public List<RuneCostConfig> RuneExtractCosts = new List<RuneCostConfig>();
         public List<RuneCostConfig> RuneEtchCosts = new List<RuneCostConfig>();
+        public List<IdentifyCostConfig> IdentifyCosts = new List<IdentifyCostConfig>();
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using AdventureBackpacks.API;
+﻿using AdventureBackpacks.API;
 using BepInEx;
 using Common;
 using EpicLoot.Adventure;
@@ -14,18 +7,26 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
+using EpicLoot.General;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.General;
+using EpicLoot.src.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using Jotunn.Configs;
 
 namespace EpicLoot
 {
@@ -94,7 +95,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.11.4";
+        public const string Version = "0.12.0";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -450,12 +451,14 @@ namespace EpicLoot
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
             LoadCraftingMaterialAssets();
+            LoadUnidentifiedItems();
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
+            ItemManager.OnItemsRegistered += AutoAddEnchantableItems.CheckAndAddAllEnchantableItems;
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object
@@ -567,6 +570,31 @@ namespace EpicLoot
                         itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
                     }
 
+                    CustomItem custom = new CustomItem(prefab, false);
+                    ItemManager.Instance.AddItem(custom);
+                }
+            }
+        }
+
+        private static void LoadUnidentifiedItems()
+        {
+            foreach (string type in new List<string>() { "Unidentified" }) {
+                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
+                    var assetName = $"{type}{rarity}";
+                    var prefab = Assets.AssetBundle.LoadAsset<GameObject>(assetName);
+                    if (prefab == null) {
+                        LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
+                        continue;
+                    }
+
+                    var itemDrop = prefab.GetComponent<ItemDrop>();
+                    var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    magicItemComponent.SetMagicItem(new MagicItem {
+                        Rarity = rarity,
+                        IsUnidentified = true,
+                    });
+                    magicItemComponent.Save();
+                    //itemDrop.m_itemData
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);
                 }

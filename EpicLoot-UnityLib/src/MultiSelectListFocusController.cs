@@ -39,6 +39,7 @@ namespace EpicLoot_UnityLib
 
                 _focusedListIndex = (_focusedListIndex + 1) % Lists.Count;
                 currentList = Lists[_focusedListIndex];
+                if (currentList == null) { continue; }
                 itemCount = currentList.GetItemCount();
                 if (currentList.GetItemCount() > 0)
                 {

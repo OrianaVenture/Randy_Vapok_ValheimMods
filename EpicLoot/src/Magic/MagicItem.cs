@@ -44,6 +44,7 @@ namespace EpicLoot
         public string DisplayName;
         public string LegendaryID;
         public string SetID;
+        public bool IsUnidentified = false;
 
         public string GetItemTypeName(ItemDrop.ItemData baseItem)
         {

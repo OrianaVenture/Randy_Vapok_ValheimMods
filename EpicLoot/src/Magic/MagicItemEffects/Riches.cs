@@ -49,7 +49,6 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(CharacterDrop __instance, ref List<KeyValuePair<GameObject, int>> __result)
         {
-            var richesRandomRoll = Random.Range(0f, 1f);
             // Only do network updates for riches every minute
             if (lastUpdateCheck < Time.time) {
                 EpicLoot.Log($"{lastUpdateCheck} < {Time.time}");
@@ -60,6 +59,12 @@ namespace EpicLoot.MagicItemEffects
 
                 richesValue = playerList.Sum(player => player.m_nview.GetZDO().GetInt("el-rch")) * 0.01f;
             }
+            // No riches present in the area, so nothing to do.
+            if (richesValue <= 0) {
+                return;
+            }
+            var richesRandomRoll = Random.Range(0f, 1f);
+
             if (richesValue > 1) {
                 richesRandomRoll = Mathf.RoundToInt(richesRandomRoll * richesValue);
             }

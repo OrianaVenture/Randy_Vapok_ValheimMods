@@ -2,7 +2,7 @@ ItemInfo:
   - Type: Swords
     Fallback: Knives
     ItemFallback: AxeStone
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -24,7 +24,7 @@ ItemInfo:
   - Type: Axes
     Fallback: Swords
     ItemFallback: AxeStone
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -44,7 +44,7 @@ ItemInfo:
   - Type: TwoHandAxes
     Fallback: Sledges
     ItemFallback: Club
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -59,7 +59,7 @@ ItemInfo:
   - Type: Knives
     Fallback: Fists
     ItemFallback: AxeStone
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -78,7 +78,7 @@ ItemInfo:
   - Type: Fists
     Fallback: Clubs
     ItemFallback: Club
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -92,7 +92,7 @@ ItemInfo:
   - Type: Staffs
     Fallback: Bows
     ItemFallback: Bow
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -113,7 +113,7 @@ ItemInfo:
   - Type: Clubs
     Fallback: Staffs
     ItemFallback: Club
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -132,7 +132,7 @@ ItemInfo:
   - Type: Sledges
     Fallback: Polearms
     ItemFallback: Club
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -148,7 +148,7 @@ ItemInfo:
   - Type: Polearms
     Fallback: Pickaxes
     ItemFallback: Club
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -165,7 +165,7 @@ ItemInfo:
   - Type: Spears
     Fallback: TwoHandAxes
     ItemFallback: Bow
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -185,7 +185,7 @@ ItemInfo:
   - Type: Pickaxes
     Fallback: Axes
     ItemFallback: AxeStone
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -202,7 +202,7 @@ ItemInfo:
   - Type: Bows
     Fallback: Spears
     ItemFallback: Bow
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -222,7 +222,7 @@ ItemInfo:
   - Type: Bucklers
     Fallback: TowerShields
     ItemFallback: ShieldWood
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []
@@ -238,7 +238,7 @@ ItemInfo:
   - Type: RoundShields
     Fallback: Bucklers
     ItemFallback: ShieldWood
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -257,7 +257,7 @@ ItemInfo:
   - Type: TowerShields
     Fallback: RoundShields
     ItemFallback: ShieldWoodTower
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -276,7 +276,7 @@ ItemInfo:
   - Type: ChestArmor
     Fallback: LegsArmor
     ItemFallback: ArmorRagsChest
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none:
         - ArmorRagsChest
@@ -303,7 +303,7 @@ ItemInfo:
   - Type: LegsArmor
     Fallback: ShouldersArmor
     ItemFallback: ArmorRagsLegs
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none:
         - ArmorRagsLegs
@@ -330,7 +330,7 @@ ItemInfo:
   - Type: HeadArmor
     Fallback: ChestArmor
     ItemFallback: ArmorRagsLegs
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -356,7 +356,7 @@ ItemInfo:
   - Type: ShouldersArmor
     Fallback: Utility
     ItemFallback: ArmorRagsChest
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -377,7 +377,7 @@ ItemInfo:
   - Type: Torches
     Fallback: Clubs
     ItemFallback: Torch
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -391,7 +391,7 @@ ItemInfo:
   - Type: Tools
     Fallback: Axes
     ItemFallback: Hammer
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr:
@@ -408,7 +408,7 @@ ItemInfo:
   - Type: Utility
     Fallback: HeadArmor
     ItemFallback: Hoe
-    Items: []
+    IgnoredItems: []
     ItemsByBoss:
       none: []
       defeated_eikthyr: []

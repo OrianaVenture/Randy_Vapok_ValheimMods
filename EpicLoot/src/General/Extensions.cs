@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace EpicLoot.General
 {
@@ -8,24 +9,20 @@ namespace EpicLoot.General
         /// Take any list of Objects and return it with Fischer-Yates shuffle
         /// </summary>
         /// <returns></returns>
-        public static List<T> shuffleList<T>(this List<T> inputList)
-        {
-            int i = 0;
-            int t = inputList.Count;
-            int r = 0;
+        public static List<T> shuffleList<T>(this List<T> inputList) {
+            int tpos = 0;
             T p = default(T);
             List<T> tempList = new List<T>();
             tempList.AddRange(inputList);
-
-            while (i < t)
-            {
-                r = UnityEngine.Random.Range(i, tempList.Count);
+            int count = inputList.Count;
+            for (int i = 0; i < count; i++) {
+                tpos = UnityEngine.Random.Range(i, count);
                 p = tempList[i];
-                tempList[i] = tempList[r];
-                tempList[r] = p;
-                i++;
+                tempList[i] = tempList[tpos];
+                tempList[tpos] = p;
             }
-
+            //EpicLoot.Log($"Input list: {string.Join(",", inputList)}");
+            //EpicLoot.Log($"Shuffled l: {string.Join(",", tempList)}");
             return tempList;
         }
     }

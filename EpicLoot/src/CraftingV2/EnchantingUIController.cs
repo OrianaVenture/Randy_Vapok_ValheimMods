@@ -1,8 +1,10 @@
 ﻿using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
+using EpicLoot.GatedItemType;
 using EpicLoot_UnityLib;
 using Jotunn.Managers;
+using PlayFab.ClientModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static ItemDrop.ItemData;
 using Random = UnityEngine.Random;
 
 namespace EpicLoot.CraftingV2
@@ -44,6 +48,10 @@ namespace EpicLoot.CraftingV2
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
             SacrificeUI.GetSacrificeItems = GetSacrificeItems;
             SacrificeUI.GetSacrificeProducts = GetSacrificeProducts;
+            SacrificeUI.GetIdentifyCost = GetIdentifyCostForCategory;
+            SacrificeUI.GetIdentifyItems = GetUnidentifiedItems;
+            SacrificeUI.GetRandomFilteredLoot = LootRollSelectedItems;
+            SacrificeUI.GetPotentialIdentifications = GetPotentialItemRollsByCategory;
             ConvertUI.GetConversionRecipes = GetConversionRecipes;
             SetRarityColor.GetRarityColor = GetRarityColor;
             EnchantUI.GetEnchantableItems = GetEnchantableItems;
@@ -519,10 +527,120 @@ namespace EpicLoot.CraftingV2
             return successDialog.gameObject;
         }
 
+        private static LootRoller.LootRollCategories SelectLootCategory(int filter)
+        {
+            var category = LootRoller.LootRollCategories.random;
+            switch (filter)
+            {
+                case 0:
+                    category = LootRoller.LootRollCategories.random;
+                    break;
+                case 1:
+                    category = LootRoller.LootRollCategories.weapon;
+                    break;
+                case 2:
+                    category = LootRoller.LootRollCategories.armor;
+                    break;
+                case 3:
+                    category = LootRoller.LootRollCategories.ranged;
+                    break;
+                case 4:
+                    category = LootRoller.LootRollCategories.melee;
+                    break;
+                case 5:
+                    category = LootRoller.LootRollCategories.magic;
+                    break;
+                case 6:
+                    category = LootRoller.LootRollCategories.accessory;
+                    break;
+            }
+            return category;
+        }
+
+        private static List<InventoryItemListElement> LootRollSelectedItems(int filter, List<Tuple<ItemDrop.ItemData, int>> items)
+        {
+            var player = Player.m_localPlayer;
+            var category = SelectLootCategory(filter);
+
+            List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
+            foreach (var itemstack in items) {
+                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, 0.85f, category, itemstack.Item2, itemstack.Item1.GetRarity());
+                InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
+                totalRolledItems.AddRange(rolledItems);
+                foreach (var item in rolledItems) { InventoryManagement.Instance.GiveItem(item); }
+            }
+            
+            EquipmentEffectCache.Reset(player);
+            return totalRolledItems.Select(item => new InventoryItemListElement() { Item = item }).ToList();
+        }
+
+        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(int filter)
+        {
+            var player = Player.m_localPlayer;
+            var category = SelectLootCategory(filter);
+            var gatingMode = EpicLoot.GetGatedItemTypeMode();
+            if (gatingMode == GatedItemTypeMode.Unlimited){
+                gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
+            }
+            List<string> validBosses = GatedItemTypeHelper.DetermineValidBosses(gatingMode, false);
+            List<string> selected_categories = LootRoller.GetLootCategoryList(category);
+            List<string> resultItemNames = new List<string>();
+            foreach (var selected_category in selected_categories) {
+                foreach (var boss in validBosses) {
+                    if (!GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category].ContainsKey(boss)) { continue; }
+                    resultItemNames.AddRange(GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category][boss]);
+                }
+            }
+            var result = new List<InventoryItemListElement>();
+
+            foreach (var item in resultItemNames) {
+                ObjectDB.instance.TryGetItemPrefab(item, out GameObject founditem);
+                if (founditem == null) { continue; }
+                result.Add(new InventoryItemListElement() {
+                    Item = founditem.GetComponent<ItemDrop>().m_itemData,
+                });
+            }
+
+            return result;
+        }
+
+        private static List<InventoryItemListElement> GetIdentifyCostForCategory(int filter, List<Tuple<ItemDrop.ItemData, int>> items)
+        {
+            var category = SelectLootCategory(filter);
+            EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
+            var costs = EnchantHelper.GetIdentifyCost(items, category);
+            var results = new List<InventoryItemListElement>() { };
+            foreach (var entry in costs) {
+                var itemData = entry.Key.m_itemData;
+                itemData.m_dropPrefab = entry.Key.gameObject;
+                itemData.m_stack = entry.Value;
+                results.Add(new InventoryItemListElement() { Item = itemData });
+                // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
+                //if (entry.Value > entry.Key.m_itemData.m_shared.m_maxStackSize) {
+
+                //} else {
+                //    var itemData = entry.Key.m_itemData.Clone();
+                //    itemData.m_dropPrefab = entry.Key.gameObject;
+                //    itemData.m_stack = entry.Value;
+                //    results.Add(new InventoryItemListElement() { Item = itemData });
+                //}
+
+            }
+            return results;
+        }
+
+        private static List<InventoryItemListElement> GetUnidentifiedItems()
+        {
+            return InventoryManagement.Instance.GetAllItems()
+                .Where(item => item.IsMagic() && item.IsUnidentified())
+                .Select(item => new InventoryItemListElement() { Item = item })
+                .ToList();
+        }
+
         private static List<InventoryItemListElement> GetAugmentableItems()
         {
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => item.CanBeAugmented() && item.IsRunestone() == false)
+                .Where(item => item.CanBeAugmented() && item.IsRunestone() == false && !item.IsUnidentified())
                 .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
         }
@@ -536,7 +654,7 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetRuneModifyableItems()
         {
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => item.IsMagic() && item.IsRunestone() == false)
+                .Where(item => item.IsMagic() && item.IsRunestone() == false && !item.IsUnidentified())
                 .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
         }
@@ -868,7 +986,7 @@ namespace EpicLoot.CraftingV2
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => !item.m_equipped && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
+                .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
                     !boundItems.Contains(item)))
                 .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
                 .Select(item => new InventoryItemListElement() { Item = item })

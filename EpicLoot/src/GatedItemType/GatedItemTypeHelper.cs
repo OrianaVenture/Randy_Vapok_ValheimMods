@@ -110,12 +110,6 @@ namespace EpicLoot.GatedItemType
                 {
                     ItemsByTypeAndBoss.Add(info.Type, itemsByBoss);
                 }
-
-                if (info.Items.Count > 0)
-                {
-                    EpicLoot.LogWarningForce("The use of ItemInfo.Items field is obsolete. Please add these items to the ItemsByBoss entry. " +
-                        "To set an item as ungated add them to the \"none\" list.");
-                }
             }
 
             // Items can be ungated, add a dummy entry to account for this
@@ -176,13 +170,10 @@ namespace EpicLoot.GatedItemType
             bool allowFallback = true,
             bool allowDuplicate = false)
         {
-            if (ItemsByTypeAndBoss[itemType].ContainsKey(boss))
-            {
+            if (ItemsByTypeAndBoss[itemType].ContainsKey(boss)) {
                 List<string> items = ItemsByTypeAndBoss[itemType][boss];
-                items.shuffleList();
                 bool gated = true;
-
-                foreach (string item in items)
+                foreach (string item in items.shuffleList())
                 {
                     gated = CheckIfItemNeedsGate(mode, item);
                     if (gated)

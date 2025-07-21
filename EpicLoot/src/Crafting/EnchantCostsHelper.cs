@@ -104,6 +104,17 @@ namespace EpicLoot.Crafting
             return configEntry?.Cost;
         }
 
+        public static List<ItemAmountConfig> GetIdentifyCosts(LootRoller.LootRollCategories category, ItemRarity rarity)
+        {
+            var rarityTierConfig = Config.IdentifyCosts.Find(x => {
+                if (x.Rarity != rarity) { return false; }
+                return true;
+            });
+            var configEntry = rarityTierConfig.CostByIDType[category];
+
+            return configEntry;
+        }
+
         public static List<ItemAmountConfig> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)
         {
             bool typecheck = false;

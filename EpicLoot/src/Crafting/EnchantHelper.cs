@@ -1,5 +1,7 @@
 ﻿using EpicLoot.CraftingV2;
+using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 
 namespace EpicLoot.Crafting
 {
@@ -27,6 +29,35 @@ namespace EpicLoot.Crafting
             }
 
             return costList;
+        }
+
+        public static List<KeyValuePair<ItemDrop, int>> GetIdentifyCost(List<Tuple<ItemDrop.ItemData, int>> items, LootRoller.LootRollCategories category) {
+            var costList = new Dictionary<ItemDrop, int>();
+            foreach (var item in items) {
+                EpicLoot.Log($"Looking up identify cost for {item.Item1.m_shared.m_name} with rarity {item.Item1.GetRarity()} in category {category}");
+                var identifyCosts = EnchantCostsHelper.GetIdentifyCosts(category, item.Item1.GetRarity());
+                if (identifyCosts.Count == 0) { continue; }
+                foreach (var costEntry in identifyCosts) {
+                    EpicLoot.Log($"Adding identify cost for {item.Item1.m_shared.m_name} ({item.Item1.m_shared.m_name}) - {costEntry.Item} x{costEntry.Amount}");
+                    var prefab = ObjectDB.instance.GetItemPrefab(costEntry.Item).GetComponent<ItemDrop>();
+                    if (prefab == null) {
+                        EpicLoot.LogWarning($"Tried to add unknown item ({costEntry.Item}) to identify cost for item ({item.Item1.m_shared.m_name})");
+                        continue;
+                    }
+                    var cost_for_stack = costEntry.Amount * item.Item2;
+                    if (costList.ContainsKey(prefab)) {
+                        costList[prefab] += cost_for_stack;
+                    } else {
+                        costList.Add(prefab, cost_for_stack);
+                    }
+                }
+            }
+
+            List <KeyValuePair<ItemDrop, int>> results = new List<KeyValuePair<ItemDrop, int>>();
+            foreach (var kvp in costList) {
+                results.Add(new KeyValuePair<ItemDrop, int>(kvp.Key, kvp.Value));
+            }
+            return results;
         }
 
         public static List<KeyValuePair<ItemDrop, int>> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)

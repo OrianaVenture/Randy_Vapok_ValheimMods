@@ -72,6 +72,10 @@ namespace EpicLoot.Config
         public static ConfigEntry<BossDropMode> _bossWishboneDropMode;
         public static ConfigEntry<float> _bossWishboneDropPlayerRange;
         public static ConfigEntry<string> BalanceConfigurationType;
+        public static ConfigEntry<bool> AutoAddEquipment;
+        public static ConfigEntry<bool> AutoRemoveEquipmentNotFound;
+        public static ConfigEntry<bool> OnlyAddEquipmentWithRecipes;
+        public static ConfigEntry<float> ItemsUnidentifiedDropRatio;
 
         public static ConfigEntry<bool> RuneExtractDestroysItem;
 
@@ -219,6 +223,12 @@ namespace EpicLoot.Config
             // General
             UseGeneratedMagicItemNames = Config.Bind("General", "Use Generated Magic Item Names", true,
                 "If true, magic items uses special, randomly generated names based on their rarity, type, and magic effects.");
+            AutoAddEquipment = BindServerConfig("General", "Auto Add Equipment", true, "Automatically adds equipment types that can be enchanted to possible drops and gates them" +
+                "behind their respective bosses. Disabling this also disables automatic removal of items not found.");
+            AutoRemoveEquipmentNotFound = BindServerConfig("General", "Auto Remove Equipment Not Found", true,
+                "Automatically removes equipment types that is not found when loading the game.");
+            OnlyAddEquipmentWithRecipes = BindServerConfig("General", "Only Add Equipment With Recipes", true,
+                "Equipment must be able to be created by a recipe in order to automatically get selected. If this is disabled enemy weapons can be added to drops, they are not always valid.");
 
             // Balance
             BalanceConfigurationType = BindServerConfig("Balance", "Balance Template", "Default",
@@ -274,6 +284,9 @@ namespace EpicLoot.Config
                 "2 = The number of items in the drop table are twice as likely to drop " +
                 "(note, this doesn't double the number of items dropped, just doubles the relative chance for them to drop). " +
                 "Min = 0, Max = 4");
+            ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f, "" +
+                "Sets the chance that items are dropped as unidentified. This takes precedent over 'Items To Materials Drop Ratio' which means" +
+                "out of 100 items dropped, unidenified items are first calculated, and then the remainder is used to calculate material vs item drop.");
             ItemsToMaterialsDropRatio = BindServerConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
                 "Sets the chance that item drops are instead dropped as magic crafting materials. " +
                 "0 = all items, no materials. " +
