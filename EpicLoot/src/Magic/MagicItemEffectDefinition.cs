@@ -401,7 +401,7 @@ namespace EpicLoot
                 AllDefinitions.Remove(effectDef.Type);
             }
 
-            EpicLoot.Log($"Added MagicItemEffect: {effectDef.Type}");
+            //EpicLoot.Log($"Added MagicItemEffect: {effectDef.Type}");
             AllDefinitions.Add(effectDef.Type, effectDef);
         }
 

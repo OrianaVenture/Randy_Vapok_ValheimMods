@@ -40,7 +40,7 @@ namespace EpicLoot_UnityLib
         public delegate List<InventoryItemListElement> GetIdentifyCostDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems);
         public delegate List<InventoryItemListElement> GetIdentifyItemsDelegate();
         public delegate List<InventoryItemListElement> GetRandomFilteredLootRollDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems);
-        public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(int filterType);
+        public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(int filterType, List<ItemDrop.ItemData> items_selected);
 
         public static GetSacrificeItemsDelegate GetSacrificeItems;
         public static GetSacrificeProductsDelegate GetSacrificeProducts;
@@ -120,9 +120,8 @@ namespace EpicLoot_UnityLib
             }
 
             var identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems);
-            //Cancel();
 
-
+            Cancel();
             RefreshAvailableItems();
             AvailableItems.GiveFocus(true, 0);
         }
@@ -211,7 +210,7 @@ namespace EpicLoot_UnityLib
             }
             bool canAfford = true;
             if (_sacrificeMode == SacrificeMode.Identify) {
-                var potentialIdentifyItems = GetPotentialIdentifications(IdentifyStyle.value);
+                var potentialIdentifyItems = GetPotentialIdentifications(IdentifyStyle.value, selectedItems.Select(x => x.Item1.GetItem()).ToList());
                 SacrificeProducts.SetItems(potentialIdentifyItems.Cast<IListElement>().ToList());
                 var unidentifiedItems = selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
                 var cost = GetIdentifyCost(IdentifyStyle.value, unidentifiedItems);
@@ -250,14 +249,21 @@ namespace EpicLoot_UnityLib
             return true;
         }
 
-        public override void Cancel()
-        {
-            if (_useTMP)
-                _tmpButtonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
-            else
-                _buttonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
-            
-            base.Cancel();
+        public override void Cancel() {
+            if (_sacrificeMode == SacrificeMode.Sacrifice) {
+                if (_useTMP)
+                    _tmpButtonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
+                else
+                    _buttonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
+            }
+            if (SacrificeMode.Identify == _sacrificeMode) {
+                if (_buttonLabel != null) {
+                    _buttonLabel.text = Localization.instance.Localize("$mod_epicloot_identify");
+                }
+            }
+
+            Unlock();
+            // base.Cancel();
         }
         
         public override void DeselectAll()

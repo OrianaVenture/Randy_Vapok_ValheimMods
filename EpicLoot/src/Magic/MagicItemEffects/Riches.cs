@@ -11,8 +11,7 @@ namespace EpicLoot.MagicItemEffects
     {
         private static float richesValue = 0f;
         private static float lastUpdateCheck = 0;
-        public static readonly Dictionary<GameObject, int> DefaultRichesTable = new Dictionary<GameObject, int>
-        {
+        public static readonly Dictionary<GameObject, int> DefaultRichesTable = new Dictionary<GameObject, int> {
             { ObjectDB.instance.GetItemPrefab("SilverNecklace"), 30 },
             { ObjectDB.instance.GetItemPrefab("Ruby"), 20 },
             { ObjectDB.instance.GetItemPrefab("AmberPearl"), 10 },
@@ -20,27 +19,34 @@ namespace EpicLoot.MagicItemEffects
             { ObjectDB.instance.GetItemPrefab("Coins"), 1 },
         };
 
-        public static Dictionary<GameObject, int> RichesTable = new Dictionary<GameObject, int>(DefaultRichesTable);
+        public static Dictionary<GameObject, int> RichesTable = DefaultRichesTable;
 
-        public static void UpdateRichesOnEffectSetup()
-        {
-            if (MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.Riches))
-            {
+        public static void UpdateRichesOnEffectSetup() {
+            EpicLoot.Log("Updating riches table.");
+            if (MagicItemEffectDefinitions.AllDefinitions.Count > 0 && MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.Riches)) {
                 var richesConfig = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config;
-                if (richesConfig != null && richesConfig.Count > 0)
-                {
+                if (richesConfig != null && richesConfig.Count > 0) {
                     UpdateRichesTable(richesConfig);
                 }
             }
         }
 
         public static void UpdateRichesTable(Dictionary<string, float> config) {
-            RichesTable.Clear();
-            foreach(KeyValuePair<string, float> kv in config) {
+            Dictionary<GameObject, int> newRichesTable = new Dictionary<GameObject, int>();
+            foreach (KeyValuePair<string, float> kv in config) {
+                EpicLoot.Log($"Riches checking config item: {kv.Key} with value {kv.Value}");
                 if (ObjectDB.instance.TryGetItemPrefab(kv.Key, out GameObject itemPrefab)) {
-                    RichesTable.Add(itemPrefab, Mathf.RoundToInt(kv.Value));
+                    newRichesTable.Add(itemPrefab, Mathf.RoundToInt(kv.Value));
                 }
             }
+            if (newRichesTable.Count == 0) {
+                EpicLoot.LogWarning($"Riches table is empty after update, using default riches table.");
+                return;
+            }
+
+            RichesTable.Clear();
+            RichesTable = newRichesTable;
+
             if (RichesTable.Count == 0) {
                 RichesTable = DefaultRichesTable;
             }

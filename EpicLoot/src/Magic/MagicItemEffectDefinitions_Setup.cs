@@ -145,7 +145,6 @@ namespace EpicLoot
         public static void Initialize()
         {
             AbilityFactory.Register("Undying", typeof(UndyingAbility));
-            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
     }
 }

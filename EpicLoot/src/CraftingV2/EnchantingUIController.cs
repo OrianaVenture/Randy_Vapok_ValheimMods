@@ -1,4 +1,5 @@
-﻿using EpicLoot.Config;
+﻿using EpicLoot.Adventure;
+using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
@@ -43,6 +44,7 @@ namespace EpicLoot.CraftingV2
         {
             EnchantingTableUI.AugaFixup = EnchantingUIAugaFixup.AugaFixup;
             EnchantingTableUI.TabActivation = TabActivation;
+            EnchantingTableUI.AudioVolumeLevel = GetAuidioLevel;
             MultiSelectItemList.SortByRarity = SortByRarity;
             MultiSelectItemList.SortByName = SortByName;
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
@@ -79,6 +81,10 @@ namespace EpicLoot.CraftingV2
             DisenchantUI.GetDisenchantCost = GetDisenchantCost;
             DisenchantUI.DisenchantItem = DisenchantItem;
             FeatureStatus.MakeFeatureUnlockTooltip = MakeFeatureUnlockTooltip;
+        }
+
+        private static float GetAuidioLevel() {
+            return AudioMan.instance.m_ambientVol * ELConfig.UIAudioVolumeAdjustment.Value;
         }
 
         private static bool UpgradesActive(EnchantingFeature feature, out bool featureActive)
@@ -564,7 +570,9 @@ namespace EpicLoot.CraftingV2
 
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
             foreach (var itemstack in items) {
-                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, 0.85f, category, itemstack.Item2, itemstack.Item1.GetRarity());
+                Enum.TryParse<Heightmap.Biome>(itemstack.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
+                var bosskey = DetermineBossKeysByConfig(biome, ELConfig._gatedItemTypeModeConfig.Value);
+                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, 0.85f, category, itemstack.Item2, itemstack.Item1.GetRarity(), true, bosskey, ELConfig.IdentificationBonusPower.Value);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
                 totalRolledItems.AddRange(rolledItems);
                 foreach (var item in rolledItems) { InventoryManagement.Instance.GiveItem(item); }
@@ -574,21 +582,71 @@ namespace EpicLoot.CraftingV2
             return totalRolledItems.Select(item => new InventoryItemListElement() { Item = item }).ToList();
         }
 
-        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(int filter)
+        private static List<string> DetermineBossKeysByConfig(Heightmap.Biome biome, GatedItemTypeMode mode) {
+            List<string> previous_boss_key = new List<string> { "none" };
+            List<string> validDefeatedBoss_Keys = GatedItemTypeHelper.DetermineValidBosses(mode);
+            foreach (var bossentry in AdventureDataManager.Config.Bounties.Bosses) {
+                if (bossentry.Biome == biome) {
+                    EpicLoot.Log($"{biome} Boss match found.");
+                    switch (mode) {
+                        case GatedItemTypeMode.PlayerMustHaveCraftedItem:
+                        case GatedItemTypeMode.PlayerMustKnowRecipe:
+                        case GatedItemTypeMode.Unlimited:
+                            EpicLoot.Log($"{biome} with Unlimited mode {bossentry.BossDefeatedKey}");
+                            return new List<string> { bossentry.BossDefeatedKey };
+
+                        case GatedItemTypeMode.BossKillUnlocksNextBiomeItems:
+                            EpicLoot.Log($"Boss kills unlock next Check");
+                            // Check if the player has defeated the previous boss or the current boss
+                            if (validDefeatedBoss_Keys.Contains(previous_boss_key.First()) || validDefeatedBoss_Keys.Contains(bossentry.BossDefeatedKey)) {
+                                EpicLoot.Log($"{biome} with defeated current {bossentry.BossDefeatedKey}");
+                                return new List<string> { bossentry.BossDefeatedKey };
+                            } else {
+                                EpicLoot.Log($"Player has not defeated the current or previous boss, setting to all defeated bosses.");
+                                return validDefeatedBoss_Keys;
+                            }
+
+                        case GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems:
+                            EpicLoot.Log($"{biome} with defeated previous {previous_boss_key.First()}");
+                            if (biome == Heightmap.Biome.AshLands && validDefeatedBoss_Keys.Contains("defeated_fader")) {
+                                // Special case for AshLands, where defeating Fader unlocks current biome items since there is no next boss
+                                return new List<string> { bossentry.BossDefeatedKey, previous_boss_key.First() };
+                            }
+                            return previous_boss_key;
+
+                        default:
+                            EpicLoot.Log($"{biome} match fallthrough gating.");
+                            return validDefeatedBoss_Keys;
+                    }
+                }
+                previous_boss_key.Clear();
+                previous_boss_key.Add(bossentry.BossDefeatedKey);
+            }
+            EpicLoot.Log($"Fallthrough {biome} was not matched in {string.Join(",",AdventureDataManager.Config.Bounties.Bosses.Select(x => x.Biome))}");
+            // Fallback is to fail open to all of the bosses that are defeated in the world
+            return validDefeatedBoss_Keys;
+        }
+
+        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(int filter, List<ItemDrop.ItemData> items_selected)
         {
             var player = Player.m_localPlayer;
             var category = SelectLootCategory(filter);
-            var gatingMode = EpicLoot.GetGatedItemTypeMode();
-            if (gatingMode == GatedItemTypeMode.Unlimited){
-                gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
+            List<string> selectedBossKeys = new List<string>();
+            foreach (var item in items_selected) {
+                if (item == null || item.m_dropPrefab == null) { continue; }
+                Enum.TryParse<Heightmap.Biome>(item.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
+                var bosskey = DetermineBossKeysByConfig(biome, EpicLoot.GetGatedItemTypeMode());
+                if (bosskey.Count == 0) { continue; }
+                selectedBossKeys.AddRange(bosskey);
+                EpicLoot.Log($"Selected Item {item.m_dropPrefab.name} got {biome} and bosskey {bosskey.First()} {bosskey.Count}");
             }
-            List<string> validBosses = GatedItemTypeHelper.DetermineValidBosses(gatingMode, false);
+            
             List<string> selected_categories = LootRoller.GetLootCategoryList(category);
             List<string> resultItemNames = new List<string>();
             foreach (var selected_category in selected_categories) {
-                foreach (var boss in validBosses) {
-                    if (!GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category].ContainsKey(boss)) { continue; }
-                    resultItemNames.AddRange(GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category][boss]);
+                foreach (var bosskey in selectedBossKeys.Distinct()) {
+                    if (!GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category].ContainsKey(bosskey)) { continue; }
+                    resultItemNames.AddRange(GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category][bosskey]);
                 }
             }
             var result = new List<InventoryItemListElement>();

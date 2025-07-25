@@ -900,7 +900,23 @@ RuneEtchCosts:
       - Item: MoltenCore
         Amount: 1
 IdentifyCosts:
-  - Rarity: Magic
+  Meadows:
+    CostByRarity:
+        Magic:
+          - Item: Flint
+            Amount: 1
+        Rare:
+          - Item: Flint
+            Amount: 2
+        Epic:
+          - Item: Flint
+            Amount: 3
+        Legendary:
+          - Item: Flint
+            Amount: 4
+        Mythic:
+          - Item: Flint
+            Amount: 5
     CostByIDType:
         random:
           - Item: Coins
@@ -935,7 +951,23 @@ IdentifyCosts:
             Amount: 5
           - Item: GoldBountyToken
             Amount: 10
-  - Rarity: Rare
+  BlackForest:
+    CostByRarity:
+        Magic:
+          - Item: GreydwarfEye
+            Amount: 5
+        Rare:
+          - Item: GreydwarfEye
+            Amount: 10
+        Epic:
+          - Item: GreydwarfEye
+            Amount: 15
+        Legendary:
+          - Item: GreydwarfEye
+            Amount: 20
+        Mythic:
+          - Item: GreydwarfEye
+            Amount: 25
     CostByIDType:
         random:
           - Item: Coins
@@ -970,7 +1002,23 @@ IdentifyCosts:
             Amount: 5
           - Item: GoldBountyToken
             Amount: 10
-  - Rarity: Epic
+  Swamp:
+    CostByRarity:
+        Magic:
+          - Item: Iron
+            Amount: 1
+        Rare:
+          - Item: Iron
+            Amount: 2
+        Epic:
+          - Item: Iron
+            Amount: 3
+        Legendary:
+          - Item: Iron
+            Amount: 4
+        Mythic:
+          - Item: Iron
+            Amount: 5
     CostByIDType:
         random:
           - Item: Coins
@@ -1005,7 +1053,23 @@ IdentifyCosts:
             Amount: 5
           - Item: GoldBountyToken
             Amount: 10
-  - Rarity: Legendary
+  Mountain:
+    CostByRarity:
+        Magic:
+          - Item: Silver
+            Amount: 1
+        Rare:
+          - Item: Silver
+            Amount: 2
+        Epic:
+          - Item: Silver
+            Amount: 3
+        Legendary:
+          - Item: Silver
+            Amount: 4
+        Mythic:
+          - Item: Silver
+            Amount: 5
     CostByIDType:
         random:
           - Item: Coins
@@ -1040,7 +1104,125 @@ IdentifyCosts:
             Amount: 5
           - Item: GoldBountyToken
             Amount: 10
-  - Rarity: Mythic
+  Plains:
+    CostByRarity:
+        Magic:
+          - Item: BlackMetal
+            Amount: 1
+        Rare:
+          - Item: BlackMetal
+            Amount: 2
+        Epic:
+          - Item: BlackMetal
+            Amount: 3
+        Legendary:
+          - Item: BlackMetal
+            Amount: 4
+        Mythic:
+          - Item: BlackMetal
+            Amount: 5
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  Mistlands:
+    CostByRarity:
+        Magic:
+          - Item: Eitr
+            Amount: 1
+        Rare:
+          - Item: Eitr
+            Amount: 2
+        Epic:
+          - Item: Eitr
+            Amount: 3
+        Legendary:
+          - Item: Eitr
+            Amount: 4
+        Mythic:
+          - Item: Eitr
+            Amount: 5
+    CostByIDType:
+        random:
+          - Item: Coins
+            Amount: 5
+        weapon:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        armor:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 1
+        ranged:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        melee:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 3
+        magic:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 5
+        accessory:
+          - Item: Coins
+            Amount: 5
+          - Item: GoldBountyToken
+            Amount: 10
+  AshLands:
+    CostByRarity:
+        Magic:
+          - Item: FlametalNew
+            Amount: 1
+        Rare:
+          - Item: FlametalNew
+            Amount: 2
+        Epic:
+          - Item: FlametalNew
+            Amount: 3
+        Legendary:
+          - Item: FlametalNew
+            Amount: 4
+        Mythic:
+          - Item: FlametalNew
+            Amount: 5
     CostByIDType:
         random:
           - Item: Coins

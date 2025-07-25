@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using Common;
+using EpicLoot.Adventure;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
@@ -8,16 +9,11 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
-using Jotunn.Configs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static ItemDrop;
-using static ItemDrop.ItemData;
-using static UnityEngine.EventSystems.EventTrigger;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -94,7 +90,7 @@ namespace EpicLoot
 
                 if (!ItemSets.ContainsKey(itemSet.Name))
                 {
-                    EpicLoot.Log($"Added ItemSet: {itemSet.Name}");
+                    //EpicLoot.Log($"Added ItemSet: {itemSet.Name}");
                     ItemSets.Add(itemSet.Name, itemSet);
                 }
                 else
@@ -110,14 +106,14 @@ namespace EpicLoot
             foreach (var lootTable in lootTables.Where(x => x.RefObject == null || x.RefObject == ""))
             {
                 AddLootTable(lootTable);
-                EpicLoot.Log($"Added loottable for {lootTable.Object}");
+                //EpicLoot.Log($"Added loottable for {lootTable.Object}");
             }
 
             // Add loottables that are based off mob or object templates
             foreach (var lootTable in lootTables.Where(x => x.RefObject != null && x.RefObject != ""))
             {
                 AddLootTable(lootTable);
-                EpicLoot.Log($"Added loottable for {lootTable.Object} using {lootTable.RefObject} as reference");
+                //EpicLoot.Log($"Added loottable for {lootTable.Object} using {lootTable.RefObject} as reference");
             }
         }
 
@@ -217,7 +213,15 @@ namespace EpicLoot
                 CheatEffectCount > 0;
         }
 
-        public static List<ItemDrop.ItemData> RollLootNoTableWithSpecifics(Vector3 location, float ItemFromCurrentBiome = 0.75f, LootRollCategories itemtype = LootRollCategories.random, int numResults = 1, ItemRarity rarity = ItemRarity.Magic, bool luck = true) {
+        public static List<ItemDrop.ItemData> RollLootNoTableWithSpecifics(Vector3 location,
+            float ItemFromCurrentBiome = 0.75f,
+            LootRollCategories itemtype = LootRollCategories.random,
+            int numResults = 1,
+            ItemRarity rarity = ItemRarity.Magic,
+            bool luck = true,
+            List<string> validBosses = null,
+            float power_level_mod = 1.0f
+            ) {
             var luckFactor = GetLuckFactor(location);
 
             List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
@@ -281,18 +285,18 @@ namespace EpicLoot
                 if (gatingMode == GatedItemTypeMode.Unlimited) {
                     gatingMode = GatedItemTypeMode.PlayerMustKnowRecipe;
                 }
-
-                List<string> validBosses = GatedItemTypeHelper.DetermineValidBosses(gatingMode, false);
-                List<string> selectedBosses = new List<string>();
-                if (validBosses.Count > 1) {
-                    if (Random.value > ItemFromCurrentBiome) {
-                        selectedBosses.AddRange(validBosses.GetRange(0, Random.Range(1, validBosses.Count()-1)));
-                    } else {
-                        selectedBosses.Add(validBosses.First());
+                if (validBosses == null) { validBosses = GatedItemTypeHelper.DetermineValidBosses(gatingMode, false); 
+                    List<string> selectedBosses = new List<string>();
+                    if (validBosses.Count > 1) {
+                        if (Random.value > ItemFromCurrentBiome) {
+                            selectedBosses.AddRange(validBosses.GetRange(0, Random.Range(1, validBosses.Count()-1)));
+                        } else {
+                            selectedBosses.Add(validBosses.First());
+                        }
                     }
                 }
-
-                var itemId = GatedItemTypeHelper.GetGatedItemFromType(itemTypeToRoll, gatingMode, rolledItems, selectedBosses, true, false, false);
+                EpicLoot.Log($"Rolling item from list: {itemTypeToRoll} {validBosses.First()}");
+                var itemId = GatedItemTypeHelper.GetGatedItemFromType(itemTypeToRoll, gatingMode, rolledItems, validBosses, true, false, false);
                 if (itemId == null) { 
                     continue;
                 }
@@ -302,7 +306,7 @@ namespace EpicLoot
                 var itemDrop = clone.GetComponent<ItemDrop>();
                 var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
                 if (clone == null) { continue; }
-                var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor);
+                var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor, power_level_mod);
 
                 if (CheatForceMagicEffect) {
                     AddDebugMagicEffects(magicItem);
@@ -428,23 +432,48 @@ namespace EpicLoot
                 var rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                 EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
 
+                // Check if lootDrop.Item is not an equipment piece- which means its a material or other, so we let it drop instead of replacing it with an unidentified item
+
                 // Set the drop as an unidentified item of the selected rarity
                 if (ELConfig.ItemsUnidentifiedDropRatio.Value > 0) {
-                    
                     var clampedUnidentifiedRate = Mathf.Clamp(ELConfig.ItemsUnidentifiedDropRatio.Value, 0.0f, 1.0f);
                     var setUnidentified = Random.Range(0.0f, 1.0f) < clampedUnidentifiedRate;
                     EpicLoot.Log($"Checking if item should be unidentified for {lootDrop.Item} ({clampedUnidentifiedRate} {setUnidentified})");
                     if (setUnidentified) {
-                        var rarity = RollItemRarity(lootDrop, luckFactor);
-                        GameObject prefab = ObjectDB.instance.GetItemPrefab($"Unidentified{rarity}");
-                        if (prefab == null) {
-                            EpicLoot.LogWarning($"Tried to spawn unidentified item for {lootDrop.Item} but prefab was not found!");
-                            continue;
+                        // If the item is rolled to be unidentified, we need to check if it is a valid item type, if its not we don't make it unidentified
+                        GameObject lootTableDrop = ObjectDB.instance.GetItemPrefab(lootDrop.Item);
+                        ItemDrop id = lootTableDrop.GetComponent<ItemDrop>();
+                        if (EpicLoot.AllowedMagicItemTypes.Contains(id.m_itemData.m_shared.m_itemType)) {
+                            var rarity = RollItemRarity(lootDrop, luckFactor);
+                            
+                            // Determine which biome this item is a part of, and set the drop biome to that tier
+                            GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(lootDrop.Item, out var itemDetails);
+                            List<Heightmap.Biome> biomes = new List<Heightmap.Biome>();
+                            if (itemDetails != null) {
+                                foreach(string bosskey in itemDetails.RequiredBosses) {
+                                    foreach (BountyBossConfig bossEntry in AdventureDataManager.Config.Bounties.Bosses){
+                                        if (bossEntry.BossDefeatedKey != bosskey) { continue; }
+                                        biomes.Add(bossEntry.Biome);
+                                    }
+                                }
+                            }
+                            if (biomes.Count <= 0) {
+                                ZoneSystem.instance.GetGroundData(ref dropPoint, out var _, out var biome, out var _, out var _);
+                                biomes.Add(biome);
+                            }
+
+                            string selectBiome = biomes.First().ToString();
+                            GameObject prefab = ObjectDB.instance.GetItemPrefab($"{selectBiome}_{rarity}_Unidentified");
+                            if (prefab == null) {
+                                // Warn and drop the normal item instead
+                                EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified but prefab was not found! Dropping {lootDrop.Item} instead.");
+                            } else {
+                                EpicLoot.Log($"Adding {rarity} unidentified item");
+                                SpawnLootForDrop(prefab, dropPoint, initializeObject);
+                                results.Add(prefab);
+                                continue;
+                            }
                         }
-                        EpicLoot.Log($"Adding {rarity} unidentified item");
-                        SpawnLootForDrop(prefab, dropPoint, initializeObject);
-                        results.Add(prefab);
-                        continue;
                     }
                 }
 
@@ -632,13 +661,13 @@ namespace EpicLoot
             return false;
         }
 
-        public static MagicItem RollMagicItem(LootDrop lootDrop, ItemDrop.ItemData baseItem, float luckFactor)
+        public static MagicItem RollMagicItem(LootDrop lootDrop, ItemDrop.ItemData baseItem, float luckFactor, float powerlevelMod = 1f)
         {
             var rarity = RollItemRarity(lootDrop, luckFactor);
-            return RollMagicItem(rarity, baseItem, luckFactor);
+            return RollMagicItem(rarity, baseItem, luckFactor, powerlevelMod);
         }
 
-        public static MagicItem RollMagicItem(ItemRarity rarity, ItemDrop.ItemData baseItem, float luckFactor)
+        public static MagicItem RollMagicItem(ItemRarity rarity, ItemDrop.ItemData baseItem, float luckFactor, float powerlevelMod = 1f)
         {
             var cheatLegendary = !string.IsNullOrEmpty(CheatForceLegendary);
             var cheatMythic = !string.IsNullOrEmpty(CheatForceMythic);
@@ -715,7 +744,7 @@ namespace EpicLoot
                             continue;
                         }
 
-                        var effect = RollEffect(effectDef, rarity, guaranteedMagicEffect.Values);
+                        var effect = RollEffect(effectDef, rarity, guaranteedMagicEffect.Values, powerlevelMod);
                         magicItem.Effects.Add(effect);
                         effectCount--;
                     }
@@ -820,7 +849,7 @@ namespace EpicLoot
         }
 
         public static MagicItemEffect RollEffect(MagicItemEffectDefinition effectDef, ItemRarity itemRarity,
-            MagicItemEffectDefinition.ValueDef valuesOverride = null)
+            MagicItemEffectDefinition.ValueDef valuesOverride = null, float powerlevelMod = 1f)
         {
             float value = MagicItemEffect.DefaultValue;
             var valuesDef = valuesOverride ?? effectDef.GetValuesForRarity(itemRarity);
@@ -833,6 +862,7 @@ namespace EpicLoot
                         $"(min={valuesDef.MinValue} max={valuesDef.MaxValue})");
                     var incrementCount = (int)((valuesDef.MaxValue - valuesDef.MinValue) / valuesDef.Increment);
                     value = valuesDef.MinValue + (Random.Range(0, incrementCount + 1) * valuesDef.Increment);
+                    value *= powerlevelMod;
                 }
             }
 

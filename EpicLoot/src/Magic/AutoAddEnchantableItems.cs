@@ -11,7 +11,7 @@ namespace EpicLoot.src.Magic
 {
     static class AutoAddEnchantableItems
     {
-        private static readonly List<string> IgnoredItems = new List<string> { "DvergerArbalest" };
+        private static readonly List<string> IgnoredItems = LootRoller.Config.RestrictedItems.ToList();
         private static readonly List<string> mistlandCraftStations = new List<string> { "piece_magetable", "blackforge" };
 
         private static readonly List<string> AshLandsResources = new List<string> { "FlametalNew", "Blackwood", "CharredBone", "MoltenCore", "GemstoneBlue", "GemstoneGreen", "GemstoneRed", "CelestialFeather" };

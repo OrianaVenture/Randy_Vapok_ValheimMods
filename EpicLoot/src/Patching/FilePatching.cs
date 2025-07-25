@@ -108,7 +108,6 @@ namespace EpicLoot.Patching
                 if (!patchesFolder.Exists)
                     return;
 
-                var pluginFolder = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
                 ProcessPatchDirectory(patchesFolder);
             }
             catch (Exception e)
@@ -118,11 +117,6 @@ namespace EpicLoot.Patching
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
             }
-        }
-
-        public static void RemoveFilePatches(string fileName, string patchFile)
-        {
-            PatchesPerFile.GetValues(fileName, true).RemoveAll(y => y.SourceFile.Equals(patchFile));
         }
 
         public static void ProcessPatchDirectory(DirectoryInfo dir)
@@ -184,6 +178,11 @@ namespace EpicLoot.Patching
 
             if (!string.IsNullOrEmpty(patchFile.TargetFile))
                 defaultTargetFile = patchFile.TargetFile;
+
+            // Target files do not need to be extension specific
+            if (patchFile.TargetFile.Contains(".json") || patchFile.TargetFile.Contains(".yaml")) {
+                defaultTargetFile = patchFile.TargetFile.Replace(".json", "").Replace(".yaml", "");
+            }
 
             if (!string.IsNullOrEmpty(defaultTargetFile) && !ConfigFileNames.Contains(defaultTargetFile))
             {
@@ -273,100 +272,26 @@ namespace EpicLoot.Patching
         {
             foreach (var entry in PatchesPerFile)
             {
+                EpicLoot.Log($"Loading patches for {entry.Key}");
                 LoadPatchedJSON(entry.Key);
             }
         }
 
-        public static void ApplyPatchesToSpecificFilesWithNetworkUpdates(List<string> files)
+        internal static void LoadPatchedJSON(string filename)
         {
-            // skip update if there are no changes, this should never happen
-            if (files.Count == 0) return;
-
-            EpicLoot.Log($"Applying {files.Count} patched files");
-            foreach(string file in files)
-            {
-                EpicLoot.Log($"Applying patchfile: {file}");
-                LoadPatchedJSON(file, true);
-            }
-
-            // Once the update has been provided for these files, they dont need updates again unless something changes
-            files.Clear();
-        }
-
-        internal static void LoadPatchedJSON(string filename, bool networkUpdates = false)
-        {
-            var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
-
+            //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
-            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + filename.Replace(".json", ".yaml");
-            if (File.Exists(yaml_file))
-            {
-                try
-                {
-                    base_json_string = JObject.Parse(yaml_file);
-                }
-                catch (Exception e)
-                {
-                    EpicLoot.LogWarningForce($"Base config file {filename} is invalid, falling back to embedded default config." + e);
-                }
-            }
-            var patchedString = BuildPatchedConfig(filename, base_json_string);
-
-            try
-            {
-                // We don't want to do network updates on startup
-                switch (filename)
-                {
-                    case "loottables.json":
-                        LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendLootConfigs(); }
-                        break;
-                    case "magiceffects.json":
-                        MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMagicEffectConfigs(); }
-                        break;
-                    case "iteminfo.json":
-                        GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendItemInfoConfigs(); }
-                        break;
-                    case "recipes.json":
-                        RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendRecipesConfigs(); }
-                        break;
-                    case "enchantcosts.json":
-                        EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendEnchantCostConfigs(); }
-                        break;
-                    case "itemnames.json":
-                        MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMagicItemNamesConfigs(); }
-                        break;
-                    case "adventuredata.json":
-                        AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendAdventureDataConfigs(); }
-                        break;
-                    case "legendaries.json":
-                        UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendLegendaryConfigs(); }
-                        break;
-                    case "abilities.json":
-                        AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendAbilitiesConfigs(); }
-                        break;
-                    case "materialconversions.json":
-                        MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMaterialConversionConfigs(); }
-                        break;
-                    case "enchantingupgrades.json":
-                        EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendEnchantingTableUpgradeConfigs(); }
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                EpicLoot.LogError($"Failed to apply patches for file {filename}: {e.Message}");
+            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + "\\" + filename + ".yaml";
+            EpicLoot.Log($"Loading config base file {yaml_file}");
+            try {
+                // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
+                var base_json_string = JObject.Parse(ELConfig.yamlserializerforRPC.Serialize(ELConfig.yamldeserializer.Deserialize(File.ReadAllText(yaml_file))));
+                var patchedString = BuildPatchedConfig(filename, base_json_string);
+                // We only need to write the file result if its valid. If this file is changed it will trigger a reload of the config.
+                File.WriteAllText(yaml_file, ELConfig.yamlserializer.Serialize(ELConfig.yamldeserializer.Deserialize(patchedString)));
+            } catch (Exception e) {
+                EpicLoot.LogWarningForce($"Patching config file {filename} failed." + e);
             }
         }
 

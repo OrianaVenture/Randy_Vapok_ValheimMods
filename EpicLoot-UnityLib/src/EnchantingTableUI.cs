@@ -27,6 +27,8 @@ namespace EpicLoot_UnityLib
         public static AugaFixupDelegate AugaFixup;
         public delegate void TabActivationDelegate(EnchantingTableUI ui);
         public static TabActivationDelegate TabActivation;
+        public delegate float AudioVolumeLevelDelegate();
+        public static AudioVolumeLevelDelegate AudioVolumeLevel;
 
         private int _hiddenFrames;
 
@@ -44,6 +46,7 @@ namespace EpicLoot_UnityLib
             {
                 Audio.outputAudioMixerGroup =
                     uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
+                uiSFX.GetComponent<AudioSource>().volume = AudioVolumeLevel();
             }
 
             instance.SetupTabs();

@@ -40,6 +40,13 @@
   "mod_epicloot_assets_coins": "Coins",
 
   "mod_epicloot_unidentified": "Unidentified Item",
+  "mod_epicloot_unidentified_blackforest": "Unidentified Blackforest Gear",
+  "mod_epicloot_unidentified_ashlands": "Unidentified Ashlands Gear",
+  "mod_epicloot_unidentified_meadows": "Unidentified Meadows Gear",
+  "mod_epicloot_unidentified_mistlands": "Unidentified Mistlands Gear",
+  "mod_epicloot_unidentified_plains": "Unidentified Plains Gear",
+  "mod_epicloot_unidentified_swamp": "Unidentified Swamp Gear",
+  "mod_epicloot_unidentified_mountains": "Unidentified Mountain Gear",
   "mod_epicloot_unidentified_introduce": "This item is unidentified, it could be anything or it could just be ground up into dust! Go to the enchanting table to identify it.",
   "mod_epicloot_tab_sacrifice": "Sacrifice",
   "mod_epicloot_tab_identify": "Identify",

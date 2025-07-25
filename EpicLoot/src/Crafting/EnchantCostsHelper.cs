@@ -104,15 +104,16 @@ namespace EpicLoot.Crafting
             return configEntry?.Cost;
         }
 
-        public static List<ItemAmountConfig> GetIdentifyCosts(LootRoller.LootRollCategories category, ItemRarity rarity)
-        {
-            var rarityTierConfig = Config.IdentifyCosts.Find(x => {
-                if (x.Rarity != rarity) { return false; }
-                return true;
-            });
-            var configEntry = rarityTierConfig.CostByIDType[category];
-
-            return configEntry;
+        public static List<ItemAmountConfig> GetIdentifyCosts(LootRoller.LootRollCategories category, ItemRarity rarity, Heightmap.Biome biome) {
+            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>() { };
+            if (Config.IdentifyCosts.ContainsKey(biome)) {
+                totalCost.AddRange(Config.IdentifyCosts[biome].CostByRarity[rarity]);
+                totalCost.AddRange(Config.IdentifyCosts[biome].CostByIDType[category]);
+                return totalCost;
+            } else {
+                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
+                return new List<ItemAmountConfig>(){ };
+            }
         }
 
         public static List<ItemAmountConfig> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)

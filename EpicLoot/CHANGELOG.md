@@ -15,9 +15,11 @@
     * `DartingThoughts` - Converts a portion of max eitr into eitr regen
     * `AddCrafterskills` - Increases crafting and cooking skills
     * `Headhunter` - Increases chance to drop trophies from creatures
+* Weapons, armor and items are automatically added to the drop system. Any mods that add craftable weapons armor will now automatically be droppable (at the correct levels)
 * Core configuration options are available again!
-    * All core configuration values are editable directly, but will revert to internal defaults if they become invalid.
+    * All core configuration values are editable directly, but will revert to internal defaults if they become invalid
 * Augmenting can no longer roll duplicates in one reroll
+* Makes crafting table UI sounds more consistent with other game sounds, and adds a secondary configuration to relatively increase/decrease their volume
 * Improved randomization of item drops by type and tier
 * Sacrifice items now allows multiple items to be selected at once
 * bulkup - Removed the HP bonus cap and changed scaling to be less exponential

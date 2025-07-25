@@ -184,7 +184,7 @@ namespace EpicLoot
 
             HasAdventureBackpacks = ABAPI.IsLoaded();
 
-            //FilePatching.LoadAndApplyAllPatches();
+            FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
             PrintInfo();
             AddLocalizations();
@@ -196,9 +196,16 @@ namespace EpicLoot
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
             LootTableLoaded?.Invoke();
+            RegisterMagicEffectEvents();
 
             TerminalCommands.AddTerminalCommands();
+            // Main file config watcher
             SetupWatcher();
+        }
+
+        private static void RegisterMagicEffectEvents()
+        {
+            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)
@@ -458,7 +465,8 @@ namespace EpicLoot
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
-            ItemManager.OnItemsRegistered += AutoAddEnchantableItems.CheckAndAddAllEnchantableItems;
+            // Needs to trigger late in order to get all potentially added items by other mods
+            MinimapManager.OnVanillaMapAvailable += AutoAddEnchantableItems.CheckAndAddAllEnchantableItems;
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object
@@ -578,9 +586,12 @@ namespace EpicLoot
 
         private static void LoadUnidentifiedItems()
         {
-            foreach (string type in new List<string>() { "Unidentified" }) {
+            foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
+                if (type == "None" || type == "DeepNorth" || type == "Ocean" || type == "All") {
+                    continue; // Skip invalid types
+                }
                 foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
-                    var assetName = $"{type}{rarity}";
+                    var assetName = $"{type}_{rarity}_Unidentified";
                     var prefab = Assets.AssetBundle.LoadAsset<GameObject>(assetName);
                     if (prefab == null) {
                         LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");

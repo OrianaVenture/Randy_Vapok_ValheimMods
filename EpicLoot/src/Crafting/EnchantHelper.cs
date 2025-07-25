@@ -34,8 +34,9 @@ namespace EpicLoot.Crafting
         public static List<KeyValuePair<ItemDrop, int>> GetIdentifyCost(List<Tuple<ItemDrop.ItemData, int>> items, LootRoller.LootRollCategories category) {
             var costList = new Dictionary<ItemDrop, int>();
             foreach (var item in items) {
-                EpicLoot.Log($"Looking up identify cost for {item.Item1.m_shared.m_name} with rarity {item.Item1.GetRarity()} in category {category}");
-                var identifyCosts = EnchantCostsHelper.GetIdentifyCosts(category, item.Item1.GetRarity());
+                Enum.TryParse<Heightmap.Biome>(item.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
+                EpicLoot.Log($"Looking up identify cost for {item.Item1.m_shared.m_name} with rarity {item.Item1.GetRarity()} in category {category} and biome {biome}");
+                var identifyCosts = EnchantCostsHelper.GetIdentifyCosts(category, item.Item1.GetRarity(), biome);
                 if (identifyCosts.Count == 0) { continue; }
                 foreach (var costEntry in identifyCosts) {
                     EpicLoot.Log($"Adding identify cost for {item.Item1.m_shared.m_name} ({item.Item1.m_shared.m_name}) - {costEntry.Item} x{costEntry.Amount}");
