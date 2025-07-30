@@ -1,14 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot.MagicItemEffects
 {
+    [HarmonyPatch(typeof(Attack))]
+    public static class ExplodingArrow_Patch {
+        //[HarmonyDebug]
+        [HarmonyTranspiler]
+        [HarmonyPatch(nameof(Attack.FireProjectileBurst))]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions /*, ILGenerator generator*/)
+        {
+            var codeMatcher = new CodeMatcher(instructions);
+            codeMatcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Attack), nameof(Attack.m_spawnOnHit)))
+                ).Advance(2).InsertAndAdvance(
+                Transpilers.EmitDelegate(UpdateProjectileHit),
+                new CodeInstruction(OpCodes.Ldloc_S, (byte)23),
+                new CodeInstruction(OpCodes.Ldarg_0)
+                ).ThrowIfNotMatch("Unable to patch Exploding Arrows AOE.");
+            return codeMatcher.Instructions();
+        }
+
+        private static void UpdateProjectileHit(Projectile shot, Attack instance) {
+            if (Player.m_localPlayer != null && instance.m_character == Player.m_localPlayer && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue, 0.01f)) {
+                shot.gameObject.GetComponent<ZNetView>().GetZDO().Set("el-aw", effectValue);
+            }
+        }
+    }
+
+
     [HarmonyPatch(typeof(Projectile), nameof(Projectile.Awake))]
     public class RPC_ExplodingArrow_Projectile_Awake_Patch
     {
@@ -82,65 +108,65 @@ namespace EpicLoot.MagicItemEffects
         }
     }
 
-    [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-    public class ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch
-    {
-        private static GameObject ChooseAttackProjectile(GameObject defaultAttackProjectile, Attack attack)
-        {
-            if (attack.m_character == Player.m_localPlayer &&
-                Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue))
-            {
-                return ObjectDB.instance.GetItemPrefab("ArrowFire").GetComponent<ItemDrop>().m_itemData.m_shared.m_attack.m_attackProjectile;
-            }
+    //[HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
+    //public class ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch
+    //{
+    //    private static GameObject ChooseAttackProjectile(GameObject defaultAttackProjectile, Attack attack)
+    //    {
+    //        if (attack.m_character == Player.m_localPlayer &&
+    //            Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue))
+    //        {
+    //            return ObjectDB.instance.GetItemPrefab("ArrowFire").GetComponent<ItemDrop>().m_itemData.m_shared.m_attack.m_attackProjectile;
+    //        }
 
-            return defaultAttackProjectile;
-        }
+    //        return defaultAttackProjectile;
+    //    }
 
-        private static GameObject MarkAttackProjectile(GameObject attackProjectile, Attack attack)
-        {
-            if (attack.m_character == Player.m_localPlayer &&
-                Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float explosiveStrength, 0.01f))
-            {
-                attackProjectile.GetComponent<ZNetView>().GetZDO().Set("el-aw", explosiveStrength);
-            }
+    //    private static GameObject MarkAttackProjectile(GameObject attackProjectile, Attack attack)
+    //    {
+    //        if (attack.m_character == Player.m_localPlayer &&
+    //            Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float explosiveStrength, 0.01f))
+    //        {
+    //            attackProjectile.GetComponent<ZNetView>().GetZDO().Set("el-aw", explosiveStrength);
+    //        }
 
-            return attackProjectile;
-        }
+    //        return attackProjectile;
+    //    }
 
-        private static readonly MethodInfo AttackProjectileMarker = AccessTools.DeclaredMethod(
-            typeof(ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch), nameof(MarkAttackProjectile));
-        private static readonly MethodInfo AttackProjectileChooser = AccessTools.DeclaredMethod(
-            typeof(ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch), nameof(ChooseAttackProjectile));
-        private static readonly MethodInfo Instantiator = AccessTools.GetDeclaredMethods(typeof(Object))
-            .Where(m => m.Name == "Instantiate" && m.GetGenericArguments().Length == 1)
-            .Select(m => m.MakeGenericMethod(typeof(GameObject)))
-            .First(m => m.GetParameters().Length == 3 && m.GetParameters()[1].ParameterType == typeof(Vector3));
+    //    private static readonly MethodInfo AttackProjectileMarker = AccessTools.DeclaredMethod(
+    //        typeof(ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch), nameof(MarkAttackProjectile));
+    //    private static readonly MethodInfo AttackProjectileChooser = AccessTools.DeclaredMethod(
+    //        typeof(ExplodingArrowInstantiation_Attack_FireProjectileBurst_Patch), nameof(ChooseAttackProjectile));
+    //    private static readonly MethodInfo Instantiator = AccessTools.GetDeclaredMethods(typeof(Object))
+    //        .Where(m => m.Name == "Instantiate" && m.GetGenericArguments().Length == 1)
+    //        .Select(m => m.MakeGenericMethod(typeof(GameObject)))
+    //        .First(m => m.GetParameters().Length == 3 && m.GetParameters()[1].ParameterType == typeof(Vector3));
 
-        [UsedImplicitly]
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var result = new List<CodeInstruction>();
-            var searchLdLoc = -1;
-            OpCode[] ldLocOps = {OpCodes.Ldloc_0, OpCodes.Ldloc_1, OpCodes.Ldloc_2, OpCodes.Ldloc_3, OpCodes.Ldloc_S};
-            foreach (var instruction in instructions.Reverse())
-            {
-                if (instruction.opcode == OpCodes.Call && instruction.OperandIs(Instantiator))
-                {
-                    result.Add(new CodeInstruction(OpCodes.Call, AttackProjectileMarker));
-                    result.Add(new CodeInstruction(OpCodes.Ldarg_0)); // this
-                    searchLdLoc = 3;
-                }
+    //    [UsedImplicitly]
+    //    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    //    {
+    //        var result = new List<CodeInstruction>();
+    //        var searchLdLoc = -1;
+    //        OpCode[] ldLocOps = {OpCodes.Ldloc_0, OpCodes.Ldloc_1, OpCodes.Ldloc_2, OpCodes.Ldloc_3, OpCodes.Ldloc_S};
+    //        foreach (var instruction in instructions.Reverse())
+    //        {
+    //            if (instruction.opcode == OpCodes.Call && instruction.OperandIs(Instantiator))
+    //            {
+    //                result.Add(new CodeInstruction(OpCodes.Call, AttackProjectileMarker));
+    //                result.Add(new CodeInstruction(OpCodes.Ldarg_0)); // this
+    //                searchLdLoc = 3;
+    //            }
 
-                if (ldLocOps.Contains(instruction.opcode) && --searchLdLoc == 0)
-                {
-                    result.Add(new CodeInstruction(OpCodes.Call, AttackProjectileChooser));
-                    result.Add(new CodeInstruction(OpCodes.Ldarg_0)); // this
-                }
+    //            if (ldLocOps.Contains(instruction.opcode) && --searchLdLoc == 0)
+    //            {
+    //                result.Add(new CodeInstruction(OpCodes.Call, AttackProjectileChooser));
+    //                result.Add(new CodeInstruction(OpCodes.Ldarg_0)); // this
+    //            }
 
-                result.Add(instruction);
-            }
+    //            result.Add(instruction);
+    //        }
 
-            return ((IEnumerable<CodeInstruction>) result).Reverse();
-        }
-    }
+    //        return ((IEnumerable<CodeInstruction>) result).Reverse();
+    //    }
+    //}
 }

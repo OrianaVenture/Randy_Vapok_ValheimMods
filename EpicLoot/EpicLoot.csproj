@@ -129,28 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\*.json" />
     <EmbeddedResource Include="localizations\English.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\abilities.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\adventuredata.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\enchantcosts.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\enchantingupgrades.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\iteminfo.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\itemnames.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\legendaries.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\loottables.json" />
     <EmbeddedResource Include="config\overhauls\balanced\magiceffects.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\materialconversions.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\recipes.json" />
-    <EmbeddedResource Include="config\overhauls\balanced\abilities.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\adventuredata.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\enchantcosts.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\enchantingupgrades.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\iteminfo.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\itemnames.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\legendaries.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\loottables.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\magiceffects.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\materialconversions.yaml" />
-    <EmbeddedResource Include="config\overhauls\balanced\recipes.yaml" />
+    <EmbeddedResource Include="config\overhauls\minimal\magiceffects.json" />
+    <EmbeddedResource Include="config\overhauls\legendary\magiceffects.json" />
     <None Include="info.md" />
     <None Include="packages.config" />
     <None Include="thunderstore\manifest.json" />
@@ -177,14 +158,8 @@
     <Reference Include="Jotunn, Version=2.24.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\JotunnLib.2.24.3\lib\net462\Jotunn.dll</HintPath>
     </Reference>
-    <Reference Include="YamlDotNet, Version=16.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.16.3.0\lib\net47\YamlDotNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="config\overhauls\legacy\" />
-    <Folder Include="config\overhauls\vanilla\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />

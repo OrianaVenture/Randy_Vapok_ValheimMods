@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HarmonyLib;
-using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -41,9 +39,10 @@ namespace EpicLoot.MagicItemEffects
                 return;
             }
             
-            float elementalResistance = player.GetTotalActiveMagicEffectValue(MagicEffectType.AddElementalResistancePercentage, 0.01f);
-            
-            float physicalResistance = player.GetTotalActiveMagicEffectValue(MagicEffectType.AddPhysicalResistancePercentage, 0.01f);
+            float elementalResistance = GetCappedResistanceValue(player, MagicEffectType.AddElementalResistancePercentage);
+            float physicalResistance = GetCappedResistanceValue(player, MagicEffectType.AddPhysicalResistancePercentage);
+
+            //EpicLoot.Log($"Applying resistances for {player.GetPlayerName()} - Elemental: {elementalResistance}, Physical: {physicalResistance}");
 
             // elemental resistances
             hit.m_damage.m_fire *= GetCappedResistanceValue(player, MagicEffectType.AddFireResistancePercentage, elementalResistance);
@@ -62,9 +61,12 @@ namespace EpicLoot.MagicItemEffects
         private static float GetCappedResistanceValue(Player player, string effect, float additional_resistance = 0f) {
             Dictionary<string, float> cfg = MagicItemEffectDefinitions.GetEffectConfig(effect);
             // No config for this type, default it (uncapped)
-            if (cfg == null || !cfg.ContainsKey("MaxResistance")) {  return player.GetTotalActiveMagicEffectValue(effect, 0.01f); }
-
-            return Mathf.Min(player.GetTotalActiveMagicEffectValue(effect, 0.01f) + additional_resistance, cfg["MaxResistance"]);
+            if (cfg == null || !cfg.ContainsKey("MaxResistance")) { return (1f - player.GetTotalActiveMagicEffectValue(effect, 0.01f)); }
+            // Config present, with a cap value
+            float resistance = player.GetTotalActiveMagicEffectValue(effect, 0.01f) + additional_resistance;
+            if (resistance > cfg["MaxResistance"]) { resistance = cfg["MaxResistance"]; }
+            EpicLoot.Log($"Capped resistance for {effect} is {resistance}");
+            return (1f - resistance);
         }
     }
 }

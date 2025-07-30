@@ -87,10 +87,9 @@ namespace EpicLoot.GatedItemType
                     {
                         if (AllItemsWithDetails.ContainsKey(item))
                         {
-                            EpicLoot.Log($"{item} already registered, merging boss keys.");
                             List<string> reqBosses = AllItemsWithDetails[item].RequiredBosses;
-                            if (!reqBosses.Contains(itemByBoss.Key))
-                            {
+                            if (!reqBosses.Contains(itemByBoss.Key)) {
+                                EpicLoot.Log($"{item} already registered, merging boss keys.");
                                 reqBosses.Add(itemByBoss.Key);
                             }
 

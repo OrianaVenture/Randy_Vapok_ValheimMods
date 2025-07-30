@@ -78,6 +78,12 @@ namespace EpicLoot.Patching
         ];
         public static MultiValueDictionary<string, Patch> PatchesPerFile = new MultiValueDictionary<string, Patch>();
 
+        public static void ReloadAndApplyAllPatches()
+        {
+            PatchesPerFile.Clear();
+            LoadAndApplyAllPatches();
+        }
+
         public static void LoadAndApplyAllPatches()
         {
             LoadAllPatches();
@@ -263,7 +269,7 @@ namespace EpicLoot.Patching
                 ApplyPatch(sourceJson, patch);
             }
 
-            var output = sourceJson.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
+            var output = sourceJson.ToString(Formatting.Indented);
             return output;
         }
 
@@ -282,14 +288,14 @@ namespace EpicLoot.Patching
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
-            string yaml_file = ELConfig.GetOverhaulDirectoryPath() + "\\" + filename + ".yaml";
-            EpicLoot.Log($"Loading config base file {yaml_file}");
+            string base_cfg_file = ELConfig.GetOverhaulDirectoryPath() + "\\" + filename + ".json";
+            EpicLoot.Log($"Loading config base file {base_cfg_file}");
             try {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
-                var base_json_string = JObject.Parse(ELConfig.yamlserializerforRPC.Serialize(ELConfig.yamldeserializer.Deserialize(File.ReadAllText(yaml_file))));
+                var base_json_string = JObject.Parse(File.ReadAllText(base_cfg_file));
                 var patchedString = BuildPatchedConfig(filename, base_json_string);
                 // We only need to write the file result if its valid. If this file is changed it will trigger a reload of the config.
-                File.WriteAllText(yaml_file, ELConfig.yamlserializer.Serialize(ELConfig.yamldeserializer.Deserialize(patchedString)));
+                File.WriteAllText(base_cfg_file, patchedString);
             } catch (Exception e) {
                 EpicLoot.LogWarningForce($"Patching config file {filename} failed." + e);
             }
@@ -433,11 +439,11 @@ namespace EpicLoot.Patching
                     {
                         var mergeSettings = new JsonMergeSettings
                         {
-                            MergeArrayHandling = MergeArrayHandling.Concat,
+                            // Do not create duplicates when appending arrays
+                            MergeArrayHandling = MergeArrayHandling.Union,
                             MergeNullValueHandling = MergeNullValueHandling.Ignore
                         };
                         ((JArray)token).Merge(patch.Value, mergeSettings);
-
                     }
                     else
                     {

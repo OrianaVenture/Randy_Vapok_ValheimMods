@@ -11,23 +11,30 @@ namespace EpicLoot.MagicItemEffects
     {
         private static float richesValue = 0f;
         private static float lastUpdateCheck = 0;
-        public static readonly Dictionary<GameObject, int> DefaultRichesTable = new Dictionary<GameObject, int> {
-            { ObjectDB.instance.GetItemPrefab("SilverNecklace"), 30 },
-            { ObjectDB.instance.GetItemPrefab("Ruby"), 20 },
-            { ObjectDB.instance.GetItemPrefab("AmberPearl"), 10 },
-            { ObjectDB.instance.GetItemPrefab("Amber"), 5 },
-            { ObjectDB.instance.GetItemPrefab("Coins"), 1 },
+        public static readonly Dictionary<string, float> DefaultRichesTable = new Dictionary<string, float> {
+            { "SilverNecklace", 30 },
+            { "Ruby", 20 },
+            { "AmberPearl", 10 },
+            { "Amber", 5 },
+            { "Coins", 1 },
         };
 
-        public static Dictionary<GameObject, int> RichesTable = DefaultRichesTable;
+        public static Dictionary<GameObject, int> RichesTable = new Dictionary<GameObject, int>();
 
         public static void UpdateRichesOnEffectSetup() {
             EpicLoot.Log("Updating riches table.");
+
             if (MagicItemEffectDefinitions.AllDefinitions.Count > 0 && MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.Riches)) {
-                var richesConfig = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config;
-                if (richesConfig != null && richesConfig.Count > 0) {
-                    UpdateRichesTable(richesConfig);
+                if (MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config != null && MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config.Count > 0) {
+                    var richesConfig = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config;
+                    if (richesConfig.Count > 0) {
+                        UpdateRichesTable(richesConfig);
+                    }
                 }
+            }
+            // Safety fallthrough in case no riches config is set
+            if (RichesTable.Count == 0) {
+                UpdateRichesTable(DefaultRichesTable);
             }
         }
 
@@ -48,7 +55,12 @@ namespace EpicLoot.MagicItemEffects
             RichesTable = newRichesTable;
 
             if (RichesTable.Count == 0) {
-                RichesTable = DefaultRichesTable;
+                EpicLoot.Log($"Riches Table using defaults.");
+                foreach (KeyValuePair<string, float> kv in DefaultRichesTable) {
+                    if (ObjectDB.instance.TryGetItemPrefab(kv.Key, out GameObject itemPrefab)) {
+                        RichesTable.Add(itemPrefab, Mathf.RoundToInt(kv.Value));
+                    }
+                }
             }
         }
 
@@ -78,6 +90,11 @@ namespace EpicLoot.MagicItemEffects
             float richesActivateRoll = Random.Range(0f, 1f);
             EpicLoot.Log($"Riches roll amount: {richesActivateRoll} < {richesRandomRoll}");
             if (richesActivateRoll < richesRandomRoll) {
+
+                // Riches table not setup, so we need to update it
+                if (RichesTable.Count == 0) {
+                    UpdateRichesOnEffectSetup();
+                }
 
                 // Randomly select _one_ loot item from the list, scale it based on the riches value, and add it to the drop list
                 int selected = Random.Range(0, RichesTable.Count()-1);

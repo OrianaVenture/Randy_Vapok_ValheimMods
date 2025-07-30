@@ -205,7 +205,8 @@ namespace EpicLoot
 
         private static void RegisterMagicEffectEvents()
         {
-            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
+            // This needs to not run until after the game is loaded, otherwise it will not be able to find the ObjectDB
+            //MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)

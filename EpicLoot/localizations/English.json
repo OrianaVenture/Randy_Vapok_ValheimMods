@@ -1,4 +1,16 @@
 ﻿{
+  "el_welcome_thank_you": "Thank you for playing",
+  "el_welcome_version": "Epic Loot ",
+  "el_welcome_content_pt1": "We hope you enjoy Epic loot! Epic loot is maintained by a community of modders and dedicated players, thank you to everyone that has contributed!",
+  "el_welcome_content_pt2": "There are some big changes since the last time you played Epic Loot <color=#ffd700>Unidentified Items</color>, <color=#ba55d3>Runes</color> and config presets.",
+  "el_welcome_content_pt3": "You may discover the first two features as you progress through the game. To improve your experiance, its recommended to pick an overhaul configuration now (default balanced).",
+  "el_welcome_content_pt4": "There are three available default overhaul configurations, which each providing a different level of power. Next to each is the expected damage and hp bonus you may find:\n - Minimal    hp +(1 - 10), dmg +(1-6)% \n - Balanced    hp +(1-18), dmg +(1-12)% \n - Legendary    hp +(1-28), dmg +(1-20)%",
+  "el_join_discord_button": "Join the discord!",
+  "el_patch_notes_button": "View Patch Notes",
+  "el_overhaul_legendary": "Legendary",
+  "el_overhaul_balanced": "Balanced",
+  "el_overhaul_minimal": "Minimal",
+
   "mod_epicloot_craftingmaterial": "crafting material",
   "mod_epicloot_set": "Set",
 

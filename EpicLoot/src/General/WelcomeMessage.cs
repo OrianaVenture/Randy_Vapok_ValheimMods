@@ -1,5 +1,6 @@
 ﻿using EpicLoot.Config;
 using HarmonyLib;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,24 +8,28 @@ namespace EpicLoot
 {
     public class WelcomeMessage : MonoBehaviour
     {
-        public const string PlayerPrefKey = "el-wm";
-        public const int VersionNumber = 1;
-
-        public static bool PlayerHasSeenMessage()
-        {
-            return PlayerPrefs.GetInt(PlayerPrefKey, 0) >= VersionNumber;
-        }
-
-        public static void SetPlayerHasSeenMessage()
-        {
-            PlayerPrefs.SetInt(PlayerPrefKey, VersionNumber);
+        public static void SetPlayerHasSeenMessage() {
+            ELConfig.ShowWelcomeMessage.Value = false;
         }
 
         public void Awake()
         {
+            var titleText = transform.Find("Title")?.GetComponent<Text>();
+            titleText.text = Localization.instance.Localize(titleText.text) + $"{EpicLoot.Version}";
+
+            var contentText = transform.Find("Content")?.GetComponent<Text>();
+            contentText.text = Localization.instance.Localize(contentText.text);
+
             var discordButton = transform.Find("DiscordButton")?.GetComponent<Button>();
             var patchNotesButton = transform.Find("PatchNotesButton")?.GetComponent<Button>();
             var closeButton = transform.Find("CloseButton")?.GetComponent<Button>();
+
+            var overhaulMinimalButton = transform.Find("overhaul_minimal")?.GetComponent<Button>();
+            overhaulMinimalButton?.onClick.AddListener(SetOverhaulMinimalAndClick);
+            var overhaulBalancedButton = transform.Find("overhaul_balanced")?.GetComponent<Button>();
+            overhaulBalancedButton?.onClick.AddListener(SetOverhaulBalancedAndClick);
+            var overhaulLegendaryButton = transform.Find("overhaul_legendary")?.GetComponent<Button>();
+            overhaulLegendaryButton?.onClick.AddListener(SetOverhaulLegendaryAndClick);
 
             if (EpicLoot.HasAuga)
             {
@@ -48,14 +53,14 @@ namespace EpicLoot
 
         public void OnJoinDiscordClick()
         {
-            Application.OpenURL("https://discord.gg/randyknappmods");
-            SetPlayerHasSeenMessage();
-            Destroy(gameObject);
+            Application.OpenURL("https://discord.gg/ZNhYeavv3C");
+            Close();
         }
 
-        public static void OnPatchNotesClick()
+        public void OnPatchNotesClick()
         {
-            Application.OpenURL("https://github.com/RandyKnapp/ValheimMods/blob/main/EpicLoot/patchnotes.md");
+            Application.OpenURL("https://github.com/OrianaVenture/Randy_Vapok_ValheimMods/blob/main/EpicLoot/CHANGELOG.md");
+            Close();
         }
 
         public void Close()
@@ -63,6 +68,34 @@ namespace EpicLoot
             SetPlayerHasSeenMessage();
             Destroy(gameObject);
         }
+
+        public void SetOverhaulBalancedAndClick()
+        {
+            ELConfig.BalanceConfigurationType.Value = "balanced";
+            OnOverhaulButtomClick();
+            Close();
+        }
+
+        public void SetOverhaulMinimalAndClick()
+        {
+            ELConfig.BalanceConfigurationType.Value = "minimal";
+            OnOverhaulButtomClick();
+            Close();
+        }
+
+        public void SetOverhaulLegendaryAndClick()
+        {
+            ELConfig.BalanceConfigurationType.Value = "legendary";
+            OnOverhaulButtomClick();
+            Close();
+        }
+
+        public void OnOverhaulButtomClick() {
+            string basecfglocation = ELConfig.GetOverhaulDirectoryPath() + '\\' + "magiceffects.json";
+            var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(ELConfig.GetDefaultEmbeddedFileLocation("magiceffects.json"));
+            File.WriteAllText(basecfglocation, overhaulfiledata);
+        }
+
     }
 
     [HarmonyPatch(typeof(FejdStartup), nameof(FejdStartup.Start))]
@@ -70,7 +103,7 @@ namespace EpicLoot
     {
         public static void Postfix(FejdStartup __instance)
         {
-            if (ELConfig.AlwaysShowWelcomeMessage.Value || !WelcomeMessage.PlayerHasSeenMessage())
+            if (ELConfig.ShowWelcomeMessage.Value)
             {
                 var welcomeMessage = Object.Instantiate(EpicLoot.Assets.WelcomMessagePrefab, __instance.transform, false);
                 welcomeMessage.name = "WelcomeMessage";

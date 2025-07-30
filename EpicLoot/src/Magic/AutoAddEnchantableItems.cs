@@ -1,6 +1,8 @@
-﻿using EpicLoot.Config;
+﻿using EpicLoot.Adventure;
+using EpicLoot.Config;
 using EpicLoot.GatedItemType;
 using Jotunn.Managers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -151,16 +153,83 @@ namespace EpicLoot.src.Magic
                 }
             }
 
+            if (ELConfig.AutoAddRemoveEquipmentFromVendor.Value)
+            {
+                Dictionary<string, SecretStashItemConfig> existingVendorItems = new Dictionary<string, SecretStashItemConfig>();
+                List<string> foundItemEntry = new List<string>();
 
+                // Add all of the items currently in the vendor items list
+                foreach (SecretStashItemConfig gamble in AdventureDataManager.Config.Gamble.GambleCosts) {
+                    if (existingVendorItems.ContainsKey(gamble.Item)) {
+                        EpicLoot.LogWarning($"Item {gamble.Item} is already in the vendor items list, skipping duplicate.");
+                        continue;
+                    }
+                    existingVendorItems.Add(gamble.Item, gamble);
+                }
+
+                // Check the iteminfo configs for existing and new items
+                foreach (ItemTypeInfo itemType in newConfig) {
+                    foreach (KeyValuePair<string, List<string>> bossEntry in itemType.ItemsByBoss) {
+                        foreach (string itemName in bossEntry.Value) {
+                            if (existingVendorItems.ContainsKey(itemName)) {
+                                // Found this entry
+                                foundItemEntry.Add(itemName);
+                            } else {
+                                existingVendorItems.Add(itemName, new SecretStashItemConfig() { Item = itemName, CoinsCost = DetermineCoinsCostForItem(bossEntry.Key) });
+                            }
+                        }
+                    }
+                }
+
+                // Remove Items which are not found
+                List<SecretStashItemConfig> newGambleItems = existingVendorItems.Where(x => foundItemEntry.Contains(x.Key)).Select(x => x.Value).ToList();
+
+                AdventureDataConfig AdventureDataConfigReplacement = AdventureDataManager.Config;
+                AdventureDataConfigReplacement.Gamble.GambleCosts = newGambleItems;
+
+                // Write out the new config, which will trigger a reload of the config
+                try {
+                    string contents = JsonConvert.SerializeObject(AdventureDataConfigReplacement, Formatting.Indented);
+                    string overhaul_file_location = ELConfig.GetOverhaulDirectoryPath() + '\\' + "adventuredata.json";
+                    File.WriteAllText(overhaul_file_location, contents);
+                }
+                catch (Exception e) {
+                    EpicLoot.LogError($"Failed to auto-add vendor items to adventuredata.json: {e.Message}");
+                }
+
+            }
 
             // Write out the new config, which will trigger a reload of the config
             try {
-                string contents = ELConfig.yamlserializer.Serialize(new ItemInfoConfig() { ItemInfo = newConfig });
-                string overhaul_file_location = ELConfig.GetOverhaulDirectoryPath() + '\\' + "iteminfo.yaml";
+                string contents = JsonConvert.SerializeObject(new ItemInfoConfig() { ItemInfo = newConfig }, Formatting.Indented);
+                string overhaul_file_location = ELConfig.GetOverhaulDirectoryPath() + '\\' + "iteminfo.json";
                 File.WriteAllText(overhaul_file_location, contents);
             } catch (Exception e) {
-                EpicLoot.LogError($"Failed to auto-add items to iteminfo.yaml: {e.Message}");
+                EpicLoot.LogError($"Failed to auto-add items to iteminfo.json: {e.Message}");
                 return;
+            }
+        }
+
+        private static int DetermineCoinsCostForItem(string bosskey) {
+            switch (bosskey) {
+                case "none":
+                    return 50;
+                case "defeated_eikthyr":
+                    return 100;
+                case "defeated_gdking":
+                    return 400;
+                case "defeated_bonemass":
+                    return 600;
+                case "defeated_dragon":
+                    return 900;
+                case "defeated_goblinking":
+                    return 1100;
+                case "defeated_queen":
+                    return 1300;
+                case "defeated_fader":
+                    return 1600;
+                default:
+                    return 999;
             }
         }
 
