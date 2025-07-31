@@ -58,6 +58,7 @@ namespace EpicLoot
         public static string ModifyMovementSpeed = nameof(ModifyMovementSpeed);
         public static string ModifySprintStaminaUse = nameof(ModifySprintStaminaUse);
         public static string ModifyNoise = nameof(ModifyNoise);
+        public static string ModifyBuildDistance = nameof(ModifyBuildDistance);
         public static string ModifyDodgeStaminaUse = nameof(ModifyDodgeStaminaUse);
         public static string ModifyJumpStaminaUse = nameof(ModifyJumpStaminaUse);
         public static string ModifyAttackStaminaUse = nameof(ModifyAttackStaminaUse);
