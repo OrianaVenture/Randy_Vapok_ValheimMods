@@ -397,7 +397,7 @@ namespace EpicLoot.Config
         }
 
         public static string GetDefaultEmbeddedFileLocation(string configName) {
-            string embeddedcfgpath = "EpicLoot.config.overhauls." + configName;
+            string embeddedcfgpath = "EpicLoot.config." + configName;
             if (configName == "magiceffects.json") {
                 embeddedcfgpath = "EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + configName;
             }

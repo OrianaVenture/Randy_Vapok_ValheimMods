@@ -126,7 +126,7 @@ namespace EpicLoot
                 return;
             }
 
-            EpicLoot.Log($"Added LootTable: {key}");
+            //EpicLoot.Log($"Added LootTable: {key}");
             if (!LootTables.ContainsKey(key))
             {
                 LootTables.Add(key, new List<LootTable>());

@@ -326,6 +326,16 @@ namespace EpicLoot
         public string Ability;
         public Dictionary<string, float> Config = new Dictionary<string, float>();
 
+        public string GetDescriptionTextWithConfig() {
+            string description = Description;
+            if (Config != null && Config.Count > 0) {
+                foreach(var kvp in Config) {
+                    description += $" {kvp.Key}: {kvp.Value}";
+                }
+            }
+            return description;
+        }
+
         public List<string> GetAllowedItemTypes()
         {
             return Requirements?.AllowedItemTypes ?? new List<string>();

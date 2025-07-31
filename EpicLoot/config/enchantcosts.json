@@ -183,6 +183,101 @@
       ]
     },
     {
+      "IsMagic": true,
+      "ItemTypes": [ "Misc" ],
+      "Rarity": "Magic",
+      "Products": [
+        {
+          "Item": "DustMagic",
+          "Amount": 1
+        },
+        {
+          "Item": "ReagentMagic",
+          "Amount": 1
+        },
+        {
+          "Item": "EssenceMagic",
+          "Amount": 1
+        }
+      ]
+    },
+    {
+      "IsMagic": true,
+      "ItemTypes": [ "Misc" ],
+      "Rarity": "Rare",
+      "Products": [
+        {
+          "Item": "DustRare",
+          "Amount": 1
+        },
+        {
+          "Item": "ReagentRare",
+          "Amount": 1
+        },
+        {
+          "Item": "EssenceRare",
+          "Amount": 1
+        }
+      ]
+    },
+    {
+      "IsMagic": true,
+      "ItemTypes": [ "Misc" ],
+      "Rarity": "Epic",
+      "Products": [
+        {
+          "Item": "DustEpic",
+          "Amount": 1
+        },
+        {
+          "Item": "ReagentEpic",
+          "Amount": 1
+        },
+        {
+          "Item": "EssenceEpic",
+          "Amount": 1
+        }
+      ]
+    },
+    {
+      "IsMagic": true,
+      "ItemTypes": [ "Misc" ],
+      "Rarity": "Legendary",
+      "Products": [
+        {
+          "Item": "DustLegendary",
+          "Amount": 1
+        },
+        {
+          "Item": "ReagentLegendary",
+          "Amount": 1
+        },
+        {
+          "Item": "EssenceLegendary",
+          "Amount": 1
+        }
+      ]
+    },
+    {
+      "IsMagic": true,
+      "ItemTypes": [ "Misc" ],
+      "Rarity": "Mythic",
+      "Products": [
+        {
+          "Item": "DustMythic",
+          "Amount": 1
+        },
+        {
+          "Item": "ReagentMythic",
+          "Amount": 1
+        },
+        {
+          "Item": "EssenceMythic",
+          "Amount": 1
+        }
+      ]
+    },
+    {
       "ItemTypes": [ "Trophy" ],
       "ItemNames": [ "$item_trophy_boar", "$item_trophy_deer", "$item_trophy_greydwarf", "$item_trophy_neck", "$item_trophy_skeleton", "$item_trophy_skeletonpoison" ],
       "Products": [

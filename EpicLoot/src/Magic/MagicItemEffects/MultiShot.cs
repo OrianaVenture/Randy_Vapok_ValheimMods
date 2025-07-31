@@ -44,6 +44,19 @@ namespace EpicLoot.MagicItemEffects
                 }
                 __instance.GetWeapon().m_shared.m_damages = weaponDamage;
 
+                if (__instance.GetWeapon().m_shared.m_attack.m_attackHealth > 0) {
+                    if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Projectiles")) {
+                        int projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * Mathf.RoundToInt(tripleshotcfg["Projectiles"]);
+                        // If more than 1 projectile we remove 1, as the cost for the initial item is already paid
+                        if (projectiles > 1) { projectiles -= 1; }
+                        player.UseHealth(__instance.GetWeapon().m_shared.m_attack.m_attackHealth *= projectiles);
+                    }
+                    else {
+                        player.UseHealth(__instance.GetWeapon().m_shared.m_attack.m_attackHealth *= 2);
+                    }
+                     
+                }
+
                 // Modify the shots accuracy, if its not defined, no accuracy change
                 if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Accuracy"))
                 {

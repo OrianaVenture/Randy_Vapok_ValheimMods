@@ -12,7 +12,9 @@ namespace EpicLoot_UnityLib
         public Text AvailableEffectsText;
         public Text AvailableEffectsHeader;
         public Scrollbar AvailableEffectsScrollbar;
-        public List<Toggle> AugmentSelectors;
+
+        public RectTransform EnchantList;
+        public GameObject EnchantmentListPrefab;
 
         [Header("Cost")]
         public Text CostLabel;
@@ -33,26 +35,26 @@ namespace EpicLoot_UnityLib
 
         private int _augmentIndex;
         private GameObject _choiceDialog;
+        private List<Toggle> _AugmentSelectors = new List<Toggle>();
 
         public override void Awake()
         {
             base.Awake();
-
-            for (var index = 0; index < AugmentSelectors.Count; index++)
-            {
-                var augmentSelector = AugmentSelectors[index];
-                augmentSelector.onValueChanged.AddListener(OnAugmentSelectorToggled);
-            }
         }
 
         [UsedImplicitly]
         public void OnEnable()
         {
-            _augmentIndex = -1;
-            foreach (var augmentSelector in AugmentSelectors)
+
+            if (EnchantList.childCount > 0)
             {
-                augmentSelector.isOn = false;
+                foreach (Transform child in EnchantList)
+                {
+                    Destroy(child.gameObject);
+                }
             }
+            _AugmentSelectors.Clear();
+            _augmentIndex = -1;
 
             if (AvailableEffectsHeader != null)
             {
@@ -83,9 +85,9 @@ namespace EpicLoot_UnityLib
             {
                 if (ZInput.GetButtonDown("JoyButtonY"))
                 {
-                    var activeAugmentCount = AugmentSelectors.Count(x => x.isActiveAndEnabled);
+                    var activeAugmentCount = _AugmentSelectors.Count();
                     var nextAugmentIndex = (_augmentIndex + 1) % activeAugmentCount;
-                    AugmentSelectors[nextAugmentIndex].isOn = true;
+                    _AugmentSelectors[nextAugmentIndex].isOn = true;
                     ZInput.ResetButtonStatus("JoyButtonY");
                 }
 
@@ -120,33 +122,10 @@ namespace EpicLoot_UnityLib
             }
         }
 
-        public void OnAugmentSelectorToggled(bool isOn)
-        {
-            if (isOn)
-            {
-                for (var index = 0; index < AugmentSelectors.Count; index++)
-                {
-                    var selector = AugmentSelectors[index];
-                    if (selector.isOn)
-                    {
-                        SelectAugmentIndex(index);
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                if (!AugmentSelectors.Any(x => x.isOn))
-                {
-                    SelectAugmentIndex(-1);
-                }
-            }
-        }
-
         public void SelectAugmentIndex(int index)
         {
-            if (index != _augmentIndex)
-            {
+            if (index != _augmentIndex) {
+                Debug.Log($"Setting augment index {index}");
                 _augmentIndex = index;
                 OnAugmentIndexChanged();
             }
@@ -162,12 +141,10 @@ namespace EpicLoot_UnityLib
                 CostLabel.enabled = false;
                 CostList.SetItems(new List<IListElement>());
                 _augmentIndex = -1;
-                foreach (var augmentSelector in AugmentSelectors)
-                {
-                    augmentSelector.isOn = false;
-                }
                 return;
             }
+
+            
 
             if (_augmentIndex < 0)
             {
@@ -179,8 +156,9 @@ namespace EpicLoot_UnityLib
             else
             {
                 var item = selectedItem.Item1.GetItem();
+                Debug.Log($"OnAugmentIndexChanged called with index {_augmentIndex} for item {item}");
                 var info = GetAvailableEffects(item, _augmentIndex);
-
+                
                 AvailableEffectsText.text = info;
                 ScrollEnchantInfoToTop();
 
@@ -252,35 +230,8 @@ namespace EpicLoot_UnityLib
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             var item = entry?.Item1.GetItem();
-            var augmentableEffects = GetAugmentableEffects(item, false);
 
-            if (augmentableEffects.Count > AugmentSelectors.Count)
-            {
-                Debug.LogError($"[Epic Loot] ERROR: Too many magic effects to show! (Max: {AugmentSelectors.Count})");
-            }
-
-            for (var index = 0; index < AugmentSelectors.Count; index++)
-            {
-                var selector = AugmentSelectors[index];
-                if (selector == null)
-                {
-                    continue;
-                }
-
-                selector.SetIsOnWithoutNotify(index == 0);
-                selector.gameObject.SetActive(item != null && index < augmentableEffects.Count);
-                if (!selector.gameObject.activeSelf)
-                {
-                    continue;
-                }
-
-                var selectorText = selector.GetComponentInChildren<Text>();
-                if (selectorText != null)
-                {
-                    selectorText.text = augmentableEffects[index].Item1;
-                    selector.interactable = augmentableEffects[index].Item2;
-                }
-            }
+            RefreshAugmentSelectors();
 
             if (item == null)
             {
@@ -294,30 +245,44 @@ namespace EpicLoot_UnityLib
         private void RefreshAugmentSelectors()
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            Debug.Log($"Refreshing augment selectors for {entry} selectors");
+            // Clear the enchantment list
+            if (EnchantList.childCount > 0) {
+                foreach (Transform child in EnchantList) {
+                    Destroy(child.gameObject);
+                }
+            }
+            _AugmentSelectors.Clear();
+            Debug.Log($"Cleared lists");
+            if (entry == null || entry.Item1 == null) {
+                return;
+            }
             var item = entry?.Item1.GetItem();
+            Debug.Log($"Getting augment effects for {item}");
             var augmentableEffects = GetAugmentableEffects(item, false);
 
-            for (var index = 0; index < AugmentSelectors.Count; index++)
+            Debug.Log($"Got augmentable effects {augmentableEffects.Count}");
+
+            int enchantIndex = 0;
+            foreach (var effect in augmentableEffects)
             {
-                var selector = AugmentSelectors[index];
-                if (selector == null)
-                {
-                    continue;
+                Debug.Log($"Adding enchantment {effect.Item1} at index {enchantIndex}");
+                var enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
+                var enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
+                var enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
+                _AugmentSelectors.Add(enchantmentbutton);
+                enchantmentbutton.onValueChanged.AddListener((isOn) => {
+                    if (isOn) {
+                        SelectAugmentIndex(_AugmentSelectors.IndexOf(enchantmentbutton));
+                    }
+                });
+                //if (enchantmentbutton != null) { enchantmentbutton.interactable = true; }
+                if (enchantmentElement != null) {
+                    enchantmentElement.text = effect.Item1;
                 }
-
-                selector.SetIsOnWithoutNotify(index == _augmentIndex);
-                selector.gameObject.SetActive(item != null && index < augmentableEffects.Count);
-                if (!selector.gameObject.activeSelf)
-                {
-                    continue;
-                }
-
-                var selectorText = selector.GetComponentInChildren<Text>();
-                if (selectorText != null)
-                {
-                    selectorText.text = augmentableEffects[index].Item1;
-                    selector.interactable = augmentableEffects[index].Item2;
-                }
+                enchantmentListElement.SetActive(true);
+                
+                enchantIndex++;
             }
         }
 
@@ -335,7 +300,7 @@ namespace EpicLoot_UnityLib
         public override void Lock()
         {
             base.Lock();
-            foreach (var selector in AugmentSelectors)
+            foreach (var selector in _AugmentSelectors)
             {
                 selector.interactable = false;
             }
@@ -344,7 +309,7 @@ namespace EpicLoot_UnityLib
         public override void Unlock()
         {
             base.Unlock();
-            foreach (var selector in AugmentSelectors)
+            foreach (var selector in _AugmentSelectors)
             {
                 selector.interactable = true;
             }
