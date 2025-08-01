@@ -12,28 +12,37 @@ public class CoinHoarder
     // Used in ItemDrop_Patch_MagicItemToolTip class to evaluate magic color of item damage numbers
     public static float GetCoinHoarderValue(Player player, float effectValue)
     {
-        if (player == null) {
+        if (player == null)
+        {
             return 1f;
         }
 
         ItemDrop.ItemData[] mcoins = player.m_inventory.GetAllItems()
                 .Where(val => val.m_dropPrefab.name == "Coins").ToArray();
 
-        if (mcoins.Length == 0) {
+        if (mcoins.Length == 0)
+        {
             return 1f;
         }
 
         float totalCoins = mcoins.Sum(coin => coin.m_stack);
-        float coinHoarderBonus = (Mathf.Log10(effectValue * totalCoins) * 5.5f / 100f) + 1f;
+        if (totalCoins <= 1000) {
+            // Linear fraction increase up till 1000 coins, then logarithmic decay increase (1.145x at 1000)
+            return (1f + totalCoins * 0.000145f);
+        }
+        float coinHoarderBonus = (Mathf.Log10(effectValue * totalCoins) * 5.5f / 150f) + 1f;
         return coinHoarderBonus;
     }
 
     public static bool HasCoinHoarder()
     {
-        if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv)) {
+        if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv))
+        {
+        {
+            coinHoarderDamageMultiplier = GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
             return true;
         }
         return false;
     }
-    
+
 }

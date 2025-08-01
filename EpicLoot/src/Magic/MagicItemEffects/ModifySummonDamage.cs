@@ -5,16 +5,22 @@ namespace EpicLoot.MagicItemEffects;
 public static class ModifySummonDamage
 {
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.Start))]
-    public static class SetupSummonDamagePatch {
-        public static void Postfix(Humanoid __instance) {
+    public static class SetupSummonDamagePatch
+    {
+        public static void Postfix(Humanoid __instance)
+        {
             // Setup the bonus damage for the summon when it is initially setup
-            if (Player.m_localPlayer != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f)) {
-                if (effectValue > 0) {
+            if (Player.m_localPlayer != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f))
+            {
+                if (effectValue > 0)
+                {
                     //EpicLoot.Log($"Setting Summon Damage bonus set {effectValue}");
                     __instance.m_nview.GetZDO().Set("el-msd", effectValue);
-                    foreach (var item in __instance.m_inventory.GetAllItems()) {
+                    foreach (var item in __instance.m_inventory.GetAllItems())
+                    {
                         //EpicLoot.Log($"Checking summon item {item.m_shared.m_name}");
-                        if (item.GetDamage().GetTotalDamage() > 0) {
+                        if (item.GetDamage().GetTotalDamage() > 0)
+                        {
                             //EpicLoot.Log($"Increasing summon item {item.m_shared.m_name} damage by {effectValue * 100}%");
                             item.m_shared.m_attack.m_damageMultiplier += effectValue;
                             item.m_shared.m_secondaryAttack.m_damageMultiplier += effectValue;
@@ -26,12 +32,15 @@ public static class ModifySummonDamage
     }
 
     [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.GiveDefaultItems))]
-    public static class ModifySummonDamage_Patch {
-        public static void Postfix(Humanoid __instance) {
+    public static class ModifySummonDamage_Patch
+    {
+        public static void Postfix(Humanoid __instance)
+        {
             // Apply Damage modification to all items in the inventory of the summon
             float summonDamageBonus = __instance.m_nview.GetZDO().GetFloat("el-msd", 0f);
             //EpicLoot.Log($"Summon Damage bonus set {summonDamageBonus}");
-            if (summonDamageBonus > 0f && !__instance.IsPlayer()) {
+            if (summonDamageBonus > 0f && !__instance.IsPlayer())
+            {
                 foreach (var item in __instance.m_inventory.GetAllItems())
                 {
                     //EpicLoot.Log($"Checking summon item {item.m_shared.m_name}");

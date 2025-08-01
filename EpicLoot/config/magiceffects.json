@@ -5717,23 +5717,23 @@
       },
       "ValuesPerRarity": {
         "Rare": {
-          "MinValue": 2,
-          "MaxValue": 5,
+          "MinValue": 4,
+          "MaxValue": 10,
           "Increment": 0.5
         },
         "Epic": {
-          "MinValue": 3,
-          "MaxValue": 7,
+          "MinValue": 10,
+          "MaxValue": 18,
           "Increment": 0.5
         },
         "Legendary": {
-          "MinValue": 4,
-          "MaxValue": 9,
+          "MinValue": 18,
+          "MaxValue": 32,
           "Increment": 0.5
         },
         "Mythic": {
-          "MinValue": 5,
-          "MaxValue": 11,
+          "MinValue": 32,
+          "MaxValue": 45,
           "Increment": 0.5
         }
       },
