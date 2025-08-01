@@ -179,10 +179,9 @@ namespace EpicLoot.GatedItemType
             if (ItemsByTypeAndBoss[itemType].ContainsKey(boss))
             {
                 List<string> items = ItemsByTypeAndBoss[itemType][boss];
-                items.shuffleList();
                 bool gated = true;
 
-                foreach (string item in items)
+                foreach (string item in items.shuffleList())
                 {
                     gated = CheckIfItemNeedsGate(mode, item);
                     if (gated)

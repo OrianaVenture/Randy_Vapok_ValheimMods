@@ -5,39 +5,20 @@ namespace EpicLoot.MagicItemEffects;
 
 public abstract class IncreaseDrop
 {
-    public string MagicEffect { get; set; }
-    public string ZDOVar { get; set; }
-
-    public void DoPrefix(HitData hit)
-    {
-        if (hit != null)
-        {
-            Player player = Player.m_localPlayer;
-            if (player != null &&
-                MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, player.GetCurrentWeapon(),
-                    MagicEffect, out float effectValue) &&
-                player.m_nview.GetZDO().GetInt(ZDOVar) != (int)effectValue)
-            {
-                EpicLoot.Log($"Setting {ZDOVar} from prefix to {(int)effectValue}");
-                player.m_nview.GetZDO().Set(ZDOVar, (int)effectValue);
-            }
-        }
-    }
-
-    public void TryDropExtraItems(Character character, DropTable dropTable, Vector3 objPosition)
+    public static void TryDropExtraItems(Character character, string effect, DropTable dropTable, Vector3 objPosition)
     {
         if (character is Player)
         {
-            int effectValue = (character as Player).m_nview.GetZDO().GetInt(ZDOVar);
+            (character as Player).HasActiveMagicEffect(effect, out float effectValue);
 
             if (effectValue > 0)
             {
-                DropExtraItems(dropTable.GetDropList(effectValue), objPosition);
+                DropExtraItems(dropTable.GetDropList(Mathf.RoundToInt(effectValue)), objPosition);
             }
         }
     }
 
-    public void DropExtraItems(List<GameObject> dropList, Vector3 objPosition)
+    public static void DropExtraItems(List<GameObject> dropList, Vector3 objPosition)
     {
         EpicLoot.Log($"DropExtraItems!");
         Vector2 vector = UnityEngine.Random.insideUnitCircle * 0.5f;

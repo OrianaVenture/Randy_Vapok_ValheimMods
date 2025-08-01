@@ -14,7 +14,7 @@ public class CoinHoarder
     {
         if (player == null)
         {
-            return 0f;
+            return 1f;
         }
 
         ItemDrop.ItemData[] mcoins = player.m_inventory.GetAllItems()
@@ -22,24 +22,25 @@ public class CoinHoarder
 
         if (mcoins.Length == 0)
         {
-            return 0f;
+            return 1f;
         }
 
         float totalCoins = mcoins.Sum(coin => coin.m_stack);
-        float coinHoarderBonus = Mathf.Log10(effectValue * totalCoins) * 8.7f;
-        return coinHoarderBonus / 100f;
+        if (totalCoins <= 1000) {
+            // Linear fraction increase up till 1000 coins, then logarithmic decay increase (1.145x at 1000)
+            return (1f + totalCoins * 0.000145f);
+        }
+        float coinHoarderBonus = (Mathf.Log10(effectValue * totalCoins) * 5.5f / 150f) + 1f;
+        return coinHoarderBonus;
     }
 
-    public static bool HasCoinHoarder(out float coinHoarderDamageMultiplier)
+    public static bool HasCoinHoarder()
     {
-        coinHoarderDamageMultiplier = 0f;
-        if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
+        if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv))
         {
-            coinHoarderDamageMultiplier = GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
             return true;
         }
-
         return false;
     }
-    
+
 }

@@ -419,7 +419,7 @@ namespace EpicLoot
             bool lightningMagic = item.HasEffect(MagicEffectType.AddLightningDamage);
             bool poisonMagic = item.HasEffect(MagicEffectType.AddPoisonDamage);
             bool spiritMagic = item.HasEffect(MagicEffectType.AddSpiritDamage);
-            bool coinHoarderMagic = CoinHoarder.HasCoinHoarder(out float coinHoarderEffectValue);
+            bool coinHoarderMagic = CoinHoarder.HasCoinHoarder();
             bool spellswordMagic = item.HasEffect(MagicEffectType.SpellSword);
             Player.m_localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, skillType);
             string str = String.Empty;

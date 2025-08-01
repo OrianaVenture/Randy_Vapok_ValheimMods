@@ -11,7 +11,7 @@ namespace EpicLoot.MagicItemEffects
             if (Player.m_localPlayer &&
                 Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
             {
-                var modifier = 1 + CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
+                var modifier = CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
                 if (modifier > 0)
                 {
                     __result.m_blunt *= modifier;

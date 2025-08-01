@@ -1,125 +1,57 @@
-using System.Collections.Generic;
 using HarmonyLib;
-using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects;
 
-public class ModifySummonDamage
+public static class ModifySummonDamage
 {
-    /*private static readonly Dictionary<Humanoid, Dictionary<ItemDrop, HitData.DamageTypes>> originalDamages = new Dictionary<Humanoid, Dictionary<ItemDrop, HitData.DamageTypes>>();
-    
-    [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-    public class ModifySummonDamage_Attack_FireProjectileBurst_Patch
+    [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.Start))]
+    public static class SetupSummonDamagePatch
     {
-        public static void Prefix(Attack __instance)
+        public static void Postfix(Humanoid __instance)
         {
-            if (!(__instance.m_character is Player player) || 
-                !MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance.m_weapon, MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f) ||
-                __instance.m_attackProjectile == null)
+            // Setup the bonus damage for the summon when it is initially setup
+            if (Player.m_localPlayer != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f))
             {
-                return;
-            }
-
-            float modifier = 1 + effectValue;
-            var spawnProjectile = __instance.m_attackProjectile;
-
-            if (!spawnProjectile.TryGetComponent<SpawnAbility>(out var spawnAbility))
-            {
-                return;
-            }
-
-            var spawnPrefab = spawnAbility.m_spawnPrefab[0];
-
-            if (spawnPrefab == null || !spawnPrefab.TryGetComponent<Humanoid>(out var humanoid))
-            {
-                return;
-            }
-
-            GameObject[] randomWeapons = humanoid.m_randomWeapon;
-            if (randomWeapons != null)
-            {
-                if (!originalDamages.ContainsKey(humanoid))
+                if (effectValue > 0)
                 {
-                    originalDamages[humanoid] = new Dictionary<ItemDrop, HitData.DamageTypes>();
-                }
-
-                foreach (var weapon in randomWeapons)
-                {
-                    if (weapon.TryGetComponent(out ItemDrop itemDrop))
+                    //EpicLoot.Log($"Setting Summon Damage bonus set {effectValue}");
+                    __instance.m_nview.GetZDO().Set("el-msd", effectValue);
+                    foreach (var item in __instance.m_inventory.GetAllItems())
                     {
-                        var itemDropDamages = itemDrop.m_itemData.m_shared.m_damages;
-
-                        if (!originalDamages[humanoid].ContainsKey(itemDrop))
+                        //EpicLoot.Log($"Checking summon item {item.m_shared.m_name}");
+                        if (item.GetDamage().GetTotalDamage() > 0)
                         {
-                            originalDamages[humanoid][itemDrop] = itemDropDamages;
+                            //EpicLoot.Log($"Increasing summon item {item.m_shared.m_name} damage by {effectValue * 100}%");
+                            item.m_shared.m_attack.m_damageMultiplier += effectValue;
+                            item.m_shared.m_secondaryAttack.m_damageMultiplier += effectValue;
                         }
-
-                        itemDropDamages.Modify(modifier);
-                    }
-                }
-            }
-
-            GameObject[] defaultItems = humanoid.m_defaultItems;
-            if (defaultItems != null)
-            {
-                if (!originalDamages.ContainsKey(humanoid))
-                {
-                    originalDamages[humanoid] = new Dictionary<ItemDrop, HitData.DamageTypes>();
-                }
-
-                foreach (var weapon in defaultItems)
-                {
-                    if (weapon.TryGetComponent(out ItemDrop itemDrop))
-                    {
-                        var itemDropDamages = itemDrop.m_itemData.m_shared.m_damages;
-
-                        if (!originalDamages[humanoid].ContainsKey(itemDrop))
-                        {
-                            originalDamages[humanoid][itemDrop] = itemDropDamages;
-                        }
-
-                        itemDropDamages.Modify(modifier);
                     }
                 }
             }
         }
-        
-        public static void Postfix(Attack __instance)
+    }
+
+    [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.GiveDefaultItems))]
+    public static class ModifySummonDamage_Patch
+    {
+        public static void Postfix(Humanoid __instance)
         {
-            if (__instance.m_attackProjectile == null)
+            // Apply Damage modification to all items in the inventory of the summon
+            float summonDamageBonus = __instance.m_nview.GetZDO().GetFloat("el-msd", 0f);
+            //EpicLoot.Log($"Summon Damage bonus set {summonDamageBonus}");
+            if (summonDamageBonus > 0f && !__instance.IsPlayer())
             {
-                return;
-            }
-
-            var spawnProjectile = __instance.m_attackProjectile;
-
-            if (!spawnProjectile.TryGetComponent<SpawnAbility>(out var spawnAbility))
-            {
-                return;
-            }
-
-            var spawnPrefab = spawnAbility.m_spawnPrefab[0];
-
-            if (spawnPrefab == null || !spawnPrefab.TryGetComponent<Humanoid>(out var humanoid))
-            {
-                return;
-            }
-
-            if (!originalDamages.TryGetValue(humanoid, out var itemDropDamages))
-            {
-                return;
-            }
-
-            foreach (var kvp in itemDropDamages)
-            {
-                if (kvp.Key.TryGetComponent(out ItemDrop itemDrop))
+                foreach (var item in __instance.m_inventory.GetAllItems())
                 {
-                    var originalDamage = kvp.Value;
-                    itemDrop.m_itemData.m_shared.m_damages = originalDamage;
+                    //EpicLoot.Log($"Checking summon item {item.m_shared.m_name}");
+                    if (item.GetDamage().GetTotalDamage() > 0)
+                    {
+                        //EpicLoot.Log($"Increasing summon item {item.m_shared.m_name} damage by {summonDamageBonus * 100}%");
+                        item.m_shared.m_attack.m_damageMultiplier += summonDamageBonus;
+                        item.m_shared.m_secondaryAttack.m_damageMultiplier += summonDamageBonus;
+                    }
                 }
             }
-
-            originalDamages.Remove(humanoid);
         }
-    }*/
+    }
 }
