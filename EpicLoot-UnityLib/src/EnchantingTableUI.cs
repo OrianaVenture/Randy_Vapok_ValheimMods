@@ -46,7 +46,8 @@ namespace EpicLoot_UnityLib
             {
                 Audio.outputAudioMixerGroup =
                     uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
-                uiSFX.GetComponent<AudioSource>().volume = AudioVolumeLevel();
+                //Audio.volume = uiSFX.GetComponent<AudioSource>().volume;
+                Audio.volume = AudioVolumeLevel();
             }
 
             instance.SetupTabs();

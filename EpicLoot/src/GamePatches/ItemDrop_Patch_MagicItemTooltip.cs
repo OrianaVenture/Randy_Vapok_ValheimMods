@@ -64,9 +64,11 @@ namespace EpicLoot
             float skillLevel = localPlayer.GetSkillLevel(item.m_shared.m_skillType);
 
             text.Append($"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>\n");
-            if (item.IsLegendarySetItem())
-            {
+            if (item.IsLegendarySetItem()) {
                 text.Append($"<color={EpicLoot.GetSetItemColor()}>$mod_epicloot_legendarysetlabel</color>\n");
+            }
+            if (item.IsMythicSetItem()) {
+                text.Append($"<color={EpicLoot.GetSetItemColor()}>$mod_epicloot_mythicsetlabel</color>\n");
             }
             text.Append(item.GetDescription());
             

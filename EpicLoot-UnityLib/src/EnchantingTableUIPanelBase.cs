@@ -17,6 +17,9 @@ namespace EpicLoot_UnityLib
         public AudioClip ProgressLoopSFX;
         public AudioClip CompleteSFX;
 
+        public delegate float AudioVolumeLevelDelegate();
+        public static AudioVolumeLevelDelegate AudioVolumeLevel;
+
         protected bool _inProgress;
         protected float _countdown;
         protected Text _buttonLabel;
@@ -52,6 +55,10 @@ namespace EpicLoot_UnityLib
             var uiSFX = GameObject.Find("sfx_gui_button");
             if (uiSFX && Audio != null)
                 Audio.outputAudioMixerGroup = uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
+                Audio.volume = AudioVolumeLevel();
+                foreach (var audio_source in this.GetComponentsInChildren<AudioSource>()) {
+                    audio_source.volume = AudioVolumeLevel();
+                }
         }
 
         protected virtual void OnMainButtonClicked()

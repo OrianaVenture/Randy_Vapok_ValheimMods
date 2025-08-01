@@ -81,6 +81,9 @@ namespace EpicLoot.CraftingV2
             DisenchantUI.GetDisenchantCost = GetDisenchantCost;
             DisenchantUI.DisenchantItem = DisenchantItem;
             FeatureStatus.MakeFeatureUnlockTooltip = MakeFeatureUnlockTooltip;
+            EnchantingTableUIPanelBase.AudioVolumeLevel = GetAuidioLevel;
+            MultiSelectItemListElement.AudioVolumeLevel = GetAuidioLevel;
+            PlaySoundOnChecked.AudioVolumeLevel = GetAuidioLevel;
         }
 
         private static float GetAuidioLevel() {

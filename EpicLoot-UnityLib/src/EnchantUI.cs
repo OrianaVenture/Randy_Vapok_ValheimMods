@@ -56,6 +56,10 @@ namespace EpicLoot_UnityLib
         [UsedImplicitly]
         public void OnEnable()
         {
+            foreach(var audio_source in this.GetComponentsInChildren<AudioSource>()) {
+                audio_source.volume = AudioVolumeLevel();
+            }
+
             _rarity = MagicRarityUnity.Magic;
             OnRarityChanged();
             RarityButtons[0].isOn = true;

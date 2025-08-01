@@ -26,6 +26,10 @@ namespace EpicLoot_UnityLib
         public bool CheckPlayerInventory;
         public bool NoMax;
         public bool UseEnchantAsName = false;
+
+        public delegate float AudioVolumeLevelDelegate();
+        public static AudioVolumeLevelDelegate AudioVolumeLevel;
+
         public AudioSource Audio;
         public AudioClip OnClickSFX;
         public GameObject GamepadFocusIndicator;
@@ -69,6 +73,7 @@ namespace EpicLoot_UnityLib
                 var uiSFX = GameObject.Find("sfx_gui_button");
                 if (uiSFX != null)
                     Audio.outputAudioMixerGroup = uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
+                    Audio.volume = AudioVolumeLevel();
             }
 
             if (!ReadOnly)

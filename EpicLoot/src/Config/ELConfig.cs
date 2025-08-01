@@ -214,8 +214,8 @@ namespace EpicLoot.Config
                 "ShowEquippedAndHotbarItemsInSacrificeTab", false,
                 "If set to false, hides the items that are equipped or on your hotbar in the Sacrifice items list.");
             UIAudioVolumeAdjustment = Config.Bind("Crafting UI", "AudioVolumeAdjustment", 1.0f, 
-                new ConfigDescription("Multiplies the crafting UI sound volume by this percentage [0.0-2.0], 2 = doublely loud UI sounds, 0 = no UI sounds.",
-                new AcceptableValueRange<float>(0, 2)));
+                new ConfigDescription("Multiplies the crafting UI sound volume by this percentage [0.0-1.0], 1 = full UI sounds, 0 = no UI sounds.",
+                new AcceptableValueRange<float>(0, 1)));
 
             // Logging
             _loggingEnabled = Config.Bind("Logging", "Logging Enabled", false, "Enable logging");

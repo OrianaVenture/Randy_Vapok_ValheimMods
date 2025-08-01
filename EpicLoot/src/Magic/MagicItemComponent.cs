@@ -359,7 +359,11 @@ namespace EpicLoot
 
         public static bool IsLegendarySetItem(this ItemDrop.ItemData itemData)
         {
-            return itemData.IsMagic(out var magicItem) && !string.IsNullOrEmpty(magicItem.SetID);
+            return itemData.IsMagic(out var magicItem) && magicItem.Rarity == ItemRarity.Legendary && !string.IsNullOrEmpty(magicItem.SetID);
+        }
+
+        public static bool IsMythicSetItem(this ItemDrop.ItemData itemData) {
+            return itemData.IsMagic(out var magicItem) && magicItem.Rarity == ItemRarity.Mythic && !string.IsNullOrEmpty(magicItem.SetID);
         }
 
         public static bool IsMundaneSetItem(this ItemDrop.ItemData itemData)

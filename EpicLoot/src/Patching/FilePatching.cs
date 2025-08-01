@@ -304,7 +304,8 @@ namespace EpicLoot.Patching
         public static void ApplyPatch(JObject json, Patch patch)
         {
             var selectedTokens = json.SelectTokens(patch.Path).ToList();
-            if (patch.Require && selectedTokens.Count == 0)
+            // Removals that have already happened are allowed to re-run without warnings, since they are no-ops
+            if (patch.Require && selectedTokens.Count == 0 && patch.Action != PatchAction.Remove)
             {
                 EpicLoot.LogErrorForce($"Required Patch ({patch.SourceFile}) path ({patch.Path}) " +
                     $"failed to select any tokens in target file ({patch.TargetFile})!");

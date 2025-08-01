@@ -280,6 +280,9 @@ namespace EpicLoot_UnityLib
                 if (enchantmentElement != null) {
                     enchantmentElement.text = effect.Item1;
                 }
+                if (effect.Item2 == false) {
+                    enchantmentbutton.interactable = false;
+                }
                 enchantmentListElement.SetActive(true);
                 
                 enchantIndex++;
