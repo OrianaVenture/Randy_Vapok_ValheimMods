@@ -62,21 +62,21 @@
       [ { "Item": "ForestToken", "Amount": 150 }, { "Item": "MushroomSmokePuff", "Amount": 80 } ]
     ],
     "Rune": [
-      [ { "Item": "SurtlingCore", "Amount": 5 }, { "Item": "IronBountyToken", "Amount": 3 } ],
-      [ { "Item": "ForestToken", "Amount": 10 }, { "Item": "Dandelion", "Amount": 100 } ],
-      [ { "Item": "ForestToken", "Amount": 30 }, { "Item": "MushroomYellow", "Amount": 100 } ],
-      [ { "Item": "ForestToken", "Amount": 60 }, { "Item": "FishRaw", "Amount": 60 } ],
-      [ { "Item": "ForestToken", "Amount": 90 }, { "Item": "Cloudberry", "Amount": 200 } ],
-      [ { "Item": "ForestToken", "Amount": 120 }, { "Item": "MushroomJotunPuffs", "Amount": 80 } ],
-      [ { "Item": "ForestToken", "Amount": 150 }, { "Item": "MushroomSmokePuff", "Amount": 80 } ]
+      [ { "Item": "SurtlingCore", "Amount": 5 }, { "Item": "Bronze", "Amount": 15 } ],
+      [ { "Item": "IronBountyToken", "Amount": 10 }, { "Item": "Iron", "Amount": 20 } ],
+      [ { "Item": "GoldBountyToken", "Amount": 20 }, { "Item": "Silver", "Amount": 25 } ],
+      [ { "Item": "Thunderstone", "Amount": 30 }, { "Item": "BlackMetal", "Amount": 30 } ],
+      [ { "Item": "GoldBountyToken", "Amount": 30 }, { "Item": "Eitr", "Amount": 35 } ],
+      [ { "Item": "CelestialFeather", "Amount": 5 }, { "Item": "DvergrKey", "Amount": 2 } ],
+      [ { "Item": "MoltenCore", "Amount": 5 }, { "Item": "FlametalNew", "Amount": 45 } ]
     ]
   },
   "UpgradeValues": {
-    "Sacrifice": [ [0], [3], [6], [10], [15], [20], [25] ],
+    "Sacrifice": [ [0, 100], [3, 102], [6, 104], [10, 106], [15, 108], [20, 110], [25, 112] ],
     "ConvertMaterials": [ [5, 5], [4, 5], [4, 4], [3, 4], [3, 3], [2, 3], [2, 2] ],
     "Enchant": [ [0, 0], [1, 2], [2, 4], [3, 6], [4, 8], [5, 10], [6, 12] ],
     "Augment": [ [2, 0], [3, 0], [4, 0], [4, 25], [5, 25], [5, 50], [6, 50] ],
     "Disenchant": [ [0, 0], [3, 0], [6, 0], [10, 1], [15, 2], [20, 3], [25, 4] ],
-    "Rune": [ [0, 0], [3, 0], [6, 0], [10, 1], [15, 2], [20, 3], [25, 4] ]
+    "Rune": [ [0, 90], [3, 95], [6, 100], [10, 102], [15, 104], [20, 106], [25, 108] ]
   }
 }

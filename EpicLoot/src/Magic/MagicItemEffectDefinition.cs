@@ -306,6 +306,24 @@ namespace EpicLoot
             public ValueDef Epic;
             public ValueDef Legendary;
             public ValueDef Mythic;
+
+            public ValueDef GetValueDefForRarity(ItemRarity rarity) {
+                switch (rarity) {
+                    case ItemRarity.Magic:
+                        return Magic;
+                    case ItemRarity.Rare:
+                        return Rare;
+                    case ItemRarity.Epic:
+                        return Epic;
+                    case ItemRarity.Legendary:
+                        return Legendary;
+                    case ItemRarity.Mythic:
+                        return Mythic;
+                    default:
+                        EpicLoot.LogWarning($"Unknown rarity: {rarity}, returning Magic values");
+                        return Magic;
+                }
+            }
         }
 
         public string Type { get; set; }

@@ -270,6 +270,9 @@ namespace EpicLoot_UnityLib
                 var enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
                 var enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
                 var enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
+                foreach (var audio_source in enchantmentListElement.GetComponentsInChildren<AudioSource>()) {
+                    audio_source.volume = AudioVolumeLevel();
+                }
                 _AugmentSelectors.Add(enchantmentbutton);
                 enchantmentbutton.onValueChanged.AddListener((isOn) => {
                     if (isOn) {

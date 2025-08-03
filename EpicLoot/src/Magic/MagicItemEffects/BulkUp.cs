@@ -68,13 +68,15 @@ namespace EpicLoot.MagicItemEffects
             if (bulkupValue > 0)
             {
                 float health_regen_from_food = 0f;
-                foreach (Food food2 in Player.m_localPlayer.m_foods) {
+                foreach (Food food2 in Player.m_localPlayer.m_foods)
+                {
                     health_regen_from_food += food2.m_item.m_shared.m_foodRegen;
                 }
 
                 // Include the bonus from the AddHealthRegen effect
                 var regenAmount = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.AddHealthRegen);
-                if (regenAmount > 0) {
+                if (regenAmount > 0)
+                {
                     health_regen_from_food += regenAmount;
                 }
 
@@ -85,14 +87,6 @@ namespace EpicLoot.MagicItemEffects
             }
             else
             {
-                // EpicLoot.Log($"Bulkup setting bonus health {health_bonus_from_effect}");
-            } else {
-                // EpicLoot.Log($"Bulkup setting bonus health {health_bonus_from_effect}");
-            } else {
-                // EpicLoot.Log($"Bulkup setting bonus health {health_bonus_from_effect}");
-            } else {
-                // EpicLoot.Log($"Bulkup setting bonus health {health_bonus_from_effect}");
-            } else {
                 health_bonus_from_effect = 0;
             }
         }

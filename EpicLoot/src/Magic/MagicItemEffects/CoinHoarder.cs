@@ -26,7 +26,8 @@ public class CoinHoarder
         }
 
         float totalCoins = mcoins.Sum(coin => coin.m_stack);
-        if (totalCoins <= 1000) {
+        if (totalCoins <= 1000)
+        {
             // Linear fraction increase up till 1000 coins, then logarithmic decay increase (1.145x at 1000)
             return (1f + totalCoins * 0.000145f);
         }
@@ -38,8 +39,6 @@ public class CoinHoarder
     {
         if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv))
         {
-        {
-            coinHoarderDamageMultiplier = GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
             return true;
         }
         return false;

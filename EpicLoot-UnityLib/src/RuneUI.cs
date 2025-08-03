@@ -30,11 +30,11 @@ namespace EpicLoot_UnityLib
         public delegate List<InventoryItemListElement> GetRuneModifyableItemsDelegate();
         public delegate List<InventoryItemListElement> GetApplyableRunesDelegate(ItemDrop.ItemData item, string selected_enchantment);
         public delegate List<Tuple<string, bool>> GetItemEnchantsDelegate(ItemDrop.ItemData item, bool runecheck);
-        public delegate List<InventoryItemListElement> GetRuneExtractCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity);
-        public delegate List<InventoryItemListElement> GetRuneEtchCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity);
+        public delegate List<InventoryItemListElement> GetRuneExtractCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float cost_modifier);
+        public delegate List<InventoryItemListElement> GetRuneEtchCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float cost_modifier);
         public delegate bool RuneItemDestructionEnabledDelegate();
         public delegate MagicRarityUnity GetItemRarityDelegate(ItemDrop.ItemData item);
-        public delegate ItemDrop.ItemData GetItemEnchantedByRuneDelegate(ItemDrop.ItemData item,  int enchantment);
+        public delegate ItemDrop.ItemData GetItemEnchantedByRuneDelegate(ItemDrop.ItemData item,  int enchantment, float power_mod);
         public delegate string GetSelectedEnchantmentByIndexDelegate(ItemDrop.ItemData item, int enchantment);
         // returns the modified item
         public delegate GameObject ApplyRuneToItemAndReturnSuccess(ItemDrop.ItemData item, ItemDrop.ItemData rune, int enchantment);
@@ -83,14 +83,17 @@ namespace EpicLoot_UnityLib
             var items = GetRuneModifyableItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
+            ClearEnchantmentList();
+            AvailableRunes.SetItems(new List<IListElement>());
+            _selectedEnchantmentIndex = 0;
         }
 
         public override void Update()
         {
             base.Update();
 
-            bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Enchant);
-            if (!featureUnlocked || Player.m_localPlayer.NoCostCheat()) {
+            bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Rune);
+            if (!featureUnlocked && !Player.m_localPlayer.NoCostCheat()) {
                 return;
             }
 
@@ -132,10 +135,14 @@ namespace EpicLoot_UnityLib
             UpdateDisplayAvailableOverwriteEnchantments();
             // Set enchantment list to the enchantments of the selected item
 
+            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Rune);
+            float cost_reduction = featureValues.Item1 == 0f ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f);
+
             // Cost for Extracting the specific enchantment
             if (_runeAction == RuneAction.Extract) {
                 CostLabel.enabled = true;
-                var cost = GetRuneExtractCost(_selectedItem, _selectedRarity);
+                var cost = GetRuneExtractCost(_selectedItem, _selectedRarity, cost_reduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
                 var canAfford = LocalPlayerCanAffordRuneCost(cost);
                 MainButton.interactable = canAfford;
@@ -145,7 +152,7 @@ namespace EpicLoot_UnityLib
             // Cost for Etching the specific enchantment 
             if (_runeAction == RuneAction.Etch) {
                 CostLabel.enabled = true;
-                var cost = GetRuneEtchCost(_selectedItem, _selectedRarity);
+                var cost = GetRuneEtchCost(_selectedItem, _selectedRarity, cost_reduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
                 var canAfford = LocalPlayerCanAffordRuneCost(cost);
                 MainButton.interactable = canAfford;
@@ -164,18 +171,22 @@ namespace EpicLoot_UnityLib
             AvailableRunes.SetItems(availableEnchantRunes.Cast<IListElement>().ToList());
         }
 
+        private void ClearEnchantmentList() {
+            // Clear the enchantment list
+            if (EnchantList.childCount > 0) {
+                foreach (Transform child in EnchantList) {
+                    Destroy(child.gameObject);
+                }
+            }
+        }
+
         private void RefreshSelectableEnchantments()
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             var item = entry?.Item1.GetItem();
             var augmentableEffects = GetItemEnchants(item, true);
 
-            // Clear the enchantment list
-            if (EnchantList.childCount > 0) {
-                foreach(Transform child in EnchantList) {
-                    Destroy(child.gameObject);
-                }
-            }
+            ClearEnchantmentList();
 
             int enchantIndex = 0;
             foreach(var effect in augmentableEffects) {
@@ -314,11 +325,16 @@ namespace EpicLoot_UnityLib
             if (selectedItem?.Item1.GetItem() == null) {
                 return;
             }
+
+            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Rune);
+            float cost_reduction = featureValues.Item1 == 0f ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f);
             var item = selectedItem.Item1.GetItem();
+            Debug.Log($"Selected item: {item.m_shared.m_name}, rarity: {_selectedRarity}, enchantment index: {_selectedEnchantmentIndex}, power modifier: {power_modifier}");
 
             if (_runeAction == RuneAction.Extract)
             {
-                var cost = GetRuneExtractCost(item, _selectedRarity);
+                var cost = GetRuneExtractCost(item, _selectedRarity, cost_reduction);
                 var player = Player.m_localPlayer;
                 if (!player.NoCostCheat())
                 {
@@ -337,7 +353,7 @@ namespace EpicLoot_UnityLib
                     // Destroy the item
                     InventoryManagement.Instance.RemoveItem(item);
                 }
-                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex);
+                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex, power_modifier);
                 InventoryManagement.Instance.GiveItem(RuneWithEnchant);
                 CostList.SetItems(new List<IListElement>());
             }

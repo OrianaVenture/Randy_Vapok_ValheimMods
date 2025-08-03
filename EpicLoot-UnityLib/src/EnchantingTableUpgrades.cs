@@ -113,7 +113,7 @@ namespace EpicLoot_UnityLib
 
             var values = table.GetFeatureValue(feature, level);
             return Localization.instance.Localize(featureUpgradeDescriptions[(int)feature],
-                values.Item1.ToString("0.#"), values.Item2.ToString("0.#"));
+                values.Item1.ToString(), values.Item2.ToString());
         }
 
         public static int GetFeatureMaxLevel(EnchantingFeature feature)

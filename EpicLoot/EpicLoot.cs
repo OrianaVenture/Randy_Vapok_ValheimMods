@@ -13,6 +13,7 @@ using EpicLoot.Patching;
 using EpicLoot.src.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn;
 using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -26,6 +27,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using static ItemDrop;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot
@@ -459,13 +461,14 @@ namespace EpicLoot
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
             LoadCraftingMaterialAssets();
-            LoadUnidentifiedItems();
+            
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
+            LoadUnidentifiedItems();
             // Needs to trigger late in order to get all potentially added items by other mods
             MinimapManager.OnVanillaMapAvailable += AutoAddEnchantableItems.CheckAndAddAllEnchantableItems;
         }
@@ -585,30 +588,76 @@ namespace EpicLoot
             }
         }
 
-        private static void LoadUnidentifiedItems()
-        {
+        private static void LoadUnidentifiedItems() {
+            //var genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            //genericPrefab.SetActive(false);
+            //Destroy(genericPrefab.GetComponent<ZNetView>());
+            GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            genericPrefab.SetActive(false);
             foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
-                if (type == "None" || type == "DeepNorth" || type == "Ocean" || type == "All") {
-                    continue; // Skip invalid types
-                }
+                // Skip invalid types
+                if (type == "None" || type == "All") { continue; }
                 foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
-                    var assetName = $"{type}_{rarity}_Unidentified";
-                    var prefab = Assets.AssetBundle.LoadAsset<GameObject>(assetName);
-                    if (prefab == null) {
-                        LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
-                        continue;
-                    }
+                    EpicLoot.Log($"Loading Unidentified_{type}_{rarity}");
+                    var prefab = Object.Instantiate(genericPrefab);
+                    string prefabName = $"{type}_{rarity}_Unidentified";
+                    prefab.name = prefabName;
+                    EpicLoot.Log($"Set prefab name");
 
-                    var itemDrop = prefab.GetComponent<ItemDrop>();
-                    var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    //ZNetView zview = prefab.AddComponent<ZNetView>();
+                    //zview.m_persistent = true;
+                    //EpicLoot.Log($"Add Znetview");
+                    //ZSyncTransform zsync = prefab.AddComponent<ZSyncTransform>();
+                    //zsync.m_syncPosition = true;
+                    //zsync.m_syncRotation = true;
+                    //EpicLoot.Log($"Add ZsyncTransform");
+
+                    //ItemDrop pid = prefab.AddComponent<ItemDrop>();
+                    //pid.enabled = false;
+                    //EpicLoot.Log($"Added ID Comp");
+                    //pid.m_autoPickup = true;
+                    //pid.m_autoDestroy = true;
+                    //EpicLoot.Log($"Auto pickup/destroy");
+                    //Sprite sprite = Assets.AssetBundle.LoadAsset<Sprite>("unidentified.png");
+                    //EpicLoot.Log($"Loaded sprite");
+                    //pid.m_itemData.m_shared.m_icons = new Sprite[] { sprite };
+                    //EpicLoot.Log($"Set icon");
+                    //pid.m_itemData.m_shared.m_name = $"$mod_epicloot_Unidentified_{type}"; //mod_epicloot_unidentified_blackforest
+                    //EpicLoot.Log($"set name");
+                    //pid.m_itemData.m_shared.m_description = $"${type}_{rarity}_Unidentified_desc $mod_epicloot_unidentified_introduce";
+
+                    //pid.m_itemData.m_shared.m_maxStackSize = 100;
+                    //EpicLoot.Log($"Set stack size");
+                    //pid.m_itemData.m_shared.m_autoStack = true;
+                    //EpicLoot.Log($"Set autostack");
+                    //pid.m_itemData.m_shared.m_itemType = ItemDrop.ItemData.ItemType.Misc;
+                    //EpicLoot.Log($"Set category");
+                    //pid.m_itemData.m_shared.m_ammoType = $"{rarity}|MagicCraftingMaterial";
+                    //EpicLoot.Log($"Added Itemdrop");
+
+                    ItemDrop pid = prefab.GetComponent<ItemDrop>();
+                    if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
+                    var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    
                     magicItemComponent.SetMagicItem(new MagicItem {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
+                    EpicLoot.Log($"Added magicitem");
                     magicItemComponent.Save();
                     //itemDrop.m_itemData
-                    CustomItem custom = new CustomItem(prefab, false);
+                    ItemConfig unidentifiedIC = new ItemConfig() {
+                        Name = $"$mod_epicloot_unidentified_{type}",
+                        Description = "$mod_epicloot_unidentified_introduce",
+                    };
+                    CustomItem custom = new CustomItem(prefab, false, unidentifiedIC);
+                    //prefab.SetActive(true);
+                    // Need to add prefab names to a list and once its time, enable all of them
                     ItemManager.Instance.AddItem(custom);
+
+                    ItemManager.OnItemsRegistered += () => {
+                        PrefabManager.Instance.GetPrefab(prefabName)?.SetActive(true);
+                    };
                 }
             }
         }

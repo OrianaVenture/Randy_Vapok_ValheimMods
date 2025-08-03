@@ -37,9 +37,9 @@ namespace EpicLoot_UnityLib
 
         public delegate List<InventoryItemListElement> GetSacrificeItemsDelegate();
         public delegate List<InventoryItemListElement> GetSacrificeProductsDelegate(List<Tuple<ItemDrop.ItemData, int>> items);
-        public delegate List<InventoryItemListElement> GetIdentifyCostDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems);
+        public delegate List<InventoryItemListElement> GetIdentifyCostDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float cost_modifier);
         public delegate List<InventoryItemListElement> GetIdentifyItemsDelegate();
-        public delegate List<InventoryItemListElement> GetRandomFilteredLootRollDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems);
+        public delegate List<InventoryItemListElement> GetRandomFilteredLootRollDelegate(int filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float power_modifier);
         public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(int filterType, List<ItemDrop.ItemData> items_selected);
 
         public static GetSacrificeItemsDelegate GetSacrificeItems;
@@ -106,7 +106,12 @@ namespace EpicLoot_UnityLib
             var unidentifiedItems = selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
             var filterType = IdentifyStyle.value;
             var player = Player.m_localPlayer;
-            var cost = GetIdentifyCost(filterType, unidentifiedItems);
+            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
+            float cost_reduction = featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f) + 1f;
+            var cost = GetIdentifyCost(filterType, unidentifiedItems, cost_reduction);
+
+
 
             if (!LocalPlayerCanAffordCost(cost)) {
                 return;
@@ -119,7 +124,7 @@ namespace EpicLoot_UnityLib
                 }
             }
 
-            var identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems);
+            var identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems, power_modifier);
 
             Cancel();
             RefreshAvailableItems();
@@ -213,7 +218,9 @@ namespace EpicLoot_UnityLib
                 var potentialIdentifyItems = GetPotentialIdentifications(IdentifyStyle.value, selectedItems.Select(x => x.Item1.GetItem()).ToList());
                 SacrificeProducts.SetItems(potentialIdentifyItems.Cast<IListElement>().ToList());
                 var unidentifiedItems = selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
-                var cost = GetIdentifyCost(IdentifyStyle.value, unidentifiedItems);
+                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
+                float cost_reduction = featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
+                var cost = GetIdentifyCost(IdentifyStyle.value, unidentifiedItems, cost_reduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
                 canAfford = LocalPlayerCanAffordIdentifyCost(cost);
                 if (potentialIdentifyItems.Count() == 0) { canAfford = false; }

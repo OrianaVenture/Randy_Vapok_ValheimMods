@@ -75,9 +75,9 @@ namespace EpicLoot.Config
         public static ConfigEntry<bool> OnlyAddEquipmentWithRecipes;
         public static ConfigEntry<float> ItemsUnidentifiedDropRatio;
         public static ConfigEntry<float> UIAudioVolumeAdjustment;
-        public static ConfigEntry<float> IdentificationBonusPower;
         public static ConfigEntry<bool> AutoAddRemoveEquipmentFromVendor;
         public static ConfigEntry<bool> EnableHotReloadPatches;
+        public static ConfigEntry<bool> AlwaysRefreshCoreConfigs;
 
         public static ConfigEntry<bool> RuneExtractDestroysItem;
 
@@ -213,7 +213,7 @@ namespace EpicLoot.Config
             ShowEquippedAndHotbarItemsInSacrificeTab = Config.Bind("Crafting UI",
                 "ShowEquippedAndHotbarItemsInSacrificeTab", false,
                 "If set to false, hides the items that are equipped or on your hotbar in the Sacrifice items list.");
-            UIAudioVolumeAdjustment = Config.Bind("Crafting UI", "AudioVolumeAdjustment", 1.0f, 
+            UIAudioVolumeAdjustment = Config.Bind("Crafting UI", "AudioVolumeAdjustment", 1.0f,
                 new ConfigDescription("Multiplies the crafting UI sound volume by this percentage [0.0-1.0], 1 = full UI sounds, 0 = no UI sounds.",
                 new AcceptableValueRange<float>(0, 1)));
 
@@ -303,7 +303,6 @@ namespace EpicLoot.Config
             RuneExtractDestroysItem = BindServerConfig("Balance", "Rune Extract Destroys Item", true,
                 "When extracting a rune from an item, the item will be destroyed. If false, the item will be returned intact. " +
                 "Default: True.");
-            IdentificationBonusPower = BindServerConfig("Balance", "Identification Bonus Power", 1.1f, "Power modification applied to effects that are identified.");
 
 
             // Debug
@@ -313,6 +312,8 @@ namespace EpicLoot.Config
                 "Just a debug flag for testing the patching system, do not use.");
             EnableHotReloadPatches = BindServerConfig("Debug", "Enable Hot Reloading Patches", true,
                 "Controls whether or not patch edits can be live-reloaded. Can cause lag when recompiling patches.");
+            AlwaysRefreshCoreConfigs = BindServerConfig("Debug", "Always Refresh Core Configs", false,
+                "Overwrites your core configuration with the mod default values on startup. THIS WILL DELETE ANY MODIFICATIONS TO THE CORE CONFIG.");
 
 
             // Abilities
@@ -409,7 +410,7 @@ namespace EpicLoot.Config
             string basecfglocation = ELConfig.GetOverhaulDirectoryPath() + '\\' + filename;
 
             // Ensure that the core config file exists
-            if (File.Exists(basecfglocation) == false) {
+            if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
                 EpicLoot.Log($"Base config file {basecfglocation} does not exist, creating it from embedded default config.");
                 var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
                 File.WriteAllText(basecfglocation, overhaulfiledata);
