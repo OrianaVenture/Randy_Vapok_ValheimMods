@@ -1228,6 +1228,50 @@
       ]
     },
     {
+      "Type": "ModifyPickupRange",
+      "DisplayText": "$mod_epicloot_me_modifypickuprange_display",
+      "Description": "$mod_epicloot_me_modifypickuprange_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 30,
+          "MaxValue": 50,
+          "Increment": 5
+        },
+        "Legendary": {
+          "MinValue": 50,
+          "MaxValue": 75,
+          "Increment": 5
+        },
+        "Mythic": {
+          "MinValue": 75,
+          "MaxValue": 100,
+          "Increment": 5
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifypickuprange_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifypickuprange_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyFireRate",
       "DisplayText": "$mod_epicloot_me_modifyfirerate_display",
       "Description": "$mod_epicloot_me_modifyfirerate_desc",
