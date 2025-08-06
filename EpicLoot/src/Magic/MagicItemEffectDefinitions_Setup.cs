@@ -60,6 +60,7 @@ namespace EpicLoot
         public static string ModifyNoise = nameof(ModifyNoise);
         public static string ModifyBuildDistance = nameof(ModifyBuildDistance);
         public static string ModifyFireRate = nameof(ModifyFireRate);
+        public static string ModifyProjectileSpeed = nameof(ModifyProjectileSpeed);
         public static string ModifyDodgeStaminaUse = nameof(ModifyDodgeStaminaUse);
         public static string ModifyJumpStaminaUse = nameof(ModifyJumpStaminaUse);
         public static string ModifyAttackStaminaUse = nameof(ModifyAttackStaminaUse);

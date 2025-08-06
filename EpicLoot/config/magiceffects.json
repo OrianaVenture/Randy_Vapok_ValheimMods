@@ -1227,6 +1227,51 @@
       ]
     },
     {
+      "Type": "ModifyProjectileSpeed",
+      "DisplayText": "$mod_epicloot_me_modifyprojectilespeed_display",
+      "Description": "$mod_epicloot_me_modifyprojectilespeed_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Staff",
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifyprojectilespeed_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifyprojectilespeed_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyEitrRegen",
       "DisplayText": "$mod_epicloot_me_modifyeitrregen_display",
       "Description": "$mod_epicloot_me_modifyeitrregen_desc",
