@@ -26,6 +26,7 @@ namespace EpicLoot.Adventure
             Bounties = new BountiesAdventureFeature();
 
             Config.TreasureMap.UpdateBiomeList();
+            EpicLoot.Log($"Updated/setup Adventure Data");
         }
 
         public static void UpdateAventureData(AdventureDataConfig config)
@@ -33,6 +34,7 @@ namespace EpicLoot.Adventure
             Config = config;
 
             Config.TreasureMap.UpdateBiomeList();
+            EpicLoot.Log($"Updated Adventure Data");
         }
 
         public static Sprite GetTrophyIconForMonster(string monsterID, bool isGold)

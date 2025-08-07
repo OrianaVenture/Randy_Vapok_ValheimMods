@@ -114,10 +114,10 @@ namespace EpicLoot.GatedItemType
             // Items can be ungated, add a dummy entry to account for this
             BossKeysInOrder.Add(NO_BOSS);
 
-            foreach (var boss in AdventureDataManager.Config.Bounties.Bosses)
-            {
+            foreach (var boss in AdventureDataManager.Config.Bounties.Bosses) {
                 BossKeysInOrder.Add(boss.BossDefeatedKey);
             }
+            EpicLoot.Log($"Updated Itemconfig total item entries: {AllItemsWithDetails.Keys.Count}");
         }
 
         /// <summary>

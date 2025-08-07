@@ -37,6 +37,7 @@
 * Some extremely powerful enchantments have been enabled for the Legendary config
 * Optimized woodcutting and mining enchantments
 * Removed Deer as a bounty target, all bounty targets now will try to kill you instead of run away
+* Small code cleanups
 
 ## Version 0.11.4
 

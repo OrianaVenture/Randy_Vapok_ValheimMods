@@ -220,12 +220,15 @@ namespace EpicLoot
             ItemRarity rarity = ItemRarity.Magic,
             bool luck = true,
             List<string> validBosses = null,
-            float power_level_mod = 1.0f
+            float power_level_mod = 1.0f,
+            int tries_before_fallback_category = 1,
+            int tries_before_fallback_item = 3
             ) {
             var luckFactor = GetLuckFactor(location);
 
             List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
             HashSet<string> rolledItems = new HashSet<string>();
+            int failures = 0;
 
             while (results.Count < numResults) {
                 string itemTypeToRoll = "Axes";
@@ -296,8 +299,9 @@ namespace EpicLoot
                     }
                 }
                 EpicLoot.Log($"Rolling item from list: {itemTypeToRoll} {validBosses.First()}");
-                var itemId = GatedItemTypeHelper.GetGatedItemFromType(itemTypeToRoll, gatingMode, rolledItems, validBosses, true, false, false);
-                if (itemId == null) { 
+                var itemId = GatedItemTypeHelper.GetGatedItemFromType(itemTypeToRoll, gatingMode, rolledItems, validBosses, true, failures >= tries_before_fallback_category, failures >= tries_before_fallback_item);
+                if (itemId == null) {
+                    failures += 1;
                     continue;
                 }
                 GameObject prefab = ObjectDB.instance.GetItemPrefab(itemId);
@@ -305,7 +309,10 @@ namespace EpicLoot
                 clone.SetActive(false); // Don't make the object a real thing in the world yet
                 var itemDrop = clone.GetComponent<ItemDrop>();
                 var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                if (clone == null) { continue; }
+                if (clone == null) {
+                    failures += 1;
+                    continue;
+                }
                 var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor, power_level_mod);
 
                 if (CheatForceMagicEffect) {
@@ -317,6 +324,10 @@ namespace EpicLoot
                 InitializeMagicItem(itemDrop.m_itemData);
                 results.Add(itemDrop.m_itemData);
                 
+            }
+
+            if (failures > 0) {
+                EpicLoot.LogWarningForce($"{failures} during item selection, this may have triggered a fallback. Ensure your iteminfo does not have invalid items.");
             }
 
             return results;

@@ -1688,121 +1688,6 @@
       ]
     },
     {
-      "Type": "AddFireResistance",
-      "DisplayText": "$mod_epicloot_me_addfireresistance_display",
-      "Description": "$mod_epicloot_me_addfireresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFrostResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addfireresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addfireresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddFrostResistance",
-      "DisplayText": "$mod_epicloot_me_addfrostresistance_display",
-      "Description": "$mod_epicloot_me_addfrostresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addfrostresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addfrostresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddLightningResistance",
-      "DisplayText": "$mod_epicloot_me_addlightningresistance_display",
-      "Description": "$mod_epicloot_me_addlightningresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addlightningresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addlightningresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddPoisonResistance",
-      "DisplayText": "$mod_epicloot_me_addpoisonresistance_display",
-      "Description": "$mod_epicloot_me_addpoisonresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddLightningResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addpoisonresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addpoisonresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddSpiritResistance",
-      "DisplayText": "$mod_epicloot_me_addspiritresistance_display",
-      "Description": "$mod_epicloot_me_addspiritresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addspiritresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addspiritresistance_suffix1"
-      ]
-    },
-    {
       "Type": "AddFireResistancePercentage",
       "DisplayText": "$mod_epicloot_me_addfireresistancepercentage_display",
       "Description": "$mod_epicloot_me_addfireresistancepercentage_desc",
@@ -2290,59 +2175,6 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_addpiercingresistancepercentage_suffix1"
-      ]
-    },
-    {
-      "Type": "AddChoppingResistancePercentage",
-      "DisplayText": "$mod_epicloot_me_addchoppingresistancepercentage_display",
-      "Description": "$mod_epicloot_me_addchoppingresistancepercentage_desc",
-      "Requirements": {
-        "NoRoll": true,
-        "AllowedItemTypes": [
-          "Helmet",
-          "Chest",
-          "Legs",
-          "Shoulder",
-          "Utility",
-          "Shield",
-          "Tool",
-          "Torch",
-          "TwoHandedWeaponLeft"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 1,
-          "MaxValue": 3,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 2,
-          "MaxValue": 6,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 3,
-          "MaxValue": 9,
-          "Increment": 1
-        },
-        "Legendary": {
-          "MinValue": 4,
-          "MaxValue": 12,
-          "Increment": 1
-        },
-        "Mythic": {
-          "MinValue": 5,
-          "MaxValue": 15,
-          "Increment": 1
-        }
-      },
-      "SelectionWeight": 10,
-      "Prefixes": [
-        "$mod_epicloot_me_addchoppingresistancepercentage_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addchoppingresistancepercentage_suffix1"
       ]
     },
     {
@@ -3327,23 +3159,6 @@
       ]
     },
     {
-      "Type": "WaterWalking",
-      "DisplayText": "$mod_epicloot_me_waterwalk_display",
-      "Description": "$mod_epicloot_me_waterwalk_desc",
-      "Requirements": {
-        "NoRoll": true
-      },
-      "SelectionWeight": 10,
-      "Prefixes": [
-        "$mod_epicloot_me_waterwalk_prefix1",
-        "$mod_epicloot_me_waterwalk_prefix2"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_waterwalk_suffix1",
-        "$mod_epicloot_me_waterwalk_suffix2"
-      ]
-    },
-    {
       "Type": "ExplosiveArrows",
       "DisplayText": "$mod_epicloot_me_explosivearrows_display",
       "Description": "$mod_epicloot_me_explosivearrows_desc",
@@ -3977,7 +3792,6 @@
       "DisplayText": "$mod_epicloot_me_modifysummondamage_display",
       "Description": "$mod_epicloot_me_modifysummondamage_desc",
       "Requirements": {
-        "NoRoll": true,
         "AllowedSkillTypes": [
           "BloodMagic"
         ]

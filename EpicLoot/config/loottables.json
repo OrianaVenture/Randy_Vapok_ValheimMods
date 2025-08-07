@@ -17,7 +17,8 @@
     "$item_knife_butcher",
     "$item_pickaxe_stone",
     "Tankard",
-    "TankardAnniversary"
+    "TankardAnniversary",
+    "DvergerArbalest"
   ], 
   "ItemSets": [
     {

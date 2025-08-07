@@ -3,33 +3,6 @@ using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.ApplyArmorDamageMods))]
-    public static class ModifyResistance_Player_ApplyArmorDamageMods_Patch
-    {
-        public static void Postfix(Player __instance, ref HitData.DamageModifiers mods)
-        {
-            var damageMods = new List<HitData.DamageModPair>();
-
-            if (__instance.HasActiveMagicEffect(MagicEffectType.AddFireResistance, out float _)) {
-                damageMods.Add(new HitData.DamageModPair() { m_type = HitData.DamageType.Fire, m_modifier = HitData.DamageModifier.Resistant});
-            }
-            if (__instance.HasActiveMagicEffect(MagicEffectType.AddFrostResistance, out float _)) {
-                damageMods.Add(new HitData.DamageModPair() { m_type = HitData.DamageType.Frost, m_modifier = HitData.DamageModifier.Resistant });
-            }
-            if (__instance.HasActiveMagicEffect(MagicEffectType.AddLightningResistance, out float _)) {
-                damageMods.Add(new HitData.DamageModPair() { m_type = HitData.DamageType.Lightning, m_modifier = HitData.DamageModifier.Resistant });
-            }
-            if (__instance.HasActiveMagicEffect(MagicEffectType.AddPoisonResistance, out float _)) {
-                damageMods.Add(new HitData.DamageModPair() { m_type = HitData.DamageType.Poison, m_modifier = HitData.DamageModifier.Resistant });
-            }
-            if (__instance.HasActiveMagicEffect(MagicEffectType.AddSpiritResistance, out float _)) {
-                damageMods.Add(new HitData.DamageModPair() { m_type = HitData.DamageType.Spirit, m_modifier = HitData.DamageModifier.Resistant });
-            }
-
-            mods.Apply(damageMods);
-        }
-    }
-
     [HarmonyPatch(typeof(Character), nameof(Character.RPC_Damage))]
     public static class ModifyResistance_Character_RPC_Damage_Patch
     {

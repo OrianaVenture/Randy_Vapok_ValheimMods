@@ -179,11 +179,6 @@ namespace EpicLoot
                     }
                 }
             }));
-            new Terminal.ConsoleCommand("fixresistances", "", (args =>
-            {
-                var player = Player.m_localPlayer;
-                FixResistances(player);
-            }));
             new Terminal.ConsoleCommand("lootres", "", (args =>
             {
                 var lootTable = args.Length > 1 ? args[1] : "Greydwarf";
@@ -625,66 +620,6 @@ namespace EpicLoot
             {
                 context.AddString("> (none)");
             }
-        }
-
-        private static void FixResistances(Player player)
-        {
-            var oldResistanceTypes = new[]
-            {
-                MagicEffectType.AddFireResistance,
-                MagicEffectType.AddFrostResistance,
-                MagicEffectType.AddLightningResistance,
-                MagicEffectType.AddPoisonResistance,
-                MagicEffectType.AddSpiritResistance
-            };
-
-            foreach (var itemData in player.GetInventory().GetAllItems())
-            {
-                if (itemData.IsMagic() && itemData.GetMagicItem().HasAnyEffect(oldResistanceTypes))
-                {
-                    var magicItem = itemData.GetMagicItem();
-                    var currentEffects = magicItem.Effects;
-                    for (var index = 0; index < currentEffects.Count; index++)
-                    {
-                        var effect = currentEffects[index];
-                        if (oldResistanceTypes.Contains(effect.EffectType))
-                        {
-                            ReplaceMagicEffect(itemData, magicItem, effect, index);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void ReplaceMagicEffect(ItemDrop.ItemData itemData, MagicItem magicItem, MagicItemEffect effect, int index)
-        {
-            var replacementEffectDef = GetReplacementEffectDef(effect);
-            if (replacementEffectDef == null)
-            {
-                return;
-            }
-
-            var replacementEffect = LootRoller.RollEffect(replacementEffectDef, magicItem.Rarity);
-            magicItem.Effects[index] = replacementEffect;
-            itemData.SaveMagicItem(magicItem);
-        }
-
-        private static MagicItemEffectDefinition GetReplacementEffectDef(MagicItemEffect effect)
-        {
-            switch (effect.EffectType)
-            {
-                case "AddFireResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddFireResistancePercentage);
-                case "AddFrostResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddFrostResistancePercentage);
-                case "AddLightningResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddLightningResistancePercentage);
-                case "AddPoisonResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddPoisonResistancePercentage);
-                case "AddSpiritResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddElementalResistancePercentage);
-            }
-            return null;
         }
     }
 }

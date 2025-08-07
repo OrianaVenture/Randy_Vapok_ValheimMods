@@ -77,7 +77,6 @@
     <Compile Include="src\Crafting\AugmentHelper.cs" />
     <Compile Include="src\Crafting\AugmentsAvailableDialog.cs" />
     <Compile Include="src\Crafting\CraftingItemExtensions.cs" />
-    <Compile Include="src\Crafting\CraftingTabs.cs" />
     <Compile Include="src\Crafting\CraftSuccessDialog.cs" />
     <Compile Include="src\Crafting\EnchantCostsConfig.cs" />
     <Compile Include="src\Crafting\EnchantCostsHelper.cs" />

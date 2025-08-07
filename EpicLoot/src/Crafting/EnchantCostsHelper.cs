@@ -11,13 +11,8 @@ namespace EpicLoot.Crafting
         public static EnchantingCostsConfig Config;
         public static HashSet<string> DeprecatedMagicEffects = new HashSet<string>
         {
-            MagicEffectType.WaterWalking,
-            MagicEffectType.AddSpiritResistance,
             MagicEffectType.AddSpiritResistancePercentage,
             MagicEffectType.ReduceWeight,
-            MagicEffectType.AddFireResistance,
-            MagicEffectType.AddFrostResistance,
-            MagicEffectType.AddLightningResistance,
             MagicEffectType.AddChoppingResistancePercentage
         };
 

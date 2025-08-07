@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.src.Magic
 {
@@ -57,13 +58,12 @@ namespace EpicLoot.src.Magic
                 !string.IsNullOrEmpty(i.m_itemData.m_shared.m_description) &&
                 EpicLoot.AllowedMagicItemTypes.Contains(i.m_itemData.m_shared.m_itemType)).ToList();
 
-            foreach (ItemDrop item in allEquipment)
-            {
+            foreach (ItemDrop item in allEquipment) {
                 string itemType = DetermineItemType(item.m_itemData);
                 string itemName = item.name;
 
                 // Check if the item is already in the config
-                // If it does, add it to the foundBy
+                // If it is, add it to the foundBy
                 bool itemfound = false;
                 if (itemsByCategory.ContainsKey(itemType)) {
                     if (itemsByCategory[itemType].IgnoredItems.Contains(itemName)) {
@@ -97,23 +97,29 @@ namespace EpicLoot.src.Magic
             }
 
             // Compare the found items with the current config, if enabled add items, if enabled remove missing items
-            if (ELConfig.AutoRemoveEquipmentNotFound.Value)
-            {
-                foreach (var fbc in foundbyCategory)
-                {
-                    if (ELConfig.AutoAddEquipment.Value)
-                    {
+            if (ELConfig.AutoRemoveEquipmentNotFound.Value) {
+                foreach (var fbc in foundbyCategory) {
+                    if (ELConfig.AutoAddEquipment.Value) {
                         // Replace entries with only the found values, removes non-found items and adds new ones
                         itemsByCategory[fbc.Key].IgnoredItems = foundbyCategory[fbc.Key].IgnoredItems;
+                        foreach (var key in itemsByCategory[fbc.Key].ItemsByBoss.Keys) {
+                            if (itemsByCategory[fbc.Key].ItemsByBoss.ContainsKey(key) && foundbyCategory[fbc.Key].ItemsByBoss.ContainsKey(key) && itemsByCategory[fbc.Key].ItemsByBoss[key].Count != foundbyCategory[fbc.Key].ItemsByBoss[key].Count) {
+                                var toaddlist = foundbyCategory[fbc.Key].ItemsByBoss[key].Except(itemsByCategory[fbc.Key].ItemsByBoss[key]).ToList();
+                                var toremovelist = itemsByCategory[fbc.Key].ItemsByBoss[key].Except(foundbyCategory[fbc.Key].ItemsByBoss[key]).ToList();
+                                if (toaddlist.Count > 0) { EpicLoot.Log($"Adding entries in {key} that are not found in the config: {string.Join(", ", toaddlist)}"); }
+                                if (toremovelist.Count > 0) { EpicLoot.Log($"Removing entries in {key} that are not found in the config: {string.Join(", ", toremovelist)}"); }
+                            }
+                        }
                         itemsByCategory[fbc.Key].ItemsByBoss = foundbyCategory[fbc.Key].ItemsByBoss;
-                    }
-                    else
-                    {
+                    } else {
                         // Just remove items that are not found in the config
                         itemsByCategory[fbc.Key].IgnoredItems = foundbyCategory[fbc.Key].IgnoredItems.Where(e => itemsByCategory[fbc.Key].IgnoredItems.Contains(e)).ToList();
-                        foreach (var entry in foundbyCategory[fbc.Key].ItemsByBoss)
-                        {
-                            itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Where(e => entry.Value.Contains(e)).ToList();
+                        foreach (var entry in foundbyCategory[fbc.Key].ItemsByBoss) {
+                            var reducedItems = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Where(e => entry.Value.Contains(e)).ToList();
+                            if (reducedItems.Count != itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Count) {
+                                EpicLoot.Log($"Removing items from {fbc.Key} {entry.Key} that are not found in the config: {string.Join(", ", itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Except(reducedItems))}");
+                            }
+                            itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] = reducedItems;
                         }
                     }
                 }
@@ -121,14 +127,11 @@ namespace EpicLoot.src.Magic
             else
             {
                 // Just add found items, dont remove missing items
-                foreach (var fbc in foundbyCategory)
-                {
-                    if (ELConfig.AutoAddEquipment.Value)
-                    {
+                foreach (var fbc in foundbyCategory) {
+                    if (ELConfig.AutoAddEquipment.Value) {
                         // Replace entries with only the found values, removes non-found items and adds new ones
                         itemsByCategory[fbc.Key].IgnoredItems = itemsByCategory[fbc.Key].IgnoredItems.Union(itemsByCategory[fbc.Key].IgnoredItems).ToList();
-                        foreach (var entry in fbc.Value.ItemsByBoss)
-                        {
+                        foreach (var entry in fbc.Value.ItemsByBoss) {
                             itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Union(entry.Value).ToList();
                         }
                     }
@@ -211,26 +214,18 @@ namespace EpicLoot.src.Magic
         }
 
         private static int DetermineCoinsCostForItem(string bosskey) {
-            switch (bosskey) {
-                case "none":
-                    return 50;
-                case "defeated_eikthyr":
-                    return 100;
-                case "defeated_gdking":
-                    return 400;
-                case "defeated_bonemass":
-                    return 600;
-                case "defeated_dragon":
-                    return 900;
-                case "defeated_goblinking":
-                    return 1100;
-                case "defeated_queen":
-                    return 1300;
-                case "defeated_fader":
-                    return 1600;
-                default:
-                    return 999;
-            }
+            return bosskey switch
+            {
+                "none" => 50,
+                "defeated_eikthyr" => 100,
+                "defeated_gdking" => 400,
+                "defeated_bonemass" => 600,
+                "defeated_dragon" => 900,
+                "defeated_goblinking" => 1100,
+                "defeated_queen" => 1300,
+                "defeated_fader" => 1600,
+                _ => 999,
+            };
         }
 
         private static string DetermineItemType(ItemDrop.ItemData item) {

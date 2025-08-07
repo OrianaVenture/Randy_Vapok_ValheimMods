@@ -39,15 +39,10 @@ namespace EpicLoot
         public static string AddLightningDamage = nameof(AddLightningDamage);
         public static string AddPoisonDamage = nameof(AddPoisonDamage);
         public static string AddSpiritDamage = nameof(AddSpiritDamage);
-        public static string AddFireResistance = nameof(AddFireResistance);
         public static string AddFireResistancePercentage = nameof(AddFireResistancePercentage);
-        public static string AddFrostResistance = nameof(AddFrostResistance);
         public static string AddFrostResistancePercentage = nameof(AddFrostResistancePercentage);
-        public static string AddLightningResistance = nameof(AddLightningResistance);
         public static string AddLightningResistancePercentage = nameof(AddLightningResistancePercentage);
-        public static string AddPoisonResistance = nameof(AddPoisonResistance);
         public static string AddPoisonResistancePercentage = nameof(AddPoisonResistancePercentage);
-        public static string AddSpiritResistance = nameof(AddSpiritResistance);
         public static string AddSpiritResistancePercentage = nameof(AddSpiritResistancePercentage);
         public static string AddElementalResistancePercentage = nameof(AddElementalResistancePercentage);
         public static string AddBluntResistancePercentage = nameof(AddBluntResistancePercentage);
@@ -79,7 +74,6 @@ namespace EpicLoot
         public static string Warmth = nameof(Warmth);
         public static string Paralyze = nameof(Paralyze);
         public static string DoubleJump = nameof(DoubleJump);
-        public static string WaterWalking = nameof(WaterWalking);
         public static string ExplosiveArrows = nameof(ExplosiveArrows);
         public static string QuickDraw = nameof(QuickDraw);
         public static string AddSwordsSkill = nameof(AddSwordsSkill);

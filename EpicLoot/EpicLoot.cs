@@ -598,11 +598,11 @@ namespace EpicLoot
                 // Skip invalid types
                 if (type == "None" || type == "All") { continue; }
                 foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
-                    EpicLoot.Log($"Loading Unidentified_{type}_{rarity}");
+                    //EpicLoot.Log($"Loading Unidentified_{type}_{rarity}");
                     var prefab = Object.Instantiate(genericPrefab);
                     string prefabName = $"{type}_{rarity}_Unidentified";
                     prefab.name = prefabName;
-                    EpicLoot.Log($"Set prefab name");
+                    // EpicLoot.Log($"Set prefab name");
 
                     //ZNetView zview = prefab.AddComponent<ZNetView>();
                     //zview.m_persistent = true;
@@ -636,14 +636,14 @@ namespace EpicLoot
                     //EpicLoot.Log($"Added Itemdrop");
 
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
-                    if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
+                    //if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
                     
                     magicItemComponent.SetMagicItem(new MagicItem {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
-                    EpicLoot.Log($"Added magicitem");
+                    //EpicLoot.Log($"Added magicitem");
                     magicItemComponent.Save();
                     //itemDrop.m_itemData
                     ItemConfig unidentifiedIC = new ItemConfig() {

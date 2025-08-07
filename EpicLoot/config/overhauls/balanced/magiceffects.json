@@ -964,32 +964,35 @@
       "DisplayText": "$mod_epicloot_me_modifylowhealth_display",
       "Description": "$mod_epicloot_me_modifylowhealth_desc",
       "Requirements": {
-        "NoRoll": true
+        "AllowedItemTypes": [
+          "Helmet",
+          "Utility"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
-          "MinValue": 5,
-          "MaxValue": 10,
+          "MinValue": 2,
+          "MaxValue": 5,
           "Increment": 1
         },
         "Rare": {
-          "MinValue": 10,
-          "MaxValue": 15,
+          "MinValue": 5,
+          "MaxValue": 8,
           "Increment": 1
         },
         "Epic": {
-          "MinValue": 15,
-          "MaxValue": 20,
+          "MinValue": 8,
+          "MaxValue": 12,
           "Increment": 1
         },
         "Legendary": {
-          "MinValue": 20,
-          "MaxValue": 25,
+          "MinValue": 12,
+          "MaxValue": 16,
           "Increment": 1
         },
         "Mythic": {
-          "MinValue": 25,
-          "MaxValue": 30,
+          "MinValue": 16,
+          "MaxValue": 20,
           "Increment": 1
         }
       },
@@ -1694,121 +1697,6 @@
       ]
     },
     {
-      "Type": "AddFireResistance",
-      "DisplayText": "$mod_epicloot_me_addfireresistance_display",
-      "Description": "$mod_epicloot_me_addfireresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFrostResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addfireresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addfireresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddFrostResistance",
-      "DisplayText": "$mod_epicloot_me_addfrostresistance_display",
-      "Description": "$mod_epicloot_me_addfrostresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addfrostresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addfrostresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddLightningResistance",
-      "DisplayText": "$mod_epicloot_me_addlightningresistance_display",
-      "Description": "$mod_epicloot_me_addlightningresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addlightningresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addlightningresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddPoisonResistance",
-      "DisplayText": "$mod_epicloot_me_addpoisonresistance_display",
-      "Description": "$mod_epicloot_me_addpoisonresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddSpiritResistance",
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddLightningResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addpoisonresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addpoisonresistance_suffix1"
-      ]
-    },
-    {
-      "Type": "AddSpiritResistance",
-      "DisplayText": "$mod_epicloot_me_addspiritresistance_display",
-      "Description": "$mod_epicloot_me_addspiritresistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility"
-        ],
-        "ExclusiveEffectTypes": [
-          "AddFireResistance",
-          "AddFrostResistance",
-          "AddLightningResistance",
-          "AddPoisonResistance"
-        ]
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_addspiritresistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addspiritresistance_suffix1"
-      ]
-    },
-    {
       "Type": "AddFireResistancePercentage",
       "DisplayText": "$mod_epicloot_me_addfireresistancepercentage_display",
       "Description": "$mod_epicloot_me_addfireresistancepercentage_desc",
@@ -2320,62 +2208,6 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_addpiercingresistancepercentage_suffix1"
-      ]
-    },
-    {
-      "Type": "AddChoppingResistancePercentage",
-      "DisplayText": "$mod_epicloot_me_addchoppingresistancepercentage_display",
-      "Description": "$mod_epicloot_me_addchoppingresistancepercentage_desc",
-      "Requirements": {
-        "NoRoll": true,
-        "AllowedItemTypes": [
-          "Helmet",
-          "Chest",
-          "Legs",
-          "Shoulder",
-          "Utility",
-          "Shield",
-          "Tool",
-          "Torch",
-          "TwoHandedWeaponLeft"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 2,
-          "MaxValue": 6,
-          "Increment": 0.5
-        },
-        "Rare": {
-          "MinValue": 3,
-          "MaxValue": 9,
-          "Increment": 0.5
-        },
-        "Epic": {
-          "MinValue": 4,
-          "MaxValue": 12,
-          "Increment": 0.5
-        },
-        "Legendary": {
-          "MinValue": 5,
-          "MaxValue": 15,
-          "Increment": 0.5
-        },
-        "Mythic": {
-          "MinValue": 6,
-          "MaxValue": 18,
-          "Increment": 0.5
-        }
-      },
-      "Config": {
-        "MaxResistance": 50
-      },
-      "SelectionWeight": 10,
-      "Prefixes": [
-        "$mod_epicloot_me_addchoppingresistancepercentage_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_addchoppingresistancepercentage_suffix1"
       ]
     },
     {
@@ -2946,7 +2778,14 @@
       "DisplayText": "$mod_epicloot_me_coinhoarder_display",
       "Description": "$mod_epicloot_me_coinhoarder_desc",
       "Requirements": {
-        "NoRoll": true
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
@@ -3375,23 +3214,6 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_doublejump_suffix1"
-      ]
-    },
-    {
-      "Type": "WaterWalking",
-      "DisplayText": "$mod_epicloot_me_waterwalk_display",
-      "Description": "$mod_epicloot_me_waterwalk_desc",
-      "Requirements": {
-        "NoRoll": true
-      },
-      "SelectionWeight": 10,
-      "Prefixes": [
-        "$mod_epicloot_me_waterwalk_prefix1",
-        "$mod_epicloot_me_waterwalk_prefix2"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_waterwalk_suffix1",
-        "$mod_epicloot_me_waterwalk_suffix2"
       ]
     },
     {
@@ -5607,32 +5429,39 @@
       "DisplayText": "$mod_epicloot_me_luck_display",
       "Description": "$mod_epicloot_me_luck_desc",
       "Requirements": {
-        "NoRoll": true
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
           "MinValue": 1,
-          "MaxValue": 6,
+          "MaxValue": 3,
           "Increment": 1
         },
         "Rare": {
           "MinValue": 3,
-          "MaxValue": 9,
+          "MaxValue": 6,
           "Increment": 1
         },
         "Epic": {
           "MinValue": 6,
-          "MaxValue": 12,
+          "MaxValue": 9,
           "Increment": 1
         },
         "Legendary": {
           "MinValue": 9,
-          "MaxValue": 15,
+          "MaxValue": 12,
           "Increment": 1
         },
         "Mythic": {
           "MinValue": 12,
-          "MaxValue": 18,
+          "MaxValue": 15,
           "Increment": 1
         }
       },
@@ -5874,7 +5703,17 @@
       "DisplayText": "$mod_epicloot_me_bulkup_display",
       "Description": "$mod_epicloot_me_bulkup_desc",
       "Requirements": {
-        "NoRoll": true
+        "AllowedItemTypes": [
+          "Chest",
+          "Legs"
+        ],
+        "ExcludedSkillTypes": [],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
       },
       "ValuesPerRarity": {
         "Rare": {
