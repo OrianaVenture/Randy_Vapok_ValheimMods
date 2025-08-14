@@ -2012,7 +2012,6 @@ GameObject:
   - component: {fileID: 2054427516855851412}
   - component: {fileID: 8619958661227407282}
   - component: {fileID: 6331352585142075255}
-  - component: {fileID: 8036496574436743739}
   - component: {fileID: 8337794558441227964}
   m_Layer: 5
   m_Name: MainButton
@@ -2124,20 +2123,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7962900080647823154}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8036496574436743739}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 2172398bc32a1e741977becabd38ce2e,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &8619958661227407282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2167,102 +2153,6 @@ MonoBehaviour:
   m_text: 
   m_topic: 
   m_gamepadFocusObject: {fileID: 0}
---- !u!82 &8036496574436743739
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4094944259969962945}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 50
-  Pan2D: 0
-  rolloffMode: 1
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 1
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &8337794558441227964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2445,6 +2335,7 @@ MonoBehaviour:
   Filterable: 0
   Sortable: 0
   ReadOnly: 1
+  UseEnchantAsName: 0
   ListContainer: {fileID: 6034724416759470690}
   ElementPrefab: {fileID: 5444317643905383258, guid: 7e02233e8817cd1418052127a139505e,
     type: 3}
@@ -2786,6 +2677,7 @@ MonoBehaviour:
   Audio: {fileID: 3999165617330130774}
   ProgressLoopSFX: {fileID: 8300000, guid: cc6f29ca51c890747814b719c744a182, type: 3}
   CompleteSFX: {fileID: 8300000, guid: d0840e236cbf1ae45b3dab75671bca34, type: 3}
+  MainActionSFX: {fileID: 8300000, guid: 2172398bc32a1e741977becabd38ce2e, type: 3}
   EnchantInfo: {fileID: 13169488238357334}
   EnchantInfoScrollbar: {fileID: 8804013919072147002}
   RarityButtons:
@@ -4016,6 +3908,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5303491956084132375, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: Audio
+      value: 
+      objectReference: {fileID: 3999165617330130774}
     - target: {fileID: 5447130755827112174, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: Rarity
@@ -4031,7 +3928,8 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1095830340212917474}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 166747949556438590, guid: 280a97c6e1516804dac16ab67455a8c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4367,6 +4265,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5303491956084132375, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: Audio
+      value: 
+      objectReference: {fileID: 3999165617330130774}
     - target: {fileID: 8764666603419428437, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_IsOn
@@ -4377,7 +4280,8 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1095830340212917474}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 166747949556438590, guid: 280a97c6e1516804dac16ab67455a8c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4654,6 +4558,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5303491956084132375, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: Audio
+      value: 
+      objectReference: {fileID: 3999165617330130774}
     - target: {fileID: 5447130755827112174, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: Rarity
@@ -4669,7 +4578,8 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1095830340212917474}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 166747949556438590, guid: 280a97c6e1516804dac16ab67455a8c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4815,6 +4725,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5303491956084132375, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: Audio
+      value: 
+      objectReference: {fileID: 3999165617330130774}
     - target: {fileID: 5447130755827112174, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: Rarity
@@ -4830,7 +4745,8 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1095830340212917474}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 166747949556438590, guid: 280a97c6e1516804dac16ab67455a8c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4981,6 +4897,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5303491956084132375, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: Audio
+      value: 
+      objectReference: {fileID: 3999165617330130774}
     - target: {fileID: 5447130755827112174, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: Rarity
@@ -4996,7 +4917,8 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 1095830340212917474}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 166747949556438590, guid: 280a97c6e1516804dac16ab67455a8c8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

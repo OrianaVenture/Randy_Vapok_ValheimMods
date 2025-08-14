@@ -53,8 +53,9 @@ namespace EpicLoot_UnityLib
         private RuneAction _runeAction;
         private GameObject _successDialog;
         private ItemDrop.ItemData _selectedItem;
+        private ItemDrop.ItemData _selectedOverrideRune;
         private MagicRarityUnity _selectedRarity = MagicRarityUnity.Magic; // Default to Magic rarity
-        private int _selectedEnchantmentIndex = 0;
+        private int _selectedEnchantmentIndex = -1;
 
         private enum RuneAction
         {
@@ -73,6 +74,7 @@ namespace EpicLoot_UnityLib
             RuneEtchButton.onValueChanged.AddListener((isOn) => {
                 EtchModeSelected(isOn);
             });
+            AvailableRunes.OnSelectedItemsChanged += OnSelectedOverrideRuneChanged;
         }
 
         [UsedImplicitly]
@@ -127,7 +129,9 @@ namespace EpicLoot_UnityLib
         }
 
         public void UpdateDisplaySelectedItemEnchantments(ItemDrop.ItemData selected_item) {
-            if (selected_item == null) { return; }
+            if (selected_item == null) {
+                return;
+            }
 
             // Set the enchantments to be selected based on the enchantments on this item
             var info = GetItemEnchants(_selectedItem, true);
@@ -136,7 +140,7 @@ namespace EpicLoot_UnityLib
             // Set enchantment list to the enchantments of the selected item
 
             var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Rune);
-            float cost_reduction = featureValues.Item1 == 0f ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
             float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f);
 
             // Cost for Extracting the specific enchantment
@@ -144,8 +148,7 @@ namespace EpicLoot_UnityLib
                 CostLabel.enabled = true;
                 var cost = GetRuneExtractCost(_selectedItem, _selectedRarity, cost_reduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
-                var canAfford = LocalPlayerCanAffordRuneCost(cost);
-                MainButton.interactable = canAfford;
+                CheckIfActionDoable();
                 MainButton.GetComponentInChildren<Text>().text = Localization.instance.Localize("$mod_epicloot_rune_extract");
             }
             
@@ -154,15 +157,14 @@ namespace EpicLoot_UnityLib
                 CostLabel.enabled = true;
                 var cost = GetRuneEtchCost(_selectedItem, _selectedRarity, cost_reduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
-                var canAfford = LocalPlayerCanAffordRuneCost(cost);
-                MainButton.interactable = canAfford;
+                CheckIfActionDoable();
                 MainButton.GetComponentInChildren<Text>().text = Localization.instance.Localize("$mod_epicloot_rune_etch");
             }
         }
 
         public void UpdateDisplayAvailableOverwriteEnchantments()
         {
-            if (_selectedItem == null || _runeAction == RuneAction.Extract) {
+            if (_selectedItem == null || _runeAction == RuneAction.Extract || _selectedEnchantmentIndex <= -1) {
                 AvailableRunes.SetItems(new List<IListElement>());
                 return;
             }
@@ -178,6 +180,7 @@ namespace EpicLoot_UnityLib
                     Destroy(child.gameObject);
                 }
             }
+            _selectedEnchantmentIndex = -1;
         }
 
         private void RefreshSelectableEnchantments()
@@ -217,11 +220,13 @@ namespace EpicLoot_UnityLib
                     if (child.GetComponent<Toggle>().isOn == true) {
                         _selectedEnchantmentIndex = index;
                         Debug.Log($"Setting selected enchantment index to {index}");
+                        CheckIfActionDoable();
                         return;
                     }
                     index++;
                 }
             }
+            _selectedEnchantmentIndex = -1;
         }
 
         public bool LocalPlayerCanAffordRuneCost(List<InventoryItemListElement> cost)
@@ -327,7 +332,7 @@ namespace EpicLoot_UnityLib
             }
 
             var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Rune);
-            float cost_reduction = featureValues.Item1 == 0f ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
             float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f);
             var item = selectedItem.Item1.GetItem();
             Debug.Log($"Selected item: {item.m_shared.m_name}, rarity: {_selectedRarity}, enchantment index: {_selectedEnchantmentIndex}, power modifier: {power_modifier}");
@@ -376,6 +381,7 @@ namespace EpicLoot_UnityLib
             
             //Lock();
             RefreshAvailableItems();
+            _selectedEnchantmentIndex = -1;
             CostList.SetItems(new List<IListElement>());
         }
 
@@ -403,7 +409,64 @@ namespace EpicLoot_UnityLib
                 _selectedItem = selectedItem.Item1.GetItem();
                 _selectedRarity = GetItemRarity(_selectedItem);
                 UpdateDisplaySelectedItemEnchantments(_selectedItem);
+                _selectedEnchantmentIndex = -1;
+            } else {
+                ClearEnchantmentList();
             }
+        }
+
+        protected void OnSelectedOverrideRuneChanged()
+        {
+            var rune = AvailableRunes.GetSingleSelectedItem<InventoryItemListElement>();
+            if (rune?.Item1.GetItem() != null) {
+                _selectedOverrideRune = rune.Item1.GetItem();
+                CheckIfActionDoable();
+            } else {
+                _selectedOverrideRune = null;
+            }
+        }
+
+        private void CheckIfActionDoable()
+        {
+            bool state = true;
+
+            // No selected item
+            if (_selectedItem == null) {
+                Debug.Log("No item selected.");
+                state = false;
+            }
+
+            // Check for a selected Enchantment, to extract or to etch
+            if (_selectedEnchantmentIndex == -1) {
+                Debug.Log("No Enchantment selected.");
+                state = false;
+            }
+
+
+            // Check costs, ignored if nocost mode
+            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Rune);
+            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
+            if (_runeAction == RuneAction.Etch && !Player.m_localPlayer.NoCostCheat()) {
+                var cost = GetRuneEtchCost(_selectedItem, _selectedRarity, cost_reduction);
+                CostList.SetItems(cost.Cast<IListElement>().ToList());
+                state = LocalPlayerCanAffordRuneCost(cost);
+                Debug.Log($"Afford cost? {state}");
+            }
+            if (_runeAction == RuneAction.Extract && !Player.m_localPlayer.NoCostCheat()) {
+                var cost = GetRuneExtractCost(_selectedItem, _selectedRarity, cost_reduction);
+                CostList.SetItems(cost.Cast<IListElement>().ToList());
+                state = LocalPlayerCanAffordRuneCost(cost);
+                Debug.Log($"Afford cost? {state}");
+            }
+
+            // Etching but does not have an override rune selected
+            if (_runeAction == RuneAction.Etch && _selectedOverrideRune == null) {
+                Debug.Log("No override enchantment selected.");
+                state = false;
+            }
+
+
+            MainButton.interactable = state;
         }
 
         public override bool CanCancel()

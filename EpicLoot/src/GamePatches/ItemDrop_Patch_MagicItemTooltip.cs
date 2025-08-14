@@ -193,26 +193,30 @@ namespace EpicLoot
                         text.Append($"\n$item_eitruse: <color={spellswordColor}>{totalEitrUse:#.#}</color>");
                     }
 
+
                     bool hasBloodlust = magicItem.HasEffect(MagicEffectType.Bloodlust);
                     string bloodlustColor = hasBloodlust ? magicColor : "orange";
                     float bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
-                    if (hasBloodlust)
-                    {
-                        text.Append($"\n$item_healthuse: <color={bloodlustColor}>{bloodlustStaminaUse:#.#}</color>");
-                    }
-                    else
-                    {
-                        if (item.m_shared.m_attack.m_attackHealth > 0.0)
-                            text.Append($"\n$item_healthuse: " +
-                                $"<color=orange>{item.m_shared.m_attack.m_attackHealth}</color>");
+                    float healthUsageReduction = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
+                    if (hasBloodlust) {
+                        float skillmod_cost = bloodlustStaminaUse - bloodlustStaminaUse * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
+                        text.Append($"\n$item_healthuse: <color={bloodlustColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmod_cost})</color>");
+                    } else {
+                        if (item.m_shared.m_attack.m_attackHealth > 0.0) {
+                            float skillmod_cost = item.m_shared.m_attack.m_attackHealth - item.m_shared.m_attack.m_attackHealth * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
+                            text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealth * healthUsageReduction} ({skillmod_cost})</color>");
+                        }
                     }
                     
                     bool magicAttackHealth = magicItem.HasEffect(MagicEffectType.ModifyAttackHealthUse);
                     string magicAttackHealthColor = magicAttackHealth ? magicColor : "orange";
-                    float healthUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
-                    float totalHealthPercentageUse = healthUsePercentage * item.m_shared.m_attack.m_attackHealthPercentage;
-                    if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0)
-                        text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{(totalHealthPercentageUse / 100):##.#%}</color>");
+                    float totalHealthPercentageUse = healthUsageReduction * item.m_shared.m_attack.m_attackHealthPercentage;
+                    if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0) {
+                        float healthcost = totalHealthPercentageUse / 100;
+                        float skillmod_cost = healthcost - healthcost * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
+                        text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{healthcost:##.#%} ({skillmod_cost})</color>");
+                    }
+                        
                     
                     bool attackDrawStamina = magicItem.HasEffect(MagicEffectType.ModifyDrawStaminaUse);
                     string attackDrawStaminaColor = attackDrawStamina ? magicColor : "orange";

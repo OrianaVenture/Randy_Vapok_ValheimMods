@@ -25,11 +25,7 @@ namespace EpicLoot
         public string Object;
         public string RefObject;
         public float[][] Drops;
-        public float[][] Drops2;
-        public float[][] Drops3;
         public LootDrop[] Loot;
-        public LootDrop[] Loot2;
-        public LootDrop[] Loot3;
         public List<LeveledLootDef> LeveledLoot = new List<LeveledLootDef>();
     }
 

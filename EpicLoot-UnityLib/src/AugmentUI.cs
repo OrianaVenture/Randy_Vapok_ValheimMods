@@ -223,6 +223,10 @@ namespace EpicLoot_UnityLib
 
             _choiceDialog = AugmentItem(item, _augmentIndex);
 
+            foreach (var audio_source in _choiceDialog.GetComponentsInChildren<AudioSource>()) {
+                audio_source.volume = AudioVolumeLevel();
+            }
+
             Lock();
         }
 

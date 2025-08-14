@@ -288,7 +288,7 @@ namespace EpicLoot.Patching
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
-            string base_cfg_file = ELConfig.GetOverhaulDirectoryPath() + "\\" + filename + ".json";
+            string base_cfg_file = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
             EpicLoot.Log($"Loading config base file {base_cfg_file}");
             try {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree

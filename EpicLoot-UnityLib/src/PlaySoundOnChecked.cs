@@ -29,7 +29,7 @@ namespace EpicLoot_UnityLib
         {
             if (Audio != null && SFX != null && _toggle.isOn)
                 Audio.volume = AudioVolumeLevel();
-                Audio.PlayOneShot(SFX);
+                Audio.PlayOneShot(SFX, Audio.volume);
         }
     }
 }

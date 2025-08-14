@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UIElements;
 using static ItemDrop.ItemData;
 using Random = UnityEngine.Random;
@@ -44,7 +45,7 @@ namespace EpicLoot.CraftingV2
         {
             EnchantingTableUI.AugaFixup = EnchantingUIAugaFixup.AugaFixup;
             EnchantingTableUI.TabActivation = TabActivation;
-            EnchantingTableUI.AudioVolumeLevel = GetAuidioLevel;
+            EnchantingTableUI.AudioVolumeLevel = GetAudioLevel;
             MultiSelectItemList.SortByRarity = SortByRarity;
             MultiSelectItemList.SortByName = SortByName;
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
@@ -81,13 +82,14 @@ namespace EpicLoot.CraftingV2
             DisenchantUI.GetDisenchantCost = GetDisenchantCost;
             DisenchantUI.DisenchantItem = DisenchantItem;
             FeatureStatus.MakeFeatureUnlockTooltip = MakeFeatureUnlockTooltip;
-            EnchantingTableUIPanelBase.AudioVolumeLevel = GetAuidioLevel;
-            MultiSelectItemListElement.AudioVolumeLevel = GetAuidioLevel;
-            PlaySoundOnChecked.AudioVolumeLevel = GetAuidioLevel;
+            EnchantingTableUIPanelBase.AudioVolumeLevel = GetAudioLevel;
+            MultiSelectItemListElement.AudioVolumeLevel = GetAudioLevel;
+            PlaySoundOnChecked.AudioVolumeLevel = GetAudioLevel;
+            AugmentChoiceDialog.AudioVolumeLevel = GetAudioLevel;
         }
 
-        private static float GetAuidioLevel() {
-            return AudioMan.instance.m_ambientVol * ELConfig.UIAudioVolumeAdjustment.Value;
+        private static float GetAudioLevel() {
+            return AudioMan.GetSFXVolume() * ELConfig.UIAudioVolumeAdjustment.Value;
         }
 
         private static bool UpgradesActive(EnchantingFeature feature, out bool featureActive)
@@ -674,7 +676,13 @@ namespace EpicLoot.CraftingV2
             foreach (var entry in costs) {
                 var itemData = entry.Key.m_itemData;
                 itemData.m_dropPrefab = entry.Key.gameObject;
-                itemData.m_stack = Mathf.RoundToInt(entry.Value * cost_modifier);
+                var cost = entry.Value;
+                if (cost_modifier != float.NaN) {
+                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+                }
+                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+                itemData.m_stack = cost;
+                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
                 results.Add(new InventoryItemListElement() { Item = itemData });
                 // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
             }
@@ -705,10 +713,31 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetRuneModifyableItems()
         {
-            return InventoryManagement.Instance.GetAllItems()
-                .Where(item => item.IsMagic() && item.IsRunestone() == false && !item.IsUnidentified())
-                .Select(item => new InventoryItemListElement() { Item = item })
-                .ToList();
+            var player = Player.m_localPlayer;
+            var result = new List<InventoryItemListElement>();
+
+            var inventory = player.GetInventory();
+            var boundItems = new List<ItemDrop.ItemData>();
+            inventory.GetBoundItems(boundItems);
+            var items = InventoryManagement.Instance.GetAllItems();
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    if (!ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
+                        (item != null && item.m_equipped || boundItems.Contains(item)))
+                    {
+                        continue;
+                    }
+
+                    if (item.IsMagic() && item.IsRunestone() == false && !item.IsUnidentified())
+                    {
+                        result.Add(new InventoryItemListElement() { Item = item });
+                    }
+                }
+            }
+
+            return result;
         }
 
         private static List<InventoryItemListElement> GetApplyableRunesforItem(ItemDrop.ItemData item, string selected_effect)
@@ -760,8 +789,13 @@ namespace EpicLoot.CraftingV2
             return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Extract).Select(entry => {
                 var itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
-                itemData.m_stack = Mathf.RoundToInt(entry.Value * cost_modifier);
-                if (itemData.m_stack == 0) { itemData.m_stack = 1; }
+                var cost = entry.Value;
+                if (cost_modifier != float.NaN) {
+                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+                }
+                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+                itemData.m_stack = cost;
+                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
                 return new InventoryItemListElement() { Item = itemData };
             }).ToList();
         }
@@ -770,19 +804,26 @@ namespace EpicLoot.CraftingV2
             return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Etch).Select(entry => {
                 var itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
-                itemData.m_stack = Mathf.RoundToInt(entry.Value * cost_modifier);
-                if (itemData.m_stack == 0) { itemData.m_stack = 1; }
+                var cost = entry.Value;
+                if (cost_modifier != float.NaN) {
+                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+                }
+                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+                itemData.m_stack = cost;
+                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
                 return new InventoryItemListElement() { Item = itemData };
             }).ToList();
         }
 
         private static ItemDrop.ItemData BuildEnchantedRune(ItemDrop.ItemData selectedItem, int targetEnchant, float power_modifier) {
             MagicItemEffect meffect = selectedItem.GetMagicItem().Effects[targetEnchant];
-            MagicItemEffect runeEffect = new MagicItemEffect(meffect.EffectType,meffect.EffectValue);
-            runeEffect.EffectValue *= power_modifier;
-            float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[meffect.EffectType].ValuesPerRarity.GetValueDefForRarity(selectedItem.GetRarity()).MaxValue;
-            // To clamp down on potentially infinite power looping by re-runing items
-            if (runeEffect.EffectValue > (maxDefaultValue * power_modifier)) { runeEffect.EffectValue = (maxDefaultValue * power_modifier); }
+            MagicItemEffect runeEffect = new MagicItemEffect(meffect.EffectType);
+            if (meffect.EffectValue != float.NaN && meffect.EffectValue > 1) {
+                runeEffect.EffectValue = meffect.EffectValue * power_modifier;
+                float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[meffect.EffectType].ValuesPerRarity.GetValueDefForRarity(selectedItem.GetRarity()).MaxValue;
+                // To clamp down on potentially infinite power looping by re-runing items
+                if (runeEffect.EffectValue > (maxDefaultValue * power_modifier)) { runeEffect.EffectValue = (maxDefaultValue * power_modifier); }
+            }
             string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
             EpicLoot.Log($"Checking for EtchedRune ({prefabName}) to return");
             ItemDrop basedata =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
@@ -967,6 +1008,11 @@ namespace EpicLoot.CraftingV2
 
             var choiceDialog = AugmentHelper.CreateAugmentChoiceDialog(true);
             choiceDialog.transform.SetParent(EnchantingTableUI.instance.transform);
+
+            // Fix the darn audio sources, AGAIN
+            foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>()) {
+                audio_source.volume = GetAudioLevel();
+            }
 
             var rt = (RectTransform)choiceDialog.transform;
             rt.pivot = new Vector2(0.5f, 0.5f);

@@ -227,7 +227,7 @@ namespace EpicLoot
                 var effect = __instance.transform.Find(equipFx);
                 if (effect == null)
                 {
-                    EpicLoot.LogWarning($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
+                    EpicLoot.Log($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
                     return;
                 }
 
@@ -255,7 +255,7 @@ namespace EpicLoot
                 var effect = __instance.transform.Find(equipFx);
                 if (effect == null)
                 {
-                    EpicLoot.LogWarning($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
+                    EpicLoot.Log($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
                     return;
                 }
 

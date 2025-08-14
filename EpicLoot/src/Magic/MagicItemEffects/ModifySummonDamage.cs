@@ -9,11 +9,11 @@ public static class ModifySummonDamage
     {
         public static void Postfix(Humanoid __instance)
         {
+            //EpicLoot.Log($"Starting summon damage check");
             // Setup the bonus damage for the summon when it is initially setup
-            if (Player.m_localPlayer != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f))
-            {
-                if (effectValue > 0)
-                {
+            if (!__instance.IsPlayer() && Player.m_localPlayer != null) {
+                //EpicLoot.Log($"Checking for control player summonDamageChange");
+                if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f)) {
                     //EpicLoot.Log($"Setting Summon Damage bonus set {effectValue}");
                     __instance.m_nview.GetZDO().Set("el-msd", effectValue);
                     foreach (var item in __instance.m_inventory.GetAllItems())
@@ -36,6 +36,7 @@ public static class ModifySummonDamage
     {
         public static void Postfix(Humanoid __instance)
         {
+            if (__instance.IsPlayer() || __instance.m_nview == null) { return; }
             // Apply Damage modification to all items in the inventory of the summon
             float summonDamageBonus = __instance.m_nview.GetZDO().GetFloat("el-msd", 0f);
             //EpicLoot.Log($"Summon Damage bonus set {summonDamageBonus}");

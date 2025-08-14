@@ -9,6 +9,7 @@ using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
+using EpicLoot.src.Loot;
 using HarmonyLib;
 using Jotunn.Managers;
 using UnityEngine;
@@ -323,7 +324,7 @@ namespace EpicLoot
                 var item = itemArg;
                 if (item == "random")
                 {
-                    var weightedRandomTable = new WeightedRandomCollection<string>(_random, allItemNames, x => 1);
+                    var weightedRandomTable = new WeightedRandomCollection<string>(allItemNames, x => 1);
                     item = weightedRandomTable.Roll();
                 }
 

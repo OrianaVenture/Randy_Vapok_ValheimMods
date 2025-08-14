@@ -79,7 +79,7 @@ namespace EpicLoot.Crafting
 
             if (item.IsMagic())
             {
-                _audioSource.PlayOneShot(EpicLoot.GetMagicItemDropSFX(item.GetRarity()));
+                _audioSource.PlayOneShot(EpicLoot.GetMagicItemDropSFX(item.GetRarity()), _audioSource.volume);
             }
         }
 

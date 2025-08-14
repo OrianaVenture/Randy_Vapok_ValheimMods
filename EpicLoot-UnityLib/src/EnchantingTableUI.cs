@@ -219,12 +219,12 @@ namespace EpicLoot_UnityLib
 
         public void PlayTabSelectSFX()
         {
-            Audio.PlayOneShot(TabClickSFX);
+            Audio.PlayOneShot(TabClickSFX, Audio.volume);
         }
 
         public void PlayEnchantBonusSFX()
         {
-            Audio.PlayOneShot(EnchantBonusSFX);
+            Audio.PlayOneShot(EnchantBonusSFX, Audio.volume);
         }
     }
 }

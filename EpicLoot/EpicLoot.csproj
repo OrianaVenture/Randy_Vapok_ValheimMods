@@ -111,6 +111,7 @@
     <Compile Include="src\LegendarySystem\UniqueLegendaryHelper.cs" />
     <Compile Include="src\Loot\LootConfig.cs" />
     <Compile Include="src\Loot\LootRoller.cs" />
+    <Compile Include="src\Loot\WeightedRandomCollection.cs" />
     <Compile Include="src\Magic\AutoAddEnchantableItems.cs" />
     <Compile Include="src\Magic\MagicItem.cs" />
     <Compile Include="src\Magic\MagicItemComponent.cs" />

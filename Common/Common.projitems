@@ -9,6 +9,14 @@
     <Import_RootNamespace>Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)src\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\ConfigPositionedElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Consumables.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\GameObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\GotDestroyed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\MultiValueDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\PlayerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\PrefabCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\SerializableVector3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Utils.cs" />
   </ItemGroup>
 </Project>

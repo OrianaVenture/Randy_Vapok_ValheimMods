@@ -7,6 +7,7 @@ using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
+using EpicLoot.src.Loot;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
 using System;
@@ -62,14 +63,13 @@ namespace EpicLoot
         {
             Config = lootConfig;
 
-            var random = new System.Random();
-            _weightedDropCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>(random);
-            _weightedLootTable = new WeightedRandomCollection<LootDrop>(random);
-            _weightedEffectTable = new WeightedRandomCollection<MagicItemEffectDefinition>(random);
-            _weightedEffectCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>(random);
-            _weightedRarityTable = new WeightedRandomCollection<KeyValuePair<ItemRarity, float>>(random);
-            _weightedLegendaryTable = new WeightedRandomCollection<LegendaryInfo>(random);
-            _weightedMythicTable = new WeightedRandomCollection<LegendaryInfo>(random);
+            _weightedDropCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>();
+            _weightedLootTable = new WeightedRandomCollection<LootDrop>();
+            _weightedEffectTable = new WeightedRandomCollection<MagicItemEffectDefinition>();
+            _weightedEffectCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>();
+            _weightedRarityTable = new WeightedRandomCollection<KeyValuePair<ItemRarity, float>>();
+            _weightedLegendaryTable = new WeightedRandomCollection<LegendaryInfo>();
+            _weightedMythicTable = new WeightedRandomCollection<LegendaryInfo>();
 
             ItemSets.Clear();
             LootTables.Clear();
@@ -958,23 +958,6 @@ namespace EpicLoot
         public static List<KeyValuePair<int, float>> GetDropsForLevel([NotNull] LootTable lootTable,
             int level, bool useNextHighestIfNotPresent = true)
         {
-            if (level == 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Drops3))
-            {
-                if (lootTable.LeveledLoot.Any(x => x.Level == level))
-                {
-                    EpicLoot.LogWarning($"Duplicated leveled drops for ({lootTable.Object} lvl {level}), using 'Drops{level}'");
-                }
-                return ToDropList(lootTable.Drops3);
-            }
-            
-            if ((level == 2 || level == 3) && !ArrayUtils.IsNullOrEmpty(lootTable.Drops2))
-            {
-                if (lootTable.LeveledLoot.Any(x => x.Level == level))
-                {
-                    EpicLoot.LogWarning($"Duplicated leveled drops for ({lootTable.Object} lvl {level}), using 'Drops{level}'");
-                }
-                return ToDropList(lootTable.Drops2);
-            }
 
             if (level <= 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Drops))
             {
@@ -1012,23 +995,6 @@ namespace EpicLoot
         public static LootDrop[] GetLootForLevel([NotNull] LootTable lootTable, int level,
             bool useNextHighestIfNotPresent = true)
         {
-            if (level == 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Loot3))
-            {
-                if (lootTable.LeveledLoot.Any(x => x.Level == level))
-                {
-                    EpicLoot.LogWarning($"Duplicated leveled loot for ({lootTable.Object} lvl {level}), using 'Loot{level}'");
-                }
-                return lootTable.Loot3.ToArray();
-            }
-
-            if ((level == 2 || level == 3) && !ArrayUtils.IsNullOrEmpty(lootTable.Loot2))
-            {
-                if (lootTable.LeveledLoot.Any(x => x.Level == level))
-                {
-                    EpicLoot.LogWarning($"Duplicated leveled loot for ({lootTable.Object} lvl {level}), using 'Loot{level}'");
-                }
-                return lootTable.Loot2.ToArray();
-            }
             
             if (level <= 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Loot))
             {

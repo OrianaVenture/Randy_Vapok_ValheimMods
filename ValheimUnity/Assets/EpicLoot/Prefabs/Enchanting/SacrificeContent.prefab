@@ -5929,6 +5929,7 @@ MonoBehaviour:
   Audio: {fileID: 4228516352388214512}
   ProgressLoopSFX: {fileID: 8300000, guid: 7aa3a5fae64dc1146a2331ae90754e4f, type: 3}
   CompleteSFX: {fileID: 8300000, guid: bcd8894e91bae9545bb89851b8629cef, type: 3}
+  MainActionSFX: {fileID: 8300000, guid: 2172398bc32a1e741977becabd38ce2e, type: 3}
   SacrificeToggle: {fileID: 302322257226772165}
   IdentifyToggle: {fileID: 5030054849874404689}
   IdentifyStylePanel: {fileID: 8543619483173265688}
@@ -6131,7 +6132,7 @@ PrefabInstance:
     - target: {fileID: 5472002607614073769, guid: d9faa635a033505458f87ef0043b6a22,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5472002607614073769, guid: d9faa635a033505458f87ef0043b6a22,
         type: 3}

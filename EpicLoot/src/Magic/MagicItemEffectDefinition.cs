@@ -264,7 +264,10 @@ namespace EpicLoot
             if (ItemUsesHealthOnAttack != null)
             {
                 bool usesHealth = itemData.m_shared.m_attack.m_attackHealth > 0 ||
-                    itemData.m_shared.m_secondaryAttack.m_attackHealth > 0;
+                    itemData.m_shared.m_secondaryAttack.m_attackHealth > 0 ||
+                    itemData.m_shared.m_attack.m_attackHealthPercentage > 0 ||
+                    itemData.m_shared.m_secondaryAttack.m_attackHealthPercentage > 0 ||
+                    itemData.HasMagicEffect(MagicEffectType.Bloodlust);
 
                 if (ItemUsesHealthOnAttack.Value != usesHealth)
                 {
@@ -392,6 +395,11 @@ namespace EpicLoot
                 default:
                     throw new ArgumentOutOfRangeException(nameof(itemRarity), itemRarity, null);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"MagicItemEffectDefinition|{Type}";
         }
     }
 

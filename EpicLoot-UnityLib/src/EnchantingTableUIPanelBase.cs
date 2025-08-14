@@ -16,6 +16,7 @@ namespace EpicLoot_UnityLib
         public AudioSource Audio;
         public AudioClip ProgressLoopSFX;
         public AudioClip CompleteSFX;
+        public AudioClip MainActionSFX;
 
         public delegate float AudioVolumeLevelDelegate();
         public static AudioVolumeLevelDelegate AudioVolumeLevel;
@@ -63,6 +64,7 @@ namespace EpicLoot_UnityLib
 
         protected virtual void OnMainButtonClicked()
         {
+            if (MainActionSFX != null) { Audio.PlayOneShot(MainActionSFX, Audio.volume); }
             if (_inProgress)
                 Cancel();
             else
@@ -107,7 +109,7 @@ namespace EpicLoot_UnityLib
         {
             var clip = GetCompleteAudioClip();
             if (Audio != null && clip != null)
-                Audio.PlayOneShot(clip);
+                Audio.PlayOneShot(clip, Audio.volume);
         }
 
         protected virtual AudioClip GetCompleteAudioClip()

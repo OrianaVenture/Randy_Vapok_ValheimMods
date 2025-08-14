@@ -75,7 +75,7 @@
       { "Name": "$mod_epicloot_epic_ymir" },
 
       { "Name": "$mod_epicloot_epic_fleet", "MagicEffects": [ "ModifyMovementSpeed" ] },
-      { "Name": "$mod_epicloot_epic_swift", "MagicEffects": [ "ModifyMovementSpeed" ] },
+      { "Name": "$mod_epicloot_epic_swift", "MagicEffects": [ "ModifyMovementSpeed" ] }
     ],
     "Names" : [
       { "Name": "$mod_epicloot_epic_aegis", "Skills": [ "Blocking" ] },

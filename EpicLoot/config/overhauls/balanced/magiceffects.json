@@ -5822,8 +5822,7 @@
           "Epic",
           "Legendary",
           "Mythic"
-        ],
-        "ItemUsesEitrOnAttack": true
+        ]
       },
       "ValuesPerRarity": {
         "Rare": {
@@ -5861,7 +5860,7 @@
       "Description": "$mod_epicloot_me_headhunter_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Chest"
+          "Helmet"
         ]
       },
       "ValuesPerRarity": {

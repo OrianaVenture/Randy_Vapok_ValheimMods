@@ -76,6 +76,7 @@ namespace EpicLoot.Config
         public static ConfigEntry<float> ItemsUnidentifiedDropRatio;
         public static ConfigEntry<float> UIAudioVolumeAdjustment;
         public static ConfigEntry<bool> AutoAddRemoveEquipmentFromVendor;
+        public static ConfigEntry<bool> AutoAddRemoveEquipmentFromLootLists;
         public static ConfigEntry<bool> EnableHotReloadPatches;
         public static ConfigEntry<bool> AlwaysRefreshCoreConfigs;
 
@@ -226,6 +227,8 @@ namespace EpicLoot.Config
                 "Equipment must be able to be created by a recipe in order to automatically get selected. If this is disabled enemy weapons can be added to drops, they are not always valid.");
             AutoAddRemoveEquipmentFromVendor = BindServerConfig("General", "Auto Add Remove Equipment From Vendor", true,
                 "Automatically adds/removes equipment from the vendor when it is added/removed from the game. ");
+            AutoAddRemoveEquipmentFromLootLists = BindServerConfig("General", "Auto Add Remove Equipment From Lootlists", true,
+                "Automatically adds/removes equipment from the teir based loot lists, and validates other loot lists only contain valid items.");
 
             // Balance
             BalanceConfigurationType = BindServerConfig("Balance", "Balance Template", "Default",
@@ -273,23 +276,23 @@ namespace EpicLoot.Config
             _andvaranautRange = BindServerConfig("Balance", "Andvaranaut Range", 20,
                 "Sets the range that Andvaranaut will locate a treasure chest.");
             SetItemDropChance = BindServerConfig("Balance", "Set Item Drop Chance", 0.15f,
-                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1");
+                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             GlobalDropRateModifier = BindServerConfig("Balance", "Global Drop Rate Modifier", 1.0f,
                 "A global percentage that modifies how likely items are to drop. " +
                 "1 = Exactly what is in the loot tables will drop. " +
                 "0 = Nothing will drop. " +
                 "2 = The number of items in the drop table are twice as likely to drop " +
                 "(note, this doesn't double the number of items dropped, just doubles the relative chance for them to drop). " +
-                "Min = 0, Max = 4");
+                "Min = 0, Max = 4", new AcceptableValueRange<float>(minValue: 0, maxValue: 4));
             ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f, "" +
                 "Sets the chance that items are dropped as unidentified. This takes precedent over 'Items To Materials Drop Ratio' which means" +
-                "out of 100 items dropped, unidenified items are first calculated, and then the remainder is used to calculate material vs item drop.");
+                "out of 100 items dropped, unidenified items are first calculated, and then the remainder is used to calculate material vs item drop.", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             ItemsToMaterialsDropRatio = BindServerConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
                 "Sets the chance that item drops are instead dropped as magic crafting materials. " +
                 "0 = all items, no materials. " +
                 "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop. " +
                 "At 0.5, half of everything that drops would be items and the other half would be materials. " +
-                "Min = 0, Max = 1");
+                "Min = 0, Max = 1", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             TransferMagicItemToCrafts = BindServerConfig("Balance", "Transfer Enchants to Crafted Items", false,
                 "When enchanted items are used as ingredients in recipes, transfer the highest enchant to the " +
                 "newly crafted item. Default: False.");
@@ -400,7 +403,7 @@ namespace EpicLoot.Config
 
         public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, CustomRPC targetRPC, T config) where T : class
         {
-            string basecfglocation = ELConfig.GetOverhaulDirectoryPath() + '\\' + filename;
+            string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename);
 
             // Ensure that the core config file exists
             if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
@@ -442,11 +445,12 @@ namespace EpicLoot.Config
                 if (valid_update == false) { return; }
                 if (GUIManager.IsHeadless()) {
                     try {
-                        targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(config, Formatting.Indented)));
-                        Jotunn.Logger.LogInfo("Sent levels configs to clients.");
+                        Jotunn.Logger.LogInfo($"Sending {filename} to clients.");
+                        targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(config)));
+                        Jotunn.Logger.LogInfo($"Sent {filename} to clients.");
                     }
                     catch {
-                        Jotunn.Logger.LogError($"Error while server syncing {basecfglocation} configs");
+                        Jotunn.Logger.LogError($"Error while server syncing {filename} configs");
                     }
                 }
             }
@@ -515,7 +519,7 @@ namespace EpicLoot.Config
             FilePatching.ReloadAndApplyAllPatches();
 
             if (AutoAddEquipment.Value == true || AutoRemoveEquipmentNotFound.Value == true) {
-                AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+                AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(false);
             }
         }
 
@@ -546,66 +550,77 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved LootConfigs");
             LootRoller.Initialize(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMagicConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved MagicEffectConfigs");
             MagicItemEffectDefinitions.Initialize(ClientRecieveParseJsonConfig<MagicItemEffectsList>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemInfoConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved ItemInfoConfigs");
             GatedItemTypeHelper.Initialize(ClientRecieveParseJsonConfig<ItemInfoConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveRecipesConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved RecipeConfigs");
             RecipesHelper.Initialize(ClientRecieveParseJsonConfig<RecipesConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingCostsConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved EnchantingCostConfigs");
             EnchantCostsHelper.Initialize(ClientRecieveParseJsonConfig<EnchantingCostsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemNameConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved ItemNameConfigs");
             MagicItemNames.Initialize(ClientRecieveParseJsonConfig<ItemNameConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved AdventureDataConfigs");
             AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveLegendaryItemConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved LegendaryItemConfigs");
             UniqueLegendaryHelper.Initialize(ClientRecieveParseJsonConfig<LegendaryItemConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAbilityConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved AbilityConfigs");
             AbilityDefinitions.Initialize(ClientRecieveParseJsonConfig<AbilityConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMaterialConversionConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved MaterialConversionConfig");
             MaterialConversions.Initialize(ClientRecieveParseJsonConfig<MaterialConversionsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
+            Jotunn.Logger.LogInfo($"Recieved EnchantingUpgradesConfig");
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
             yield return null;
         }
@@ -613,6 +628,7 @@ namespace EpicLoot.Config
         private static T ClientRecieveParseJsonConfig<T>(string json)
         {
             try {
+                EpicLoot.Log($"Parsing string of length {json.Length}");
                 return JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
                 EpicLoot.LogError($"There was an error syncing client configs: {e}");
@@ -621,6 +637,7 @@ namespace EpicLoot.Config
         }
 
         public static ZPackage SendConfig(string zpackage_content) {
+            Jotunn.Logger.LogInfo($"Writing {zpackage_content.Length}.");
             ZPackage package = new ZPackage();
             package.Write(zpackage_content);
             return package;
@@ -638,6 +655,26 @@ namespace EpicLoot.Config
         /// IsAdminOnly ensures this is a server authoratative value
         /// <returns></returns>
         public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueList<string> acceptableValues = null, bool advanced = false)
+        {
+            return cfg.Bind(category, key, value,
+                new ConfigDescription(
+                    description,
+                    acceptableValues,
+                new ConfigurationManagerAttributes { IsAdminOnly = true, IsAdvanced = advanced })
+            );
+        }
+
+        public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueRange<float> acceptableValues, bool advanced = false)
+        {
+            return cfg.Bind(category, key, value,
+                new ConfigDescription(
+                    description,
+                    acceptableValues,
+                new ConfigurationManagerAttributes { IsAdminOnly = true, IsAdvanced = advanced })
+            );
+        }
+
+        public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueRange<int> acceptableValues, bool advanced = false)
         {
             return cfg.Bind(category, key, value,
                 new ConfigDescription(

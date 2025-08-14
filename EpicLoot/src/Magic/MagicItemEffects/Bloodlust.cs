@@ -34,10 +34,5 @@ namespace EpicLoot.MagicItemEffects
                 __instance.m_attackHealth = __instance.m_attackStamina;
             }
         }
-
-        public static void Postfix(Attack __instance, ref float __state)
-        {
-            __instance.m_attackHealth = __state;
-        }
     }
 }

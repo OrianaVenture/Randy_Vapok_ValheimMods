@@ -268,7 +268,7 @@ namespace EpicLoot_UnityLib
                 OnSelectionChanged?.Invoke(this, IsSelected(), _selectedQuantity);
 
             if (Audio != null && !ReadOnly && !noSound && prevQuantity != _selectedQuantity)
-                Audio.PlayOneShot(OnClickSFX);
+                Audio.PlayOneShot(OnClickSFX, AudioVolumeLevel());
 
             Refresh();
         }

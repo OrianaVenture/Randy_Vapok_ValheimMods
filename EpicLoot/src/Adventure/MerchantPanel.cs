@@ -428,7 +428,7 @@ namespace EpicLoot.Adventure
             RefreshAll();
             if (_audioSource != null)
             {
-                _audioSource.PlayOneShot(EpicLoot.Assets.AbandonBountySFX);
+                _audioSource.PlayOneShot(EpicLoot.Assets.AbandonBountySFX, _audioSource.volume);
             }
         }
     }

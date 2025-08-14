@@ -91,7 +91,7 @@ namespace EpicLoot
         }
 
         public void OnOverhaulButtomClick() {
-            string basecfglocation = ELConfig.GetOverhaulDirectoryPath() + '\\' + "magiceffects.json";
+            string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "magiceffects.json");
             var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(ELConfig.GetDefaultEmbeddedFileLocation("magiceffects.json"));
             File.WriteAllText(basecfglocation, overhaulfiledata);
         }
