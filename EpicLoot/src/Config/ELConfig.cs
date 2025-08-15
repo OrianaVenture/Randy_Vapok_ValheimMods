@@ -345,18 +345,18 @@ namespace EpicLoot.Config
 
         public static void InitializeConfig()
         {
-            SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize, LootTablesRPC, LootRoller.Config);
-            SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize, MagicEffectsRPC, MagicItemEffectDefinitions.GetMagicItemEffectDefinitions());
+            SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize, LootTablesRPC, LootRoller.GetCFG);
+            SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize, MagicEffectsRPC, MagicItemEffectDefinitions.GetMagicItemEffectDefinitions);
             // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
-            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize, AdventureDataRPC, AdventureDataManager.Config);
-            SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize, ItemConfigRPC, GatedItemTypeHelper.GatedConfig);
-            SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize, RecipesRPC, RecipesHelper.Config);
-            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize, EnchantingCostsRPC, EnchantCostsHelper.Config);
-            SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize, ItemNamesRPC, MagicItemNames.Config);
-            SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize, LegendariesRPC, UniqueLegendaryHelper.Config);
-            SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize, AbilitiesRPC, AbilityDefinitions.Config);
-            SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, MaterialConversionRPC, MaterialConversions.Config);
-            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, EnchantingUpgradesRPC, EnchantingTableUpgrades.Config);
+            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize, AdventureDataRPC, AdventureDataManager.GetCFG);
+            SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize, ItemConfigRPC, GatedItemTypeHelper.GetCFG);
+            SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize, RecipesRPC, RecipesHelper.GetCFG);
+            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize, EnchantingCostsRPC, EnchantCostsHelper.GetCFG);
+            SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize, ItemNamesRPC, MagicItemNames.GetCFG);
+            SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize, LegendariesRPC, UniqueLegendaryHelper.GetCFG);
+            SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize, AbilitiesRPC, AbilityDefinitions.GetCFG);
+            SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, MaterialConversionRPC, MaterialConversions.GetCFG);
+            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, EnchantingUpgradesRPC, EnchantingTableUpgrades.GetCFG);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
             // SetupConfigFileWatcher(ELConfig.GetOverhaulDirectoryPath());
 
@@ -401,7 +401,7 @@ namespace EpicLoot.Config
             return embeddedcfgpath;
         }
 
-        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, CustomRPC targetRPC, T config) where T : class
+        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, CustomRPC targetRPC, Func<T> getConfig) where T : class
         {
             string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename);
 
@@ -425,8 +425,14 @@ namespace EpicLoot.Config
             EpicLoot.Log($"Core Config file {basecfglocation} Loaded and set.");
             // At this point we have a valid config, either from external file or from embedded defaults.
 
+            ZPackage SendInitialConfig() {
+                string cfgs = JsonConvert.SerializeObject(getConfig());
+                EpicLoot.Log($"sending {filename} configs: {cfgs}");
+                return SendConfig(cfgs);
+            }
+
             // Setup the initial synchronization for network connection
-            SynchronizationManager.Instance.AddInitialSynchronization(targetRPC, _ => SendConfig(JsonConvert.SerializeObject(config)));
+            SynchronizationManager.Instance.AddInitialSynchronization(targetRPC, SendInitialConfig);
 
             // Encapsulated file watcher modification method for the config file
             void FileModified(object sender, FileSystemEventArgs e) {
@@ -446,7 +452,7 @@ namespace EpicLoot.Config
                 if (GUIManager.IsHeadless()) {
                     try {
                         Jotunn.Logger.LogInfo($"Sending {filename} to clients.");
-                        targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(config)));
+                        targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(getConfig())));
                         Jotunn.Logger.LogInfo($"Sent {filename} to clients.");
                     }
                     catch {

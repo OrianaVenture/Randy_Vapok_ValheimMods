@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Common;
+using EpicLoot.Abilities;
+using System;
 using System.Collections.Generic;
-using Common;
 
 namespace EpicLoot.CraftingV2
 {
@@ -49,6 +50,11 @@ namespace EpicLoot.CraftingV2
             {
                 Conversions.Add(entry.Type, entry);
             }
+        }
+
+        public static MaterialConversionsConfig GetCFG()
+        {
+            return Config;
         }
     }
 }

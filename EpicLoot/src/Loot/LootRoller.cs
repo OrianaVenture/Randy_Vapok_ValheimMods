@@ -78,6 +78,11 @@ namespace EpicLoot
             AddLootTables(lootConfig.LootTables);
         }
 
+        public static LootConfig GetCFG()
+        {
+            return Config;
+        }
+
         private static void AddItemSets([NotNull] IEnumerable<LootItemSet> itemSets)
         {
             foreach (var itemSet in itemSets)

@@ -70,6 +70,11 @@ namespace EpicLoot_UnityLib
             Config = config;
         }
 
+        public static EnchantingUpgradesConfig GetCFG()
+        {
+            return Config;
+        }
+
         public static string GetFeatureName(EnchantingFeature feature)
         {
             var featureNames = new []

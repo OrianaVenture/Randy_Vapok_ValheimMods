@@ -1123,7 +1123,7 @@
   "mod_epicloot_me_eitrweave_prefix1": "Weaving",
   "mod_epicloot_me_eitrweave_suffix1": "of Weaving",
   "mod_epicloot_me_dartingthoughts_display": "Darting Thoughts +{0}",
-  "mod_epicloot_me_dartingthoughts_desc": "Increases Eitr Regen +<b><color=yellow>X%</color></b> while decreasing max Eitr +<b><color=yellow>X/3</color></b>%",
+  "mod_epicloot_me_dartingthoughts_desc": "Increases Eitr Regen +<b><color=yellow>X%</color></b> while decreasing max Eitr +<b><color=yellow>X/2</color></b>%",
   "mod_epicloot_me_dartingthoughts_prefix1": "Liquidity",
   "mod_epicloot_me_dartingthoughts_suffix1": "of Darting Thoughts",
   "mod_epicloot_me_headhunter_display": "Headhunter +{0}",

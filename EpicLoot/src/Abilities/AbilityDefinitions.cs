@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using EpicLoot.LegendarySystem;
+using System.Collections.Generic;
 
 namespace EpicLoot.Abilities
 {
@@ -24,6 +25,11 @@ namespace EpicLoot.Abilities
                         $"Please fix your configuration.");
                 }
             }
+        }
+
+        public static AbilityConfig GetCFG()
+        {
+            return Config;
         }
 
         public static bool TryGetAbilityDef(string abilityID, out AbilityDefinition abilityDef)

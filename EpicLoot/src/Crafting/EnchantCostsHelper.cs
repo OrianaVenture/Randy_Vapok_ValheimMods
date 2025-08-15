@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Common;
 using EpicLoot.CraftingV2;
 using EpicLoot_UnityLib;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace EpicLoot.Crafting
@@ -19,6 +20,11 @@ namespace EpicLoot.Crafting
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;
+        }
+
+        public static EnchantingCostsConfig GetCFG()
+        {
+            return Config;
         }
 
         public static List<ItemAmountConfig> GetSacrificeProducts(ItemDrop.ItemData item)

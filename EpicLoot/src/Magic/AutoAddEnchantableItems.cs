@@ -5,15 +5,11 @@ using EpicLoot.Crafting;
 using EpicLoot.GatedItemType;
 using Jotunn.Managers;
 using Newtonsoft.Json;
-using PlayFab.ClientModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
-using static CharacterAnimEvent;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.src.Magic
 {
@@ -72,8 +68,8 @@ namespace EpicLoot.src.Magic
                     },
                     });
             }
-
-            List<ItemDrop> allEquipment = Resources.FindObjectsOfTypeAll<ItemDrop>().Where(i => i.m_itemData != null && 
+            List<ItemDrop> allItems = Resources.FindObjectsOfTypeAll<ItemDrop>().ToList();
+            List <ItemDrop> allEquipment = allItems.Where(i => i.m_itemData != null && 
                 i.m_itemData.m_shared != null &&
                 i.m_autoPickup == true &&
                 string.IsNullOrEmpty(i.m_itemData.m_shared.m_dlc) &&
@@ -249,9 +245,11 @@ namespace EpicLoot.src.Magic
                         validItems.AddRange(iteme.Value);
                     }
                 }
-                
 
-                EpicLoot.Log($"Starting loottable Validation. Valid items to use {validItems.Count}");
+                List<string> allItemNames = allItems.Where(i => i.m_itemData != null &&
+                i.m_itemData.m_dropPrefab != null).Select(x => x.m_itemData.m_dropPrefab.name).ToList();
+
+                EpicLoot.Log($"Starting loottable Validation. Valid items to use {allItemNames.Count}");
 
                 foreach (LootItemSet lis in LootRoller.Config.ItemSets) {
                     List<LootDrop> entries = new List<LootDrop>();
@@ -260,7 +258,7 @@ namespace EpicLoot.src.Magic
                     EpicLoot.Log($"Checking LootSet entry: {lis.Name}");
                     foreach (var loot in lis.Loot) {
                         EpicLoot.Log($"Validating: {loot.Item}");
-                        if (validItems.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item)) {
+                        if (allItemNames.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item)) {
                             entries.Add(loot);
                             addedItems.Add(loot.Item);
                         }
@@ -307,7 +305,7 @@ namespace EpicLoot.src.Magic
                         foreach (var lloot in lt.LeveledLoot) {
                             List<LootDrop> updatedLootTableLL = new List<LootDrop>();
                             foreach(var ld in lloot.Loot) {
-                                if (validItems.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item)) {
+                                if (allItemNames.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item)) {
                                     updatedLootTableLL.Add(ld);
                                 }
                             }

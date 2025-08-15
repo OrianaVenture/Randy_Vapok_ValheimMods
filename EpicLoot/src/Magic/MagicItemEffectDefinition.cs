@@ -187,8 +187,13 @@ namespace EpicLoot
                 return false;
             }
 
-            if (ItemHasElementalDamage != null &&
-                (ItemHasElementalDamage == itemData.m_shared.m_damages.GetTotalElementalDamage() <= 0))
+            if (ItemHasElementalDamage != null && 
+                (ItemHasElementalDamage == (itemData.m_shared.m_damages.m_fire +
+                itemData.m_shared.m_damages.m_frost +
+                itemData.m_shared.m_damages.m_lightning +
+                itemData.m_shared.m_damages.m_poison +
+                itemData.m_shared.m_damages.m_spirit
+                ) <= 0))
             {
                 return false;
             }

@@ -29,6 +29,11 @@ namespace EpicLoot.Adventure
             EpicLoot.Log($"Updated/setup Adventure Data");
         }
 
+        public static AdventureDataConfig GetCFG()
+        {
+            return Config;
+        }
+
         public static void UpdateAventureData(AdventureDataConfig config)
         {
             Config = config;

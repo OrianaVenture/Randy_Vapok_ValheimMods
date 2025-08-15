@@ -40,6 +40,11 @@ namespace EpicLoot.LegendarySystem
             AddMythicSets(config.MythicSets);
         }
 
+        public static LegendaryItemConfig GetCFG()
+        {
+            return Config;
+        }
+
         private static void AddLegendaryInfo([NotNull] IEnumerable<LegendaryInfo> legendaryItems)
         {
             foreach (var legendaryInfo in legendaryItems)

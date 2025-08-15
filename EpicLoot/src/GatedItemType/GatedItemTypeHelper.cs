@@ -120,6 +120,11 @@ namespace EpicLoot.GatedItemType
             EpicLoot.Log($"Updated Itemconfig total item entries: {AllItemsWithDetails.Keys.Count}");
         }
 
+        public static ItemInfoConfig GetCFG()
+        {
+            return GatedConfig;
+        }
+
         /// <summary>
         /// Attempts to get a valid item of the specified type.
         /// </summary>

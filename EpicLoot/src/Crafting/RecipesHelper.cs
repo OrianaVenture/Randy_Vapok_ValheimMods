@@ -1,5 +1,6 @@
-﻿using System;
-using Common;
+﻿using Common;
+using EpicLoot.Adventure;
+using System;
 
 namespace EpicLoot.Crafting
 {
@@ -15,6 +16,11 @@ namespace EpicLoot.Crafting
             {
                 SetupRecipes();
             }
+        }
+
+        public static RecipesConfig GetCFG()
+        {
+            return Config;
         }
 
         public static void SetupRecipes()
