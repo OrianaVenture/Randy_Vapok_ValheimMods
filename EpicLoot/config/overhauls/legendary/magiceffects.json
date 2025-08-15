@@ -1368,6 +1368,228 @@
       ]
     },
     {
+      "Type": "ModifyNoise",
+      "DisplayText": "$mod_epicloot_me_modifynoise_display",
+      "Description": "$mod_epicloot_me_modifynoise_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Shoulder",
+          "Utility"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 20,
+          "MaxValue": 25,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 25,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 40,
+          "MaxValue": 50,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 50,
+          "MaxValue": 60,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifynoise_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifynoise_suffix1"
+      ]
+    },
+    {
+      "Type": "ModifyBuildDistance",
+      "DisplayText": "$mod_epicloot_me_modifybuilddistance_display",
+      "Description": "$mod_epicloot_me_modifybuilddistance_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Tool"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 25,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 30,
+          "MaxValue": 50,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifybuilddistance_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifybuilddistance_suffix1"
+      ]
+    },
+    {
+      "Type": "ModifyPickupRange",
+      "DisplayText": "$mod_epicloot_me_modifypickuprange_display",
+      "Description": "$mod_epicloot_me_modifypickuprange_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 30,
+          "MaxValue": 50,
+          "Increment": 5
+        },
+        "Legendary": {
+          "MinValue": 50,
+          "MaxValue": 75,
+          "Increment": 5
+        },
+        "Mythic": {
+          "MinValue": 75,
+          "MaxValue": 100,
+          "Increment": 5
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifypickuprange_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifypickuprange_suffix1"
+      ]
+    },
+    {
+      "Type": "ModifyFireRate",
+      "DisplayText": "$mod_epicloot_me_modifyfirerate_display",
+      "Description": "$mod_epicloot_me_modifyfirerate_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Staff"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifyfirerate_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifyfirerate_suffix1"
+      ]
+    },
+    {
+      "Type": "ModifyProjectileSpeed",
+      "DisplayText": "$mod_epicloot_me_modifyprojectilespeed_display",
+      "Description": "$mod_epicloot_me_modifyprojectilespeed_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Staff",
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 15,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 20,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 25,
+          "MaxValue": 50,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifyprojectilespeed_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifyprojectilespeed_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyEitrRegen",
       "DisplayText": "$mod_epicloot_me_modifyeitrregen_display",
       "Description": "$mod_epicloot_me_modifyeitrregen_desc",
