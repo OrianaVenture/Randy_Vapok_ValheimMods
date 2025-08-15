@@ -17,6 +17,7 @@ namespace EpicLoot
         public static string ReduceWeight = nameof(ReduceWeight);
         public static string RemoveSpeedPenalty = nameof(RemoveSpeedPenalty);
         public static string ModifyBlockPower = nameof(ModifyBlockPower);
+        public static string ModifyBlockForce = nameof(ModifyBlockForce);
         public static string ModifyParry = nameof(ModifyParry);
         public static string ModifyArmor = nameof(ModifyArmor);
         public static string ModifyBackstab = nameof(ModifyBackstab);
@@ -52,6 +53,11 @@ namespace EpicLoot
         public static string AddPhysicalResistancePercentage = nameof(AddPhysicalResistancePercentage);
         public static string ModifyMovementSpeed = nameof(ModifyMovementSpeed);
         public static string ModifySprintStaminaUse = nameof(ModifySprintStaminaUse);
+        public static string ModifyNoise = nameof(ModifyNoise);
+        public static string ModifyBuildDistance = nameof(ModifyBuildDistance);
+        public static string ModifyPickupRange = nameof(ModifyPickupRange);
+        public static string ModifyFireRate = nameof(ModifyFireRate);
+        public static string ModifyProjectileSpeed = nameof(ModifyProjectileSpeed);
         public static string ModifyDodgeStaminaUse = nameof(ModifyDodgeStaminaUse);
         public static string ModifyJumpStaminaUse = nameof(ModifyJumpStaminaUse);
         public static string ModifyAttackStaminaUse = nameof(ModifyAttackStaminaUse);
