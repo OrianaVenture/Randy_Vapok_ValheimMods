@@ -79,6 +79,94 @@
       "Comment": "Can't be rolled. Too powerful?"
     },
     {
+      "Type": "ChainLightning",
+      "DisplayText": "$mod_epicloot_me_chainlightning_display",
+      "Description": "$mod_epicloot_me_chainlightning_desc",
+      "CanBeAugmented": true,
+      "Requirements": {
+        "AllowedItemTypes": [
+          "OneHandedWeapon",
+          "TwoHandedWeapon",
+          "Bows",
+          "Crossbows"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 15,
+          "MaxValue": 25,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 25,
+          "MaxValue": 35,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 35,
+          "MaxValue": 45,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 45,
+          "MaxValue": 55,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Comment": "Too powerful!! Need to make legendary+ only or change weighting"
+    },
+    {
+      "Type": "DodgeBuff",
+      "DisplayText": "$mod_epicloot_me_dodgebuff_display",
+      "Description": "$mod_epicloot_me_dodgebuff_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Legs",
+          "Utility"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 20,
+          "MaxValue": 25,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 25,
+          "MaxValue": 30,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_dodgebuff_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_dodgebuff_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyPhysicalDamage",
       "DisplayText": "$mod_epicloot_me_modifyphysicaldamage_display",
       "Description": "$mod_epicloot_me_modifyphysicaldamage_desc",
@@ -3833,6 +3921,50 @@
       ]
     },
     {
+      "Type": "ReducedReloadSpeed",
+      "DisplayText": "$mod_epicloot_me_reducedreloadspeed",
+      "Description": "$mod_epicloot_me_reducedreloadspeed_desc",
+      "Requirements": {
+        "AllowedSkillTypes": [
+          "Crossbows"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 30,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 40,
+          "MaxValue": 50,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_reducedreloadspeed_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_reducedreloadspeed_suffix1"
+      ]
+    },
+    {
       "Type": "AddBloodMagicSkill",
       "DisplayText": "$mod_epicloot_me_addbloodmagicskill_display",
       "Description": "$mod_epicloot_me_addbloodmagicskill_desc",
@@ -4324,8 +4456,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_quicklearner_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_quicklearner_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_quicklearner_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_quicklearner_suffix1"
+      ]
     },
     {
       "Type": "FreeBuild",
@@ -4342,8 +4478,12 @@
         ]
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_freebuild_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_freebuild_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_freebuild_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_freebuild_suffix1"
+      ]
     },
     {
       "Type": "RecallWeapon",
@@ -4365,8 +4505,39 @@
         ]
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_recallweapon_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_recallweapon_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_recallweapon_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_recallweapon_suffix1"
+      ]
+    },
+    {
+      "Type": "Apportation",
+      "DisplayText": "$mod_epicloot_me_apportation_display",
+      "Description": "$mod_epicloot_me_apportation_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "OneHandedWeapon",
+          "TwoHandedWeapon"
+        ],
+        "ExcludedItemTypes": [
+          "Staff"
+        ],
+        "ExcludedSkillTypes": [
+          "Pickaxes"
+        ],
+        "MustHaveEffectTypes": [
+          "Throwable"
+        ]
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_apportation_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_apportation_suffix1"
+      ]
     },
     {
       "Type": "ReflectDamage",
@@ -4406,8 +4577,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_reflectdamage_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_reflectdamage_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_reflectdamage_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_reflectdamage_suffix1"
+      ]
     },
     {
       "Type": "AvoidDamageTaken",
@@ -4447,8 +4622,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_avoiddamagetaken_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_avoiddamagetaken_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_avoiddamagetaken_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_avoiddamagetaken_suffix1"
+      ]
     },
     {
       "Type": "StaggerOnDamageTaken",
@@ -4489,8 +4668,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_staggerondamagetaken_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_staggerondamagetaken_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_staggerondamagetaken_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_staggerondamagetaken_suffix1"
+      ]
     },
     {
       "Type": "FeatherFall",
@@ -4502,8 +4685,12 @@
         ]
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_featherfall_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_featherfall_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_featherfall_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_featherfall_suffix1"
+      ]
     },
     {
       "Type": "ModifyDiscoveryRadius",
@@ -4542,8 +4729,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_modifydiscoveryradius_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_modifydiscoveryradius_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_modifydiscoveryradius_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifydiscoveryradius_suffix1"
+      ]
     },
     {
       "Type": "Comfortable",
@@ -4580,8 +4771,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_comfortable_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_comfortable_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_comfortable_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_comfortable_suffix1"
+      ]
     },
     {
       "Type": "ModifyMovementSpeedLowHealth",
@@ -5107,8 +5302,12 @@
         }
       },
       "SelectionWeight": 1,
-      "Prefixes": [ "$mod_epicloot_me_avoiddamagetakenlowhealth_prefix1" ],
-      "Suffixes": [ "$mod_epicloot_me_avoiddamagetakenlowhealth_suffix1" ]
+      "Prefixes": [
+        "$mod_epicloot_me_avoiddamagetakenlowhealth_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_avoiddamagetakenlowhealth_suffix1"
+      ]
     },
     {
       "Type": "LifeStealLowHealth",
@@ -5233,6 +5432,58 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_executioner_suffix1"
+      ]
+    },
+    {
+      "Type": "OffSetAttack",
+      "DisplayText": "$mod_epicloot_me_offsetattack_display",
+      "Description": "$mod_epicloot_me_offsetattack_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Helmet",
+          "Shoulder",
+          "Utility",
+          "OneHandedWeapon",
+          "TwoHandedWeapon"
+        ],
+        "ExcludedItemNames": [
+          "$item_fishingrod"
+        ],
+        "ItemUsesStaminaOnAttack": true
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 150,
+          "MaxValue": 200,
+          "Increment": 5
+        },
+        "Rare": {
+          "MinValue": 200,
+          "MaxValue": 250,
+          "Increment": 5
+        },
+        "Epic": {
+          "MinValue": 250,
+          "MaxValue": 300,
+          "Increment": 5
+        },
+        "Legendary": {
+          "MinValue": 300,
+          "MaxValue": 350,
+          "Increment": 5
+        },
+        "Mythic": {
+          "MinValue": 350,
+          "MaxValue": 400,
+          "Increment": 5
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_offsetattack_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_offsetattack_suffix1"
       ]
     },
     {
