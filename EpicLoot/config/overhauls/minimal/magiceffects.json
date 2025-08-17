@@ -1275,9 +1275,9 @@
       ]
     },
     {
-      "Type": "ModifyFireRate",
-      "DisplayText": "$mod_epicloot_me_modifyfirerate_display",
-      "Description": "$mod_epicloot_me_modifyfirerate_desc",
+      "Type": "ModifyMagicFireRate",
+      "DisplayText": "$mod_epicloot_me_modifymagicfirerate_display",
+      "Description": "$mod_epicloot_me_modifymagicfirerate_desc",
       "Requirements": {
         "AllowedItemTypes": [
           "Staff"
@@ -1312,10 +1312,10 @@
       },
       "SelectionWeight": 1,
       "Prefixes": [
-        "$mod_epicloot_me_modifyfirerate_prefix1"
+        "$mod_epicloot_me_modifymagicfirerate_prefix1"
       ],
       "Suffixes": [
-        "$mod_epicloot_me_modifyfirerate_suffix1"
+        "$mod_epicloot_me_modifymagicfirerate_suffix1"
       ]
     },
     {
