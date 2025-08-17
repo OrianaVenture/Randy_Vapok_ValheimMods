@@ -14,8 +14,8 @@ namespace EpicLoot.LegendarySystem
         public static readonly Dictionary<string, LegendaryInfo> MythicInfo = new Dictionary<string, LegendaryInfo>();
         public static readonly Dictionary<string, LegendarySetInfo> MythicSets = new Dictionary<string, LegendarySetInfo>();
 
-        private static readonly Dictionary<string, LegendarySetInfo> _legendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
-        private static readonly Dictionary<string, LegendarySetInfo> _mythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> _legendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> _mythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
 
         public static readonly LegendaryInfo GenericLegendaryInfo = new LegendaryInfo
         {
