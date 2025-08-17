@@ -1373,7 +1373,7 @@
       "Description": "$mod_epicloot_me_modifynoise_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Shoulder",
+          "Legs",
           "Utility"
         ]
       },
