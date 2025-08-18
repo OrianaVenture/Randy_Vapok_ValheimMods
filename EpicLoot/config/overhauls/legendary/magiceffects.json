@@ -1402,7 +1402,7 @@
           "MaxValue": 40,
           "Increment": 1
         },
-        "SelectionWeight": 1,
+        "SelectionWeight": 10,
         "Prefixes": [
           "$mod_epicloot_me_ammoconservation_prefix1"
         ],
