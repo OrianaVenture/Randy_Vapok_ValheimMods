@@ -6,7 +6,7 @@ namespace EpicLoot
     public static partial class MagicEffectType
     {
         public static string DvergerCirclet = nameof(DvergerCirclet);
-        public static string HealthCriticalMead = nameof(HealthCriticalMead);
+        public static string InstantMead = nameof(InstantMead);
         public static string Megingjord = nameof(Megingjord);
         public static string Wishbone = nameof(Wishbone);
         public static string Andvaranaut = nameof(Andvaranaut);

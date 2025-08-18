@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace EpicLoot.Magic.MagicItemEffects
 {
-    public class HealthCriticalMeads
+    public class InstantMeads
     {
         private static bool addingModifiedStatusEffect = false;
         
         [HarmonyPatch(typeof(SEMan))]
-        public static class HealthCriticalMeads_SEMan_AddStatusEffect_Patch
+        public static class InstantMeads_SEMan_AddStatusEffect_Patch
         {
             [HarmonyPatch(nameof(SEMan.AddStatusEffect), new Type[] {
                 typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
@@ -22,7 +22,7 @@ namespace EpicLoot.Magic.MagicItemEffects
                 if (addingModifiedStatusEffect) return true;
                 var player = __instance.m_character as Player;
                 if (player == null || player != Player.m_localPlayer) return true;
-                if (!player.HasActiveMagicEffect(MagicEffectType.HealthCriticalMead)) return true;
+                if (!player.HasActiveMagicEffect(MagicEffectType.InstantMead)) return true;
                 if (!ModifyWithLowHealth.PlayerHasLowHealth(player)) return true;
                 if (statusEffect == null) return true;
 

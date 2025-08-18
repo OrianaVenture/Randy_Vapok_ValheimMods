@@ -1233,9 +1233,9 @@
       }
     },
     {
-      "Type": "HealthCriticalMead",
-      "DisplayText": "$mod_epicloot_me_healthcriticalmead_display",
-      "Description": "$mod_epicloot_me_healthcriticalmead_desc",
+      "Type": "InstantMead",
+      "DisplayText": "$mod_epicloot_me_instantmead_display",
+      "Description": "$mod_epicloot_me_instantmead_desc",
       "Requirements": {
         "AllowedItemTypes": [
           "Utility"
@@ -1250,10 +1250,10 @@
       "ValuesPerRarity": {
         "SelectionWeight": 10,
         "Prefixes": [
-          "$mod_epicloot_me_healthcriticalmead_prefix1"
+          "$mod_epicloot_me_instantmead_prefix1"
         ],
         "Suffixes": [
-          "$mod_epicloot_me_healthcriticalmead_suffix1"
+          "$mod_epicloot_me_instantmead_suffix1"
         ]
       }
     },
