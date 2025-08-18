@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EpicLoot.Abilities
 {
@@ -6,6 +7,7 @@ namespace EpicLoot.Abilities
     {
         public static AbilityConfig Config;
         public static readonly Dictionary<string, AbilityDefinition> Abilities = new Dictionary<string, AbilityDefinition>();
+        public static event Action OnSetupAbilityDefinitions;
 
         public static void Initialize(AbilityConfig config)
         {
@@ -24,6 +26,7 @@ namespace EpicLoot.Abilities
                         $"Please fix your configuration.");
                 }
             }
+            OnSetupAbilityDefinitions?.Invoke();
         }
 
         public static bool TryGetAbilityDef(string abilityID, out AbilityDefinition abilityDef)

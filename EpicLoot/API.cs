@@ -11,37 +11,43 @@ namespace EpicLoot;
 
 public static class API
 {
-    /// <summary>
-    /// This section is inside EpicLoot
-    /// API uses reflection to find the functions below and call them
-    /// Add to main EpicLoot folder, next to EpicLoot.cs
-    /// </summary>
     public static readonly Dictionary<string, MagicItemEffectDefinition> ExternalMagicItemEffectDefinitions = new();
     public static readonly Dictionary<string, AbilityDefinition> ExternalAbilities = new();
     public static readonly List<LegendaryItemConfig> ExternalLegendaryConfig = new();
     public static readonly Dictionary<string, Object> ExternalAssets = new();
 
-    /// <summary>
-    /// Since when configs reload, it clears dictionaries / lists
-    /// We need to reload external assets
-    /// </summary>
-    [Description("Call whenever configs change in order to reload external assets")]
-    public static void OnConfigChange()
+    static API()
     {
-        // Reload external magic effects
-        foreach (var effect in ExternalMagicItemEffectDefinitions.Values)
-        {
-            MagicItemEffectDefinitions.Add(effect);
-        }
-        
-        // Reload external abilities
+        MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += ReloadExternalMagicEffects;
+        UniqueLegendaryHelper.OnSetupLegendaryItemConfig += ReloadExternalLegendary;
+        AbilityDefinitions.OnSetupAbilityDefinitions += ReloadExternalAbilities;
+    }
+    
+    /// <summary>
+    /// Reloads cached external magic effects into AllDefinitions via Add().
+    /// </summary>
+    public static void ReloadExternalMagicEffects()
+    {
+        foreach (var effect in ExternalMagicItemEffectDefinitions.Values) MagicItemEffectDefinitions.Add(effect);
+    }
+
+    /// <summary>
+    /// Reloads cached external abilities into AbilityDefinitions.
+    /// </summary>
+    public static void ReloadExternalAbilities()
+    {
         foreach (var kvp in ExternalAbilities)
         {
             AbilityDefinitions.Config.Abilities.Add(kvp.Value);
             AbilityDefinitions.Abilities[kvp.Key] = kvp.Value;
         }
-        
-        // Reload external legendary items and sets
+    }
+
+    /// <summary>
+    /// Reloads cached legendary items and sets into UniqueLegendaryHelper.
+    /// </summary>
+    public static void ReloadExternalLegendary()
+    {
         foreach (var config in ExternalLegendaryConfig)
         {
             UniqueLegendaryHelper.LegendaryInfo.AddInfo(config.LegendaryItems);
@@ -49,15 +55,25 @@ public static class API
             AddSet(UniqueLegendaryHelper.LegendarySets, UniqueLegendaryHelper._legendaryItemsToSetMap, config.LegendarySets);
             AddSet(UniqueLegendaryHelper.MythicSets, UniqueLegendaryHelper._mythicItemsToSetMap, config.MythicSets);
         }
-
-        // Reload external assets // Not sure if this needed, doubt configs would change stored asset bundle assets
-        
-        // foreach (var kvp in ExternalAssets)
-        // {
-        //     EpicLoot._assetCache[kvp.Key] = kvp.Value;
-        // }
     }
-    
+
+    /// <summary>
+    /// Reloads cached assets into EpicLoot._assetCache.
+    /// </summary>
+    public static void ReloadExternalAssets()
+    {
+        foreach (var kvp in ExternalAssets)
+        {
+            EpicLoot._assetCache[kvp.Key] = kvp.Value;
+        }
+    }
+
+    /// <summary>
+    /// Called via reflection with a serialized MagicItemEffectDefinition, 
+    /// which is deserialized and added to EpicLoot.
+    /// </summary>
+    /// <param name="json">Serialized magic effect definition</param>
+    /// <returns>True if added successfully, otherwise false</returns>
     public static bool AddMagicEffect(string json)
     {
         try
@@ -75,24 +91,69 @@ public static class API
         }
     }
 
-    public static string GetMagicItemEffectDefinition(string type, ref string result)
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="type">Effect type</param>
+    /// <returns>serialized object of magic effect definition if found</returns>
+    public static string GetMagicItemEffectDefinition(string type)
     {
         if (!MagicItemEffectDefinitions.AllDefinitions.TryGetValue(type, out MagicItemEffectDefinition definition)) return "";
         return JsonConvert.SerializeObject(definition);
     }
 
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="player">can be null</param>
+    /// <param name="item">can be null</param>
+    /// <param name="effectType"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     public static float GetTotalActiveMagicEffectValue([CanBeNull] Player player, [CanBeNull] ItemDrop.ItemData item, string effectType, float scale) => 
         MagicEffectsHelper.GetTotalActiveMagicEffectValue(player, item, effectType, scale);
 
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="player">can be null</param>
+    /// <param name="item">can be null</param>
+    /// <param name="effectType"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     public static float GetTotalActiveMagicEffectValueForWeapon([CanBeNull] Player player, [CanBeNull] ItemDrop.ItemData item, string effectType, float scale) =>
         MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(player, item, effectType, scale);
 
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="player">can be null</param>
+    /// <param name="effectType"></param>
+    /// <param name="item">can be null</param>
+    /// <param name="effectValue"></param>
+    /// <returns>True if player or item has magic effect</returns>
     public static bool HasActiveMagicEffect([CanBeNull] Player player, string effectType, [CanBeNull] ItemDrop.ItemData item, ref float effectValue) =>
         MagicEffectsHelper.HasActiveMagicEffect(player, item, effectType, out effectValue);
     
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="player">can be null</param>
+    /// <param name="item"></param>
+    /// <param name="effectType"></param>
+    /// <param name="effectValue"></param>
+    /// <returns>True if magic effect is on item</returns>
     public static bool HasActiveMagicEffectOnWeapon(Player player, ItemDrop.ItemData item, string effectType, ref float effectValue) => 
         MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, item, effectType, out effectValue);
 
+    /// <summary>
+    /// Called via reflection.
+    /// Currenctly hard coded to Modify Armor effect type ???
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="effectType"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     public static float GetTotalActiveSetEffectValue(Player player, string effectType, float scale) =>
         MagicEffectsHelper.GetTotalActiveSetEffectValue(player, effectType, scale);
     
@@ -128,6 +189,11 @@ public static class API
         float scale = 1.0f, ItemDrop.ItemData ignoreThisItem = null) =>
         player.HasActiveMagicEffect(effectType, out effectValue, scale, ignoreThisItem);
 
+    /// <summary>
+    /// Called via reflection with a serialized LegendaryItemConfig
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns>True if added to EpicLoot UniqueLegendaryHelper</returns>
     public static bool AddLegendaryItemConfig(string json)
     {
         try
@@ -156,7 +222,7 @@ public static class API
             return false;
         }
     }
-    
+
     private static void AddInfo(this Dictionary<string, LegendaryInfo> target, List<LegendaryInfo> legendaryItems)
     {
         foreach (var info in legendaryItems)
@@ -194,6 +260,11 @@ public static class API
         }
     }
     
+    /// <summary>
+    /// Called via reflection with a serialized AbilityDefinition
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns>True if added to AbilityDefinitions</returns>
     public static bool AddAbility(string json)
     {
         try
@@ -244,6 +315,12 @@ public static class API
         return count >= info.LegendaryIDs.Count;
     }
 
+    /// <summary>
+    /// Called via reflection
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="asset"></param>
+    /// <returns>True if added to EpicLoot._assetCache</returns>
     public static bool RegisterAsset(string name, Object asset)
     {
         if (EpicLoot._assetCache.ContainsKey(name)) // made _assetCache public
