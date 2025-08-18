@@ -881,6 +881,9 @@ namespace EpicLoot.CraftingV2
                 item.GetMagicItem().Effects[enchantment] = rune.GetMagicItem().Effects[0];
             }
 
+            var magicItem = item.GetMagicItem();
+            item.SaveMagicItem(magicItem);
+
             CraftSuccessDialog successDialog;
             if (EpicLoot.HasAuga)
             {
