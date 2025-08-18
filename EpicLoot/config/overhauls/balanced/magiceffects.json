@@ -1258,6 +1258,31 @@
       }
     },
     {
+      "Type": "AutoMead",
+      "DisplayText": "$mod_epicloot_me_automead_display",
+      "Description": "$mod_epicloot_me_automead_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_automead_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_automead_suffix1"
+        ]
+      }
+    },
+    {
       "Type": "ModifyBuildDistance",
       "DisplayText": "$mod_epicloot_me_modifybuilddistance_display",
       "Description": "$mod_epicloot_me_modifybuilddistance_desc",
