@@ -95,5 +95,8 @@
       <Compile Include="API.cs" />
       <Compile Include="EffectType.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <None Include="README.md" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
