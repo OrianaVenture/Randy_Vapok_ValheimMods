@@ -1186,6 +1186,31 @@
       }
     },
     {
+      "Type": "HealthCriticalMead",
+      "DisplayText": "$mod_epicloot_me_healthcriticalmead_display",
+      "Description": "$mod_epicloot_me_healthcriticalmead_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_healthcriticalmead_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_healthcriticalmead_suffix1"
+        ]
+      }
+    },
+    {
       "Type": "ModifyNoise",
       "DisplayText": "$mod_epicloot_me_modifynoise_display",
       "Description": "$mod_epicloot_me_modifynoise_desc",
