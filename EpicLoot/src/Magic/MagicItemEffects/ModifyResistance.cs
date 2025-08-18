@@ -37,9 +37,16 @@ namespace EpicLoot.MagicItemEffects
             if (cfg == null || !cfg.ContainsKey("MaxResistance")) { return (1f - player.GetTotalActiveMagicEffectValue(effect, 0.01f)); }
             // Config present, with a cap value
             float resistance = player.GetTotalActiveMagicEffectValue(effect, 0.01f) + additional_resistance;
-            if (resistance > cfg["MaxResistance"]) { resistance = cfg["MaxResistance"]; }
-            EpicLoot.Log($"Capped resistance for {effect} is {resistance}");
-            return (1f - resistance);
+            float max_resistance = (cfg["MaxResistance"]/100f);
+            if (resistance > max_resistance) {
+                EpicLoot.Log($"Capped resistance for {effect} is {resistance}");
+                resistance = max_resistance;
+            }
+            if (resistance >= 1) { EpicLoot.LogWarning($"Resistance calculated to 100%, player immune. Reduce max resistance below 100 in your configuration."); }
+            float reduction = (1f - resistance);
+            if (reduction < 0) { reduction = 0; }
+            EpicLoot.Log($"Resistance for {effect} reduced to: {reduction * 100}%");
+            return reduction;
         }
     }
 }

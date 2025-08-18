@@ -12,7 +12,7 @@ namespace EpicLoot.MagicItemEffects
                 float modifier = MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                     player, __instance.m_weapon, MagicEffectType.ModifyAttackHealthUse, 0.01f);
                 float reduction = 1.0f - modifier;
-                EpicLoot.Log($"Modifying health cost HP {__result} * {reduction} = {__result * reduction}");
+                //EpicLoot.Log($"Modifying health cost HP {__result} * {reduction} = {__result * reduction}");
                 __result *= reduction;
             }
         }

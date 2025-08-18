@@ -12,26 +12,16 @@ public class ModifyFireRate
         public static void Prefix(Attack __instance)
         {
             Player player = __instance.m_character as Player;
-            
-            if (player == Player.m_localPlayer)
-            {
+            if (player.HasActiveMagicEffect(MagicEffectType.ModifyFireRate, out float effect, 0.01f)) {
                 originalBurstValue = __instance.m_burstInterval;
-
-                float effectValue =
-                    player.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyFireRate, 0.01f);
-                if (effectValue > 0)
-                {
-                    __instance.m_burstInterval *= 1 - effectValue;
-                }
+                __instance.m_burstInterval *= 1 - effect;
             }
         }
         
         public static void Postfix(Attack __instance)
         {
             Player player = __instance.m_character as Player;
-            
-            if (player == Player.m_localPlayer)
-            {
+            if (player.HasActiveMagicEffect(MagicEffectType.ModifyFireRate, out float _)) {
                 __instance.m_burstInterval = originalBurstValue;
             }
         }

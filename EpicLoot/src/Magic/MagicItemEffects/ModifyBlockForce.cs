@@ -5,21 +5,15 @@ namespace EpicLoot.MagicItemEffects;
 
 public class ModifyBlockForce
 {
-    [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetBaseBlockPower), typeof(int))]
+    [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetDeflectionForce), typeof(int))]
     public static class ModifyBlockForce_ItemData_GetDeflectionForce_Patch
     {
         public static void Postfix(ItemDrop.ItemData __instance, ref float __result)
         {
-            var player = PlayerExtensions.GetPlayerWithEquippedItem(__instance);
-            var totalParryMod = 0f;
-            ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyBlockForce,
-                effect =>
-                {
-                    totalParryMod +=
-                        MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(player, __instance, effect, 0.01f);
-                });
-
-            __result *= 1.0f + totalParryMod;
+            if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifyBlockForce, out float effect, 0.01f)) {
+                __result *= 1.0f + effect;
+                EpicLoot.Log($"Increased deflection force 1+{effect} = {__result}");
+            }
         }
     }
 }

@@ -15,6 +15,12 @@
     * `DartingThoughts` - Converts a portion of max eitr into eitr regen
     * `AddCrafterskills` - Increases crafting and cooking skills
     * `Headhunter` - Increases chance to drop trophies from creatures
+    * `ModifyBlockForce` - Increases knockback on shields (warp)
+    * `ModifyNoise` - Reduces character noise (makes you more stealthy) (warp)
+    * `ModifyBuildDistance` - Increases the range you can build at (warp)
+    * `ModifyPickupRange` - Increases the range you can autopickup items (warp)
+    * `ModifyFireRate` - Increases fire rate of ranged weapons (warp)
+    * `ModifyProjectileSpeed` - Increases the speed of fired projectiles (warp)
 * Weapons, armor and items are automatically added to the drop system. Any mods that add craftable weapons armor will now automatically be droppable (at the correct levels)
 * Core configuration options are available again!
     * All core configuration values are editable directly, but will revert to internal defaults if they become invalid

@@ -643,7 +643,7 @@ namespace EpicLoot.Config
         }
 
         public static ZPackage SendConfig(string zpackage_content) {
-            Jotunn.Logger.LogInfo($"Writing {zpackage_content.Length}.");
+            //Jotunn.Logger.LogInfo($"Writing {zpackage_content.Length}.");
             ZPackage package = new ZPackage();
             package.Write(zpackage_content);
             return package;
