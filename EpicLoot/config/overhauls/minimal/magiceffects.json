@@ -1142,6 +1142,50 @@
       ]
     },
     {
+      "Type": "AmmoConservation",
+      "DisplayText": "$mod_epicloot_me_ammoconservation_display",
+      "Description": "$mod_epicloot_me_ammoconservation_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 12,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 12,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_ammoconservation_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_ammoconservation_suffix1"
+        ]
+      }
+    },
+    {
       "Type": "ModifyNoise",
       "DisplayText": "$mod_epicloot_me_modifynoise_display",
       "Description": "$mod_epicloot_me_modifynoise_desc",

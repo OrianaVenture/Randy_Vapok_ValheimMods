@@ -57,6 +57,7 @@ namespace EpicLoot
         public static string ModifyBuildDistance = nameof(ModifyBuildDistance);
         public static string ModifyPickupRange = nameof(ModifyPickupRange);
         public static string ModifyMagicFireRate = nameof(ModifyMagicFireRate);
+        public static string AmmoConservation = nameof(AmmoConservation);
         public static string ModifyProjectileSpeed = nameof(ModifyProjectileSpeed);
         public static string ModifyDodgeStaminaUse = nameof(ModifyDodgeStaminaUse);
         public static string ModifyJumpStaminaUse = nameof(ModifyJumpStaminaUse);

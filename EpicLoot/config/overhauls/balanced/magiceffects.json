@@ -1189,6 +1189,50 @@
       ]
     },
     {
+      "Type": "AmmoConservation",
+      "DisplayText": "$mod_epicloot_me_ammoconservation_display",
+      "Description": "$mod_epicloot_me_ammoconservation_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 30,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_ammoconservation_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_ammoconservation_suffix1"
+        ]
+      }
+    },
+    {
       "Type": "ModifyBuildDistance",
       "DisplayText": "$mod_epicloot_me_modifybuilddistance_display",
       "Description": "$mod_epicloot_me_modifybuilddistance_desc",
@@ -1357,7 +1401,7 @@
           "Increment": 1
         }
       },
-      "SelectionWeight": 1,
+      "SelectionWeight": 10,
       "Prefixes": [
         "$mod_epicloot_me_modifyprojectilespeed_prefix1"
       ],
