@@ -743,6 +743,14 @@ namespace EpicLoot
             effectValue = GetTotalActiveMagicEffectValue(player, effectType, scale, ignoreThisItem);
             return effectValue > 0;
         }
+        
+        public static bool HasActiveMagicEffect(this Player player, string effectType)
+        {
+            if (player == null) return false;
+            var effects = player.GetAllActiveMagicEffects(effectType.ToString());
+
+            return effects.Count > 0;
+        }
 
         public static List<ItemDrop.ItemData> GetEquippedSetPieces(this Player player, string setName)
         {
