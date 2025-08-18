@@ -8,6 +8,7 @@ namespace EpicLoot
         public static string DvergerCirclet = nameof(DvergerCirclet);
         public static string InstantMead = nameof(InstantMead);
         public static string AutoMead = nameof(AutoMead);
+        public static string DecreaseMeadCooldown = nameof(DecreaseMeadCooldown);
         public static string Megingjord = nameof(Megingjord);
         public static string Wishbone = nameof(Wishbone);
         public static string Andvaranaut = nameof(Andvaranaut);
