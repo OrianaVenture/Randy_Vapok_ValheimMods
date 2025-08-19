@@ -86,8 +86,20 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
     </ItemGroup>
     <ItemGroup>
+      <Compile Include="Ability.cs" />
+      <Compile Include="AbilityProxy.cs" />
       <Compile Include="API.cs" />
+      <Compile Include="Bounty.cs" />
+      <Compile Include="Helpers.cs" />
+      <Compile Include="Legendary.cs" />
+      <Compile Include="MagicItemEffect.cs" />
       <Compile Include="EffectType.cs" />
+      <Compile Include="MaterialConversion.cs" />
+      <Compile Include="CustomRecipe.cs" />
+      <Compile Include="RunTimeRegistry.cs" />
+      <Compile Include="Sacrifice.cs" />
+      <Compile Include="SecretStash.cs" />
+      <Compile Include="Treasure.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="README.md" />

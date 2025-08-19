@@ -23,7 +23,13 @@ namespace EpicLoot.Abilities
         {
             if (AbilityClassTypes.TryGetValue(abilityID, out var abilityClassType))
             {
-                return (Ability)Activator.CreateInstance(abilityClassType);
+                object result = Activator.CreateInstance(abilityClassType);
+                if (result is API.AbilityProxy proxyAbility && !proxyAbility.InjectCallbacks(abilityID))
+                {
+                    return new Ability();
+                }
+
+                return (Ability)result;
             }
 
             return new Ability();
