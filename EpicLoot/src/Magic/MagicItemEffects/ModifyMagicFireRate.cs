@@ -2,7 +2,7 @@ using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects;
 
-public class ModifyFireRate
+public class ModifyMagicFireRate
 {
     [HarmonyPatch(typeof(Attack), nameof(Attack.UpdateProjectile))]
     public static class ModifyFireRate_Attack_UpdateProjectile_Patch
