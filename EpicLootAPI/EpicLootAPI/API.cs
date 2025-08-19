@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EpicLootAPI;
-/// <summary>
-/// This section is outside of EpicLoot, added into external plugins
-/// Either copy this file directly into your plugin, or add .dll into your libs
-/// These functions reference methods inside of EpicLoot using reflection
-/// </summary>
 public static class EpicLoot
 {
     private static readonly List<MagicItemEffectDefinition> MagicItemEffectDefinitions = new();
-    private static readonly LegendaryItemConfig LegendaryConfig = new();
     private static readonly List<AbilityDefinition> Abilities = new();
+    private static readonly List<MaterialConversion> MaterialConversions = new();
+    private static readonly LegendaryItemConfig LegendaryConfig = new();
+    private static readonly RecipesConfig Recipes = new();
+    private static readonly List<Sacrifice> Sacrifices = new List<Sacrifice>();
     
     /// <summary>
-    /// Copy simple version of EpicLoot Data classes to JSON serialize
+    /// Simple version of EpicLoot Data classes to JSON serialize
     /// </summary>
     
     #region Magic Item
-    [Serializable]
+    [Serializable][PublicAPI]
     public class MagicItemEffect
     {
         public const float DefaultValue = 1;
@@ -44,7 +44,7 @@ public static class EpicLoot
         }
     }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class MagicItem
     {
         public int Version = 2;
@@ -57,8 +57,17 @@ public static class EpicLoot
         public string LegendaryID = "";
         public string SetID = "";
     }
+    
+    [PublicAPI]
+    public static void Set(this MagicItemEffectDefinition.ValueDef? def, float min, float max, float increment)
+    {
+        def ??= new MagicItemEffectDefinition.ValueDef();
+        def.MinValue = min;
+        def.MaxValue = max;
+        def.Increment = increment;
+    }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class MagicItemEffectDefinition
     {
         [Serializable]
@@ -78,7 +87,7 @@ public static class EpicLoot
             }
         }
 
-        [Serializable]
+        [Serializable][PublicAPI]
         public class ValuesPerRarityDef
         {
             public ValueDef? Magic;
@@ -114,7 +123,7 @@ public static class EpicLoot
         }
     }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class MagicItemEffectRequirements
     {
         private static List<string> _flags = new List<string>();
@@ -147,6 +156,7 @@ public static class EpicLoot
 
         public List<string> CustomFlags = new();
     }
+    [PublicAPI]
     public enum FxAttachMode
     {
         None,
@@ -154,6 +164,7 @@ public static class EpicLoot
         ItemRoot,
         EquipRoot
     }
+    [PublicAPI]
     public enum ItemRarity
     {
         Magic,
@@ -166,7 +177,7 @@ public static class EpicLoot
     #endregion
     
     #region Legendary
-    [Serializable]
+    [Serializable][PublicAPI]
     public class GuaranteedMagicEffect
     {
         public string Type;
@@ -180,8 +191,12 @@ public static class EpicLoot
         
         public GuaranteedMagicEffect(string type, float min, float max, float increment) : this(type, new MagicItemEffectDefinition.ValueDef(min, max, increment)){}
     }
+    
+    [PublicAPI]
+    public static void Add(this List<GuaranteedMagicEffect> list, string type, float min = 1, float max = 1,
+        float increment = 1) => list.Add(new GuaranteedMagicEffect(type, min, max, increment));
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class TextureReplacement
     {
         public string ItemID;
@@ -198,7 +213,7 @@ public static class EpicLoot
         }
     }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class LegendaryInfo
     {
         public string ID;
@@ -213,7 +228,7 @@ public static class EpicLoot
         public List<TextureReplacement> TextureReplacements = new List<TextureReplacement>();
         public bool IsSetItem;
         public bool Enchantable;
-        public List<RecipeRequirementConfig> EnchantCost = new List<RecipeRequirementConfig>();
+        public List<RecipeRequirement> EnchantCost = new List<RecipeRequirement>();
 
         public LegendaryInfo(LegendaryType type, string ID, string name, string description)
         {
@@ -232,10 +247,10 @@ public static class EpicLoot
             }
         }
     }
-    
+    [PublicAPI]
     public enum LegendaryType { Legend, Mythic }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class SetBonusInfo
     {
         public int Count;
@@ -249,8 +264,12 @@ public static class EpicLoot
         
         public SetBonusInfo(int count, string type, float min, float max, float increment) : this (count, type, new MagicItemEffectDefinition.ValueDef(min, max, increment)){}
     }
+    
+    [PublicAPI]
+    public static void Add(this List<SetBonusInfo> list, int count, string type, float min, float max, float increment) =>
+        list.Add(new SetBonusInfo(count, type, min, max, increment));
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class LegendarySetInfo
     {
         public string ID;
@@ -276,45 +295,105 @@ public static class EpicLoot
     }
 
     [Serializable]
-    public class LegendaryItemConfig
+    private class LegendaryItemConfig
     {
         public List<LegendaryInfo> LegendaryItems = new List<LegendaryInfo>();
         public List<LegendarySetInfo> LegendarySets = new List<LegendarySetInfo>();
         public List<LegendaryInfo> MythicItems = new List<LegendaryInfo>();
         public List<LegendarySetInfo> MythicSets = new List<LegendarySetInfo>();
+
+        public bool HasValues()
+        {
+            if (LegendaryItems.Count > 0) return true;
+            if (LegendarySets.Count > 0) return true;
+            if (MythicItems.Count > 0) return true;
+            if (MythicSets.Count > 0) return true;
+
+            return false;
+        }
     }
     #endregion
     
-    #region common
-    [Serializable]
-    public class RecipeRequirementConfig
+    #region Recipe
+    [Serializable][PublicAPI]
+    public class RecipeRequirement
     {
-        public string item = "";
-        public int amount = 1;
-    }
+        public string item;
+        public int amount;
 
-    [Serializable]
-    public class RecipeConfig
+        public RecipeRequirement(string item, int amount = 1)
+        {
+            this.item = item;
+            this.amount = amount;
+        }
+    }
+    
+    [PublicAPI]
+    public static void Add(this List<RecipeRequirement> list, string item, int amount = 1) =>
+        list.Add(new(item, amount));
+
+    [Serializable][PublicAPI]
+    public class Recipe
     {
-        public string name = "";
-        public string item = "";
-        public int amount = 1;
-        public string craftingStation = "";
+        public string name;
+        public string item;
+        public int amount;
+        public string craftingStation;
         public int minStationLevel = 1;
         public bool enabled = true;
         public string repairStation = "";
-        public List<RecipeRequirementConfig> resources = new List<RecipeRequirementConfig>();
-    }
+        public List<RecipeRequirement> resources = new List<RecipeRequirement>();
 
-    [Serializable]
-    public class RecipesConfig
-    {
-        public List<RecipeConfig> recipes = new List<RecipeConfig>();
+        public Recipe(string name, string item, CraftingTable craftingTable, int amount = 1)
+        {
+            this.name = name;
+            this.item = item;
+            this.amount = amount;
+            craftingStation = craftingTable.GetInternalName();
+            Recipes.recipes.Add(this);
+        }
     }
+    
+    [PublicAPI]
+    public enum CraftingTable
+    {
+        [InternalName("piece_workbench")] Workbench,
+        [InternalName("piece_cauldron")] Cauldron,
+        [InternalName("forge")] Forge,
+        [InternalName("piece_artisanstation")] ArtisanTable,
+        [InternalName("piece_stonecutter")] StoneCutter,
+        [InternalName("piece_magetable")] MageTable,
+        [InternalName("blackforge")] BlackForge,
+        [InternalName("piece_preptable")] FoodPreparationTable,
+        [InternalName("piece_MeadCauldron")] MeadKetill,
+    }
+    
+    private class InternalName : Attribute
+    {
+        public readonly string internalName;
+        public InternalName(string internalName) => this.internalName = internalName;
+    }
+    
+    private static string GetInternalName(this CraftingTable table)
+    {
+        Type type = typeof(CraftingTable);
+        MemberInfo[] memInfo = type.GetMember(table.ToString());
+        if (memInfo.Length <= 0) return table.ToString();
+        var attr = (InternalName)Attribute.GetCustomAttribute(memInfo[0], typeof(InternalName));
+        return attr != null ? attr.internalName : table.ToString();
+    }
+    
+    [Serializable]
+    private class RecipesConfig
+    {
+        public List<Recipe> recipes = new List<Recipe>();
+        public bool HasValues() => recipes.Count > 0;
+    }
+    
     #endregion
     
     #region Ability
-    [Serializable]
+    [Serializable][PublicAPI]
     public enum AbilityActivationMode
     {
         Passive,
@@ -322,14 +401,14 @@ public static class EpicLoot
         Activated
     }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public enum AbilityAction
     {
         Custom,
         StatusEffect
     }
 
-    [Serializable]
+    [Serializable][PublicAPI]
     public class AbilityDefinition
     {
         public string ID;
@@ -354,23 +433,105 @@ public static class EpicLoot
     }
     
     #endregion
-
-    public static void Add<T>(this List<T> list, params T[] items) => list.AddRange(items);
-
-    public static void Add(this List<GuaranteedMagicEffect> list, string type, float min = 1, float max = 1,
-        float increment = 1) => list.Add(new GuaranteedMagicEffect(type, min, max, increment));
-
-    public static void Set(this MagicItemEffectDefinition.ValueDef? def, float min, float max, float increment)
+    
+    #region Material Conversion
+    [Serializable][PublicAPI]
+    public enum MaterialConversionType
     {
-        def ??= new MagicItemEffectDefinition.ValueDef();
-        def.MinValue = min;
-        def.MaxValue = max;
-        def.Increment = increment;
+        Upgrade,
+        Convert,
+        Junk
     }
 
-    public static void
-        Add(this List<SetBonusInfo> list, int count, string type, float min, float max, float increment) =>
-        list.Add(new SetBonusInfo(count, type, min, max, increment));
+    [Serializable][PublicAPI]
+    public class MaterialConversionRequirement
+    {
+        public string Item;
+        public int Amount;
+
+        public MaterialConversionRequirement(string item, int amount = 1)
+        {
+            Item = item;
+            Amount = amount;
+        }
+    }
+    
+    [PublicAPI]
+    public static void Add(this List<MaterialConversionRequirement> list, string item, int amount = 1) =>
+        list.Add(new MaterialConversionRequirement(item, amount));
+
+    [Serializable][PublicAPI]
+    public class MaterialConversion
+    {
+        public string Name;
+        public string Product;
+        public int Amount;
+        public MaterialConversionType Type;
+        public List<MaterialConversionRequirement> Resources = new();
+
+        [Description("Creates a new material conversion definition.")]
+        public MaterialConversion(MaterialConversionType type, string name, string product, int amount = 1)
+        {
+            Name = name;
+            Product = product;
+            Amount = amount;
+            Type = type;
+
+            MaterialConversions.Add(this);
+        }
+    }
+    #endregion
+    
+    #region Sacrifice
+    [Serializable][PublicAPI]
+    public class ItemAmountConfig
+    {
+        public string Item;
+        public int Amount;
+
+        public ItemAmountConfig(string item, int amount = 1)
+        {
+            Item = item;
+            Amount = amount;
+        }
+    }
+
+    [PublicAPI]
+    public static void Add(this List<ItemAmountConfig> list, string item, int amount = 1) =>
+        list.Add(new(item, amount));
+    
+
+    [Serializable][PublicAPI]
+    public class Sacrifice
+    {
+        [Description("Conditional, checks item needs to be magic")]
+        public bool IsMagic;
+        [Description("Can be null")]
+        public ItemRarity Rarity;
+        [Description("Conditional, if empty, does not check if item is of correct type")]
+        public List<string> ItemTypes = new List<string>();
+        [Description("Conditional, if empty, does not check if item shared name is in list")]
+        public List<string> ItemNames = new List<string>();
+        public List<ItemAmountConfig> Products = new List<ItemAmountConfig>();
+
+        [Description("Create a new intance of a disenchant product entry")]
+        public Sacrifice()
+        {
+            Sacrifices.Add(this);
+        }
+
+        public void AddRequiredItemType(params ItemDrop.ItemData.ItemType[] types)
+        {
+            foreach (ItemDrop.ItemData.ItemType type in types) ItemTypes.Add(type.ToString());
+        }
+    }
+    #endregion
+
+    #region Helpers
+    [PublicAPI]
+    public static void Add<T>(this List<T> list, params T[] items) => list.AddRange(items);
+    
+    #endregion
     
     #region Reflection Methods
 
@@ -390,18 +551,84 @@ public static class EpicLoot
     private static readonly Method API_HasLegendaryItem = new("EpicLoot.API, EpicLoot", "HasLegendaryItem");
     private static readonly Method API_HasLegendarySet = new("EpicLoot.API, EpicLoot", "HasLegendarySet");
     private static readonly Method API_RegisterAsset = new("EpicLoot.API, EpicLoot", "RegisterAsset");
-    
+    private static readonly Method API_AddMaterialConversion = new("EpicLoot.API, EpicLoot", "AddMaterialConversion");
+    private static readonly Method API_AddRecipes = new("EpicLoot.API, EpicLoot", "AddRecipes");
+    private static readonly Method API_AddSacrifices = new("EpicLoot.API, EpicLoot", "AddSacrifices");
     #endregion
 
+    /// <summary>
+    /// Helper function to register everything
+    /// </summary>
+    [PublicAPI][Description("Send all your custom conversions, effects, item definitions, etc... to Epic Loot")]
+    public static void RegisterAll()
+    {
+        RegisterMaterialConversions();
+        RegisterMagicItems();
+        RegisterLegendaryItems();
+        RegisterAbilities();
+        RegisterRecipes();
+        RegisterSacrifices();
+    }
+
+    /// <summary>
+    /// Register enchanting costs
+    /// </summary>
+    /// <returns></returns>
+    [PublicAPI]
+    public static bool RegisterSacrifices()
+    {
+        if (Sacrifices.Count <= 0) return false;
+        string json = JsonConvert.SerializeObject(Sacrifices);
+        object? result = API_AddSacrifices.Invoke(json);
+        return (bool)(result ?? false);
+    }
+    
+    /// <summary>
+    /// Register all recipes
+    /// </summary>
+    /// <returns></returns>
+    [PublicAPI]
+    public static bool RegisterRecipes()
+    {
+        if (!Recipes.HasValues()) return false;
+        string json = JsonConvert.SerializeObject(Recipes.recipes);
+        object? result = API_AddRecipes.Invoke(json);
+        return (bool)(result ?? false);
+    }
+
+    /// <summary>
+    /// Helper function to register all defined material conversions
+    /// </summary>
+    [PublicAPI]
+    public static void RegisterMaterialConversions()
+    {
+        foreach (var conversion in new List<MaterialConversion>(MaterialConversions)) AddMaterialConversion(conversion);
+    }
+    
+    /// <summary>
+    /// Register material conversion to EpicLoot MaterialConversions.Conversions
+    /// </summary>
+    /// <param name="materialConversion"></param>
+    /// <returns>True if added to MaterialConversions.Conversions</returns>
+    [Description("serializes to json and sends to EpicLoot")][PublicAPI]
+    public static bool AddMaterialConversion(MaterialConversion materialConversion)
+    {
+        MaterialConversions.Remove(materialConversion);
+        string data = JsonConvert.SerializeObject(materialConversion);
+        object? result = API_AddMaterialConversion.Invoke(data);
+        return (bool)(result ?? false);
+    }
+    
     /// <summary>
     /// Register asset into EpicLoot in order to target them in your definitions
     /// </summary>
     /// <param name="name"></param>
     /// <param name="asset"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool RegisterAsset(string name, Object asset)
     {
-        var result = API_RegisterAsset.Invoke(name, asset);
+        object? result = API_RegisterAsset.Invoke(name, asset);
         return (bool)(result ?? false);
     }
 
@@ -410,6 +637,7 @@ public static class EpicLoot
     /// </summary>
     /// <param name="effectType"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static MagicItemEffectDefinition? GetMagicEffectDefinitionCopy(string effectType)
     {
         string result = (string)(API_GetMagicEffectDefinitionCopy.Invoke(effectType) ?? "");
@@ -429,6 +657,7 @@ public static class EpicLoot
     /// <summary>
     /// Helper function, register all magic item that have been defined
     /// </summary>
+    [PublicAPI]
     public static void RegisterMagicItems()
     {
         foreach (var item in new List<MagicItemEffectDefinition>(MagicItemEffectDefinitions)) AddMagicEffect(item);
@@ -439,6 +668,7 @@ public static class EpicLoot
     /// </summary>
     /// <param name="definition"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool AddMagicEffect(MagicItemEffectDefinition definition)
     {
         MagicItemEffectDefinitions.Remove(definition);
@@ -458,6 +688,7 @@ public static class EpicLoot
     /// <param name="effectType"></param>
     /// <param name="effectValue"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool HasActiveMagicEffectOnWeapon(Player player, ItemDrop.ItemData item, string effectType, out float effectValue)
     {
         effectValue = 0f;
@@ -476,6 +707,7 @@ public static class EpicLoot
     /// <param name="effectType"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static float GetTotalActiveMagicEffectValue(Player player, ItemDrop.ItemData item, string effectType,
         float scale = 1.0f)
     {
@@ -493,6 +725,7 @@ public static class EpicLoot
     /// <param name="effectType"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static float GetTotalActiveMagicEffectValueForWeapon(Player player, ItemDrop.ItemData item,
         string effectType, float scale = 1.0f)
     {
@@ -508,6 +741,7 @@ public static class EpicLoot
     /// <param name="ignoreThisItem"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool HasActiveMagicEffect(Player player, string effectType, ItemDrop.ItemData? ignoreThisItem = null, float scale = 1.0f)
     {
         object? result = API_HasActiveMagicEffect.Invoke(player, ignoreThisItem, effectType, scale);
@@ -522,6 +756,7 @@ public static class EpicLoot
     /// <param name="effectType"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static float GetTotalActiveSetEffectValue(Player player, string effectType, float scale = 1.0f)
     {
         object? result = API_GetTotalActiveSetEffectValue.Invoke(player, effectType, scale);
@@ -534,6 +769,7 @@ public static class EpicLoot
     /// <param name="player"></param>
     /// <param name="effectType"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveMagicEffects(this Player player, string? effectType = null)
     {
         object? result = API_GetAllActiveMagicEffects.Invoke(player, effectType);
@@ -563,6 +799,7 @@ public static class EpicLoot
     /// <param name="player"></param>
     /// <param name="effectType"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveSetMagicEffects(this Player player, string? effectType = null)
     {
         object? result = API_GetAllSetMagicEffects.Invoke(player, effectType);
@@ -594,6 +831,7 @@ public static class EpicLoot
     /// <param name="scale"></param>
     /// <param name="ignoreThisItem"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static float GetTotalActiveMagicEffectValue(this Player player, string effectType, float scale = 1.0f,
         ItemDrop.ItemData? ignoreThisItem = null)
     {
@@ -610,6 +848,7 @@ public static class EpicLoot
     /// <param name="scale"></param>
     /// <param name="ignoreThisItem"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool HasActiveMagicEffect(this Player player, string effectType, out float effectValue,
         float scale = 1.0f, ItemDrop.ItemData? ignoreThisItem = null)
     {
@@ -622,8 +861,10 @@ public static class EpicLoot
     /// Registers all legendary items and set definitions
     /// </summary>
     /// <returns></returns>
+    [PublicAPI]
     public static bool RegisterLegendaryItems()
     {
+        if (!LegendaryConfig.HasValues()) return false;
         string data = JsonConvert.SerializeObject(LegendaryConfig);
         object? result = API_AddLegendaryItemConfig.Invoke(data);
         return (bool)(result ?? false);
@@ -632,12 +873,10 @@ public static class EpicLoot
     /// <summary>
     /// Helper function, register all defined abilities
     /// </summary>
+    [PublicAPI]
     public static void RegisterAbilities()
     {
-        foreach (var ability in new List<AbilityDefinition>(Abilities))
-        {
-            AddAbility(ability);
-        }
+        foreach (var ability in new List<AbilityDefinition>(Abilities)) AddAbility(ability);
     }
 
     /// <summary>
@@ -645,6 +884,7 @@ public static class EpicLoot
     /// </summary>
     /// <param name="ability"></param>
     /// <returns></returns>
+    [PublicAPI]
     public static bool AddAbility(AbilityDefinition ability)
     {
         Abilities.Remove(ability);
@@ -654,26 +894,30 @@ public static class EpicLoot
     }
 
     /// <summary>
-    /// Returns true if player has legendary item
+    /// 
     /// </summary>
     /// <param name="player"></param>
     /// <param name="legendaryItemID"></param>
-    /// <returns></returns>
+    /// <returns>true if player has legendary item</returns>
+    [PublicAPI]
     public static bool HasLegendaryItem(this Player player, string legendaryItemID)
     {
-        var result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
+        object? result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
         return (bool)(result ?? false);
     }
 
     /// <summary>
-    /// Returns true if player has full legendary set
+    /// 
     /// </summary>
     /// <param name="player"></param>
     /// <param name="legendarySetID"></param>
-    /// <returns></returns>
-    public static bool HasLegendarySet(this Player player, string legendarySetID)
+    /// <param name="count"></param>
+    /// <returns>true if player has full legendary set</returns>
+    [PublicAPI]
+    public static bool HasLegendarySet(this Player player, string legendarySetID, out int count)
     {
-        var result = API_HasLegendarySet.Invoke(player, legendarySetID);
+        count = 0;
+        var result = API_HasLegendarySet.Invoke(player, legendarySetID, count);
         return (bool)(result ?? false);
     }
 
@@ -690,10 +934,6 @@ public static class EpicLoot
         /// Value: Resolved Type instance
         /// </summary>
         private static readonly Dictionary<string, Type> CachedTypes = new();
-        
-        /// <summary>
-        /// The cached MethodInfo for the target method. Will be null if the method could not be resolved.
-        /// </summary>
         private readonly MethodInfo? info;
 
         /// <summary>
@@ -793,9 +1033,9 @@ public static class EpicLoot
             info = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);
             if (info == null)
             {
-                Debug.LogWarning($"[EpicLoot API] Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
-                               "Verify the method name is correct, the method exists, and it is marked as public static. " +
-                               $"Available static methods: [{string.Join(", ", type.GetMethods(BindingFlags.Public | BindingFlags.Static).Select(m => m.Name))}]");
+                Debug.LogWarning(
+                    $"[EpicLoot API] Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
+                    "Verify the method name is correct, the method exists, and it is marked as public static. ");
             }
         }
         /// <summary>
