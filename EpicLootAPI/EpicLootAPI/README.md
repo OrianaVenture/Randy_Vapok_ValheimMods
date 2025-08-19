@@ -39,6 +39,8 @@ Copy API.cs and EffectTypes.cs into your plugin project.
 
 After you finish defining all your content, make sure to `Register` them to EpicLoot
 
+If you need to update your custom classes, use the API `Update` functions
+
 ### Example Magic Effect
 
 ```c#

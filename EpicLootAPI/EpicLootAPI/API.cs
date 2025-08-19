@@ -14,6 +14,12 @@ public static class EpicLoot
     private const string ClassName = "API";
     private const string Assembly = "EpicLoot";
     private const string API_LOCATION = Namespace + "." + ClassName + ", " + Assembly;
+    private static event Action<string>? OnError;
+
+    static EpicLoot()
+    {
+        OnError += message => Debug.LogWarning("[EpicLoot API] " + message);
+    }
 
     private static readonly List<MagicItemEffectDefinition> MagicEffects = new();
     private static readonly List<AbilityDefinition> Abilities = new();
@@ -22,11 +28,10 @@ public static class EpicLoot
     private static readonly RecipesConfig Recipes = new();
     private static readonly List<Sacrifice> Sacrifices = new();
     private static readonly List<BountyTarget> BountyTargets = new();
+    private static readonly Dictionary<SecretStashType, List<SecretStashItem>> SecretStashes = new();
+    private static readonly List<TreasureMapBiomeInfoConfig> Treasures = new();
     
-    /// <summary>
-    /// Simple version of EpicLoot Data classes to JSON serialize
-    /// </summary>
-    
+    #region Data
     #region Magic Item
     [Serializable][PublicAPI]
     public class MagicItemEffect
@@ -546,42 +551,112 @@ public static class EpicLoot
         }
     }
     #endregion
+    
+    #region Secret Stash & Gamble & Sale
+    [PublicAPI]
+    public enum SecretStashType
+    {
+        Materials, 
+        RandomItems, 
+        OtherItems,
+        Gamble,
+        Sale
+    }
+    [Serializable][PublicAPI]
+    public class SecretStashItem
+    {
+        public string Item;
+        public int CoinsCost;
+        public int ForestTokenCost;
+        public int IronBountyTokenCost;
+        public int GoldBountyTokenCost;
+        public SecretStashItem(SecretStashType type, string item)
+        {
+            Item = item;
+            SecretStashes.AddOrSet(type, this);
+        }
+    }
+    #endregion
+    
+    #region Treasure Map
+    [Serializable][PublicAPI]
+    public class TreasureMapBiomeInfoConfig
+    {
+        public Heightmap.Biome Biome;
+        public int Cost;
+        public int ForestTokens;
+        public int GoldTokens;
+        public int IronTokens;
+        public int Coins;
+        public float MinRadius;
+        public float MaxRadius;
+        public TreasureMapBiomeInfoConfig(Heightmap.Biome biome, int cost, float minRadius, float maxRadius)
+        {
+            Biome = biome;
+            Cost = cost;
+            MinRadius = minRadius;
+            MaxRadius = maxRadius;
 
+            Treasures.Add(this);
+        }
+    }
+    #endregion
+    #endregion
+    
     #region Helpers
     [PublicAPI]
     public static void Add<T>(this List<T> list, params T[] items) => list.AddRange(items);
+    
+    /// <summary>
+    /// Helper function to add into dictionary of lists
+    /// </summary>
+    /// <param name="dict">Dictionary T key, List V values</param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    [PublicAPI]
+    private static void AddOrSet<T, V>(this Dictionary<T, List<V>> dict, T key, V value)
+    {
+        if (!dict.ContainsKey(key)) dict[key] = new List<V>();
+        dict[key].Add(value);
+    }
     
     #endregion
     
     #region Reflection Methods
 
-    private static readonly Method API_AddMagicEffect = new(API_LOCATION, "AddMagicEffect");
-    private static readonly Method API_GetTotalActiveMagicEffectValue = new (API_LOCATION, "GetTotalActiveMagicEffectValue");
-    private static readonly Method API_GetTotalActiveMagicEffectValueForWeapon = new(API_LOCATION, "GetTotalActiveMagicEffectValueForWeapon");
-    private static readonly Method API_HasActiveMagicEffect = new(API_LOCATION, "HasActiveMagicEffect");
-    private static readonly Method API_HasActiveMagicEffectOnWeapon = new(API_LOCATION, "HasActiveMagicEffectOnWeapon");
-    private static readonly Method API_GetTotalActiveSetEffectValue = new(API_LOCATION, "GetTotalActiveSetEffectValue");
-    private static readonly Method API_GetMagicEffectDefinitionCopy = new(API_LOCATION, "GetMagicItemEffectDefinition");
-    private static readonly Method API_GetAllActiveMagicEffects = new(API_LOCATION, "GetAllActiveMagicEffects");
-    private static readonly Method API_GetAllSetMagicEffects = new(API_LOCATION, "GetAllActiveSetMagicEffects");
-    private static readonly Method API_GetPlayerTotalActiveMagicEffectValue = new(API_LOCATION, "GetTotalPlayerActiveMagicEffectValue");
-    private static readonly Method API_PlayerHasActiveMagicEffect = new(API_LOCATION, "PlayerHasActiveMagicEffect");
-    private static readonly Method API_AddLegendaryItemConfig = new(API_LOCATION, "AddLegendaryItemConfig");
-    private static readonly Method API_AddAbility = new(API_LOCATION, "AddAbility");
-    private static readonly Method API_HasLegendaryItem = new(API_LOCATION, "HasLegendaryItem");
-    private static readonly Method API_HasLegendarySet = new(API_LOCATION, "HasLegendarySet");
-    private static readonly Method API_RegisterAsset = new(API_LOCATION, "RegisterAsset");
-    private static readonly Method API_AddMaterialConversion = new(API_LOCATION, "AddMaterialConversion");
-    private static readonly Method API_AddRecipes = new(API_LOCATION, "AddRecipes");
-    private static readonly Method API_AddSacrifices = new(API_LOCATION, "AddSacrifices");
-    private static readonly Method API_AddBountyTargets = new(API_LOCATION, "AddBountyTargets");
-    private static readonly Method API_UpdateBountyTargets = new(API_LOCATION, "UpdateBountyTargets");
-    private static readonly Method API_UpdateSacrifices = new (API_LOCATION, "UpdateSacrifices");
-    private static readonly Method API_UpdateMagicEffect = new (API_LOCATION, "UpdateMagicEffect");
-    private static readonly Method API_UpdateLegendaryItem = new (API_LOCATION, "UpdateLegendaryItemConfig");
-    private static readonly Method API_UpdateAbility = new (API_LOCATION, "UpdateAbility");
-    private static readonly Method API_UpdateMaterialConversion = new (API_LOCATION, "UpdateMaterialConversion");
-    private static readonly Method API_UpdateRecipes = new (API_LOCATION, "UpdateRecipes");
+    private static readonly Method API_AddMagicEffect = new("AddMagicEffect");
+    private static readonly Method API_GetTotalActiveMagicEffectValue = new ("GetTotalActiveMagicEffectValue");
+    private static readonly Method API_GetTotalActiveMagicEffectValueForWeapon = new("GetTotalActiveMagicEffectValueForWeapon");
+    private static readonly Method API_HasActiveMagicEffect = new("HasActiveMagicEffect");
+    private static readonly Method API_HasActiveMagicEffectOnWeapon = new("HasActiveMagicEffectOnWeapon");
+    private static readonly Method API_GetTotalActiveSetEffectValue = new("GetTotalActiveSetEffectValue");
+    private static readonly Method API_GetMagicEffectDefinitionCopy = new("GetMagicItemEffectDefinition");
+    private static readonly Method API_GetAllActiveMagicEffects = new("GetAllActiveMagicEffects");
+    private static readonly Method API_GetAllSetMagicEffects = new("GetAllActiveSetMagicEffects");
+    private static readonly Method API_GetPlayerTotalActiveMagicEffectValue = new("GetTotalPlayerActiveMagicEffectValue");
+    private static readonly Method API_PlayerHasActiveMagicEffect = new("PlayerHasActiveMagicEffect");
+    private static readonly Method API_AddLegendaryItemConfig = new("AddLegendaryItemConfig");
+    private static readonly Method API_AddAbility = new("AddAbility");
+    private static readonly Method API_HasLegendaryItem = new("HasLegendaryItem");
+    private static readonly Method API_HasLegendarySet = new("HasLegendarySet");
+    private static readonly Method API_RegisterAsset = new("RegisterAsset");
+    private static readonly Method API_AddMaterialConversion = new("AddMaterialConversion");
+    private static readonly Method API_AddRecipes = new("AddRecipes");
+    private static readonly Method API_AddSacrifices = new("AddSacrifices");
+    private static readonly Method API_AddBountyTargets = new("AddBountyTargets");
+    private static readonly Method API_UpdateBountyTargets = new("UpdateBountyTargets");
+    private static readonly Method API_UpdateSacrifices = new ("UpdateSacrifices");
+    private static readonly Method API_UpdateMagicEffect = new ("UpdateMagicEffect");
+    private static readonly Method API_UpdateLegendaryItem = new ("UpdateLegendaryItemConfig");
+    private static readonly Method API_UpdateAbility = new ("UpdateAbility");
+    private static readonly Method API_UpdateMaterialConversion = new ("UpdateMaterialConversion");
+    private static readonly Method API_UpdateRecipes = new ("UpdateRecipes");
+    private static readonly Method API_AddSecretStashItem = new("AddSecretStashItem");
+    private static readonly Method API_UpdateSecretStashItem = new("UpdateSecretStashItem");
+    private static readonly Method API_AddTreasureMap = new("AddTreasureMap");
+    private static readonly Method API_UpdateTreasureMap = new("UpdateTreasureMap");
     #endregion
 
     /// <summary>
@@ -597,8 +672,10 @@ public static class EpicLoot
         RegisterRecipes();
         RegisterSacrifices();
         RegisterBountyTargets();
+        RegisterAllTreasureMaps();
     }
 
+    #region Bounty
     [PublicAPI]
     public static void RegisterBountyTargets()
     {
@@ -607,6 +684,7 @@ public static class EpicLoot
         object? result = API_AddBountyTargets.Invoke(json);
         if (result is not string key) return;
         RunTimeRegistry.Register(BountyTargets, key);
+        BountyTargets.Clear();
     }
 
     [PublicAPI]
@@ -614,15 +692,13 @@ public static class EpicLoot
     {
         if (!RunTimeRegistry.TryGetValue(BountyTargets, out var key)) return false;
         string json = JsonConvert.SerializeObject(BountyTargets);
-        var result =  API_UpdateBountyTargets.Invoke(key, json);
+        object? result =  API_UpdateBountyTargets.Invoke(key, json);
         return (bool)(result ?? false);
     }
-    
+    #endregion
 
-    /// <summary>
-    /// Register enchanting costs
-    /// </summary>
-    /// <returns></returns>
+    #region Sacrifices
+    /// <returns>unique key if added</returns>
     [PublicAPI]
     public static void RegisterSacrifices()
     {
@@ -632,7 +708,8 @@ public static class EpicLoot
         if (result is not string key) return;
         RunTimeRegistry.Register(Sacrifices, key);
     }
-
+    
+    /// <returns>true if updated</returns>
     [PublicAPI]
     public static bool UpdateSacrifices()
     {
@@ -641,9 +718,11 @@ public static class EpicLoot
         object? result = API_UpdateSacrifices.Invoke(key, json);
         return (bool)(result ?? false);
     }
+    #endregion
     
+    #region Recipes
     /// <summary>
-    /// Invokes AddRecipes with serialized List Recipe
+    /// Invokes <see cref="API_AddRecipes"/> with serialized List <see cref="Recipe"/>
     /// </summary>
     /// <returns>Unique key if added</returns>
     [PublicAPI]
@@ -654,10 +733,11 @@ public static class EpicLoot
         object? result = API_AddRecipes.Invoke(json);
         if (result is not string key) return;
         RunTimeRegistry.Register(Recipes.recipes, key);
+        Recipes.recipes.Clear();
     }
 
     /// <summary>
-    /// Invokes UpdateRecipes with unique key and serialized List Recipe
+    /// Invokes <see cref="API_UpdateRecipes"/> with unique key and serialized List <see cref="Recipe"/>
     /// </summary>
     /// <returns>True if updated</returns>
     [PublicAPI]
@@ -668,14 +748,17 @@ public static class EpicLoot
         object? result = API_UpdateRecipes.Invoke(key, json);
         return (bool)(result ?? false);
     }
-
+    #endregion
+    
+    #region Material Conversions
     /// <summary>
     /// Helper function to register all defined material conversions
     /// </summary>
     [PublicAPI]
     public static void RegisterMaterialConversions()
     {
-        foreach (var conversion in new List<MaterialConversion>(MaterialConversions)) RegisterConversion(conversion);
+        foreach (MaterialConversion conversion in new List<MaterialConversion>(MaterialConversions)) 
+            RegisterConversion(conversion);
     }
     
     /// <summary>
@@ -703,15 +786,17 @@ public static class EpicLoot
     {
         if (!RunTimeRegistry.TryGetValue(materialConversion, out var key)) return false;
         string json = JsonConvert.SerializeObject(materialConversion);
-        var result =  API_UpdateMaterialConversion.Invoke(key, json);
+        object? result =  API_UpdateMaterialConversion.Invoke(key, json);
         return (bool)(result ?? false);
     }
+    #endregion
     
+    #region Assets
     /// <summary>
     /// Register asset into EpicLoot in order to target them in your definitions
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="asset"></param>
+    /// <param name="name"><see cref="string"/></param>
+    /// <param name="asset"><see cref="Object"/></param>
     /// <returns></returns>
     [PublicAPI]
     public static bool RegisterAsset(string name, Object asset)
@@ -719,12 +804,11 @@ public static class EpicLoot
         object? result = API_RegisterAsset.Invoke(name, asset);
         return (bool)(result ?? false);
     }
+    #endregion
     
-    /// <summary>
-    /// Get a simple copy of existing magic effect
-    /// </summary>
-    /// <param name="effectType"></param>
-    /// <returns></returns>
+    #region Magic Effect
+    /// <param name="effectType"><see cref="EffectType"/></param>
+    /// <returns>simple copy of existing magic effect definition</returns>
     [PublicAPI]
     public static MagicItemEffectDefinition? GetMagicEffectDefinitionCopy(string effectType)
     {
@@ -737,40 +821,39 @@ public static class EpicLoot
         }
         catch
         {
-            Debug.LogWarning("[EpicLoot API] Failed to parse magic item effect definition json");
+            OnError?.Invoke("Failed to parse magic item effect definition json");
             return null;
         }
     }
     
-    /// <summary>
-    /// Helper function, register all magic item that have been defined
-    /// </summary>
     [PublicAPI]
     public static void RegisterMagicItems()
     {
-        foreach (var item in new List<MagicItemEffectDefinition>(MagicEffects)) RegisterMagicEffect(item);
+        foreach (MagicItemEffectDefinition item in new List<MagicItemEffectDefinition>(MagicEffects)) 
+            RegisterMagicEffect(item);
     }
 
     /// <summary>
-    /// Register magic effect to Epic Loot
+    /// Serialized to JSON and invokes <see cref="API_AddMagicEffect"/>
     /// </summary>
-    /// <param name="definition"></param>
+    /// <param name="definition"><see cref="MagicItemEffectDefinition"/></param>
     /// <returns></returns>
     [PublicAPI]
-    public static void RegisterMagicEffect(MagicItemEffectDefinition definition)
+    public static bool RegisterMagicEffect(MagicItemEffectDefinition definition)
     {
         MagicEffects.Remove(definition);
         string data = JsonConvert.SerializeObject(definition);
         object? result = API_AddMagicEffect.Invoke(data);
-        if (result is not string key) return;
+        if (result is not string key) return false;
         RunTimeRegistry.Register(definition, key);
+        return true;
     }
 
     /// <summary>
-    /// Invokes UpdateMagicEffect with unique key and serialized MagicItemDefinition
+    /// Serialized to JSON and invokes <see cref="API_UpdateMagicEffect"/>
     /// </summary>
-    /// <param name="definition"></param>
-    /// <returns></returns>
+    /// <param name="definition"><see cref="MagicItemEffectDefinition"/></param>
+    /// <returns>true if updated</returns>
     [PublicAPI]
     public static bool UpdateMagicEffect(MagicItemEffectDefinition definition)
     {
@@ -779,17 +862,41 @@ public static class EpicLoot
         var result = API_UpdateMagicEffect.Invoke(key, json);
         return (bool)(result ?? false);
     }
-
+    
+    #endregion
+    
+    #region States
+    /// <param name="player"></param>
+    /// <param name="legendaryItemID"></param>
+    /// <returns>true if player has legendary item</returns>
+    [PublicAPI]
+    public static bool HasLegendaryItem(this Player player, string legendaryItemID)
+    {
+        object? result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
+        return (bool)(result ?? false);
+    }
+    /// <param name="player"></param>
+    /// <param name="legendarySetID"></param>
+    /// <param name="count"></param>
+    /// <returns>true if player has full legendary set</returns>
+    [PublicAPI]
+    public static bool HasLegendarySet(this Player player, string legendarySetID, out int count)
+    {
+        count = 0;
+        var result = API_HasLegendarySet.Invoke(player, legendarySetID, count);
+        return (bool)(result ?? false);
+    }
     /// <summary>
     /// ⚠️ Conditional behavior: Returns different results based on player parameter,
-    /// Player null → Checks if item has effect,
-    /// Player provided → Checks if player has effect 
     /// </summary>
     /// <param name="player"></param>
     /// <param name="item"></param>
-    /// <param name="effectType"></param>
+    /// <param name="effectType"><see cref="EffectType"/></param>
     /// <param name="effectValue"></param>
-    /// <returns></returns>
+    /// <returns>
+    /// Player null → Checks if item has effect,
+    /// Player provided → Checks if player has effect 
+    /// </returns>
     [PublicAPI]
     public static bool HasActiveMagicEffectOnWeapon(Player player, ItemDrop.ItemData item, string effectType, out float effectValue)
     {
@@ -801,14 +908,15 @@ public static class EpicLoot
 
     /// <summary>
     /// ⚠️ Conditional behavior: Returns different results based on player parameter,
-    /// Player null → returns item effect values,
-    /// Player provided → returns player effect values
     /// </summary>
     /// <param name="player"></param>
     /// <param name="item"></param>
     /// <param name="effectType"></param>
     /// <param name="scale"></param>
-    /// <returns></returns>
+    /// <returns>
+    /// Player null → returns item effect values,
+    /// Player provided → returns player effect values
+    /// </returns>
     [PublicAPI]
     public static float GetTotalActiveMagicEffectValue(Player player, ItemDrop.ItemData item, string effectType,
         float scale = 1.0f)
@@ -818,15 +926,16 @@ public static class EpicLoot
     }
 
     /// <summary>
-    /// ⚠️ Conditional behavior: Returns different results based on player parameter,
-    /// Player null → returns item effect values,
-    /// Player provided → returns effect value without item
+    /// ⚠️ Conditional behavior: Returns different results based on player parameter
     /// </summary>
     /// <param name="player"></param>
     /// <param name="item"></param>
     /// <param name="effectType"></param>
     /// <param name="scale"></param>
-    /// <returns></returns>
+    /// <returns>
+    /// Player null → returns item effect values,
+    /// Player provided → returns effect value without item
+    /// </returns>
     [PublicAPI]
     public static float GetTotalActiveMagicEffectValueForWeapon(Player player, ItemDrop.ItemData item,
         string effectType, float scale = 1.0f)
@@ -834,15 +943,12 @@ public static class EpicLoot
         object? result = API_GetTotalActiveMagicEffectValueForWeapon.Invoke(player, item, effectType, scale);
         return (float)(result ?? 0f);
     }
-
-    /// <summary>
-    /// Returns true if player has effect
-    /// </summary>
+    
     /// <param name="player"></param>
-    /// <param name="effectType"></param>
+    /// <param name="effectType"><see cref="EffectType"/></param>
     /// <param name="ignoreThisItem"></param>
     /// <param name="scale"></param>
-    /// <returns></returns>
+    /// <returns>true if player has effect</returns>
     [PublicAPI]
     public static bool HasActiveMagicEffect(Player player, string effectType, ItemDrop.ItemData? ignoreThisItem = null, float scale = 1.0f)
     {
@@ -852,25 +958,21 @@ public static class EpicLoot
 
     /// <summary>
     /// ⚠️ Currently hard-coded to ModifyArmor, 
-    /// returns total effect on set
     /// </summary>
     /// <param name="player"></param>
-    /// <param name="effectType"></param>
+    /// <param name="effectType"><see cref="EffectType"/></param>
     /// <param name="scale"></param>
-    /// <returns></returns>
+    /// <returns>total effect on set</returns>
     [PublicAPI]
     public static float GetTotalActiveSetEffectValue(Player player, string effectType, float scale = 1.0f)
     {
         object? result = API_GetTotalActiveSetEffectValue.Invoke(player, effectType, scale);
         return (float)(result ?? 0f);
     }
-
-    /// <summary>
-    /// Returns a list of effects on player
-    /// </summary>
+    
     /// <param name="player"></param>
     /// <param name="effectType"></param>
-    /// <returns></returns>
+    /// <returns>list of effects on player</returns>
     [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveMagicEffects(this Player player, string? effectType = null)
     {
@@ -881,13 +983,10 @@ public static class EpicLoot
         output.DeserializeList(list);
         return output;
     }
-
-    /// <summary>
-    /// Returns list of effects on active set
-    /// </summary>
+    
     /// <param name="player"></param>
-    /// <param name="effectType"></param>
-    /// <returns></returns>
+    /// <param name="effectType"><see cref="EffectType"/></param>
+    /// <returns>list of effects on active set</returns>
     [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveSetMagicEffects(this Player player, string? effectType = null)
     {
@@ -898,16 +997,15 @@ public static class EpicLoot
         output.DeserializeList(list);
         return output;
     }
-
     /// <summary>
-    /// Helper function to Json deserialize entire list
+    /// Helper function to JSON deserialize entire list
     /// </summary>
     /// <param name="output"></param>
     /// <param name="input"></param>
     /// <typeparam name="T"></typeparam>
     private static void DeserializeList<T>(this List<T> output, List<string> input)
     {
-        foreach (var item in input)
+        foreach (string? item in input)
         {
             try
             {
@@ -917,19 +1015,16 @@ public static class EpicLoot
             }
             catch
             {
-                Debug.LogWarning($"[EpicLoot API] Failed to parse {typeof(T).Name}");
+                OnError?.Invoke($"Failed to parse {typeof(T).Name}");
             }
         }
     }
-
-    /// <summary>
-    /// Returns total effect value on player
-    /// </summary>
+    
     /// <param name="player"></param>
-    /// <param name="effectType"></param>
+    /// <param name="effectType"><see cref="EffectType"/></param>
     /// <param name="scale"></param>
     /// <param name="ignoreThisItem"></param>
-    /// <returns></returns>
+    /// <returns>total effect value on player</returns>
     [PublicAPI]
     public static float GetTotalActiveMagicEffectValue(this Player player, string effectType, float scale = 1.0f,
         ItemDrop.ItemData? ignoreThisItem = null)
@@ -937,16 +1032,13 @@ public static class EpicLoot
         object? result = API_GetPlayerTotalActiveMagicEffectValue.Invoke(player, effectType, scale, ignoreThisItem);
         return (float)(result ?? 0f);
     }
-
-    /// <summary>
-    /// Returns true if player has effect
-    /// </summary>
+    
     /// <param name="player"></param>
-    /// <param name="effectType"></param>
+    /// <param name="effectType"><see cref="EffectType"/></param>
     /// <param name="effectValue"></param>
     /// <param name="scale"></param>
     /// <param name="ignoreThisItem"></param>
-    /// <returns></returns>
+    /// <returns>true if player has effect</returns>
     [PublicAPI]
     public static bool HasActiveMagicEffect(this Player player, string effectType, out float effectValue,
         float scale = 1.0f, ItemDrop.ItemData? ignoreThisItem = null)
@@ -955,23 +1047,35 @@ public static class EpicLoot
         object? result = API_PlayerHasActiveMagicEffect.Invoke(player, effectType, effectValue, scale, ignoreThisItem);
         return (bool)(result ?? false);
     }
+    #endregion
 
+    #region Legendary
     /// <summary>
-    /// Registers all legendary items and set definitions
+    /// Serializes to JSON and invokes <see cref="API_AddLegendaryItemConfig"/>
     /// </summary>
-    /// <returns></returns>
+    /// <returns>true if registered to runtime registry</returns>
     [PublicAPI]
-    public static void RegisterLegendaryItems()
+    public static bool RegisterLegendaryItems()
     {
-        if (!LegendaryConfig.HasValues()) return;
+        if (!LegendaryConfig.HasValues()) return false;
         string data = JsonConvert.SerializeObject(LegendaryConfig);
         object? result = API_AddLegendaryItemConfig.Invoke(data);
-        if (result is not string key) return;
+        if (result is not string key) return false;
         RunTimeRegistry.Register(LegendaryConfig, key);
+        LegendaryConfig.Clear(); // clean up cache once registered, so if called multiple times, not to register same definitions
+        return true;
+    }
+
+    private static void Clear(this LegendaryItemConfig config)
+    {
+        config.LegendaryItems.Clear();
+        config.LegendarySets.Clear();
+        config.MythicItems.Clear();
+        config.MythicSets.Clear();
     }
 
     /// <summary>
-    /// Invokes UpdateLegendaryItemConfig with unique key and serialized LegendaryItemConfig
+    /// Serialized to JSON and invokes <see cref="API_UpdateLegendaryItem"/> with unique identifier
     /// </summary>
     /// <returns>True if fields copied</returns>
     [PublicAPI]
@@ -979,36 +1083,40 @@ public static class EpicLoot
     {
         if (!RunTimeRegistry.TryGetValue(LegendaryConfig, out string key)) return false;
         string data = JsonConvert.SerializeObject(LegendaryConfig);
-        var result = API_UpdateLegendaryItem.Invoke(key, data);
+        object? result = API_UpdateLegendaryItem.Invoke(key, data);
         return (bool)(result ?? false);
     }
-
+    #endregion
+    
+    #region Abilities
     /// <summary>
     /// Helper function, register all defined abilities
     /// </summary>
     [PublicAPI]
     public static void RegisterAbilities()
     {
-        foreach (var ability in new List<AbilityDefinition>(Abilities)) RegisterAbility(ability);
+        foreach (AbilityDefinition ability in new List<AbilityDefinition>(Abilities)) 
+            RegisterAbility(ability);
     }
 
     /// <summary>
-    /// Invokes AddAbility with serialized AbilityDefinition
+    /// Serialized to JSON and invokes <see cref="API_AddAbility"/>
     /// </summary>
     /// <param name="ability"></param>
-    /// <returns>Registered to runtime registry if added</returns>
+    /// <returns>true if registered to runtime registry</returns>
     [PublicAPI]
-    public static void RegisterAbility(AbilityDefinition ability)
+    public static bool RegisterAbility(AbilityDefinition ability)
     {
         Abilities.Remove(ability);
         string data = JsonConvert.SerializeObject(ability);
         object? result = API_AddAbility.Invoke(data);
-        if (result is not string key) return;
+        if (result is not string key) return false;
         RunTimeRegistry.Register(ability, key);
+        return true;
     }
 
     /// <summary>
-    /// Invokes UpdateAbility with unique key and serialized AbilityDefinition
+    /// Serialized to JSON and invokes <see cref="API_UpdateAbility"/> with unique identifier
     /// </summary>
     /// <param name="ability"></param>
     /// <returns>True if fields copied</returns>
@@ -1021,34 +1129,88 @@ public static class EpicLoot
         return (bool)(result ?? false);
     }
 
+    #endregion
+    
+    #region Secret Stash & Gamble
     /// <summary>
-    /// 
+    /// Serializes to JSON and invokes <see cref="API_AddSecretStashItem"/>, if successful, registered to runtime registry
     /// </summary>
-    /// <param name="player"></param>
-    /// <param name="legendaryItemID"></param>
-    /// <returns>true if player has legendary item</returns>
     [PublicAPI]
-    public static bool HasLegendaryItem(this Player player, string legendaryItemID)
+    public static void RegisterSecretStashes()
     {
-        object? result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
-        return (bool)(result ?? false);
+        foreach (KeyValuePair<SecretStashType, List<SecretStashItem>> kvp in SecretStashes)
+        {
+            foreach (SecretStashItem stash in kvp.Value)
+            {
+                string json = JsonConvert.SerializeObject(stash);
+                object? result = API_AddSecretStashItem.Invoke(kvp.Key.ToString(), json);
+                if (result is not string key) continue;
+                RunTimeRegistry.Register(stash, key);
+            }
+        }
+        SecretStashes.Clear();
     }
 
     /// <summary>
-    /// 
+    /// Serializes to JSON and invokes <see cref="API_UpdateSecretStashItem"/> with unique identifier
     /// </summary>
-    /// <param name="player"></param>
-    /// <param name="legendarySetID"></param>
-    /// <param name="count"></param>
-    /// <returns>true if player has full legendary set</returns>
+    /// <param name="secretStash"></param>
+    /// <returns>true if updated</returns>
     [PublicAPI]
-    public static bool HasLegendarySet(this Player player, string legendarySetID, out int count)
+    public static bool UpdateSecretStash(SecretStashItem secretStash)
     {
-        count = 0;
-        var result = API_HasLegendarySet.Invoke(player, legendarySetID, count);
+        if (!RunTimeRegistry.TryGetValue(secretStash, out string key)) return false;
+        string json = JsonConvert.SerializeObject(secretStash);
+        object? result = API_UpdateSecretStashItem.Invoke(key, json);
         return (bool)(result ?? false);
     }
+    
+    #endregion
+    
+    #region Treasure Map
 
+    /// <summary>
+    /// Helper function, register all treasure maps
+    /// </summary>
+    [PublicAPI]
+    public static void RegisterAllTreasureMaps()
+    {
+        foreach (TreasureMapBiomeInfoConfig treasure in new List<TreasureMapBiomeInfoConfig>(Treasures)) 
+            RegisterTreasureMap(treasure);
+    }
+    
+    /// <summary>
+    /// Serializes treasure data into JSON and invokes <see cref="API_AddTreasureMap"/>
+    /// </summary>
+    /// <param name="treasure"></param>
+    /// <returns>true if registered to RunTimeRegistry with a unique identifier</returns>
+    [PublicAPI]
+    public static bool RegisterTreasureMap(TreasureMapBiomeInfoConfig treasure)
+    {
+        Treasures.Remove(treasure);
+        string json = JsonConvert.SerializeObject(treasure);
+        var result = API_AddTreasureMap.Invoke(json);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(treasure, key);
+        return true;
+    }
+
+    /// <summary>
+    /// Serializes treasure data in JSON and invokes <see cref="API_UpdateTreasureMap"/> with its unique identifier
+    /// </summary>
+    /// <param name="treasure"></param>
+    /// <returns>true if updated</returns>
+    [PublicAPI]
+    public static bool UpdateTreasureMap(TreasureMapBiomeInfoConfig treasure)
+    {
+        if (!RunTimeRegistry.TryGetValue(treasure, out string key)) return false;
+        string json = JsonConvert.SerializeObject(treasure);
+        object? result = API_UpdateTreasureMap.Invoke(key, json);
+        return (bool)(result ?? false);
+    }
+    
+    #endregion
+    
     /// <summary>
     /// Helper class for dynamically invoking static methods from external assemblies using reflection.
     /// Provides caching of Type instances for improved performance and simplified method invocation.
@@ -1096,7 +1258,6 @@ public static class EpicLoot
         /// Method names are case-sensitive and must match exactly.
         /// </param>
         /// <param name="bindingFlags"></param>
-        /// <param name="args"></param>
         /// <remarks>
         /// Construction Process:
         /// 1. Checks the type cache for previously resolved types
@@ -1118,45 +1279,92 @@ public static class EpicLoot
         /// </remarks>
         public Method(string typeNameWithAssembly, string methodName, BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Static)
         {
-            // Try to get cached type first for performance
-            if (!CachedTypes.TryGetValue(typeNameWithAssembly, out Type? type))
+            if (!TryGetType(typeNameWithAssembly, out Type? type)) return;
+            if (type == null)
             {
-                // Attempt to resolve the type from the assembly
-                if (Type.GetType(typeNameWithAssembly) is not { } resolvedType)
-                {
-                    Debug.LogWarning($"[EpicLoot API] Failed to resolve type: '{typeNameWithAssembly}'. " +
-                                   "Verify the namespace, class name, and assembly name are correct. " +
-                                   "Ensure the assembly is loaded and accessible.");
-                    return;
-                }
-
-                type = resolvedType;
-                CachedTypes[typeNameWithAssembly] = resolvedType;
+                OnError?.Invoke($"Type resolution returned null for: '{typeNameWithAssembly}'");
+                return;
             }
+            info = type.GetMethod(methodName, bindingFlags);
+            if (info == null)
+            {
+                OnError?.Invoke(
+                    $"Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
+                    "Verify the method name is correct, the method exists, and it is marked as public static. ");
+            }
+        }
+
+        /// <summary>
+        /// Helper constructor that automatically adds type name with assembly, defined at the top of the file.
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="bindingFlags"></param>
+        public Method(string methodName, BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Static) : this(
+            API_LOCATION, methodName, bindingFlags)
+        {
+        }
+        
+        /// <param name="typeNameWithAssembly"><see cref="string"/></param>
+        /// <param name="type"><see cref="Type"/></param>
+        /// <returns></returns>
+        private static bool TryGetType(string typeNameWithAssembly, out Type? type)
+        {
+            // Try to get cached type first for performance
+            if (CachedTypes.TryGetValue(typeNameWithAssembly, out type)) return true;
+            // Attempt to resolve the type from the assembly
+            if (Type.GetType(typeNameWithAssembly) is not { } resolvedType)
+            {
+                OnError?.Invoke($"Failed to resolve type: '{typeNameWithAssembly}'. " +
+                                 "Verify the namespace, class name, and assembly name are correct. " +
+                                 "Ensure the assembly is loaded and accessible.");
+                return false;
+            }
+
+            type = resolvedType;
+            CachedTypes[typeNameWithAssembly] = resolvedType;
+            return true;
+        }
+        
+        /// <summary>
+        /// Searches for the specified public method whose parameters match the types
+        /// </summary>
+        /// <param name="typeNameWithAssembly"><see cref="string"/></param>
+        /// <param name="methodName"><see cref="string"/></param>
+        /// <param name="types">params array of <see cref="Type"/></param>
+        public Method(string typeNameWithAssembly, string methodName, params Type[] types)
+        {
+            if (!TryGetType(typeNameWithAssembly, out Type? type)) return;
 
             // Additional null check (defensive programming, should not happen if TryGetValue succeeded)
             if (type == null)
             {
-                Debug.LogWarning($"[EpicLoot API] Type resolution returned null for: '{typeNameWithAssembly}'");
+                OnError?.Invoke($"Type resolution returned null for: '{typeNameWithAssembly}'");
                 return;
             }
 
             // Locate the static method by name
-            info = type.GetMethod(methodName, bindingFlags);
+            info = type.GetMethod(methodName, types);
             if (info == null)
             {
-                Debug.LogWarning(
-                    $"[EpicLoot API] Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
+                OnError?.Invoke(
+                    $"Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
                     "Verify the method name is correct, the method exists, and it is marked as public static. ");
             }
         }
+
+        public Method(string methodName, params Type[] types) : this(API_LOCATION, methodName, types)
+        {
+        }
+
         /// <summary>
         /// Gets the parameter information for the resolved method.
         /// Useful for validating arguments before calling Invoke().
         /// </summary>
         /// <returns>Array of ParameterInfo objects describing the method parameters, or empty array if method not resolved.</returns>
+        [PublicAPI]
         public ParameterInfo[] GetParameters() => info?.GetParameters() ?? Array.Empty<ParameterInfo>();
         
+        [PublicAPI]
         public static void ClearCache() => CachedTypes.Clear();
     }
 
@@ -1174,19 +1382,13 @@ public static class EpicLoot
     {
         private static readonly Dictionary<object, string> registry = new();
         
-        /// <summary>
-        /// Register an object into object, string dictionary
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key"><see cref="object"/></param>
+        /// <param name="value">unique identifier <see cref="string"/></param>
         public static void Register(object key, string value) => registry[key] = value;
         
-        /// <summary>
-        /// Tries to get key using object
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <returns>True if key found matching object</returns>
+        /// <param name="key"><see cref="object"/></param>
+        /// <param name="value">unique identifier <see cref="string"/></param>
+        /// <returns>true if key found matching object</returns>
         public static bool TryGetValue(object key, out string value) => registry.TryGetValue(key, out value);
     }
 }

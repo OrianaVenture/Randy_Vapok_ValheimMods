@@ -63,9 +63,6 @@
         </When>
     </Choose>
     <ItemGroup>
-        <Reference Include="0Harmony">
-            <HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
-        </Reference>
         <Reference Include="assembly_valheim">
             <HintPath>$(PublicizedAssembliesPath)\assembly_valheim_publicized.dll</HintPath>
         </Reference>
@@ -78,9 +75,6 @@
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
           <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.UI">
-            <HintPath>$(CorlibPath)\UnityEngine.UI.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
