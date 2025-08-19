@@ -12,8 +12,8 @@ namespace EpicLoot.MagicItemEffects
                 return;
             }
             
-            float elementalResistance = GetCappedResistanceValue(player, MagicEffectType.AddElementalResistancePercentage);
-            float physicalResistance = GetCappedResistanceValue(player, MagicEffectType.AddPhysicalResistancePercentage);
+            float elementalResistance = GetCappedSharedResistance(player, MagicEffectType.AddElementalResistancePercentage);
+            float physicalResistance = GetCappedSharedResistance(player, MagicEffectType.AddPhysicalResistancePercentage);
 
             //EpicLoot.Log($"Applying resistances for {player.GetPlayerName()} - Elemental: {elementalResistance}, Physical: {physicalResistance}");
 
@@ -29,6 +29,16 @@ namespace EpicLoot.MagicItemEffects
             hit.m_damage.m_slash *= GetCappedResistanceValue(player, MagicEffectType.AddSlashingResistancePercentage, physicalResistance);
             hit.m_damage.m_pierce *= GetCappedResistanceValue(player, MagicEffectType.AddPiercingResistancePercentage, physicalResistance);
             hit.m_damage.m_chop *= GetCappedResistanceValue(player, MagicEffectType.AddChoppingResistancePercentage, physicalResistance);
+
+            EpicLoot.Log($"Final damage after resistances for {player.GetPlayerName()}: {hit.m_damage}");
+        }
+
+        private static float GetCappedSharedResistance(Player player, string effect) {
+            if (player.HasActiveMagicEffect(effect, out float value, 0.01f)) {
+                EpicLoot.Log($"{effect} active with value {value}");
+                return value;
+            }
+            return 0f;
         }
 
         private static float GetCappedResistanceValue(Player player, string effect, float additional_resistance = 0f) {
@@ -37,15 +47,18 @@ namespace EpicLoot.MagicItemEffects
             if (cfg == null || !cfg.ContainsKey("MaxResistance")) { return (1f - player.GetTotalActiveMagicEffectValue(effect, 0.01f)); }
             // Config present, with a cap value
             float resistance = player.GetTotalActiveMagicEffectValue(effect, 0.01f) + additional_resistance;
+            if (resistance == 0f) { return 1f; } // No resistance, return 100% damage
+
+            EpicLoot.Log($"{effect} total resistance {resistance} including bonus {additional_resistance}");
             float max_resistance = (cfg["MaxResistance"]/100f);
             if (resistance > max_resistance) {
-                EpicLoot.Log($"Capped resistance for {effect} is {resistance}");
+                EpicLoot.Log($"Capped resistance for {effect} is {max_resistance}");
                 resistance = max_resistance;
             }
             if (resistance >= 1) { EpicLoot.LogWarning($"Resistance calculated to 100%, player immune. Reduce max resistance below 100 in your configuration."); }
             float reduction = (1f - resistance);
-            if (reduction < 0) { reduction = 0; }
-            EpicLoot.Log($"Resistance for {effect} reduced to: {reduction * 100}%");
+            if (reduction < 0) { reduction = 1f; }
+            EpicLoot.Log($"Resistance for {effect}: {reduction * 100}%");
             return reduction;
         }
     }

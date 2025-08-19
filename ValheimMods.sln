@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicLoot-UnityLib", "EpicLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedPortals", "AdvancedPortals\AdvancedPortals.csproj", "{0DDDE55C-5DAF-4B53-B5E2-83B5C44C4682}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "EpicLootAPI", "EpicLootAPI\EpicLootAPI.shproj", "{D8E5E814-398C-4662-A5F9-FF00C7D31BC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,8 +65,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {20C82B5D-9BD3-4E26-B4F4-CBA6E8F3B3D1}
 		SolutionGuid = {87CB1828-E305-4424-820E-BC6A24BD777B}
+		        SolutionGuid = {20C82B5D-9BD3-4E26-B4F4-CBA6E8F3B3D1}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{08ed5bc9-9e0c-4343-90a5-92497be6e216}*SharedItemsImports = 4
@@ -75,5 +77,6 @@ Global
 		Common\Common.projitems*{963cf4f8-ba02-49fc-8884-97e781e6bc18}*SharedItemsImports = 4
 		Common\Common.projitems*{bb4dfa8b-72b0-4a9b-b9a0-5af5595aa309}*SharedItemsImports = 4
 		Common\Common.projitems*{cbed8160-747f-4022-98ce-61a8ee201652}*SharedItemsImports = 4
+		EpicLootAPI\EpicLootAPI.projitems*{d8e5e814-398c-4662-a5f9-ff00c7d31bc5}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
