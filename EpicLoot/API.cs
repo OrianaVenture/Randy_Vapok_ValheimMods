@@ -1,8 +1,11 @@
-﻿using EpicLoot.MagicItemEffects;
+﻿using System;
+using EpicLoot.MagicItemEffects;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Reflection;
 using Common;
 using EpicLoot.Abilities;
+using EpicLoot.Adventure;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.LegendarySystem;
@@ -14,6 +17,9 @@ namespace EpicLoot;
 public static class API
 {
     private static bool ShowLogs = false;
+    private static event Action<string>? OnReload;
+    private static event Action<string>? OnError;
+    
     public static readonly Dictionary<string, MagicItemEffectDefinition> ExternalMagicItemEffectDefinitions = new();
     public static readonly Dictionary<string, AbilityDefinition> ExternalAbilities = new();
     public static readonly List<LegendaryItemConfig> ExternalLegendaryConfig = new();
@@ -21,6 +27,7 @@ public static class API
     public static readonly List<MaterialConversion> ExternalMaterialConversions = new();
     public static readonly List<RecipeConfig> ExternalRecipes = new();
     public static readonly List<DisenchantProductsConfig> ExternalSacrifices = new();
+    public static readonly List<BountyTargetConfig> ExternalBountyTargets = new();
 
     /// <summary>
     /// Static constructor, runs automatically once before the API class is first used.
@@ -33,6 +40,35 @@ public static class API
         MaterialConversions.OnSetupMaterialConversions += ReloadExternalMaterialConversions;
         RecipesHelper.OnSetupRecipeConfig += ReloadExternalRecipes;
         EnchantCostsHelper.OnSetupEnchantingCosts += ReloadExternalSacrifices;
+        AdventureDataManager.OnSetupAdventureData += ReloadExternalAdventureData;
+
+        OnReload += message =>
+        {
+            if (!ShowLogs) return;
+            EpicLoot.Log(message);
+        };
+        OnError += message =>
+        {
+            if (!ShowLogs) return;
+            EpicLoot.LogWarning(message);
+        };
+    }
+
+    /// <summary>
+    /// Reloads cached external adventure data into AdventureDataManager.Config
+    /// </summary>
+    public static void ReloadExternalAdventureData()
+    {
+        ReloadExternalBounties();
+    }
+
+    /// <summary>
+    /// Reloads cached external bounties into AdventureDataManager.Config.Targets
+    /// </summary>
+    public static void ReloadExternalBounties()
+    {
+        AdventureDataManager.Config.Bounties.Targets.AddRange(ExternalBountyTargets);
+        OnReload?.Invoke("Reloaded external bounties");
     }
 
     /// <summary>
@@ -41,7 +77,7 @@ public static class API
     public static void ReloadExternalSacrifices()
     {
         EnchantCostsHelper.Config.DisenchantProducts.AddRange(ExternalSacrifices);
-        if (ShowLogs) EpicLoot.Log("Reloaded external sacrifices");
+        OnReload?.Invoke("Reloaded external sacrifices");
     }
 
     /// <summary>
@@ -50,7 +86,7 @@ public static class API
     public static void ReloadExternalRecipes()
     {
         RecipesHelper.Config.recipes.AddRange(ExternalRecipes);
-        if (ShowLogs) EpicLoot.Log("Reloaded external recipes");
+        OnReload?.Invoke("Reloaded external recipes");
     }
 
     /// <summary>
@@ -63,7 +99,7 @@ public static class API
             MaterialConversions.Config.MaterialConversions.Add(entry);
             MaterialConversions.Conversions.Add(entry.Type, entry);
         }
-        if (ShowLogs) EpicLoot.Log("Reloaded external material conversions");
+        OnReload?.Invoke("Reloaded external material conversions");
     }
     
     /// <summary>
@@ -71,8 +107,8 @@ public static class API
     /// </summary>
     public static void ReloadExternalMagicEffects()
     {
-        foreach (var effect in ExternalMagicItemEffectDefinitions.Values) MagicItemEffectDefinitions.Add(effect);
-        if (ShowLogs) EpicLoot.Log("Reloaded external magic effects");
+        foreach (MagicItemEffectDefinition effect in ExternalMagicItemEffectDefinitions.Values) MagicItemEffectDefinitions.Add(effect);
+        OnReload?.Invoke("Reloaded external magic effects");
     }
 
     /// <summary>
@@ -80,12 +116,12 @@ public static class API
     /// </summary>
     public static void ReloadExternalAbilities()
     {
-        foreach (var kvp in ExternalAbilities)
+        foreach (KeyValuePair<string, AbilityDefinition> kvp in ExternalAbilities)
         {
             AbilityDefinitions.Config.Abilities.Add(kvp.Value);
             AbilityDefinitions.Abilities[kvp.Key] = kvp.Value;
         }
-        if (ShowLogs) EpicLoot.Log("Reloaded external abilities");
+        OnReload?.Invoke("Reloaded external abilities");
     }
 
     /// <summary>
@@ -93,14 +129,14 @@ public static class API
     /// </summary>
     public static void ReloadExternalLegendary()
     {
-        foreach (var config in ExternalLegendaryConfig)
+        foreach (LegendaryItemConfig config in ExternalLegendaryConfig)
         {
             UniqueLegendaryHelper.LegendaryInfo.AddInfo(config.LegendaryItems);
             UniqueLegendaryHelper.MythicInfo.AddInfo(config.MythicItems);
             AddSet(UniqueLegendaryHelper.LegendarySets, UniqueLegendaryHelper._legendaryItemsToSetMap, config.LegendarySets);
             AddSet(UniqueLegendaryHelper.MythicSets, UniqueLegendaryHelper._mythicItemsToSetMap, config.MythicSets);
         }
-        if (ShowLogs) EpicLoot.Log("Reloaded external legendary");
+        OnReload?.Invoke("Reloaded external legendary abilities");
     }
 
     /// <summary>
@@ -108,11 +144,11 @@ public static class API
     /// </summary>
     public static void ReloadExternalAssets()
     {
-        foreach (var kvp in ExternalAssets)
+        foreach (KeyValuePair<string, Object> kvp in ExternalAssets)
         {
             EpicLoot._assetCache[kvp.Key] = kvp.Value;
         }
-        if (ShowLogs) EpicLoot.Log("Reloaded external assets");
+        OnReload?.Invoke("Reloaded external assets");
     }
 
     /// <summary>
@@ -122,21 +158,36 @@ public static class API
     /// <param name="json">Serialized magic effect definition</param>
     /// <returns>True if added successfully, otherwise false</returns>
     [PublicAPI]
-    public static bool AddMagicEffect(string json)
+    public static string AddMagicEffect(string json)
     {
         try
         {
-            var def = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(json);
+            MagicItemEffectDefinition def = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(json);
             MagicItemEffectDefinitions.Add(def);
             ExternalMagicItemEffectDefinitions[def.Type] = def;
-            
-            return true;
+
+            return RuntimeRegistry.Register(def);
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse magic effect from external plugin");
-            return false;
+            OnError?.Invoke("Failed to parse magic effect from external plugin");
+            return null;
         }
+    }
+    /// <summary>
+    /// Called via reflection with a unique key and a serialized MagicItemEffectDefinition
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if updated</returns>
+
+    [PublicAPI]
+    public static bool UpdateMagicEffect(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out MagicItemEffectDefinition original)) return false;
+        MagicItemEffectDefinition def = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(json);
+        original.CopyFieldsFrom(def);
+        return true;
     }
 
     /// <summary>
@@ -282,11 +333,11 @@ public static class API
     /// <param name="json"></param>
     /// <returns>True if added to EpicLoot UniqueLegendaryHelper</returns>
     [PublicAPI]
-    public static bool AddLegendaryItemConfig(string json)
+    public static string AddLegendaryItemConfig(string json)
     {
         try
         {
-            var config = JsonConvert.DeserializeObject<LegendaryItemConfig>(json);
+            LegendaryItemConfig config = JsonConvert.DeserializeObject<LegendaryItemConfig>(json);
             
             ExternalLegendaryConfig.Add(config);
             
@@ -299,13 +350,28 @@ public static class API
             UniqueLegendaryHelper.MythicInfo.AddInfo(config.MythicItems);
             AddSet(UniqueLegendaryHelper.LegendarySets, UniqueLegendaryHelper._legendaryItemsToSetMap, config.LegendarySets);
             AddSet(UniqueLegendaryHelper.MythicSets, UniqueLegendaryHelper._mythicItemsToSetMap, config.MythicSets);
-            return true;
+            return RuntimeRegistry.Register(config);
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse legendary item config from external plugin");
-            return false;
+            OnError?.Invoke("Failed to parse legendary item config from external plugin");
+            return null;
         }
+    }
+
+    /// <summary>
+    /// Called via reflection with a unique key and serialized LegendaryItemConfig
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if updated</returns>
+    [PublicAPI]
+    public static bool UpdateLegendaryItemConfig(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out LegendaryItemConfig original)) return false;
+        LegendaryItemConfig config = JsonConvert.DeserializeObject<LegendaryItemConfig>(json);
+        original.CopyFieldsFrom(config);
+        return true;
     }
 
     /// <summary>
@@ -318,7 +384,7 @@ public static class API
         foreach (LegendaryInfo info in legendaryItems)
         {
             if (!target.ContainsKey(info.ID)) target[info.ID] = info;
-            else EpicLoot.LogWarning($"Duplicate entry found for Legendary Info: {info.ID} when adding from external plugin");
+            else OnError?.Invoke($"Duplicate entry found for Legendary Info: {info.ID} when adding from external plugin");
         }
     }
 
@@ -338,7 +404,7 @@ public static class API
             }
             else
             {
-                EpicLoot.LogWarning($"Duplicate entry found for Legendary Set: {info.ID} when adding from external plugin");
+                OnError?.Invoke($"Duplicate entry found for Legendary Set: {info.ID} when adding from external plugin");
                 continue;
             }
 
@@ -350,7 +416,7 @@ public static class API
                 }
                 else
                 {
-                    EpicLoot.LogWarning($"Duplicate entry found for Legendary Set: {info.ID}: {legendaryID} when adding from external plugin");
+                    OnError?.Invoke($"Duplicate entry found for Legendary Set: {info.ID}: {legendaryID} when adding from external plugin");
                 }
             }
         }
@@ -362,26 +428,41 @@ public static class API
     /// <param name="json"></param>
     /// <returns>True if added to AbilityDefinitions</returns>
     [PublicAPI]
-    public static bool AddAbility(string json)
+    public static string AddAbility(string json)
     {
         try
         {
-            var def = JsonConvert.DeserializeObject<AbilityDefinition>(json);
+            AbilityDefinition def = JsonConvert.DeserializeObject<AbilityDefinition>(json);
             if (AbilityDefinitions.Abilities.ContainsKey(def.ID))
             {
-                EpicLoot.LogWarning($"Duplicate entry found for Abilities: {def.ID} when adding from external plugin.");
-                return false;
+                OnError?.Invoke($"Duplicate entry found for Abilities: {def.ID} when adding from external plugin.");
+                return null;
             }
             ExternalAbilities[def.ID] = def;
             AbilityDefinitions.Config.Abilities.Add(def);
             AbilityDefinitions.Abilities[def.ID] = def;
-            return true;
+            return RuntimeRegistry.Register(def);
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse ability definition passed in through external plugin.");
-            return false;
+            OnError?.Invoke("Failed to parse ability definition passed in through external plugin.");
+            return null;
         }
+    }
+
+    /// <summary>
+    /// Called via reflection with a unique key and a serialized AbilityDefinition
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if updated</returns>
+    [PublicAPI]
+    public static bool UpdateAbility(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out AbilityDefinition original)) return false;
+        AbilityDefinition def = JsonConvert.DeserializeObject<AbilityDefinition>(json);
+        original.CopyFieldsFrom(def);
+        return true;
     }
 
     /// <summary>
@@ -393,7 +474,7 @@ public static class API
     [PublicAPI]
     public static bool HasLegendaryItem(Player player, string legendaryItemID)
     {
-        foreach (var item in player.GetEquipment())
+        foreach (ItemDrop.ItemData item in player.GetEquipment())
         {
             if (item.IsMagic(out var magicItem) && magicItem.LegendaryID == legendaryItemID) return true;
         }
@@ -415,7 +496,7 @@ public static class API
         {
             return false;
         }
-        foreach (var item in player.GetEquipment())
+        foreach (ItemDrop.ItemData item in player.GetEquipment())
         {
             if (item.IsMagic(out var magicItem) && magicItem.SetID == legendarySetID)
             {
@@ -437,7 +518,7 @@ public static class API
     {
         if (EpicLoot._assetCache.ContainsKey(name)) // made _assetCache public
         {
-            EpicLoot.LogWarning("Duplicate asset: " + name);
+            OnError?.Invoke("Duplicate asset: " + name);
             return false;
         }
         EpicLoot._assetCache[name] = asset;
@@ -449,9 +530,9 @@ public static class API
     /// Called via reflection with serialized MaterialConversion
     /// </summary>
     /// <param name="json"></param>
-    /// <returns>True if added to MaterialConversions.Conversions</returns>
+    /// <returns>unique key if added to MaterialConversions.Conversions</returns>
     [PublicAPI]
-    public static bool AddMaterialConversion(string json)
+    public static string AddMaterialConversion(string json)
     {
         try
         {
@@ -459,56 +540,232 @@ public static class API
             ExternalMaterialConversions.Add(conversion);
             MaterialConversions.Config.MaterialConversions.Add(conversion);
             MaterialConversions.Conversions.Add(conversion.Type, conversion);
-            return true;
+            return RuntimeRegistry.Register(conversion);
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse material conversion passed in through external plugin.");
-            return false;
+            OnError?.Invoke("Failed to parse material conversion passed in through external plugin.");
+            return null;
         }
+    }
+
+    /// <summary>
+    /// Called via reflection with a unique key and a serialized MaterialConversion
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if updated</returns>
+    [PublicAPI]
+    public static bool UpdateMaterialConversion(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out MaterialConversion original)) return false;
+        MaterialConversion conversion = JsonConvert.DeserializeObject<MaterialConversion>(json);
+        original.CopyFieldsFrom(conversion);
+        return true;
     }
 
     /// <summary>
     /// Called via reflection with serialized List of RecipeConfig
     /// </summary>
     /// <param name="json"></param>
-    /// <returns></returns>
+    /// <returns>unique key if successfully added</returns>
     [PublicAPI]
-    public static bool AddRecipes(string json)
+    public static string AddRecipes(string json)
     {
+        // TODO: Figure out why it looks like recipes are added twice
         try
         {
             List<RecipeConfig> recipes = JsonConvert.DeserializeObject<List<RecipeConfig>>(json);
             ExternalRecipes.AddRange(recipes);
             RecipesHelper.Config.recipes.AddRange(recipes);
-            return true;
+            return RuntimeRegistry.Register(recipes);
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse recipe from external plugin");
-            return false;
+            OnError?.Invoke("Failed to parse recipe from external plugin");
+            return null;
         }
     }
 
+    /// <summary>
+    /// Called via reflection with a unique key and a serialized List RecipeConfig
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if updated</returns>
+    [PublicAPI]
+    public static bool UpdateRecipes(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out List<RecipeConfig> list)) return false;
+        List<RecipeConfig> recipes = JsonConvert.DeserializeObject<List<RecipeConfig>>(json);
+        ExternalRecipes.ReplaceThenAdd(list, recipes);
+        RecipesHelper.Config.recipes.ReplaceThenAdd(list, recipes);
+        return true;
+    }
+    
     /// <summary>
     /// Called via reflection serialized List DisenchantProductsConfig
     /// </summary>
     /// <param name="json"></param>
     /// <returns>True if added to EnchantCostsHelper.Config.DisenchantProducts</returns>
     [PublicAPI]
-    public static bool AddSacrifices(string json)
+    public static string AddSacrifices(string json)
     {
         try
         {
             List<DisenchantProductsConfig> sacrifices = JsonConvert.DeserializeObject<List<DisenchantProductsConfig>>(json);
             ExternalSacrifices.AddRange(sacrifices);
             EnchantCostsHelper.Config.DisenchantProducts.AddRange(sacrifices);
+            return RuntimeRegistry.Register(sacrifices);
+        }
+        catch
+        {
+            OnError?.Invoke("Failed to parse sacrifices from external plugin");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Searches the runtime registry for matching key, to grab instanced objects,
+    /// Removes them from EnchantCostsHelper.Config.DisenchantProducts, 
+    /// Adds updated objects back into EnchantCostsHelper.Config.DisenchantProducts
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="json"></param>
+    /// <returns>True if items are removed and re-added</returns>
+    [PublicAPI]
+    public static bool UpdateSacrifices(string key, string json)
+    {
+        try
+        {
+            if (!RuntimeRegistry.TryGetValue<List<DisenchantProductsConfig>>(key, out var list)) return false;
+            List<DisenchantProductsConfig> sacrifices = JsonConvert.DeserializeObject<List<DisenchantProductsConfig>>(json);
+            EnchantCostsHelper.Config.DisenchantProducts.ReplaceThenAdd(list, sacrifices);
+            ExternalSacrifices.ReplaceThenAdd(list, sacrifices);
             return true;
         }
         catch
         {
-            EpicLoot.LogWarning("Failed to parse enchanting costs from external plugin");
+            OnError?.Invoke("Failed to parse sacrifices from external plugin");
             return false;
         }
+    }
+
+    /// <summary>
+    /// Called via reflection serialized List BountyTargetConfig
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns></returns>
+    [PublicAPI]
+    public static string AddBountyTargets(string json)
+    {
+        try
+        {
+            List<BountyTargetConfig> bounties =  JsonConvert.DeserializeObject<List<BountyTargetConfig>>(json);
+            ExternalBountyTargets.AddRange(bounties);
+            AdventureDataManager.Config.Bounties.Targets.AddRange(bounties);
+            return RuntimeRegistry.Register(bounties);
+        }
+        catch
+        {
+            OnError?.Invoke("Failed to parse list of target bounties from external plugin");
+            return null;
+        }
+    }
+
+    [PublicAPI]
+    public static bool UpdateBountyTargets(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue<List<BountyTargetConfig>>(key, out var list)) return false;
+        List<BountyTargetConfig> bounties =  JsonConvert.DeserializeObject<List<BountyTargetConfig>>(json);
+        ExternalBountyTargets.ReplaceThenAdd(list, bounties);
+        AdventureDataManager.Config.Bounties.Targets.ReplaceThenAdd(list, bounties);
+        return true;
+    }
+
+    /// <summary>
+    /// Simple registry for external assets, useful to keep track of objects,
+    /// Keys are generated and returned to external API,
+    /// to store and use to update specific objects
+    /// <remarks>
+    /// 1. External plugin invokes to 'add', on success, returns unique key
+    /// 2. Key stored in registry with associated object
+    /// 3. External plugin invokes to 'update' using unique key to target object
+    /// </remarks>
+    /// </summary>
+    private static class RuntimeRegistry
+    {
+        private static readonly Dictionary<string, object> registry = new();
+        private static int counter = 0;
+
+        /// <summary>
+        /// Register an object into string, object dictionary
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string Register(object obj)
+        {
+            string key = $"obj_{++counter}";
+            registry[key] = obj;
+            return key;
+        }
+        
+        /// <summary>
+        /// Tries to get object using unique key
+        /// </summary>
+        /// <param name="key">unique key</param>
+        /// <param name="value">object as class type</param>
+        /// <typeparam name="T">class type</typeparam>
+        /// <returns>True if object found matching key</returns>
+        public static bool TryGetValue<T>(string key, out T value) where T : class
+        {
+            if (registry.TryGetValue(key, out var obj) && obj is T result)
+            {
+                value = result;
+                return true;
+            }
+
+            value = null;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Helper function to copy all fields from one instance to the other
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="source"></param>
+    /// <typeparam name="T"></typeparam>
+    private static void CopyFieldsFrom<T>(this T target, T source)
+    {
+        foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        {
+            var value = field.GetValue(source);
+            field.SetValue(target, value);
+        }
+    }
+
+    /// <summary>
+    /// Helper function, removes all from list, then adds new items into list
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="original"></param>
+    /// <param name="replacements"></param>
+    /// <typeparam name="T"></typeparam>
+    private static void ReplaceThenAdd<T>(this List<T> list, List<T> original, List<T> replacements)
+    {
+        list.RemoveAll(original);
+        list.AddRange(replacements);
+    }
+
+    /// <summary>
+    /// Helper function, removes all instances from one list in the other list
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="itemsToRemove"></param>
+    /// <typeparam name="T"></typeparam>
+    private static void RemoveAll<T>(this List<T> list, List<T> itemsToRemove)
+    {
+        foreach (var item in itemsToRemove) list.Remove(item);
     }
 }
