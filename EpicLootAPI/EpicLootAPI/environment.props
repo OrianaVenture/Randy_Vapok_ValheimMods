@@ -4,6 +4,7 @@
         <BepInExPath>$(ValheimGamePath)\BepInEx</BepInExPath>
         <CorlibPath>$(ValheimGamePath)\valheim_Data\Managed</CorlibPath>
         <PublicizedAssembliesPath>$(ValheimGamePath)\valheim_Data\Managed\publicized_assemblies</PublicizedAssembliesPath>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <AfterTargets>ILRepacker</AfterTargets>
     </PropertyGroup>
 </Project>
