@@ -945,6 +945,57 @@
       ]
     },
     {
+      "Type": "DecreaseMeadCooldown",
+      "DisplayText": "$mod_epicloot_me_decreasemeadcooldown_display",
+      "Description": "$mod_epicloot_me_decreasemeadcooldown_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Magic",
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 20,
+          "MaxValue": 25,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 10,
+      "Prefixes": [
+        "$mod_epicloot_me_decreasemeadcooldown_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_decreasemeadcooldown_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyHealthRegen",
       "DisplayText": "$mod_epicloot_me_modifyhealthregen_display",
       "Description": "$mod_epicloot_me_modifyhealthregen_desc",
@@ -1279,9 +1330,9 @@
       ]
     },
     {
-      "Type": "ModifyFireRate",
-      "DisplayText": "$mod_epicloot_me_modifyfirerate_display",
-      "Description": "$mod_epicloot_me_modifyfirerate_desc",
+      "Type": "ModifyMagicFireRate",
+      "DisplayText": "$mod_epicloot_me_modifymagicfirerate_display",
+      "Description": "$mod_epicloot_me_modifymagicfirerate_desc",
       "Requirements": {
         "AllowedItemTypes": [
           "Staff"
@@ -1316,10 +1367,10 @@
       },
       "SelectionWeight": 1,
       "Prefixes": [
-        "$mod_epicloot_me_modifyfirerate_prefix1"
+        "$mod_epicloot_me_modifymagicfirerate_prefix1"
       ],
       "Suffixes": [
-        "$mod_epicloot_me_modifyfirerate_suffix1"
+        "$mod_epicloot_me_modifymagicfirerate_suffix1"
       ]
     },
     {
@@ -1368,12 +1419,106 @@
       ]
     },
     {
+      "Type": "AmmoConservation",
+      "DisplayText": "$mod_epicloot_me_ammoconservation_display",
+      "Description": "$mod_epicloot_me_ammoconservation_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 5,
+          "MaxValue": 7,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 7,
+          "MaxValue": 10,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 10,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 30,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_ammoconservation_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_ammoconservation_suffix1"
+        ]
+      }
+    },
+    {
+      "Type": "InstantMead",
+      "DisplayText": "$mod_epicloot_me_instantmead_display",
+      "Description": "$mod_epicloot_me_instantmead_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_instantmead_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_instantmead_suffix1"
+        ]
+      }
+    },
+    {
+      "Type": "AutoMead",
+      "DisplayText": "$mod_epicloot_me_automead_display",
+      "Description": "$mod_epicloot_me_automead_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Utility"
+        ],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "SelectionWeight": 10,
+        "Prefixes": [
+          "$mod_epicloot_me_automead_prefix1"
+        ],
+        "Suffixes": [
+          "$mod_epicloot_me_automead_suffix1"
+        ]
+      }
+    },
+    {
       "Type": "ModifyNoise",
       "DisplayText": "$mod_epicloot_me_modifynoise_display",
       "Description": "$mod_epicloot_me_modifynoise_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Shoulder",
+          "Legs",
           "Utility"
         ]
       },
@@ -1536,7 +1681,7 @@
           "Increment": 1
         }
       },
-      "SelectionWeight": 1,
+      "SelectionWeight": 10,
       "Prefixes": [
         "$mod_epicloot_me_modifyfirerate_prefix1"
       ],
@@ -1581,7 +1726,7 @@
           "Increment": 1
         }
       },
-      "SelectionWeight": 1,
+      "SelectionWeight": 10,
       "Prefixes": [
         "$mod_epicloot_me_modifyprojectilespeed_prefix1"
       ],

@@ -6,6 +6,9 @@ namespace EpicLoot
     public static partial class MagicEffectType
     {
         public static string DvergerCirclet = nameof(DvergerCirclet);
+        public static string InstantMead = nameof(InstantMead);
+        public static string AutoMead = nameof(AutoMead);
+        public static string DecreaseMeadCooldown = nameof(DecreaseMeadCooldown);
         public static string Megingjord = nameof(Megingjord);
         public static string Wishbone = nameof(Wishbone);
         public static string Andvaranaut = nameof(Andvaranaut);
@@ -56,7 +59,8 @@ namespace EpicLoot
         public static string ModifyNoise = nameof(ModifyNoise);
         public static string ModifyBuildDistance = nameof(ModifyBuildDistance);
         public static string ModifyPickupRange = nameof(ModifyPickupRange);
-        public static string ModifyFireRate = nameof(ModifyFireRate);
+        public static string ModifyMagicFireRate = nameof(ModifyMagicFireRate);
+        public static string AmmoConservation = nameof(AmmoConservation);
         public static string ModifyProjectileSpeed = nameof(ModifyProjectileSpeed);
         public static string ModifyDodgeStaminaUse = nameof(ModifyDodgeStaminaUse);
         public static string ModifyJumpStaminaUse = nameof(ModifyJumpStaminaUse);
