@@ -35,6 +35,9 @@ Include `EpicLootAPI.dll` into your project and bundle it into your plugin using
 Copy API.cs and EffectTypes.cs into your plugin project.
 ⚠️ Do not modify the provided methods unless you know what you are doing.
 
+### Using API
+
+After you finish defining all your content, make sure to `Register` them to EpicLoot
 
 ### Example Magic Effect
 
@@ -78,7 +81,7 @@ legendary.GuaranteedEffectCount = 6;
 
 ### Example Legendary Set
 ```C#
- EpicLoot.LegendarySetInfo DragonSet = new EpicLoot.LegendarySetInfo(EpicLoot.LegendaryType.Mythic, "DragonForm", "Dragon Form");
+EpicLoot.LegendarySetInfo DragonSet = new EpicLoot.LegendarySetInfo(EpicLoot.LegendaryType.Mythic, "DragonForm", "Dragon Form");
 DragonSet.SetBonuses.Add(2, EffectType.ModifyStaminaRegen, 40, 40, 1);
 DragonSet.SetBonuses.Add(3, EffectType.AddCarryWeight, 100, 100, 1);
 DragonSet.SetBonuses.Add(4, "DragonForm", 1, 1, 1);
