@@ -66,6 +66,7 @@ namespace EpicLoot
         public GameObject[] MagicItemLootBeamPrefabs = new GameObject[5];
         public readonly Dictionary<string, GameObject[]> CraftingMaterialPrefabs = new Dictionary<string, GameObject[]>();
         public Sprite SmallButtonEnchantOverlay;
+        public Sprite DodgeBuffSprite;
         public AudioClip[] MagicItemDropSFX = new AudioClip[5];
         public AudioClip ItemLoopSFX;
         public AudioClip AugmentItemSFX;
@@ -74,6 +75,8 @@ namespace EpicLoot
         public Sprite MapIconBounty;
         public AudioClip AbandonBountySFX;
         public AudioClip DoubleJumpSFX;
+        public AudioClip DodgeBuffSFX;
+        public AudioClip OffSetSFX;
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
@@ -436,6 +439,7 @@ namespace EpicLoot
             Assets.AugaItemBgSprite = assetBundle.LoadAsset<Sprite>("AugaItemBG");
             Assets.EnchantmentSparkle = assetBundle.LoadAsset<Sprite>("sparkle");
             Assets.SmallButtonEnchantOverlay = assetBundle.LoadAsset<Sprite>("SmallButtonEnchantOverlay");
+            Assets.DodgeBuffSprite = assetBundle.LoadAsset<Sprite>("DodgeBuff");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Magic] = assetBundle.LoadAsset<GameObject>("MagicLootBeam");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Rare] = assetBundle.LoadAsset<GameObject>("RareLootBeam");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Epic] = assetBundle.LoadAsset<GameObject>("EpicLootBeam");
@@ -455,6 +459,8 @@ namespace EpicLoot
             Assets.MapIconBounty = assetBundle.LoadAsset<Sprite>("MapIconBounty");
             Assets.AbandonBountySFX = assetBundle.LoadAsset<AudioClip>("AbandonBounty");
             Assets.DoubleJumpSFX = assetBundle.LoadAsset<AudioClip>("DoubleJump");
+            Assets.DodgeBuffSFX = assetBundle.LoadAsset<AudioClip>("evasionbuff");
+            Assets.OffSetSFX = assetBundle.LoadAsset<AudioClip>("offset");
             Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
@@ -470,6 +476,7 @@ namespace EpicLoot
             LoadUnidentifiedItems();
             // Needs to trigger late in order to get all potentially added items by other mods
             MinimapManager.OnVanillaMapAvailable += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+            DodgeBuff.CreateMyStatusEffect();
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object
