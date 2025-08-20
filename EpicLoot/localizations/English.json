@@ -1170,19 +1170,42 @@
   "mod_epicloot_me_headhunter_desc": "Increases chance to drop trophies by +<b><color=yellow>X</color></b>%.",
   "mod_epicloot_me_headhunter_prefix1": "Headhunter's",
   "mod_epicloot_me_headhunter_suffix1": "the Headhunter",
+  "mod_epicloot_me_dodgebuff_prefix1": "Dodge",
+  "mod_epicloot_me_dodgebuff_suffix1": "of Dodging",
+  "mod_epicloot_me_dodgebuff_desc": "Dodging an enemy melee attack grants a buff increasing damage for 10 seconds. Can not be refreshed until the buff expires or is removed.",
+  "mod_epicloot_me_dodgebuff_display": "DodgeBuff +{0}%",
+  "mod_epicloot_me_offsetattack_prefix1": "OffSet",
+  "mod_epicloot_me_offsetattack_suffix1": "of OffSetting",
+  "mod_epicloot_me_offsetattack_desc": "Your third attack in an attack string provides stagger immunity and damage reduction if timed against an enemy melee attack.",
+  "mod_epicloot_me_offsetattack_display": "OffSetAttack +{0}%",
+  "mod_epicloot_me_chainlightning": "Chain Lightning +{0}%",
+  "mod_epicloot_me_chainlightning_prefix1": "Chain Lightning ",
+  "mod_epicloot_me_chainlightning_suffix1": "of Chain Lightning",
+  "mod_epicloot_me_chainlightning_desc": "Spawns ChainLightning at +15% chance on hit. Deals +{0}% damage.",
+  "mod_epicloot_me_chainlightning_display": "ChainLightning +{0}%",
+  "mod_epicloot_me_reducedreloadspeed_prefix1": "Fast hands",
+  "mod_epicloot_me_reducedreloadspeed_suffix1": "of reloading",
+  "mod_epicloot_me_reducedreloadspeed": "Reduced Reload Speed +{0}%",
+  "mod_epicloot_me_reducedreloadspeed_desc": "Reduces base reloading time by +.{0} seconds",
+  "mod_epicloot_me_reducedreloadspeed_display": "ReducedReloadingSpeed +{0}%",
+  "mod_epicloot_me_apportation_prefix1": "Aportating",
+  "mod_epicloot_me_apportation_suffix1": "of Apportation",
+  "mod_epicloot_me_apportation": "Apportation",
+  "mod_epicloot_me_apportation_desc": "Teleports player to thrown weapon when an enemy is hit.",
+  "mod_epicloot_me_apportation_display": "Apportation",
 
   "mod_epicloot_set_me_bulwark": "Bulwark [Activated]: Prevent all damage for 5 seconds. Cooldown: 60 seconds.",
   "mod_epicloot_set_me_undying": "Undying [Passive]: On death, regain full health. Cooldown: 20 minutes.",
   "mod_epicloot_set_me_frostdamageaoe_display": "Melee attacks that deal frost damage deal an additional 50% of weapon damage as frost in a cone in front of the attacker.",
   "mod_epicloot_set_me_berserker": "Berserker [Activated]: For 10 seconds, you cannot regenerate health, but you gain +50% to +200% damage based on health missing. Cooldown: 3 minutes.",
 
-  "mod_epicloot_basicmagicnameformat": "Magic {0}", // 0 = base name
-  "mod_epicloot_fullnameformat": "{0}{1}{2}", // 0 = prefix, 1 = base name, 2 = suffix
+  "mod_epicloot_basicmagicnameformat": "Magic {0}",
+  "mod_epicloot_fullnameformat": "{0}{1}{2}",
   "mod_epicloot_prefixformat": "{0} ",
   "mod_epicloot_suffixformat": " of {0}",
-  "mod_epicloot_epicnameformat": "{0} {1}", // 0 = adjective, 1 = name
-  "mod_epicloot_basiclegendarynameformat": "Legendary {0}", // 0 = base name
-  "mod_epicloot_basicmythicnameformat": "Mythic {0}", // 0 = base name
+  "mod_epicloot_epicnameformat": "{0} {1}",
+  "mod_epicloot_basiclegendarynameformat": "Legendary {0}",
+  "mod_epicloot_basicmythicnameformat": "Mythic {0}",
 
   "mod_epicloot_rare_prefix1": "Strange",
   "mod_epicloot_rare_prefix2": "Rare",
