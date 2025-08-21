@@ -517,9 +517,11 @@ public static class API
             {
                 case ItemRarity.Legendary:
                     UniqueLegendaryHelper.Config.LegendaryItems.Add(config);
+                    UniqueLegendaryHelper.LegendaryInfo[config.ID] = config;
                     break;
                 case ItemRarity.Mythic:
                     UniqueLegendaryHelper.Config.MythicItems.Add(config);
+                    UniqueLegendaryHelper.MythicInfo[config.ID] = config;
                     break;
             }
             ExternalLegendaryItems.AddOrSet(rarity, config);
