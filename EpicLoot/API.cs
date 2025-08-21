@@ -22,7 +22,6 @@ public static class API
     private static bool ShowLogs = false;
     private static event Action<string>? OnReload;
     private static event Action<string>? OnError;
-
     private static event Action<string>? OnDebug;
     
     private static readonly Dictionary<string, MagicItemEffectDefinition> ExternalMagicItemEffectDefinitions = new();
@@ -111,7 +110,10 @@ public static class API
     /// </summary>
     private static void ReloadExternalTreasures()
     {
-        foreach(var treasure in ExternalTreasureMaps) AdventureDataManager.Config.TreasureMap.BiomeInfo.Add(treasure);
+        foreach (TreasureMapBiomeInfoConfig? treasure in ExternalTreasureMaps)
+        {
+            AdventureDataManager.Config.TreasureMap.BiomeInfo.Add(treasure);
+        }
         OnReload?.Invoke("Reloaded external treasures");
     }
 
@@ -151,7 +153,6 @@ public static class API
         foreach (MaterialConversion entry in ExternalMaterialConversions)
         {
             MaterialConversions.Config.MaterialConversions.Add(entry);
-            MaterialConversions.Conversions.Add(entry.Type, entry);
         }
         OnReload?.Invoke("Reloaded external material conversions");
     }
@@ -161,7 +162,10 @@ public static class API
     /// </summary>
     private static void ReloadExternalMagicEffects()
     {
-        foreach (MagicItemEffectDefinition effect in ExternalMagicItemEffectDefinitions.Values) MagicItemEffectDefinitions.Add(effect);
+        foreach (MagicItemEffectDefinition effect in ExternalMagicItemEffectDefinitions.Values)
+        {
+            MagicItemEffectDefinitions.Add(effect);
+        }
         OnReload?.Invoke("Reloaded external magic effects");
     }
 
@@ -173,7 +177,6 @@ public static class API
         foreach (KeyValuePair<string, AbilityDefinition> kvp in ExternalAbilities)
         {
             AbilityDefinitions.Config.Abilities.Add(kvp.Value);
-            AbilityDefinitions.Abilities[kvp.Key] = kvp.Value;
         }
         OnReload?.Invoke("Reloaded external abilities");
     }
@@ -506,6 +509,7 @@ public static class API
     
     #endregion
     #region Legendary
+    [PublicAPI]
     public static string? AddLegendaryItem(string type, string json)
     {
         try
@@ -532,6 +536,7 @@ public static class API
         }
     }
 
+    [PublicAPI]
     public static bool UpdateLegendaryItem(string key, string json)
     {
         if (!RuntimeRegistry.TryGetValue(key, out LegendaryInfo legendaryInfo)) return false;
@@ -541,6 +546,7 @@ public static class API
         return true;
     }
 
+    [PublicAPI]
     public static string? AddLegendarySet(string type, string json)
     {
         try
@@ -577,6 +583,7 @@ public static class API
         }
     }
 
+    [PublicAPI]
     public static bool UpdateLegendarySet(string key, string json)
     {
         if (!RuntimeRegistry.TryGetValue(key, out LegendarySetInfo legendarySetInfo)) return false;

@@ -12,6 +12,7 @@ namespace EpicLoot.Abilities
         public static void Initialize(AbilityConfig config)
         {
             Config = config;
+            OnSetupAbilityDefinitions?.Invoke();
 
             Abilities.Clear();
             foreach (var def in Config.Abilities)
@@ -26,7 +27,6 @@ namespace EpicLoot.Abilities
                         $"Please fix your configuration.");
                 }
             }
-            OnSetupAbilityDefinitions?.Invoke();
         }
 
         public static bool TryGetAbilityDef(string abilityID, out AbilityDefinition abilityDef)

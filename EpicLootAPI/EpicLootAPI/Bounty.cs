@@ -41,7 +41,7 @@ public class BountyTarget
     internal static readonly Method API_UpdateBountyTarget = new("UpdateBountyTarget");
     public static void RegisterAll()
     {
-        foreach (var bounty in new List<BountyTarget>(BountyTargets))
+        foreach (BountyTarget bounty in new List<BountyTarget>(BountyTargets))
         {
             bounty.Register();
         }

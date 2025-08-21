@@ -44,13 +44,13 @@ namespace EpicLoot.CraftingV2
         public static void Initialize(MaterialConversionsConfig config)
         {
             Config = config;
+            OnSetupMaterialConversions?.Invoke();
 
             Conversions.Clear();
             foreach (var entry in Config.MaterialConversions)
             {
                 Conversions.Add(entry.Type, entry);
             }
-            OnSetupMaterialConversions?.Invoke();
         }
     }
 }

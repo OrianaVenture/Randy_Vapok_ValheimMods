@@ -49,7 +49,6 @@ public class MaterialConversion
     internal static readonly Method API_AddMaterialConversion = new("AddMaterialConversion");
     internal static readonly Method API_UpdateMaterialConversion = new ("UpdateMaterialConversion");
     internal static readonly List<MaterialConversion> MaterialConversions = new();
-
     public static void RegisterAll()
     {
         foreach(MaterialConversion conversion in new List<MaterialConversion>(MaterialConversions)) conversion.Register();

@@ -9,7 +9,7 @@ namespace EpicLootAPI;
 [Serializable][PublicAPI]
 public enum AbilityActivationMode
 {
-    Passive,
+    Passive, // is not implemented
     Triggerable,
     Activated
 }
