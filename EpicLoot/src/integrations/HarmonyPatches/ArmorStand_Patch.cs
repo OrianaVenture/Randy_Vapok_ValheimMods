@@ -33,7 +33,7 @@ namespace EpicLoot.Integrations.HarmonyPatches
 
                 itemDrop.Save();
 
-                gameObject.GetComponent<Rigidbody>().velocity = Vector3.up * 4f;
+                gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 4f;
                 __instance.m_destroyEffects.Create(__instance.m_dropSpawnPoint.position, Quaternion.identity);
             
             }
