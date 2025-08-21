@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EpicLootAPI;
@@ -50,8 +47,10 @@ public static class EpicLoot
     [PublicAPI][Description("Register asset into EpicLoot in order to target them in your definitions")]
     public static bool RegisterAsset(string name, Object asset)
     {
-        object? result = API_RegisterAsset.Invoke(name, asset);
-        return (bool)(result ?? false);
+        object?[] result = API_RegisterAsset.Invoke(name, asset);
+        bool output = (bool)(result[0] ?? false);
+        logger.LogDebug($"Registered asset: {name}, {output}");
+        return output;
     }
     
     /// <param name="player"></param>
@@ -60,8 +59,10 @@ public static class EpicLoot
     [PublicAPI]
     public static bool HasLegendaryItem(this Player player, string legendaryItemID)
     {
-        object? result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
-        return (bool)(result ?? false);
+        object?[] result = API_HasLegendaryItem.Invoke(player, legendaryItemID);
+        bool output = (bool)(result[0] ?? false);
+        logger.LogDebug($"Has legendary item: {legendaryItemID}, {output} ");
+        return output;
     }
     /// <param name="player"></param>
     /// <param name="legendarySetID"></param>
@@ -71,8 +72,11 @@ public static class EpicLoot
     public static bool HasLegendarySet(this Player player, string legendarySetID, out int count)
     {
         count = 0;
-        var result = API_HasLegendarySet.Invoke(player, legendarySetID, count);
-        return (bool)(result ?? false);
+        object?[] result = API_HasLegendarySet.Invoke(player, legendarySetID, count);
+        count = (int)(result[3] ?? 0);
+        bool output = (bool)(result[0] ?? false);
+        logger.LogDebug($"Has legendary set: {legendarySetID}, {output}, count: {count}");
+        return output;
     }
     /// <summary>
     /// ⚠️ Conditional behavior: Returns different results based on player parameter,
@@ -89,9 +93,11 @@ public static class EpicLoot
     public static bool HasActiveMagicEffectOnWeapon(Player? player, ItemDrop.ItemData? item, string effectType, out float effectValue)
     {
         effectValue = 0f;
-        object? output = API_HasActiveMagicEffectOnWeapon.Invoke(player, item, effectType, effectValue);
-        
-        return (bool)(output ?? false);
+        object?[] output = API_HasActiveMagicEffectOnWeapon.Invoke(player, item, effectType, effectValue);
+        effectValue = (float)(output[4] ?? 0f);
+        bool result = (bool)(output[0] ?? false);
+        logger.LogDebug($"Has magic effect on weapon: {effectType}, {result}, value: {effectValue}");
+        return result;
     }
 
     /// <summary>
@@ -109,8 +115,10 @@ public static class EpicLoot
     public static float GetTotalActiveMagicEffectValue(Player? player, ItemDrop.ItemData? item, string effectType,
         float scale = 1.0f)
     {
-        object? result = API_GetTotalActiveMagicEffectValue.Invoke(player, item, effectType);
-        return (float)(result ?? 0f);
+        object?[] result = API_GetTotalActiveMagicEffectValue.Invoke(player, item, effectType);
+        float output = (float)(result[0] ?? 0f);
+        logger.LogDebug($"Total magic effect value: {effectType}, amount: {output}");
+        return output;
     }
 
     /// <summary>
@@ -128,8 +136,10 @@ public static class EpicLoot
     public static float GetTotalActiveMagicEffectValueForWeapon(Player? player, ItemDrop.ItemData? item,
         string effectType, float scale = 1.0f)
     {
-        object? result = API_GetTotalActiveMagicEffectValueForWeapon.Invoke(player, item, effectType, scale);
-        return (float)(result ?? 0f);
+        object?[] result = API_GetTotalActiveMagicEffectValueForWeapon.Invoke(player, item, effectType, scale);
+        float output = (float)(result[0] ?? 0f);
+        logger.LogDebug($"Total effect on weapon: {effectType}, amount: {output}");
+        return output;
     }
     
     /// <param name="player"></param>
@@ -140,8 +150,10 @@ public static class EpicLoot
     [PublicAPI]
     public static bool HasActiveMagicEffect(Player? player, string effectType, ItemDrop.ItemData? ignoreThisItem = null, float scale = 1.0f)
     {
-        object? result = API_HasActiveMagicEffect.Invoke(player, ignoreThisItem, effectType, scale);
-        return (bool)(result ?? false);
+        object?[] result = API_HasActiveMagicEffect.Invoke(player, ignoreThisItem, effectType, scale);
+        bool output = (bool)(result[0] ?? false);
+        logger.LogDebug($"Has active effect: {effectType}, {output}");
+        return output;
     }
 
     /// <summary>
@@ -154,8 +166,10 @@ public static class EpicLoot
     [PublicAPI]
     public static float GetTotalActiveSetEffectValue(Player player, string effectType, float scale = 1.0f)
     {
-        object? result = API_GetTotalActiveSetEffectValue.Invoke(player, effectType, scale);
-        return (float)(result ?? 0f);
+        object?[] result = API_GetTotalActiveSetEffectValue.Invoke(player, effectType, scale);
+        float output = (float)(result[0] ?? 0f);
+        logger.LogDebug($"Total effect value: {effectType}, amount: {output}");
+        return output;
     }
     
     /// <param name="player"></param>
@@ -164,8 +178,8 @@ public static class EpicLoot
     [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveMagicEffects(this Player player, string? effectType = null)
     {
-        object? result = API_GetAllActiveMagicEffects.Invoke(player, effectType);
-        List<string> list = (List<string>)(result ?? new List<string>());
+        object?[] result = API_GetAllActiveMagicEffects.Invoke(player, effectType);
+        List<string> list = (List<string>)(result[0] ?? new List<string>());
         if (list.Count <= 0) return new List<MagicItemEffect>();
         List<MagicItemEffect> output = new List<MagicItemEffect>();
         output.DeserializeList(list);
@@ -178,8 +192,8 @@ public static class EpicLoot
     [PublicAPI]
     public static List<MagicItemEffect> GetAllActiveSetMagicEffects(this Player player, string? effectType = null)
     {
-        object? result = API_GetAllSetMagicEffects.Invoke(player, effectType);
-        List<string> list = (List<string>)(result ?? new List<string>());
+        object?[] result = API_GetAllSetMagicEffects.Invoke(player, effectType);
+        List<string> list = (List<string>)(result[0] ?? new List<string>());
         if (list.Count <= 0) return new List<MagicItemEffect>();
         List<MagicItemEffect> output = new List<MagicItemEffect>();
         output.DeserializeList(list);
@@ -217,8 +231,10 @@ public static class EpicLoot
     public static float GetTotalActiveMagicEffectValue(this Player player, string effectType, float scale = 1.0f,
         ItemDrop.ItemData? ignoreThisItem = null)
     {
-        object? result = API_GetPlayerTotalActiveMagicEffectValue.Invoke(player, effectType, scale, ignoreThisItem);
-        return (float)(result ?? 0f);
+        object?[] result = API_GetPlayerTotalActiveMagicEffectValue.Invoke(player, effectType, scale, ignoreThisItem);
+        float output = (float)(result[0] ?? 0f);
+        logger.LogDebug($"Total magic effect: {effectType}, value: {output}");
+        return output;
     }
     
     /// <param name="player"></param>
@@ -232,7 +248,10 @@ public static class EpicLoot
         float scale = 1.0f, ItemDrop.ItemData? ignoreThisItem = null)
     {
         effectValue = 0f;
-        object? result = API_PlayerHasActiveMagicEffect.Invoke(player, effectType, effectValue, scale, ignoreThisItem);
-        return (bool)(result ?? false);
+        object?[] result = API_PlayerHasActiveMagicEffect.Invoke(player, effectType, effectValue, scale, ignoreThisItem);
+        effectValue = (float)(result[3] ?? 0f);
+        bool output = (bool)(result[0] ?? false);
+        logger.LogDebug($"Has active magic effect: {effectType}, value: {output}");
+        return output;
     }
 }

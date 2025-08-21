@@ -108,10 +108,11 @@ public class AbilityProxyDefinition
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(Ability);
-        object? result = API_RegisterProxyAbility.Invoke(json, Callbacks);
-        if (result is not string key) return false;
+        object?[] result = API_RegisterProxyAbility.Invoke(json, Callbacks);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         ProxyAbilities.Remove(this);
+        EpicLoot.logger.LogDebug("Registered proxy ability: " + Ability.ID);
         return true;
     }
 
@@ -119,8 +120,10 @@ public class AbilityProxyDefinition
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string json = JsonConvert.SerializeObject(Ability);
-        object? result = API_UpdateProxyAbility.Invoke(key, json,  Callbacks);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateProxyAbility.Invoke(key, json,  Callbacks);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated proxy ability: {Ability.ID}, {output}");
+        return output;
     }
 }
 

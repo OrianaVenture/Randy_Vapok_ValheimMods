@@ -73,10 +73,11 @@ public class LegendaryInfo
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object? result = API_AddLegendaryItem.Invoke(type.ToString(), data);
-        if (result is not string key) return false;
+        object?[] result = API_AddLegendaryItem.Invoke(type.ToString(), data);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         LegendaryItems.Remove(this);
+        EpicLoot.logger.LogDebug($"Registered legendary item: {ID}");
         return true;
     }
 
@@ -84,8 +85,10 @@ public class LegendaryInfo
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string data = JsonConvert.SerializeObject(this);
-        object? result = API_UpdateLegendaryItem.Invoke(key, data);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateLegendaryItem.Invoke(key, data);
+        var output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated legendary item: {ID}, {output}");
+        return output;
     }
 }
 
@@ -136,9 +139,10 @@ public class LegendarySetInfo
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object? result = API_AddLegendarySet.Invoke(type.ToString(), data);
-        if (result is not string key) return false;
+        object?[] result = API_AddLegendarySet.Invoke(type.ToString(), data);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
+        EpicLoot.logger.LogDebug($"Registered legendary set: {ID}");
         return true;
     }
 
@@ -146,7 +150,9 @@ public class LegendarySetInfo
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string data = JsonConvert.SerializeObject(this);   
-        object? result = API_UpdateLegendarySet.Invoke(key, data);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateLegendarySet.Invoke(key, data);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated legendary set: {ID}, {output}");
+        return output;
     }
 }

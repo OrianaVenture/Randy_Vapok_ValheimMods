@@ -65,10 +65,11 @@ public class AbilityDefinition
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object? result = API_AddAbility.Invoke(data);
-        if (result is not string key) return false;
+        object?[] result = API_AddAbility.Invoke(data);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         Abilities.Remove(this);
+        EpicLoot.logger.LogDebug("Registered ability: " + ID);
         return true;
     }
     
@@ -80,7 +81,9 @@ public class AbilityDefinition
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string data = JsonConvert.SerializeObject(this);
-        var result = API_UpdateAbility.Invoke(key, data);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateAbility.Invoke(key, data);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated ability {ID}: {output}");
+        return output;
     }
 }

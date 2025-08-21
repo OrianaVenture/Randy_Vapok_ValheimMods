@@ -37,10 +37,11 @@ public class TreasureMap
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        var result = API_AddTreasureMap.Invoke(json);
-        if (result is not string key) return false;
+        object?[] result = API_AddTreasureMap.Invoke(json);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         Treasures.Remove(this);
+        EpicLoot.logger.LogDebug($"Added treasure map: {Biome}");
         return true;
     }
 
@@ -48,8 +49,10 @@ public class TreasureMap
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_UpdateTreasureMap.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateTreasureMap.Invoke(key, json);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated treasure map: {Biome}, {output}");
+        return output;
     }
     
 }

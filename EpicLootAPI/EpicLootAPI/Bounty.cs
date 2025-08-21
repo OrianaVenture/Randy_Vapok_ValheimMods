@@ -50,10 +50,11 @@ public class BountyTarget
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_AddBountyTarget.Invoke(json);
-        if (result is not string key) return false;
+        object?[] result = API_AddBountyTarget.Invoke(json);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(BountyTargets, key);
         BountyTargets.Remove(this);
+        EpicLoot.logger.LogDebug($"Registered bounty: {TargetID}");
         return true;
     }
 
@@ -61,7 +62,9 @@ public class BountyTarget
     {
         if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
         string json = JsonConvert.SerializeObject(BountyTargets);
-        object? result =  API_UpdateBountyTarget.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result =  API_UpdateBountyTarget.Invoke(key, json);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated bounty target: {TargetID}, {output}");
+        return output;
     }
 }

@@ -33,7 +33,7 @@ internal class Method
     /// the target method's parameter signature. Passing incorrect arguments will result in runtime exceptions.
     /// </param>
     /// <returns>
-    /// The return value from the invoked method, or null if:
+    /// The return value from the invoked method and the arguments passed, or null if:
     /// - The method returns void
     /// - The method could not be resolved during construction
     /// - The method invocation fails
@@ -41,7 +41,14 @@ internal class Method
     /// <exception cref="ArgumentException">Thrown when argument types don't match the method signature</exception>
     /// <exception cref="TargetParameterCountException">Thrown when argument count doesn't match the method signature</exception>
     /// <exception cref="TargetInvocationException">Thrown when the invoked method throws an exception</exception>
-    public object? Invoke(params object?[] args) => info?.Invoke(null, args);
+    public object?[] Invoke(params object?[] args)
+    {
+        object? result = info?.Invoke(null, args);
+        object?[] output = new object?[args.Length + 1];
+        output[0] = result;
+        Array.Copy(args, 0, output, 1, args.Length);
+        return output;
+    }
 
     /// <summary>
     /// Constructs a Method helper that resolves and caches a static method for later invocation.
