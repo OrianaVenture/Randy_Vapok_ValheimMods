@@ -12,6 +12,7 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.LegendarySystem;
 using JetBrains.Annotations;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot;
@@ -21,10 +22,13 @@ public static class API
     private static bool ShowLogs = false;
     private static event Action<string>? OnReload;
     private static event Action<string>? OnError;
+
+    private static event Action<string>? OnDebug;
     
     private static readonly Dictionary<string, MagicItemEffectDefinition> ExternalMagicItemEffectDefinitions = new();
     private static readonly Dictionary<string, AbilityDefinition> ExternalAbilities = new();
-    private static readonly List<LegendaryItemConfig> ExternalLegendaryConfig = new();
+    private static readonly Dictionary<ItemRarity, List<LegendaryInfo>> ExternalLegendaryItems = new();
+    private static readonly Dictionary<ItemRarity, List<LegendarySetInfo>> ExternalLegendarySets = new();
     private static readonly Dictionary<string, Object> ExternalAssets = new();
     private static readonly List<MaterialConversion> ExternalMaterialConversions = new();
     private static readonly List<RecipeConfig> ExternalRecipes = new();
@@ -57,8 +61,14 @@ public static class API
             if (!ShowLogs) return;
             EpicLoot.LogWarning(message);
         };
+        OnDebug += message =>
+        {
+            if (!ShowLogs) return;
+            EpicLoot.LogWarningForce(message);
+        };
     }
 
+    #region Reload
     /// <summary>
     /// Reloads cached external adventure data into <see cref="AdventureDataManager.Config"/>
     /// </summary>
@@ -69,6 +79,33 @@ public static class API
         ReloadExternalTreasures();
     }
 
+    /// <summary>
+    /// Reloads cached secret stash items into <see cref="AdventureDataManager.Config"/>
+    /// </summary>
+    private static void ReloadExternalSecretStashItems()
+    {
+        foreach (KeyValuePair<SecretStashType, List<SecretStashItemConfig>> kvp in ExternalSecretStashItems)
+        {
+            switch (kvp.Key)
+            {
+                case SecretStashType.Materials:
+                    AdventureDataManager.Config.SecretStash.Materials.AddRange(kvp.Value);
+                    break;
+                case SecretStashType.OtherItems:
+                    AdventureDataManager.Config.SecretStash.OtherItems.AddRange(kvp.Value);
+                    break;
+                case SecretStashType.RandomItems:
+                    AdventureDataManager.Config.SecretStash.RandomItems.AddRange(kvp.Value);
+                    break;
+                case SecretStashType.Gamble:
+                    AdventureDataManager.Config.Gamble.GambleCosts.AddRange(kvp.Value);
+                    break;
+                case SecretStashType.Sale:
+                    AdventureDataManager.Config.TreasureMap.SaleItems.AddRange(kvp.Value);
+                    break;
+            }
+        }
+    }
     /// <summary>
     /// Reloads cached external treasure maps into <see cref="AdventureDataManager.Config"/>
     /// </summary>
@@ -101,6 +138,7 @@ public static class API
     /// </summary>
     private static void ReloadExternalRecipes()
     {
+        RecipesHelper.Config.recipes.RemoveAll(ExternalRecipes);
         RecipesHelper.Config.recipes.AddRange(ExternalRecipes);
         OnReload?.Invoke("Reloaded external recipes");
     }
@@ -145,12 +183,30 @@ public static class API
     /// </summary>
     private static void ReloadExternalLegendary()
     {
-        foreach (LegendaryItemConfig config in ExternalLegendaryConfig)
+        foreach (KeyValuePair<ItemRarity, List<LegendaryInfo>> kvp in ExternalLegendaryItems)
         {
-            UniqueLegendaryHelper.LegendaryInfo.AddInfo(config.LegendaryItems);
-            UniqueLegendaryHelper.MythicInfo.AddInfo(config.MythicItems);
-            AddSet(UniqueLegendaryHelper.LegendarySets, UniqueLegendaryHelper._legendaryItemsToSetMap, config.LegendarySets);
-            AddSet(UniqueLegendaryHelper.MythicSets, UniqueLegendaryHelper._mythicItemsToSetMap, config.MythicSets);
+            switch (kvp.Key)
+            {
+                case ItemRarity.Legendary:
+                    UniqueLegendaryHelper.Config.LegendaryItems.AddRange(kvp.Value);
+                    break;
+                case ItemRarity.Mythic:
+                    UniqueLegendaryHelper.Config.MythicItems.AddRange(kvp.Value);
+                    break;
+            }
+        }
+
+        foreach (KeyValuePair<ItemRarity, List<LegendarySetInfo>> kvp in ExternalLegendarySets)
+        {
+            switch (kvp.Key)
+            {
+                case ItemRarity.Legendary:
+                    UniqueLegendaryHelper.Config.LegendarySets.AddRange(kvp.Value);
+                    break;
+                case ItemRarity.Mythic:
+                    UniqueLegendaryHelper.Config.MythicSets.AddRange(kvp.Value);
+                    break;
+            }
         }
         OnReload?.Invoke("Reloaded external legendary abilities");
     }
@@ -166,7 +222,8 @@ public static class API
         }
         OnReload?.Invoke("Reloaded external assets");
     }
-    
+    #endregion
+    #region Treasure
     /// <param name="json">JSON serialized <see cref="TreasureMapBiomeInfoConfig"/></param>
     /// <returns>unique identifier</returns>
     [PublicAPI]
@@ -206,34 +263,8 @@ public static class API
             return false;
         }
     }
-    
-    /// <summary>
-    /// Reloads cached secret stash items into <see cref="AdventureDataManager.Config"/>
-    /// </summary>
-    private static void ReloadExternalSecretStashItems()
-    {
-        foreach (KeyValuePair<SecretStashType, List<SecretStashItemConfig>> kvp in ExternalSecretStashItems)
-        {
-            switch (kvp.Key)
-            {
-                case SecretStashType.Materials:
-                    AdventureDataManager.Config.SecretStash.Materials.AddRange(kvp.Value);
-                    break;
-                case SecretStashType.OtherItems:
-                    AdventureDataManager.Config.SecretStash.OtherItems.AddRange(kvp.Value);
-                    break;
-                case SecretStashType.RandomItems:
-                    AdventureDataManager.Config.SecretStash.RandomItems.AddRange(kvp.Value);
-                    break;
-                case SecretStashType.Gamble:
-                    AdventureDataManager.Config.Gamble.GambleCosts.AddRange(kvp.Value);
-                    break;
-                case SecretStashType.Sale:
-                    AdventureDataManager.Config.TreasureMap.SaleItems.AddRange(kvp.Value);
-                    break;
-            }
-        }
-    }
+    #endregion
+    #region Adventure
     private enum SecretStashType
     {
         Materials, 
@@ -295,21 +326,8 @@ public static class API
         original.CopyFieldsFrom(secretStash);
         return true;
     }
-
-    /// <summary>
-    /// Helper function to add into dictionary of lists
-    /// </summary>
-    /// <param name="dict">Dictionary T key, List V values</param>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="V"></typeparam>
-    private static void AddOrSet<T, V>(this Dictionary<T, List<V>> dict, T key, V value)
-    {
-        if (!dict.ContainsKey(key)) dict[key] = new List<V>();
-        dict[key].Add(value);
-    }
-    
+    #endregion
+    #region Magic Effect
     /// <param name="json">JSON serialized <see cref="MagicItemEffectDefinition"/></param>
     /// <returns>unique identifier if registered</returns>
     [PublicAPI]
@@ -344,7 +362,38 @@ public static class API
         original.CopyFieldsFrom(def);
         return true;
     }
-    
+    #endregion
+    #region States
+    /// <remarks>
+    /// Can be useful for external plugins to know, so they can design features around it.
+    /// </remarks>
+    /// <param name="player"></param>
+    /// <param name="legendaryItemID"></param>
+    /// <returns>true if player has item</returns>
+    [PublicAPI]
+    public static bool HasLegendaryItem(Player player, string legendaryItemID)
+    {
+        foreach (ItemDrop.ItemData item in player.GetEquipment())
+        {
+            if (item.IsMagic(out var magicItem) && magicItem.LegendaryID == legendaryItemID) return true;
+        }
+        return false;
+    }
+
+    /// <remarks>
+    /// Can be useful for external plugins to know, so they can design features around it.
+    /// </remarks>
+    /// <param name="player"></param>
+    /// <param name="legendarySetID"></param>
+    /// <param name="count"></param>
+    /// <returns>true if player has full set</returns>
+    [PublicAPI]
+    public static bool HasLegendarySet(Player player, string legendarySetID, ref int count)
+    {
+        if (!UniqueLegendaryHelper.TryGetLegendarySetInfo(legendarySetID, out LegendarySetInfo legendarySetInfo, out ItemRarity _)) return false;
+        count = player.GetEquippedSetPieces(legendarySetID).Count;
+        return count >= legendarySetInfo.LegendaryIDs.Count;
+    }
     /// <param name="type"><see cref="MagicEffectType"/></param>
     /// <returns>serialized object of magic effect definition if found</returns>
     [PublicAPI]
@@ -454,96 +503,90 @@ public static class API
         float scale = 1.0f, ItemDrop.ItemData? ignoreThisItem = null) =>
         player.HasActiveMagicEffect(effectType, out effectValue, scale, ignoreThisItem);
     
-    /// <param name="json">JSON serialized <see cref="LegendaryItemConfig"/></param>
-    /// <returns>unique identifier if registered</returns>
-    [PublicAPI]
-    public static string? AddLegendaryItemConfig(string json)
+    
+    #endregion
+    #region Legendary
+    public static string? AddLegendaryItem(string type, string json)
     {
         try
         {
-            LegendaryItemConfig? config = JsonConvert.DeserializeObject<LegendaryItemConfig>(json);
+            if (!Enum.TryParse(type, true, out ItemRarity rarity)) return null;
+            LegendaryInfo? config = JsonConvert.DeserializeObject<LegendaryInfo>(json);
             if (config == null) return null;
-            ExternalLegendaryConfig.Add(config);
-            
-            UniqueLegendaryHelper.Config.LegendaryItems.AddRange(config.LegendaryItems);
-            UniqueLegendaryHelper.Config.LegendarySets.AddRange(config.LegendarySets);
-            UniqueLegendaryHelper.Config.MythicItems.AddRange(config.MythicItems);
-            UniqueLegendaryHelper.Config.MythicSets.AddRange(config.MythicSets);
-            
-            UniqueLegendaryHelper.LegendaryInfo.AddInfo(config.LegendaryItems);
-            UniqueLegendaryHelper.MythicInfo.AddInfo(config.MythicItems);
-            AddSet(UniqueLegendaryHelper.LegendarySets, UniqueLegendaryHelper._legendaryItemsToSetMap, config.LegendarySets);
-            AddSet(UniqueLegendaryHelper.MythicSets, UniqueLegendaryHelper._mythicItemsToSetMap, config.MythicSets);
+            switch (rarity)
+            {
+                case ItemRarity.Legendary:
+                    UniqueLegendaryHelper.Config.LegendaryItems.Add(config);
+                    break;
+                case ItemRarity.Mythic:
+                    UniqueLegendaryHelper.Config.MythicItems.Add(config);
+                    break;
+            }
+            ExternalLegendaryItems.AddOrSet(rarity, config);
             return RuntimeRegistry.Register(config);
         }
         catch
         {
-            OnError?.Invoke("Failed to parse legendary item config from external plugin");
+            OnError?.Invoke("Failed to parse legendary item from external plugin.");
             return null;
         }
     }
-    
-    /// <param name="key">unique identifier</param>
-    /// <param name="json">JSON serialized <see cref="LegendaryItemConfig"/></param>
-    /// <returns>True if updated</returns>
-    [PublicAPI]
-    public static bool UpdateLegendaryItemConfig(string key, string json)
+
+    public static bool UpdateLegendaryItem(string key, string json)
     {
-        if (!RuntimeRegistry.TryGetValue(key, out LegendaryItemConfig original)) return false;
-        LegendaryItemConfig? config = JsonConvert.DeserializeObject<LegendaryItemConfig>(json);
+        if (!RuntimeRegistry.TryGetValue(key, out LegendaryInfo legendaryInfo)) return false;
+        LegendaryInfo? config = JsonConvert.DeserializeObject<LegendaryInfo>(json);
         if (config == null) return false;
-        original.CopyFieldsFrom(config);
+        legendaryInfo.CopyFieldsFrom(config);
         return true;
     }
 
-    /// <summary>
-    /// Helper function to add legendary item to relevant dictionary
-    /// </summary>
-    /// <param name="target"></param>
-    /// <param name="legendaryItems"></param>
-    private static void AddInfo(this Dictionary<string, LegendaryInfo> target, List<LegendaryInfo> legendaryItems)
+    public static string? AddLegendarySet(string type, string json)
     {
-        foreach (LegendaryInfo info in legendaryItems)
+        try
         {
-            if (!target.ContainsKey(info.ID)) target[info.ID] = info;
-            else OnError?.Invoke($"Duplicate entry found for Legendary Info: {info.ID} when adding from external plugin");
+            if (!Enum.TryParse(type, true, out ItemRarity rarity)) return null;
+            LegendarySetInfo? config = JsonConvert.DeserializeObject<LegendarySetInfo>(json);
+            if (config == null) return null;
+            switch (rarity)
+            {
+                case ItemRarity.Legendary:
+                    UniqueLegendaryHelper.LegendarySets[config.ID] = config;
+                    UniqueLegendaryHelper.Config.LegendarySets.Add(config);
+                    foreach (var name in config.LegendaryIDs)
+                    {
+                        UniqueLegendaryHelper._legendaryItemsToSetMap[name] = config;
+                    }
+                    break;
+                case ItemRarity.Mythic:
+                    UniqueLegendaryHelper.MythicSets[config.ID] = config;
+                    UniqueLegendaryHelper.Config.MythicSets.Add(config);
+                    foreach (var name in config.LegendaryIDs)
+                    {
+                        UniqueLegendaryHelper._mythicItemsToSetMap[name] = config;
+                    }
+                    break;
+            }
+            ExternalLegendarySets.AddOrSet(rarity, config);
+            return RuntimeRegistry.Register(config);
+        }
+        catch
+        {
+            OnError?.Invoke("Failed to parse legendary set from external plugin.");
+            return null;
         }
     }
 
-    /// <summary>
-    /// Helper function to add legendary sets to relevant dictionaries
-    /// </summary>
-    /// <param name="target"></param>
-    /// <param name="itemToSet"></param>
-    /// <param name="legendarySet"></param>
-    private static void AddSet(Dictionary<string, LegendarySetInfo> target, Dictionary<string, LegendarySetInfo> itemToSet, List<LegendarySetInfo> legendarySet)
+    public static bool UpdateLegendarySet(string key, string json)
     {
-        foreach (LegendarySetInfo info in legendarySet)
-        {
-            if (!target.ContainsKey(info.ID))
-            {
-                target[info.ID] = info;
-            }
-            else
-            {
-                OnError?.Invoke($"Duplicate entry found for Legendary Set: {info.ID} when adding from external plugin");
-                continue;
-            }
-
-            foreach (var legendaryID in info.LegendaryIDs)
-            {
-                if (!itemToSet.ContainsKey(legendaryID))
-                {
-                    itemToSet[legendaryID] = info;
-                }
-                else
-                {
-                    OnError?.Invoke($"Duplicate entry found for Legendary Set: {info.ID}: {legendaryID} when adding from external plugin");
-                }
-            }
-        }
+        if (!RuntimeRegistry.TryGetValue(key, out LegendarySetInfo legendarySetInfo)) return false;
+        LegendarySetInfo? config = JsonConvert.DeserializeObject<LegendarySetInfo>(json);
+        if (config == null) return false;
+        legendarySetInfo.CopyFieldsFrom(config);
+        return true;
     }
-    
+    #endregion
+    #region Ability
     /// <param name="json">JSON serialized <see cref="AbilityDefinition"/></param>
     /// <returns>unique identifier if registered</returns>
     [PublicAPI]
@@ -582,45 +625,8 @@ public static class API
         original.CopyFieldsFrom(def);
         return true;
     }
-
-    /// <remarks>
-    /// Can be useful for external plugins to know, so they can design features around it.
-    /// </remarks>
-    /// <param name="player"></param>
-    /// <param name="legendaryItemID"></param>
-    /// <returns>true if player has item</returns>
-    [PublicAPI]
-    public static bool HasLegendaryItem(Player player, string legendaryItemID)
-    {
-        foreach (ItemDrop.ItemData item in player.GetEquipment())
-        {
-            if (item.IsMagic(out var magicItem) && magicItem.LegendaryID == legendaryItemID) return true;
-        }
-        return false;
-    }
-
-    /// <remarks>
-    /// Can be useful for external plugins to know, so they can design features around it.
-    /// </remarks>
-    /// <param name="player"></param>
-    /// <param name="legendarySetID"></param>
-    /// <param name="count"></param>
-    /// <returns>true if player has full set</returns>
-    [PublicAPI]
-    public static bool HasLegendarySet(Player player, string legendarySetID, ref int count)
-    {
-        var setSize = ItemDataExtensions.GetSetPieces(legendarySetID).Count;
-        foreach (ItemDrop.ItemData item in player.GetEquipment())
-        {
-            if (item.IsMagic(out var magicItem) && magicItem.SetID == legendarySetID)
-            {
-                ++count;
-            }
-        }
-
-        return count >= setSize;
-    }
-    
+    #endregion
+    #region Asset
     /// <param name="name"><see cref="string"/></param>
     /// <param name="asset"><see cref="Object"/></param>
     /// <returns>True if added to <see cref="EpicLoot._assetCache"/></returns>
@@ -636,7 +642,8 @@ public static class API
         ExternalAssets[name] = asset;
         return true;
     }
-    
+    #endregion
+    #region Material Conversion
     /// <param name="json">JSON serialized <see cref="MaterialConversion"/></param>
     /// <returns>unique key if added to <see cref="MaterialConversions.Conversions"/></returns>
     [PublicAPI]
@@ -670,6 +677,25 @@ public static class API
         original.CopyFieldsFrom(conversion);
         return true;
     }
+    #endregion
+    #region Recipe
+    [PublicAPI]
+    public static string? AddRecipe(string json)
+    {
+        try
+        {
+            var recipe = JsonConvert.DeserializeObject<RecipeConfig>(json);
+            if (recipe == null) return null;
+            ExternalRecipes.Add(recipe);
+            RecipesHelper.Config.recipes.Add(recipe);
+            return RuntimeRegistry.Register(recipe);
+        }
+        catch
+        {
+            OnError?.Invoke("Failed to parse recipe passed in through external plugin.");
+            return null;
+        }
+    }
     
     /// <param name="json">JSON serialized List of <see cref="RecipeConfig"/></param>
     /// <returns>unique key if successfully added</returns>
@@ -678,6 +704,8 @@ public static class API
     {
         // TODO: Figure out why it looks like recipes are added twice
         // PRIORITY: Low
+        // Some interesting logic about re-initializing recipes after item manager on items registered ??
+        // Current fix, remove external recipes, then add again on reload
         try
         {
             List<RecipeConfig>? recipes = JsonConvert.DeserializeObject<List<RecipeConfig>>(json);
@@ -706,88 +734,82 @@ public static class API
         RecipesHelper.Config.recipes.ReplaceThenAdd(list, recipes);
         return true;
     }
-    
-    /// <param name="json">JSON serialized List <see cref="DisenchantProductsConfig"/></param>
+    #endregion
+    #region Sacrifice
+    /// <param name="json">JSON serialized <see cref="DisenchantProductsConfig"/></param>
     /// <returns>True if added to <see cref="EnchantCostsHelper.Config"/></returns>
     [PublicAPI]
-    public static string? AddSacrifices(string json)
+    public static string? AddSacrifice(string json)
     {
         try
         {
-            List<DisenchantProductsConfig>? sacrifices = JsonConvert.DeserializeObject<List<DisenchantProductsConfig>>(json);
-            if (sacrifices == null) return null;
-            ExternalSacrifices.AddRange(sacrifices);
-            EnchantCostsHelper.Config.DisenchantProducts.AddRange(sacrifices);
-            return RuntimeRegistry.Register(sacrifices);
+            DisenchantProductsConfig? sacrifice = JsonConvert.DeserializeObject<DisenchantProductsConfig>(json);
+            if (sacrifice == null) return null;
+            ExternalSacrifices.Add(sacrifice);
+            EnchantCostsHelper.Config.DisenchantProducts.Add(sacrifice);
+            return RuntimeRegistry.Register(sacrifice);
         }
         catch
         {
-            OnError?.Invoke("Failed to parse sacrifices from external plugin");
+            OnError?.Invoke("Failed to parse sacrifice from external plugin");
+            return null;
+        }
+    }
+    
+    /// <param name="key">unique identifier</param>
+    /// <param name="json">JSON serialized <see cref="DisenchantProductsConfig"/></param>
+    /// <returns>True if updated</returns>
+    [PublicAPI]
+    public static bool UpdateSacrifice(string key, string json)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out DisenchantProductsConfig disenchantProduct)) return false;
+        DisenchantProductsConfig? sacrifice = JsonConvert.DeserializeObject<DisenchantProductsConfig>(json);
+        disenchantProduct.CopyFieldsFrom(sacrifice);
+        return true;
+    }
+    #endregion
+    #region Bounty
+    [PublicAPI]
+    public static string? AddBountyTarget(string json)
+    {
+        try
+        {
+            var bounty = JsonConvert.DeserializeObject<BountyTargetConfig>(json);
+            if (bounty == null) return null;
+            ExternalBountyTargets.Add(bounty);
+            AdventureDataManager.Config.Bounties.Targets.Add(bounty);
+            return RuntimeRegistry.Register(bounty);
+        }
+        catch
+        {
+            OnError?.Invoke("Failed to parse bounty target passed in through external plugin.");
             return null;
         }
     }
 
-    /// <summary>
-    /// Searches the runtime registry for matching key, to grab objects,
-    /// Removes them from <see cref="EnchantCostsHelper.Config"/>, 
-    /// Adds updated objects back into list
-    /// </summary>
-    /// <param name="key">unique identifier</param>
-    /// <param name="json">JSON serialized list of <see cref="DisenchantProductsConfig"/></param>
-    /// <returns>True if items are removed and re-added</returns>
     [PublicAPI]
-    public static bool UpdateSacrifices(string key, string json)
+    public static bool UpdateBountyTarget(string key, string json)
     {
-        try
-        {
-            if (!RuntimeRegistry.TryGetValue<List<DisenchantProductsConfig>>(key, out List<DisenchantProductsConfig> list)) return false;
-            List<DisenchantProductsConfig>? sacrifices = JsonConvert.DeserializeObject<List<DisenchantProductsConfig>>(json);
-            if (sacrifices == null) return false;
-            EnchantCostsHelper.Config.DisenchantProducts.ReplaceThenAdd(list, sacrifices);
-            ExternalSacrifices.ReplaceThenAdd(list, sacrifices);
-            return true;
-        }
-        catch
-        {
-            OnError?.Invoke("Failed to parse sacrifices from external plugin");
-            return false;
-        }
-    }
-    
-    /// <param name="json">JSON serialized list <see cref="BountyTargetConfig"/></param>
-    /// <returns>unique identifier if registered to runtime registry</returns>
-    [PublicAPI]
-    public static string? AddBountyTargets(string json)
-    {
-        try
-        {
-            List<BountyTargetConfig>? bounties =  JsonConvert.DeserializeObject<List<BountyTargetConfig>>(json);
-            if (bounties == null) return null;
-            ExternalBountyTargets.AddRange(bounties);
-            AdventureDataManager.Config.Bounties.Targets.AddRange(bounties);
-            return RuntimeRegistry.Register(bounties);
-        }
-        catch
-        {
-            OnError?.Invoke("Failed to parse list of target bounties from external plugin");
-            return null;
-        }
-    }
-    
-    /// <param name="key">unique identifier</param>
-    /// <param name="json">JSON serialized list of <see cref="BountyTargetConfig"/></param>
-    /// <returns></returns>
-    [PublicAPI]
-    public static bool UpdateBountyTargets(string key, string json)
-    {
-        if (!RuntimeRegistry.TryGetValue<List<BountyTargetConfig>>(key, out List<BountyTargetConfig> list)) return false;
-        List<BountyTargetConfig>? bounties = JsonConvert.DeserializeObject<List<BountyTargetConfig>>(json);
-        if (bounties == null) return false;
-        ExternalBountyTargets.ReplaceThenAdd(list, bounties);
-        AdventureDataManager.Config.Bounties.Targets.ReplaceThenAdd(list, bounties);
+        if (!RuntimeRegistry.TryGetValue(key, out BountyTargetConfig bountyTarget)) return false;
+        BountyTargetConfig? config = JsonConvert.DeserializeObject<BountyTargetConfig>(json);
+        bountyTarget.CopyFieldsFrom(config);
         return true;
     }
-    
+    #endregion
+    #region Helpers
+    /// <summary>
+    /// Helper function to add into dictionary of lists
+    /// </summary>
+    /// <param name="dict">Dictionary T key, List V values</param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    private static void AddOrSet<T, V>(this Dictionary<T, List<V>> dict, T key, V value)
+    {
+        if (!dict.ContainsKey(key)) dict[key] = new List<V>();
+        dict[key].Add(value);
+    }
     /// <summary>
     /// Helper function to copy all fields from one instance to the other
     /// </summary>
@@ -826,7 +848,8 @@ public static class API
     {
         foreach (var item in itemsToRemove) list.Remove(item);
     }
-
+    #endregion
+    #region Registry
     /// <summary>
     /// Simple registry for external assets, useful to keep track of objects,
     /// Keys are generated and returned to external API,
@@ -874,7 +897,8 @@ public static class API
         [PublicAPI]
         public static List<string> GetRegisteredKeys() => registry.Keys.ToList();
     }
-    
+    #endregion
+    #region Ability Proxy
     /// <param name="abilityID"></param>
     /// <param name="proxy"></param>
     /// <returns>true, if callback functions found using unique ability ID</returns>
@@ -1030,4 +1054,5 @@ public static class API
         public override float GetCooldownEndTime() => GetCallback<Func<float>>(nameof(GetCooldownEndTime)) is not { } callback 
             ? base.GetCooldownEndTime() : callback();
     }
+    #endregion
 }

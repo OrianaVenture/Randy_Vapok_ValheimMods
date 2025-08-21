@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -34,8 +35,29 @@ public class CustomRecipe
         this.item = item;
         this.amount = amount;
         craftingStation = craftingTable.GetInternalName();
-        EpicLoot.Recipes.recipes.Add(this);
+        Recipes.Add(this);
     }
+    internal static readonly List<CustomRecipe> Recipes = new();
+    internal static readonly Method API_AddRecipe = new ("AddRecipe");
+    /// <summary>
+    /// Invokes <see cref="API_AddRecipe"/> with serialized List <see cref="CustomRecipe"/>
+    /// </summary>
+    /// <returns>Unique key if added</returns>
+    [PublicAPI]
+    public static void RegisterAll()
+    {
+        foreach (var recipe in new List<CustomRecipe>(Recipes)) recipe.Register();
+    }
+    public bool Register()
+    {
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_AddRecipe.Invoke(json);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        Recipes.Remove(this);
+        return true;
+    }
+
 }
 
 [PublicAPI]
@@ -56,11 +78,4 @@ internal class InternalName : Attribute
 {
     public readonly string internalName;
     public InternalName(string internalName) => this.internalName = internalName;
-}
-
-[Serializable]
-internal class RecipesConfig
-{
-    public List<CustomRecipe> recipes = new List<CustomRecipe>();
-    public bool HasValues() => recipes.Count > 0;
 }

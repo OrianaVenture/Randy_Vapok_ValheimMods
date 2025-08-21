@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -42,6 +43,41 @@ public class MaterialConversion
         Amount = amount;
         Type = type;
 
-        EpicLoot.MaterialConversions.Add(this);
+        MaterialConversions.Add(this);
+    }
+    
+    internal static readonly Method API_AddMaterialConversion = new("AddMaterialConversion");
+    internal static readonly Method API_UpdateMaterialConversion = new ("UpdateMaterialConversion");
+    internal static readonly List<MaterialConversion> MaterialConversions = new();
+
+    public static void RegisterAll()
+    {
+        foreach(MaterialConversion conversion in new List<MaterialConversion>(MaterialConversions)) conversion.Register();
+    }
+    /// <summary>
+    /// Register material conversion to EpicLoot MaterialConversions.Conversions
+    /// </summary>
+    /// <returns>true if added to MaterialConversions.Conversions</returns>
+    [Description("serializes to json and sends to EpicLoot")]
+    public bool Register()
+    {
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_AddMaterialConversion.Invoke(data);
+        if (result is not string key) return false;
+        MaterialConversions.Remove(this);
+        RunTimeRegistry.Register(this, key);
+        return true;
+    }
+
+    /// <summary>
+    /// Invokes UpdateMaterialConversions with unique key and serialized MaterialConversion
+    /// </summary>
+    /// <returns>true if updated</returns>
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
+        string json = JsonConvert.SerializeObject(this);
+        object? result =  API_UpdateMaterialConversion.Invoke(key, json);
+        return (bool)(result ?? false);
     }
 }

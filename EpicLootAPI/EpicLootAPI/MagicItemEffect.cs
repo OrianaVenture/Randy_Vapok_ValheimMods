@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -88,7 +89,61 @@ public class MagicItemEffectDefinition
         DisplayText = displayText;
         Description = description;
 
-        EpicLoot.MagicEffects.Add(this);
+        MagicEffects.Add(this);
+    }
+
+    internal static readonly List<MagicItemEffectDefinition> MagicEffects = new();
+    internal static readonly Method API_AddMagicEffect = new("AddMagicEffect");
+    internal static readonly Method API_UpdateMagicEffect = new ("UpdateMagicEffect");
+    internal static readonly Method API_GetMagicEffectDefinitionCopy = new("GetMagicItemEffectDefinition");
+
+    public static void RegisterAll()
+    {
+        foreach (MagicItemEffectDefinition? effect in new List<MagicItemEffectDefinition>(MagicEffects)) effect.Register();
+    }
+
+    /// <param name="effectType"><see cref="EffectType"/></param>
+    /// <returns>simple copy of existing magic effect definition</returns>
+    public static MagicItemEffectDefinition? Copy(string effectType)
+    {
+        string result = (string)(API_GetMagicEffectDefinitionCopy.Invoke(effectType) ?? "");
+        if (string.IsNullOrEmpty(result)) return null;
+        try
+        {
+            MagicItemEffectDefinition? copy = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(result);
+            return copy;
+        }
+        catch
+        {
+            EpicLoot.logger.LogWarning("Failed to parse magic item effect definition json");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Serialized to JSON and invokes <see cref="API_AddMagicEffect"/>
+    /// </summary>
+    /// <returns>true if added</returns>
+    public bool Register()
+    {
+        MagicEffects.Remove(this);
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_AddMagicEffect.Invoke(data);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        return true;
+    }
+
+    /// <summary>
+    /// Serialized to JSON and invokes <see cref="API_UpdateMagicEffect"/>
+    /// </summary>
+    /// <returns>true if updated</returns>
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string json = JsonConvert.SerializeObject(this);
+        var result = API_UpdateMagicEffect.Invoke(key, json);
+        return (bool)(result ?? false);
     }
 }
 

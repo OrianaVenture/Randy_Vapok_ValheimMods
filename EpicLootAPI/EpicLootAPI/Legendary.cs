@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -55,16 +56,36 @@ public class LegendaryInfo
         this.ID = ID;
         Name = name;
         Description = description;
+        this.type = type;
+        LegendaryItems.Add(this);
+    }
 
-        switch (type)
-        {
-            case LegendaryType.Legendary:
-                EpicLoot.LegendaryConfig.LegendaryItems.Add(this);
-                break;
-            case LegendaryType.Mythic:
-                EpicLoot.LegendaryConfig.MythicItems.Add(this);
-                break;
-        }
+    private LegendaryType type;
+
+    internal static readonly List<LegendaryInfo> LegendaryItems = new();
+    internal static readonly Method API_AddLegendaryItem = new ("AddLegendaryItem");
+    internal static readonly Method API_UpdateLegendaryItem = new ("UpdateLegendaryItem");
+
+    public static void RegisterAll()
+    {
+        foreach(var item in new List<LegendaryInfo>(LegendaryItems)) item.Register();
+    }
+    public bool Register()
+    {
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_AddLegendaryItem.Invoke(type.ToString(), data);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        LegendaryItems.Remove(this);
+        return true;
+    }
+
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_UpdateLegendaryItem.Invoke(key, data);
+        return (bool)(result ?? false);
     }
 }
 
@@ -99,33 +120,33 @@ public class LegendarySetInfo
     {
         this.ID = ID;
         Name = name;
-
-        switch (type)
-        {
-            case LegendaryType.Legendary:
-                EpicLoot.LegendaryConfig.LegendarySets.Add(this);
-                break;
-            case LegendaryType.Mythic:
-                EpicLoot.LegendaryConfig.MythicSets.Add(this);
-                break;
-        }
+        this.type = type;
+        LegendarySets.Add(this);
     }
-}
-
-[Serializable]
-internal class LegendaryItemConfig
-{
-    public List<LegendaryInfo> LegendaryItems = new List<LegendaryInfo>();
-    public List<LegendarySetInfo> LegendarySets = new List<LegendarySetInfo>();
-    public List<LegendaryInfo> MythicItems = new List<LegendaryInfo>();
-    public List<LegendarySetInfo> MythicSets = new List<LegendarySetInfo>();
-    public bool HasValues()
+    
+    private LegendaryType type;
+    internal static readonly List<LegendarySetInfo> LegendarySets = new();
+    internal static readonly Method API_AddLegendarySet = new ("AddLegendarySet");
+    internal static readonly Method API_UpdateLegendarySet = new ("UpdateLegendarySet");
+    
+    public static void RegisterAll()
     {
-        if (LegendaryItems.Count > 0) return true;
-        if (LegendarySets.Count > 0) return true;
-        if (MythicItems.Count > 0) return true;
-        if (MythicSets.Count > 0) return true;
+        foreach(var set in new List<LegendarySetInfo>(LegendarySets)) set.Register();
+    }
+    public bool Register()
+    {
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_AddLegendarySet.Invoke(type.ToString(), data);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        return true;
+    }
 
-        return false;
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string data = JsonConvert.SerializeObject(this);   
+        object? result = API_UpdateLegendarySet.Invoke(key, data);
+        return (bool)(result ?? false);
     }
 }
