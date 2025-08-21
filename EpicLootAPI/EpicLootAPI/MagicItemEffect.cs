@@ -37,35 +37,35 @@ public class MagicItemEffect
 }
 
 [Serializable][PublicAPI]
+public class ValueDef
+{
+    public float MinValue;
+    public float MaxValue;
+    public float Increment;
+            
+    public ValueDef(){}
+
+    public ValueDef(float min, float max, float increment)
+    {
+        MinValue = min;
+        MaxValue = max;
+        Increment = increment;
+    }
+}
+
+[Serializable][PublicAPI]
+public class ValuesPerRarityDef
+{
+    public ValueDef? Magic;
+    public ValueDef? Rare;
+    public ValueDef? Epic;
+    public ValueDef? Legendary;
+    public ValueDef? Mythic;
+}
+
+[Serializable][PublicAPI]
 public class MagicItemEffectDefinition
 {
-    [Serializable][PublicAPI]
-    public class ValueDef
-    {
-        public float MinValue;
-        public float MaxValue;
-        public float Increment;
-            
-        public ValueDef(){}
-
-        public ValueDef(float min, float max, float increment)
-        {
-            MinValue = min;
-            MaxValue = max;
-            Increment = increment;
-        }
-    }
-
-    [Serializable][PublicAPI]
-    public class ValuesPerRarityDef
-    {
-        public ValueDef? Magic;
-        public ValueDef? Rare;
-        public ValueDef? Epic;
-        public ValueDef? Legendary;
-        public ValueDef? Mythic;
-    }
-
     public string Type;
     public string DisplayText;
     public string Description;

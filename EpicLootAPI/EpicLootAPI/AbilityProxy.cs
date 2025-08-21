@@ -18,8 +18,9 @@ public class AbilityProxyDefinition
     [Description("Register a complex ability behavior using Proxy class")]
     public AbilityProxyDefinition(string ID, AbilityActivationMode mode,  Proxy definition)
     {
-        Ability = new  AbilityDefinition(ID, mode);
-        RegisterInterfaceCallbacks(definition);
+        Ability = new AbilityDefinition(ID, mode);
+        RegisterCallbacks(definition);
+        EpicLoot.ProxyAbilities.Add(this);
     }
     
     [Description("Register a complex ability behavior using Proxy class")]
@@ -28,17 +29,18 @@ public class AbilityProxyDefinition
         Ability = new  AbilityDefinition(ID, mode);
         if (!typeof(Proxy).IsAssignableFrom(type))
         {
-            Debug.LogError($"Ability Proxy {ID} Type {type.Name} does not implement Proxy class");
+            EpicLoot.logger.LogError($"Ability Proxy {ID} Type {type.Name} does not implement Proxy class");
             return;
         }
         try
         {
-            var proxy = Activator.CreateInstance(type);
-            RegisterInterfaceCallbacks((Proxy)proxy);
+            object? proxy = Activator.CreateInstance(type);
+            RegisterCallbacks((Proxy)proxy);
+            EpicLoot.ProxyAbilities.Add(this);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Failed to create instance of {type.Name}: {ex.Message}");
+            EpicLoot.logger.LogError($"Failed to create instance of {type.Name}: {ex.Message}");
         }
     }
     
@@ -46,7 +48,7 @@ public class AbilityProxyDefinition
     /// Gets the method names and constructs delegates
     /// </summary>
     /// <param name="implementation"></param>
-    private void RegisterInterfaceCallbacks(Proxy implementation)
+    private void RegisterCallbacks(Proxy implementation)
     {
         Type implementationType = implementation.GetType();
         Type interfaceType = typeof(Proxy);
@@ -62,7 +64,7 @@ public class AbilityProxyDefinition
                 
                 if (implementationMethod == null)
                 {
-                    Debug.LogWarning($"Method {interfaceMethod.Name} not found in implementation");
+                    EpicLoot.logger.LogWarning($"Method {interfaceMethod.Name} not found in implementation");
                     continue;
                 }
                 
@@ -89,7 +91,7 @@ public class AbilityProxyDefinition
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to register callback for method {interfaceMethod.Name}: {ex.Message}");
+                EpicLoot.logger.LogError($"Failed to register callback for method {interfaceMethod.Name}: {ex.Message}");
             }
         }
     }

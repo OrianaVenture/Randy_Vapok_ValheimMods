@@ -14,11 +14,8 @@ public static class EpicLoot
     private const string ClassName = "API";
     private const string Assembly = "EpicLoot";
     private const string API_LOCATION = Namespace + "." + ClassName + ", " + Assembly;
-    private static event Action<string>? OnError;
-    static EpicLoot()
-    {
-        OnError += message => Debug.LogWarning("[EpicLoot API] " + message);
-    }
+
+    public static readonly Logger logger = new Logger();
 
     internal static readonly List<MagicItemEffectDefinition> MagicEffects = new();
     internal static readonly List<AbilityDefinition> Abilities = new();
@@ -28,7 +25,8 @@ public static class EpicLoot
     internal static readonly List<Sacrifice> Sacrifices = new();
     internal static readonly List<BountyTarget> BountyTargets = new();
     internal static readonly Dictionary<SecretStashType, List<SecretStashItem>> SecretStashes = new();
-    internal static readonly List<TreasureMapBiomeInfoConfig> Treasures = new();
+    internal static readonly List<TreasureMap> Treasures = new();
+    internal static readonly List<AbilityProxyDefinition> ProxyAbilities = new();
     
     #region Reflection Methods
     private static readonly Method API_AddMagicEffect = new("AddMagicEffect");
@@ -65,10 +63,7 @@ public static class EpicLoot
     private static readonly Method API_AddTreasureMap = new("AddTreasureMap");
     private static readonly Method API_UpdateTreasureMap = new("UpdateTreasureMap");
     #endregion
-
-    /// <summary>
-    /// Helper function to register everything
-    /// </summary>
+    
     [PublicAPI][Description("Send all your custom conversions, effects, item definitions, etc... to Epic Loot")]
     public static void RegisterAll()
     {
@@ -80,6 +75,7 @@ public static class EpicLoot
         RegisterSacrifices();
         RegisterBountyTargets();
         RegisterAllTreasureMaps();
+        RegisterProxyAbilities();
     }
 
     #region Bounty
@@ -228,7 +224,7 @@ public static class EpicLoot
         }
         catch
         {
-            OnError?.Invoke("Failed to parse magic item effect definition json");
+            logger.LogWarning("Failed to parse magic item effect definition json");
             return null;
         }
     }
@@ -422,7 +418,7 @@ public static class EpicLoot
             }
             catch
             {
-                OnError?.Invoke($"Failed to parse {typeof(T).Name}");
+                logger.LogWarning($"Failed to parse {typeof(T).Name}");
             }
         }
     }
@@ -541,6 +537,12 @@ public static class EpicLoot
     #region Proxy Abilities
 
     [PublicAPI]
+    public static void RegisterProxyAbilities()
+    {
+        foreach (AbilityProxyDefinition proxy in ProxyAbilities) RegisterProxyAbility(proxy);
+    }
+
+    [PublicAPI]
     public static bool RegisterProxyAbility(AbilityProxyDefinition proxyAbility)
     {
         var json = JsonConvert.SerializeObject(proxyAbility.Ability);
@@ -605,7 +607,7 @@ public static class EpicLoot
     [PublicAPI]
     public static void RegisterAllTreasureMaps()
     {
-        foreach (TreasureMapBiomeInfoConfig treasure in new List<TreasureMapBiomeInfoConfig>(Treasures)) 
+        foreach (TreasureMap treasure in new List<TreasureMap>(Treasures)) 
             RegisterTreasureMap(treasure);
     }
     
@@ -615,7 +617,7 @@ public static class EpicLoot
     /// <param name="treasure"></param>
     /// <returns>true if registered to RunTimeRegistry with a unique identifier</returns>
     [PublicAPI]
-    public static bool RegisterTreasureMap(TreasureMapBiomeInfoConfig treasure)
+    public static bool RegisterTreasureMap(TreasureMap treasure)
     {
         Treasures.Remove(treasure);
         string json = JsonConvert.SerializeObject(treasure);
@@ -631,7 +633,7 @@ public static class EpicLoot
     /// <param name="treasure"></param>
     /// <returns>true if updated</returns>
     [PublicAPI]
-    public static bool UpdateTreasureMap(TreasureMapBiomeInfoConfig treasure)
+    public static bool UpdateTreasureMap(TreasureMap treasure)
     {
         if (!RunTimeRegistry.TryGetValue(treasure, out string key)) return false;
         string json = JsonConvert.SerializeObject(treasure);
@@ -712,13 +714,13 @@ public static class EpicLoot
             if (!TryGetType(typeNameWithAssembly, out Type? type)) return;
             if (type == null)
             {
-                OnError?.Invoke($"Type resolution returned null for: '{typeNameWithAssembly}'");
+                logger.LogWarning($"Type resolution returned null for: '{typeNameWithAssembly}'");
                 return;
             }
             info = type.GetMethod(methodName, bindingFlags);
             if (info == null)
             {
-                OnError?.Invoke(
+                logger.LogWarning(
                     $"Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
                     "Verify the method name is correct, the method exists, and it is marked as public static. ");
             }
@@ -744,7 +746,7 @@ public static class EpicLoot
             // Attempt to resolve the type from the assembly
             if (Type.GetType(typeNameWithAssembly) is not { } resolvedType)
             {
-                OnError?.Invoke($"Failed to resolve type: '{typeNameWithAssembly}'. " +
+                logger.LogWarning($"Failed to resolve type: '{typeNameWithAssembly}'. " +
                                  "Verify the namespace, class name, and assembly name are correct. " +
                                  "Ensure the assembly is loaded and accessible.");
                 return false;
@@ -768,7 +770,7 @@ public static class EpicLoot
             // Additional null check (defensive programming, should not happen if TryGetValue succeeded)
             if (type == null)
             {
-                OnError?.Invoke($"Type resolution returned null for: '{typeNameWithAssembly}'");
+                logger.LogWarning($"Type resolution returned null for: '{typeNameWithAssembly}'");
                 return;
             }
 
@@ -776,7 +778,7 @@ public static class EpicLoot
             info = type.GetMethod(methodName, types);
             if (info == null)
             {
-                OnError?.Invoke(
+                logger.LogWarning(
                     $"Failed to find public static method '{methodName}' in type '{type.FullName}'. " +
                     "Verify the method name is correct, the method exists, and it is marked as public static. ");
             }

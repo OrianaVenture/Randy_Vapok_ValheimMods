@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace EpicLootAPI;
 
 [Serializable][PublicAPI]
-public class TreasureMapBiomeInfoConfig
+public class TreasureMap
 {
     public Heightmap.Biome Biome;
     public int Cost;
@@ -14,7 +14,7 @@ public class TreasureMapBiomeInfoConfig
     public int Coins;
     public float MinRadius;
     public float MaxRadius;
-    public TreasureMapBiomeInfoConfig(Heightmap.Biome biome, int cost, float minRadius, float maxRadius)
+    public TreasureMap(Heightmap.Biome biome, int cost, float minRadius, float maxRadius)
     {
         Biome = biome;
         Cost = cost;

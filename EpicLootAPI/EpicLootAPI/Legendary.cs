@@ -8,13 +8,13 @@ namespace EpicLootAPI;
 public class GuaranteedMagicEffect
 {
     public string Type;
-    public MagicItemEffectDefinition.ValueDef? Values;
-    public GuaranteedMagicEffect(string type, MagicItemEffectDefinition.ValueDef values)
+    public ValueDef? Values;
+    public GuaranteedMagicEffect(string type, ValueDef values)
     {
         Type = type;
         Values = values;
     }
-    public GuaranteedMagicEffect(string type, float min = 1, float max = 1, float increment = 1) : this(type, new MagicItemEffectDefinition.ValueDef(min, max, increment)){}
+    public GuaranteedMagicEffect(string type, float min = 1, float max = 1, float increment = 1) : this(type, new ValueDef(min, max, increment)){}
 }
 
 [Serializable][PublicAPI]
@@ -80,12 +80,12 @@ public class SetBonusInfo
 {
     public int Count;
     public GuaranteedMagicEffect Effect;
-    public SetBonusInfo(int count, string type, MagicItemEffectDefinition.ValueDef values)
+    public SetBonusInfo(int count, string type, ValueDef values)
     {
         Count = count;
         Effect = new GuaranteedMagicEffect(type, values);
     }
-    public SetBonusInfo(int count, string type, float min, float max, float increment) : this (count, type, new MagicItemEffectDefinition.ValueDef(min, max, increment)){}
+    public SetBonusInfo(int count, string type, float min, float max, float increment) : this (count, type, new ValueDef(min, max, increment)){}
 }
 
 [Serializable][PublicAPI]

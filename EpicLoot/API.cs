@@ -12,7 +12,6 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.LegendarySystem;
 using JetBrains.Annotations;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot;
@@ -211,7 +210,7 @@ public static class API
     /// <summary>
     /// Reloads cached secret stash items into <see cref="AdventureDataManager.Config"/>
     /// </summary>
-    public static void ReloadExternalSecretStashItems()
+    private static void ReloadExternalSecretStashItems()
     {
         foreach (KeyValuePair<SecretStashType, List<SecretStashItemConfig>> kvp in ExternalSecretStashItems)
         {
@@ -610,10 +609,7 @@ public static class API
     [PublicAPI]
     public static bool HasLegendarySet(Player player, string legendarySetID, ref int count)
     {
-        if (!UniqueLegendaryHelper.LegendarySets.TryGetValue(legendarySetID, out LegendarySetInfo info) || !UniqueLegendaryHelper.MythicSets.TryGetValue(legendarySetID, out info))
-        {
-            return false;
-        }
+        var setSize = ItemDataExtensions.GetSetPieces(legendarySetID).Count;
         foreach (ItemDrop.ItemData item in player.GetEquipment())
         {
             if (item.IsMagic(out var magicItem) && magicItem.SetID == legendarySetID)
@@ -622,7 +618,7 @@ public static class API
             }
         }
 
-        return count >= info.LegendaryIDs.Count;
+        return count >= setSize;
     }
     
     /// <param name="name"><see cref="string"/></param>
@@ -892,14 +888,14 @@ public static class API
     {
         try
         {
-            AbilityDefinition? def = JsonConvert.DeserializeObject<AbilityDefinition>(json);
-            if (def == null) return null;
-            AbilityFactory.Register(def.ID, typeof(AbilityProxy));
-            AbilityProxies[def.ID] = delegates;
-            var kvp = new AbilityProxyDefinition(def, delegates);
-            AbilityDefinitions.Config.Abilities.Add(def);
-            AbilityDefinitions.Abilities[def.ID] = def;
-            return RuntimeRegistry.Register(kvp);
+            AbilityDefinition? ability = JsonConvert.DeserializeObject<AbilityDefinition>(json);
+            if (ability == null) return null;
+            AbilityFactory.Register(ability.ID, typeof(AbilityProxy));
+            AbilityProxies[ability.ID] = delegates;
+            AbilityProxyDefinition def = new AbilityProxyDefinition(ability, delegates);
+            AbilityDefinitions.Config.Abilities.Add(ability);
+            AbilityDefinitions.Abilities[ability.ID] = ability;
+            return RuntimeRegistry.Register(def);
         }
         catch
         {

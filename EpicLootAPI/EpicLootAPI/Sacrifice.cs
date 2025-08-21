@@ -30,7 +30,7 @@ public class Sacrifice
     [Description("Conditional, if empty, does not check if item shared name is in list")]
     public List<string> ItemNames = new List<string>();
     public List<ItemAmount> Products = new List<ItemAmount>();
-    [Description("Create a new intance of a disenchant product entry")]
+    [Description("Disenchant product entry")]
     public Sacrifice()
     {
         EpicLoot.Sacrifices.Add(this);
