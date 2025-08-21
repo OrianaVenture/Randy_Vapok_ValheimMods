@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace EpicLootAPI;
@@ -20,7 +21,7 @@ public class AbilityProxyDefinition
     {
         Ability = new AbilityDefinition(ID, mode);
         RegisterCallbacks(definition);
-        EpicLoot.ProxyAbilities.Add(this);
+        ProxyAbilities.Add(this);
     }
     
     [Description("Register a complex ability behavior using Proxy class")]
@@ -36,7 +37,7 @@ public class AbilityProxyDefinition
         {
             object? proxy = Activator.CreateInstance(type);
             RegisterCallbacks((Proxy)proxy);
-            EpicLoot.ProxyAbilities.Add(this);
+            ProxyAbilities.Add(this);
         }
         catch (Exception ex)
         {
@@ -95,8 +96,35 @@ public class AbilityProxyDefinition
             }
         }
     }
+
+    internal static readonly List<AbilityProxyDefinition> ProxyAbilities = new();
+    internal static readonly Method API_RegisterProxyAbility = new("RegisterProxyAbility");
+    internal static readonly Method API_UpdateProxyAbility = new("UpdateProxyAbility");
+
+    public static void RegisterAll()
+    {
+        foreach (AbilityProxyDefinition proxy in new List<AbilityProxyDefinition>(ProxyAbilities)) proxy.Register();
+    }
+    public bool Register()
+    {
+        string json = JsonConvert.SerializeObject(Ability);
+        object? result = API_RegisterProxyAbility.Invoke(json, Callbacks);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        ProxyAbilities.Remove(this);
+        return true;
+    }
+
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string json = JsonConvert.SerializeObject(Ability);
+        object? result = API_UpdateProxyAbility.Invoke(key, json,  Callbacks);
+        return (bool)(result ?? false);
+    }
 }
 
+[Description("Functions are converted into delegates when registered to epic loot")]
 [PublicAPI]
 public class Proxy
 {

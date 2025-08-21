@@ -97,6 +97,7 @@
       <Compile Include="EffectType.cs" />
       <Compile Include="MaterialConversion.cs" />
       <Compile Include="CustomRecipe.cs" />
+      <Compile Include="Method.cs" />
       <Compile Include="RunTimeRegistry.cs" />
       <Compile Include="Sacrifice.cs" />
       <Compile Include="SecretStash.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -33,10 +34,36 @@ public class Sacrifice
     [Description("Disenchant product entry")]
     public Sacrifice()
     {
-        EpicLoot.Sacrifices.Add(this);
+        Sacrifices.Add(this);
     }
     public void AddRequiredItemType(params ItemDrop.ItemData.ItemType[] types)
     {
         foreach (ItemDrop.ItemData.ItemType type in types) ItemTypes.Add(type.ToString());
+    }
+    
+    internal static readonly List<Sacrifice> Sacrifices = new();
+    internal static readonly Method API_AddSacrifice = new("AddSacrifice");
+    internal static readonly Method API_UpdateSacrifice = new("UpdateSacrifice");
+
+    public static void RegisterAll()
+    {
+        foreach (Sacrifice sacrifice in new List<Sacrifice>(Sacrifices)) sacrifice.Register();
+    }
+    public bool Register()
+    {
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_AddSacrifice.Invoke(json);
+        if (result is not string key) return false;
+        Sacrifices.Remove(this);
+        RunTimeRegistry.Register(this, key);
+        return true;
+    }
+
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_UpdateSacrifice.Invoke(key, json);
+        return (bool)(result ?? false);
     }
 }

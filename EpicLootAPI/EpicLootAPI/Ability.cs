@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -39,12 +40,47 @@ public class AbilityDefinition
         Action = AbilityAction.StatusEffect;
         ActionParams.Add(statusEffectName);
         IconAsset = iconAsset;
-        EpicLoot.Abilities.Add(this);
+        Abilities.Add(this);
     }
     
     internal AbilityDefinition(string ID, AbilityActivationMode mode)
     {
         this.ID = ID;
         ActivationMode = mode;
+    }
+
+    internal static readonly Method API_AddAbility = new("AddAbility");
+    internal static readonly Method API_UpdateAbility = new ("UpdateAbility");
+    internal static List<AbilityDefinition> Abilities = new();
+
+    public static void RegisterAll()
+    {
+        foreach(AbilityDefinition ability in new List<AbilityDefinition>(Abilities)) ability.Register();
+    }
+    
+    /// <summary>
+    /// Serialized to JSON and invokes <see cref="API_AddAbility"/>
+    /// </summary>
+    /// <returns>true if registered to runtime registry</returns>
+    public bool Register()
+    {
+        string data = JsonConvert.SerializeObject(this);
+        object? result = API_AddAbility.Invoke(data);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(this, key);
+        Abilities.Remove(this);
+        return true;
+    }
+    
+    /// <summary>
+    /// Serialized to JSON and invokes <see cref="API_UpdateAbility"/> with unique identifier
+    /// </summary>
+    /// <returns>True if fields copied</returns>
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string data = JsonConvert.SerializeObject(this);
+        var result = API_UpdateAbility.Invoke(key, data);
+        return (bool)(result ?? false);
     }
 }

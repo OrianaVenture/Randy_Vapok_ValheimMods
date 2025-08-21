@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -32,6 +33,35 @@ public class BountyTarget
         Biome = biome;
         TargetID = targetID;
             
-        EpicLoot.BountyTargets.Add(this);
+        BountyTargets.Add(this);
+    }
+    
+    internal static readonly List<BountyTarget> BountyTargets = new();
+    internal static readonly Method API_AddBountyTarget = new("AddBountyTarget");
+    internal static readonly Method API_UpdateBountyTarget = new("UpdateBountyTarget");
+    public static void RegisterAll()
+    {
+        foreach (var bounty in new List<BountyTarget>(BountyTargets))
+        {
+            bounty.Register();
+        }
+    }
+
+    public bool Register()
+    {
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_AddBountyTarget.Invoke(json);
+        if (result is not string key) return false;
+        RunTimeRegistry.Register(BountyTargets, key);
+        BountyTargets.Remove(this);
+        return true;
+    }
+
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
+        string json = JsonConvert.SerializeObject(BountyTargets);
+        object? result =  API_UpdateBountyTarget.Invoke(key, json);
+        return (bool)(result ?? false);
     }
 }

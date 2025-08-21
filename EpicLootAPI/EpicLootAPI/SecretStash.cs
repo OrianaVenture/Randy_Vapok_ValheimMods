@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -24,6 +26,34 @@ public class SecretStashItem
     public SecretStashItem(SecretStashType type, string item)
     {
         Item = item;
-        EpicLoot.SecretStashes.AddOrSet(type, this);
+        this.type = type;
+        SecretStashes.Add(this);
+    }
+
+    private SecretStashType type;
+    internal static readonly List<SecretStashItem> SecretStashes = new();
+    internal static readonly Method API_AddSecretStashItem = new("AddSecretStashItem");
+    internal static readonly Method API_UpdateSecretStashItem = new("UpdateSecretStashItem");
+    
+    public static void RegisterAll()
+    {
+        foreach (var item in new List<SecretStashItem>(SecretStashes)) item.Register();
+    }
+    public bool Register()
+    {
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_AddSecretStashItem.Invoke(type.ToString(), json);
+        if  (result is not string key) return false;
+        SecretStashes.Remove(this);
+        RunTimeRegistry.Register(type, key);
+        return true;
+    }
+
+    public bool Update()
+    {
+        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        string json = JsonConvert.SerializeObject(this);
+        object? result = API_UpdateSecretStashItem.Invoke(key, json);
+        return (bool)(result ?? false);
     }
 }
