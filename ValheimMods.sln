@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpicLoot-UnityLib", "EpicLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedPortals", "AdvancedPortals\AdvancedPortals.csproj", "{0DDDE55C-5DAF-4B53-B5E2-83B5C44C4682}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "EpicLootAPI", "EpicLootAPI\EpicLootAPI.shproj", "{D8E5E814-398C-4662-A5F9-FF00C7D31BC5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,9 +72,8 @@ Global
 		Common\Common.projitems*{0ddde55c-5daf-4b53-b5e2-83b5c44c4682}*SharedItemsImports = 4
 		Common\Common.projitems*{6c679b7e-9f39-4df2-9f8a-717e68fbf0e3}*SharedItemsImports = 4
 		Common\Common.projitems*{70b6ed26-2afe-4e7a-a40f-cf187f14fca0}*SharedItemsImports = 4
-		Common\Common.projitems*{963cf4f8-ba02-49fc-8884-97e781e6bc18}*SharedItemsImports = 4
+		Common\Common.projitems*{963cf4f8-ba02-49fc-8884-97e781e6bc18}*SharedItemsImports = 5
 		Common\Common.projitems*{bb4dfa8b-72b0-4a9b-b9a0-5af5595aa309}*SharedItemsImports = 4
 		Common\Common.projitems*{cbed8160-747f-4022-98ce-61a8ee201652}*SharedItemsImports = 4
-		EpicLootAPI\EpicLootAPI.projitems*{d8e5e814-398c-4662-a5f9-ff00c7d31bc5}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

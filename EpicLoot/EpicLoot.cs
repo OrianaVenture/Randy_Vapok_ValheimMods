@@ -1,5 +1,4 @@
-﻿using AdventureBackpacks.API;
-using BepInEx;
+﻿using BepInEx;
 using Common;
 using EpicLoot.Adventure;
 using EpicLoot.Config;
@@ -161,7 +160,6 @@ namespace EpicLoot
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
         public static bool HasAuga;
-        public static bool HasAdventureBackpacks;
         public static bool AugaTooltipNoTextBoxes;
 
         public static event Action AbilitiesInitialized;
@@ -186,8 +184,6 @@ namespace EpicLoot
 
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
-
-            HasAdventureBackpacks = ABAPI.IsLoaded();
 
             FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
@@ -232,133 +228,133 @@ namespace EpicLoot
 
         public void Start()
         {
-            HasAuga = Auga.API.IsLoaded();
+            //HasAuga = Auga.API.IsLoaded();
 
-            if (HasAuga)
-            {
-                Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
-                Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
-            }
+            //if (HasAuga)
+            //{
+            //    Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
+            //    Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
+            //}
         }
 
-        public static void ExtendAugaTooltipForMagicItem(GameObject complexTooltip, ItemDrop.ItemData item)
-        {
-            Auga.API.ComplexTooltip_SetTopic(complexTooltip, Localization.instance.Localize(item.GetDecoratedName()));
+        //public static void ExtendAugaTooltipForMagicItem(GameObject complexTooltip, ItemDrop.ItemData item)
+        //{
+        //    //Auga.API.ComplexTooltip_SetTopic(complexTooltip, Localization.instance.Localize(item.GetDecoratedName()));
 
-            var isMagic = item.IsMagic(out var magicItem);
+        //    var isMagic = item.IsMagic(out var magicItem);
 
-            var inFront = true;
-            var itemBG = complexTooltip.transform.Find("Tooltip/IconHeader/IconBkg/Item");
-            if (itemBG == null)
-            {
-                itemBG = complexTooltip.transform.Find("InventoryElement/icon");
-                inFront = false;
-            }
+        //    var inFront = true;
+        //    var itemBG = complexTooltip.transform.Find("Tooltip/IconHeader/IconBkg/Item");
+        //    if (itemBG == null)
+        //    {
+        //        itemBG = complexTooltip.transform.Find("InventoryElement/icon");
+        //        inFront = false;
+        //    }
 
-            RectTransform magicBG = null;
-            if (itemBG != null)
-            {
-                var itemBGImage = itemBG.GetComponent<Image>();
-                magicBG = (RectTransform)itemBG.transform.Find("magicItem");
-                if (magicBG == null)
-                {
-                    var magicItemObject = Instantiate(itemBGImage, inFront ?
-                        itemBG.transform : itemBG.transform.parent).gameObject;
-                    magicItemObject.name = "magicItem";
-                    magicItemObject.SetActive(true);
-                    magicBG = (RectTransform)magicItemObject.transform;
-                    magicBG.anchorMin = Vector2.zero;
-                    magicBG.anchorMax = new Vector2(1, 1);
-                    magicBG.sizeDelta = Vector2.zero;
-                    magicBG.pivot = new Vector2(0.5f, 0.5f);
-                    magicBG.anchoredPosition = Vector2.zero;
-                    var magicItemInit = magicBG.GetComponent<Image>();
-                    magicItemInit.color = Color.white;
-                    magicItemInit.raycastTarget = false;
-                    magicItemInit.sprite = GetMagicItemBgSprite();
+        //    RectTransform magicBG = null;
+        //    if (itemBG != null)
+        //    {
+        //        var itemBGImage = itemBG.GetComponent<Image>();
+        //        magicBG = (RectTransform)itemBG.transform.Find("magicItem");
+        //        if (magicBG == null)
+        //        {
+        //            var magicItemObject = Instantiate(itemBGImage, inFront ?
+        //                itemBG.transform : itemBG.transform.parent).gameObject;
+        //            magicItemObject.name = "magicItem";
+        //            magicItemObject.SetActive(true);
+        //            magicBG = (RectTransform)magicItemObject.transform;
+        //            magicBG.anchorMin = Vector2.zero;
+        //            magicBG.anchorMax = new Vector2(1, 1);
+        //            magicBG.sizeDelta = Vector2.zero;
+        //            magicBG.pivot = new Vector2(0.5f, 0.5f);
+        //            magicBG.anchoredPosition = Vector2.zero;
+        //            var magicItemInit = magicBG.GetComponent<Image>();
+        //            magicItemInit.color = Color.white;
+        //            magicItemInit.raycastTarget = false;
+        //            magicItemInit.sprite = GetMagicItemBgSprite();
 
-                    if (!inFront)
-                    {
-                        magicBG.SetSiblingIndex(0);
-                    }
-                }
-            }
+        //            if (!inFront)
+        //            {
+        //                magicBG.SetSiblingIndex(0);
+        //            }
+        //        }
+        //    }
 
-            if (magicBG != null)
-            {
-                magicBG.gameObject.SetActive(isMagic);
-            }
+        //    if (magicBG != null)
+        //    {
+        //        magicBG.gameObject.SetActive(isMagic);
+        //    }
 
-            if (item.IsMagicCraftingMaterial())
-            {
-                var rarity = item.GetCraftingMaterialRarity();
-                Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.m_shared.m_icons[GetRarityIconIndex(rarity)]);
-            }
+        //    if (item.IsMagicCraftingMaterial())
+        //    {
+        //        var rarity = item.GetCraftingMaterialRarity();
+        //        //Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.m_shared.m_icons[GetRarityIconIndex(rarity)]);
+        //    }
 
-            if (isMagic)
-            {
-                var magicColor = magicItem.GetColorString();
-                var itemTypeName = magicItem.GetItemTypeName(item.Extended());
+        //    if (isMagic)
+        //    {
+        //        var magicColor = magicItem.GetColorString();
+        //        var itemTypeName = magicItem.GetItemTypeName(item.Extended());
 
-                if (magicBG != null)
-                {
-                    magicBG.GetComponent<Image>().color = item.GetRarityColor();
-                }
+        //        if (magicBG != null)
+        //        {
+        //            magicBG.GetComponent<Image>().color = item.GetRarityColor();
+        //        }
 
-                Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.GetIcon());
+        //        //Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.GetIcon());
 
-                string localizedSubtitle;
-                if (item.IsLegendarySetItem())
-                {
-                    localizedSubtitle = $"<color={GetSetItemColor()}>" +
-                        $"$mod_epicloot_legendarysetlabel</color>, {itemTypeName}\n";
-                }
-                else
-                {
-                    localizedSubtitle = $"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>";
-                }
+        //        string localizedSubtitle;
+        //        if (item.IsLegendarySetItem())
+        //        {
+        //            localizedSubtitle = $"<color={GetSetItemColor()}>" +
+        //                $"$mod_epicloot_legendarysetlabel</color>, {itemTypeName}\n";
+        //        }
+        //        else
+        //        {
+        //            localizedSubtitle = $"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>";
+        //        }
 
-                try
-                {
-                    Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, Localization.instance.Localize(localizedSubtitle));
-                }
-                catch (Exception)
-                {
-                    Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, localizedSubtitle);
-                }
+        //        try
+        //        {
+        //            //Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, Localization.instance.Localize(localizedSubtitle));
+        //        }
+        //        catch (Exception)
+        //        {
+        //            //Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, localizedSubtitle);
+        //        }
                 
-                if (AugaTooltipNoTextBoxes)
-                    return;
+        //        if (AugaTooltipNoTextBoxes)
+        //            return;
                 
-                //Don't need to process the InventoryTooltip Information.
-                if (complexTooltip.name.Contains("InventoryTooltip"))
-                    return;
+        //        //Don't need to process the InventoryTooltip Information.
+        //        if (complexTooltip.name.Contains("InventoryTooltip"))
+        //            return;
 
-                //The following is used only for Crafting Result Panel.
-                Auga.API.ComplexTooltip_AddDivider(complexTooltip);
+        //        //The following is used only for Crafting Result Panel.
+        //        Auga.API.ComplexTooltip_AddDivider(complexTooltip);
 
-                var magicItemText = magicItem.GetTooltip();
-                var textBox = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
-                magicItemText = magicItemText.Replace("\n\n", "");
-                Auga.API.TooltipTextBox_AddLine(textBox, magicItemText);
+        //        var magicItemText = magicItem.GetTooltip();
+        //        var textBox = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
+        //        magicItemText = magicItemText.Replace("\n\n", "");
+        //        Auga.API.TooltipTextBox_AddLine(textBox, magicItemText);
                 
-                if (magicItem.IsLegendarySetItem())
-                {
-                    var textBox2 = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
-                    Auga.API.TooltipTextBox_AddLine(textBox2, item.GetSetTooltip());
-                }
+        //        if (magicItem.IsLegendarySetItem())
+        //        {
+        //            var textBox2 = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
+        //            Auga.API.TooltipTextBox_AddLine(textBox2, item.GetSetTooltip());
+        //        }
                 
-                try
-                {
-                    Auga.API.ComplexTooltip_SetDescription(complexTooltip,
-                        Localization.instance.Localize(item.GetDescription()));
-                }
-                catch (Exception)
-                {
-                    Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
-                }
-            }
-        }
+        //        try
+        //        {
+        //            Auga.API.ComplexTooltip_SetDescription(complexTooltip,
+        //                Localization.instance.Localize(item.GetDescription()));
+        //        }
+        //        catch (Exception)
+        //        {
+        //            Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
+        //        }
+        //    }
+        //}
 
         private void AddLocalizations()
         {

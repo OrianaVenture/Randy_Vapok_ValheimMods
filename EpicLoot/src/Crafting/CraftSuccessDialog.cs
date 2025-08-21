@@ -57,10 +57,10 @@ namespace EpicLoot.Crafting
                 MagicBG.color = rarityColor;
             }
 
-            if (EpicLoot.HasAuga)
-            {
-                Auga.API.ComplexTooltip_SetItem(gameObject, item);
-            }
+            //if (EpicLoot.HasAuga)
+            //{
+            //    Auga.API.ComplexTooltip_SetItem(gameObject, item);
+            //}
 
             if (NameText != null)
             {

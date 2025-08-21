@@ -105,7 +105,7 @@ namespace EpicLoot.Adventure
 
                 if (EpicLoot.HasAuga)
                 {
-                    Auga.API.Tooltip_MakeSimpleTooltip(gameObject);
+                    //Auga.API.Tooltip_MakeSimpleTooltip(gameObject);
                 }
 
                 Tooltip.m_topic = NameText.text;
@@ -115,7 +115,7 @@ namespace EpicLoot.Adventure
             {
                 if (EpicLoot.HasAuga)
                 {
-                    Auga.API.Tooltip_MakeItemTooltip(gameObject, ItemInfo.Item);
+                    //Auga.API.Tooltip_MakeItemTooltip(gameObject, ItemInfo.Item);
                 }
                 else
                 {

@@ -151,7 +151,7 @@ namespace EpicLoot.CraftingV2
             // EpicLoot.Log($"Setting up tooltip for {obj.name}");
             if (EpicLoot.HasAuga)
             {
-                Auga.API.Tooltip_MakeSimpleTooltip(obj);
+                //Auga.API.Tooltip_MakeSimpleTooltip(obj);
             } else {
                 var uiTooltip = obj.GetComponent<UITooltip>();
                 uiTooltip.m_tooltipPrefab = InventoryGui.instance.m_playerGrid.m_elementPrefab
@@ -186,7 +186,7 @@ namespace EpicLoot.CraftingV2
             {
                 if (EpicLoot.HasAuga)
                 {
-                    Auga.API.Tooltip_MakeItemTooltip(element.gameObject, item);
+                    //Auga.API.Tooltip_MakeItemTooltip(element.gameObject, item);
                 }
                 else
                 {
@@ -496,18 +496,19 @@ namespace EpicLoot.CraftingV2
             }
 
             CraftSuccessDialog successDialog;
-            if (EpicLoot.HasAuga)
-            {
-                var resultsPanel = Auga.API.Workbench_CreateNewResultsPanel();
-                resultsPanel.transform.SetParent(EnchantingTableUI.instance.transform);
-                resultsPanel.SetActive(false);
-                successDialog = resultsPanel.gameObject.AddComponent<CraftSuccessDialog>();
-                successDialog.NameText = successDialog.transform.Find("Topic").GetComponent<TMP_Text>();
-            }
-            else
-            {
-                successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
-            }
+            //if (EpicLoot.HasAuga)
+            //{
+            //    //var resultsPanel = Auga.API.Workbench_CreateNewResultsPanel();
+            //    //resultsPanel.transform.SetParent(EnchantingTableUI.instance.transform);
+            //    //resultsPanel.SetActive(false);
+            //    //successDialog = resultsPanel.gameObject.AddComponent<CraftSuccessDialog>();
+            //    //successDialog.NameText = successDialog.transform.Find("Topic").GetComponent<TMP_Text>();
+            //}
+            //else
+            //{
+                
+            //}
+            successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
 
             successDialog.Show(item.Extended());
 
@@ -885,18 +886,19 @@ namespace EpicLoot.CraftingV2
             item.SaveMagicItem(magicItem);
 
             CraftSuccessDialog successDialog;
-            if (EpicLoot.HasAuga)
-            {
-                var resultsPanel = Auga.API.Workbench_CreateNewResultsPanel();
-                resultsPanel.transform.SetParent(EnchantingTableUI.instance.transform);
-                resultsPanel.SetActive(false);
-                successDialog = resultsPanel.gameObject.AddComponent<CraftSuccessDialog>();
-                successDialog.NameText = successDialog.transform.Find("Topic").GetComponent<TMP_Text>();
-            }
-            else
-            {
-                successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
-            }
+            //if (EpicLoot.HasAuga)
+            //{
+            //    var resultsPanel = Auga.API.Workbench_CreateNewResultsPanel();
+            //    resultsPanel.transform.SetParent(EnchantingTableUI.instance.transform);
+            //    resultsPanel.SetActive(false);
+            //    successDialog = resultsPanel.gameObject.AddComponent<CraftSuccessDialog>();
+            //    successDialog.NameText = successDialog.transform.Find("Topic").GetComponent<TMP_Text>();
+            //}
+            //else
+            //{
+                
+            //}
+            successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
 
             successDialog.Show(item.Extended());
 

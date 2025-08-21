@@ -745,7 +745,7 @@ namespace EpicLoot
                 if (magicEitrRegen && magicItem != null)
                     itemEitrRegenModDisplay = $"<color={magicItem.GetColorString()}>{itemEitrRegenModDisplay}</color>";
                 label = $"$item_eitrregen_modifier: {itemEitrRegenModDisplay} " +
-                    $"($item_total: <color={Auga.API.Brown3}>{totalEitrRegenModifier:+0;-0}%</color>)";
+                    $"($item_total: <color={magicItem.GetColorString()}>{totalEitrRegenModifier:+0;-0}%</color>)";
             }
 
             switch (label)
