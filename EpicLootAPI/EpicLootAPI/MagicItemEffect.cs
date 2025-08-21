@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace EpicLootAPI;
 
@@ -42,7 +43,7 @@ public class ValueDef
 {
     public float MinValue;
     public float MaxValue;
-    public float Increment;
+    public float Increment; // 0 means it does not roll, step from min to max
             
     public ValueDef(){}
 
@@ -72,7 +73,7 @@ public class MagicItemEffectDefinition
     public string Description;
     public MagicItemEffectRequirements Requirements = new MagicItemEffectRequirements();
     public ValuesPerRarityDef ValuesPerRarity = new ValuesPerRarityDef();
-    public float SelectionWeight = 1;
+    public float SelectionWeight = 1f;
     public bool CanBeAugmented = true;
     public bool CanBeDisenchanted = true;
     public string Comment = "";
@@ -82,7 +83,7 @@ public class MagicItemEffectDefinition
     public FxAttachMode EquipFxMode = FxAttachMode.Player;
     public string Ability = "";
         
-    [Description("Adds your new magic item definition to a list, use RegisterMagicItems() to send to epic loot")]
+    [Description("Adds your new magic item definition to a list, use Register to send to epic loot")]
     public MagicItemEffectDefinition(string effectType, string displayText = "", string description = "")
     {
         Type = effectType;
@@ -153,30 +154,30 @@ public class MagicItemEffectRequirements
     private static List<string> _flags = new List<string>();
     public bool NoRoll;
     public bool ExclusiveSelf = true;
-    public List<string> ExclusiveEffectTypes = new List<string>();
-    public List<string> MustHaveEffectTypes = new List<string>();
-    public List<string> AllowedItemTypes = new List<string>();
-    public List<string> ExcludedItemTypes = new List<string>();
-    public List<ItemRarity> AllowedRarities = new List<ItemRarity>();
+    public List<string> ExclusiveEffectTypes = new List<string>(); // if empty, no exclusives
+    public List<string> MustHaveEffectTypes = new List<string>(); // if empty, no must haves
+    public List<string> AllowedItemTypes = new List<string>(); // if empty, all allowed
+    public List<string> ExcludedItemTypes = new List<string>(); // if empty, no excluded
+    public List<ItemRarity> AllowedRarities = new List<ItemRarity>();// etc...
     public List<ItemRarity> ExcludedRarities = new List<ItemRarity>();
     public List<Skills.SkillType> AllowedSkillTypes = new List<Skills.SkillType>();
     public List<Skills.SkillType> ExcludedSkillTypes = new List<Skills.SkillType>();
     public List<string> AllowedItemNames = new List<string>();
     public List<string> ExcludedItemNames = new List<string>();
-    public bool ItemHasPhysicalDamage;
-    public bool ItemHasElementalDamage;
-    public bool ItemHasChopDamage;
-    public bool ItemUsesDurability;
-    public bool ItemHasNegativeMovementSpeedModifier;
-    public bool ItemHasBlockPower;
-    public bool ItemHasParryPower;
-    public bool ItemHasNoParryPower;
-    public bool ItemHasArmor;
-    public bool ItemHasBackstabBonus;
-    public bool ItemUsesStaminaOnAttack;
-    public bool ItemUsesEitrOnAttack;
-    public bool ItemUsesHealthOnAttack;
-    public bool ItemUsesDrawStaminaOnAttack;
+    public bool? ItemHasPhysicalDamage;
+    public bool? ItemHasElementalDamage;
+    public bool? ItemHasChopDamage;
+    public bool? ItemUsesDurability;
+    public bool? ItemHasNegativeMovementSpeedModifier;
+    public bool? ItemHasBlockPower;
+    public bool? ItemHasParryPower;
+    public bool? ItemHasNoParryPower;
+    public bool? ItemHasArmor;
+    public bool? ItemHasBackstabBonus;
+    public bool? ItemUsesStaminaOnAttack;
+    public bool? ItemUsesEitrOnAttack;
+    public bool? ItemUsesHealthOnAttack;
+    public bool? ItemUsesDrawStaminaOnAttack;
 
     public List<string> CustomFlags = new();
 
