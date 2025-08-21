@@ -42,10 +42,11 @@ public class SecretStashItem
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_AddSecretStashItem.Invoke(type.ToString(), json);
-        if  (result is not string key) return false;
+        object?[] result = API_AddSecretStashItem.Invoke(type.ToString(), json);
+        if  (result[0] is not string key) return false;
         SecretStashes.Remove(this);
         RunTimeRegistry.Register(type, key);
+        EpicLoot.logger.LogDebug($"Registered secret stash {Item}");
         return true;
     }
 
@@ -53,7 +54,9 @@ public class SecretStashItem
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_UpdateSecretStashItem.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateSecretStashItem.Invoke(key, json);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated secret stash {Item}, {output}");
+        return output;
     }
 }

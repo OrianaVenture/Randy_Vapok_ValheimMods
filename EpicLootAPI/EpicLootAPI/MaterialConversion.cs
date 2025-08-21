@@ -61,10 +61,11 @@ public class MaterialConversion
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object? result = API_AddMaterialConversion.Invoke(data);
-        if (result is not string key) return false;
+        object?[] result = API_AddMaterialConversion.Invoke(data);
+        if (result[0] is not string key) return false;
         MaterialConversions.Remove(this);
         RunTimeRegistry.Register(this, key);
+        EpicLoot.logger.LogDebug($"Registered material conversion: {Name}");
         return true;
     }
 
@@ -76,7 +77,9 @@ public class MaterialConversion
     {
         if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
         string json = JsonConvert.SerializeObject(this);
-        object? result =  API_UpdateMaterialConversion.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result =  API_UpdateMaterialConversion.Invoke(key, json);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated material conversion: {Name}, {output}");
+        return output;
     }
 }

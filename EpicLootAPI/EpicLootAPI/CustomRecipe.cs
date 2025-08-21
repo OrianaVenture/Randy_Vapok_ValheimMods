@@ -51,10 +51,11 @@ public class CustomRecipe
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_AddRecipe.Invoke(json);
-        if (result is not string key) return false;
+        object?[] result = API_AddRecipe.Invoke(json);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         Recipes.Remove(this);
+        EpicLoot.logger.LogDebug($"Registered recipe: {name}");
         return true;
     }
 

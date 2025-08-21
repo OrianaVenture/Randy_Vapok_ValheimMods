@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -107,7 +108,7 @@ public class MagicItemEffectDefinition
     /// <returns>simple copy of existing magic effect definition</returns>
     public static MagicItemEffectDefinition? Copy(string effectType)
     {
-        string result = (string)(API_GetMagicEffectDefinitionCopy.Invoke(effectType) ?? "");
+        string result = (string)(API_GetMagicEffectDefinitionCopy.Invoke(effectType)[0] ?? "");
         if (string.IsNullOrEmpty(result)) return null;
         try
         {
@@ -128,10 +129,11 @@ public class MagicItemEffectDefinition
     public bool Register()
     {
         MagicEffects.Remove(this);
-        string data = JsonConvert.SerializeObject(this);
-        object? result = API_AddMagicEffect.Invoke(data);
-        if (result is not string key) return false;
+        string data = JsonConvert.SerializeObject(this, new JsonSerializerSettings(){ NullValueHandling = NullValueHandling.Include});
+        object?[] result = API_AddMagicEffect.Invoke(data);
+        if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
+        EpicLoot.logger.LogDebug($"Registered magic effect: {Type}");
         return true;
     }
 
@@ -143,8 +145,10 @@ public class MagicItemEffectDefinition
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string json = JsonConvert.SerializeObject(this);
-        var result = API_UpdateMagicEffect.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateMagicEffect.Invoke(key, json);
+        var output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated magic effect: {Type}, {output}");
+        return output;
     }
 }
 
@@ -183,11 +187,11 @@ public class MagicItemEffectRequirements
 
     public void AddAllowedItemTypes(params ItemDrop.ItemData.ItemType[] types)
     {
-        foreach(var type in types) AllowedItemTypes.Add(type.ToString());
+        foreach(ItemDrop.ItemData.ItemType type in types) AllowedItemTypes.Add(type.ToString());
     }
 
     public void AddExcludedItemTypes(params ItemDrop.ItemData.ItemType[] types)
     {
-        foreach(var type in types) ExcludedItemTypes.Add(type.ToString());
+        foreach(ItemDrop.ItemData.ItemType type in types) ExcludedItemTypes.Add(type.ToString());
     }
 }

@@ -52,10 +52,11 @@ public class Sacrifice
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_AddSacrifice.Invoke(json);
-        if (result is not string key) return false;
+        object?[] result = API_AddSacrifice.Invoke(json);
+        if (result[0] is not string key) return false;
         Sacrifices.Remove(this);
         RunTimeRegistry.Register(this, key);
+        EpicLoot.logger.LogDebug("Registered sacrifice");
         return true;
     }
 
@@ -63,7 +64,9 @@ public class Sacrifice
     {
         if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
         string json = JsonConvert.SerializeObject(this);
-        object? result = API_UpdateSacrifice.Invoke(key, json);
-        return (bool)(result ?? false);
+        object?[] result = API_UpdateSacrifice.Invoke(key, json);
+        bool output = (bool)(result[0] ?? false);
+        EpicLoot.logger.LogDebug($"Updated sacrifice: {output}");
+        return output;
     }
 }
