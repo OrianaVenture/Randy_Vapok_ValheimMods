@@ -92,6 +92,7 @@
       <Compile Include="Bounty.cs" />
       <Compile Include="Helpers.cs" />
       <Compile Include="Legendary.cs" />
+      <Compile Include="Logger.cs" />
       <Compile Include="MagicItemEffect.cs" />
       <Compile Include="EffectType.cs" />
       <Compile Include="MaterialConversion.cs" />

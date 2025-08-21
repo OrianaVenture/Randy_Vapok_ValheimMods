@@ -117,6 +117,7 @@ DragonHelmet.GuaranteedEffectCount = 6;
 ```
 
 ### Example Simple Ability 
+Best to use simple ability if you are only looking to trigger status effect using hotkey
 ```c#
 SE_Stats SE_DragonForm = ScriptableObject.CreateInstance<SE_Stats>();
 SE_DragonForm.name = "SE_DragonForm"
@@ -126,12 +127,54 @@ DragonAbility.IconAsset = "MyIconName";
 EpicLoot.RegisterAsset(MySprite.name, MySprite);
 ```
 
-### Example Complex Ability
+### Example Proxy Ability
+Proxy abilities generate delegate functions based on defined Proxy class. Inherit from Proxy,
+and define your solution.
 ```c#
-AbilityProxyDefinition DragonProxy = new AbilityProxyDefinition("DragonForm", 100f, "SE_DragonForm");
+AbilityProxyDefinition DragonProxy = new AbilityProxyDefinition("DragonForm", AbilityActivationMode.Activated, typeof(DragonForm));
 DragonProxy.Ability.IconAsset = "gdkingheart";
-DragonProxy.Initialize(player => Debug.LogWarning(player.GetPlayerName() +  " Initializing DragonForm"));
-DragonProxy.ShouldTrigger(player => player.GetHealth() > 100);
+DragonProxy.Ability.Cooldown = 1000f;
+```
+```c#
+public class DragonForm : Proxy
+{
+    public float m_cooldown;
+    public bool m_isTriggered;
+
+    public override bool IsOnCooldown()
+    {
+        if (m_isTriggered) return false;
+        return base.IsOnCooldown();
+    }
+    
+    public override void Activate()
+    {
+        base.Activate();
+        ActivateStatusEffectAction();
+    }
+
+    public override void ActivateStatusEffectAction()
+    {
+        if (Player == null) return;
+        if (Player.GetSEMan().HaveStatusEffect("SE_DragonForm".GetStableHashCode()))
+        {
+            CreatureFormManager.Revert(Player);
+            m_isTriggered = false;
+        }
+        else if (Player.GetSEMan().AddStatusEffect("SE_DragonForm".GetStableHashCode()) is { } statusEffect)
+        {
+            statusEffect.m_ttl = 1000f;
+            m_isTriggered = true;
+        }
+    }
+    
+    public override void SetCooldownEndTime(float cooldownEndTime)
+    {
+        m_cooldown = cooldownEndTime;
+    }
+
+    public override float GetCooldownEndTime() => m_cooldown;
+}
 ```
 
 ### Example Recipe
@@ -152,4 +195,10 @@ Sacrifice SacrificeHearts = new Sacrifice();
 SacrificeHearts.ItemNames.Add("Bonemass heart", "Elder heart");
 SacrificeHearts.AddRequiredItemType(ItemDrop.ItemData.ItemType.Consumable);
 SacrificeHearts.Products.Add("ShardMythic", 2);
+```
+### Example Bounty
+```c#
+BountyTarget bounty = new BountyTarget(Heightmap.Biome.Meadows, "Boar");
+bounty.Adds.AddMinion("Neck", 2);
+bounty.RewardCoins = 100;
 ```

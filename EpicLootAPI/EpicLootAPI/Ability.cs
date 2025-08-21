@@ -38,6 +38,7 @@ public class AbilityDefinition
         Cooldown = cooldown;
         Action = AbilityAction.StatusEffect;
         ActionParams.Add(statusEffectName);
+        IconAsset = iconAsset;
         EpicLoot.Abilities.Add(this);
     }
     
