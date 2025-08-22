@@ -7,7 +7,7 @@
     <AssemblyName>EpicLoot</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>12.0</LangVersion>
+    <LangVersion>12</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
   </PropertyGroup>
@@ -18,14 +18,14 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -70,12 +70,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Jotunn">
-      <HintPath>..\Libs\Jotunn.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -127,7 +121,6 @@
   </Target>
 
   <Target Name="JotunnPostBuildTaskWin" AfterTargets="Build" Condition=" '$(OS)' == 'Windows_NT' ">
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_valheim.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
     <!-- <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;$(SolutionDir)publish.ps1&quot; -Target &quot;$(ConfigurationName)&quot; -TargetPath &quot;$(TargetDir.TrimEnd('\'))&quot; -TargetAssembly &quot;$(TargetFileName)&quot; -ValheimPath &quot;$(VALHEIM_INSTALL.TrimEnd('\'))&quot; -DeployPath &quot;$(MOD_DEPLOYPATH.TrimEnd('\'))&quot; -ProjectPath &quot;$(ProjectDir.TrimEnd('\'))&quot; " /> -->
   </Target>
 
