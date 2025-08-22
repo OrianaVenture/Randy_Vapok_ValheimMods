@@ -564,10 +564,6 @@
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpCompress">
-      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528fe\Editor\ThirdParty\SharpCompress\SharpCompress.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
       <HintPath>Library\PackageCache\com.unity.collections@56bff8827a7e\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
       <Private>False</Private>
@@ -604,20 +600,12 @@
       <HintPath>Assets\ExternalLibraries\valheim\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528fe\Editor\ThirdParty\SharpZipLib\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SoftReferenceableAssets">
       <HintPath>Assets\ExternalLibraries\valheim\SoftReferenceableAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="com.rlabrecque.steamworks.net">
       <HintPath>Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Markdig.Signed">
-      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528fe\Editor\ThirdParty\Markdig\Markdig.Signed.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
@@ -628,12 +616,8 @@
       <HintPath>Assets\ExternalLibraries\valheim\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AssetsTools.NET">
-      <HintPath>Library\PackageCache\com.passivepicasso.thunderkit@39f7d7c528fe\Editor\ThirdParty\AssetsTools.NET\AssetsTools.NET.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Jotunn">
-      <HintPath>Assets\ExternalLibraries\valheim\Jotunn.dll</HintPath>
+      <HintPath>Assets\ExternalLibraries\Jotunn.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayFab">
@@ -1176,10 +1160,6 @@
       <HintPath>Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AssetsTools.NET.MonoReflection">
-      <HintPath>Library\ScriptAssemblies\AssetsTools.NET.MonoReflection.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.InputSystem.ForUI">
       <HintPath>Library\ScriptAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
       <Private>False</Private>
@@ -1200,16 +1180,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.Shared.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ThunderKit.Addressable.Config">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Addressable.Config.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ToolbarExtender.Editor">
-      <HintPath>Library\ScriptAssemblies\ToolbarExtender.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline">
@@ -1224,10 +1196,6 @@
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BsDiff">
-      <HintPath>Library\ScriptAssemblies\BsDiff.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1240,28 +1208,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.Multiplayer.Center.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ThunderKit.Addressable.Tools">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Addressable.Tools.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityVersion">
-      <HintPath>Library\ScriptAssemblies\UnityVersion.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Mathematics.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.ScriptableBuildPipeline">
-      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Collections">
@@ -1272,20 +1224,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ThunderKit.Common">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.ProBuilder.AddOns.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rendering.LightTransport.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assets">
-      <HintPath>Library\ScriptAssemblies\Assets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
@@ -1356,20 +1300,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ThunderKit.Markdown">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Markdown.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ThunderKit.SpaceDock">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.SpaceDock.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
@@ -1380,16 +1316,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ThunderKit.Core">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.Rendering.LightTransport.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ThunderKit.Thunderstore">
-      <HintPath>Library\ScriptAssemblies\ThunderKit.Thunderstore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.InputSystem">

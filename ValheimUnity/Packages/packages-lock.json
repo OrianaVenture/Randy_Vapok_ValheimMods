@@ -1,14 +1,5 @@
 {
   "dependencies": {
-    "com.passivepicasso.thunderkit": {
-      "version": "https://github.com/PassivePicasso/ThunderKit.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.scriptablebuildpipeline": "1.16.1"
-      },
-      "hash": "39f7d7c528fe6687bc223653dfb462808a3a3b8b"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -135,13 +126,6 @@
         "com.unity.mathematics": "1.2.4",
         "com.unity.modules.terrain": "1.0.0"
       }
-    },
-    "com.unity.scriptablebuildpipeline": {
-      "version": "2.1.4",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
     },
     "com.unity.searcher": {
       "version": "4.9.3",
