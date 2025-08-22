@@ -176,23 +176,28 @@ namespace EpicLoot
             _instance = this;
 
             var assembly = Assembly.GetExecutingAssembly();
-            
+            Jotunn.Logger.LogInfo("Checking for EIDF");
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
+            Jotunn.Logger.LogInfo("Loading unitylib");
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
+            Jotunn.Logger.LogInfo("Setting up config");
             cfg = new ELConfig(Config);
 
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
-
+            Jotunn.Logger.LogInfo("Applying config patches");
             FilePatching.LoadAndApplyAllPatches();
+            Jotunn.Logger.LogInfo("Loading abilities");
             InitializeAbilities();
+            Jotunn.Logger.LogInfo("Adding localization");
             AddLocalizations();
 
+            Jotunn.Logger.LogInfo("Loading assets");
             LoadAssets();
-
+            Jotunn.Logger.LogInfo("Starting enchanting controller");
             EnchantingUIController.Initialize();
-
+            Jotunn.Logger.LogInfo("Harmony Patching");
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
             LootTableLoaded?.Invoke();
@@ -226,16 +231,16 @@ namespace EpicLoot
             }
         }
 
-        public void Start()
-        {
-            //HasAuga = Auga.API.IsLoaded();
+        //public void Start()
+        //{
+        //    //HasAuga = Auga.API.IsLoaded();
 
-            //if (HasAuga)
-            //{
-            //    Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
-            //    Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
-            //}
-        }
+        //    //if (HasAuga)
+        //    //{
+        //    //    Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
+        //    //    Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
+        //    //}
+        //}
 
         //public static void ExtendAugaTooltipForMagicItem(GameObject complexTooltip, ItemDrop.ItemData item)
         //{

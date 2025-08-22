@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <RootNamespace>EpicLoot</RootNamespace>
     <AssemblyName>EpicLoot</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -27,12 +27,6 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="Jotunn">
-      <HintPath>..\Libs\Jotunn.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\epicloot">
@@ -78,6 +72,12 @@
     <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Update="UnityEngine.ImageConversionModule">
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
   <PropertyGroup>
     <VALHEIM_MANAGED>$(VALHEIM_INSTALL)/valheim_Data/Managed</VALHEIM_MANAGED>
     <UNITY_FOLDER>$(SolutionDir)ValheimUnity</UNITY_FOLDER>
@@ -85,36 +85,43 @@
 
   <Target Name="CopyToUnity">
     <Message Text="Copy assemblies to Unity" Importance="high" />
-    <Copy SourceFiles="$(BEPINEX_PATH)/core/BepInEx.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(BEPINEX_PATH)/core/0Harmony.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(BEPINEX_PATH)/core/Mono.Cecil.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(BEPINEX_PATH)/core/MonoMod.Utils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(BEPINEX_PATH)/core/MonoMod.RuntimeDetour.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(TargetDir)Jotunn.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/Assembly-CSharp.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_valheim.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_utils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_postprocessing.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_sunshafts.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_guiutils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_lux.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_simplemeshcombine.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_googleanalytics.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/PlayFab.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/PlayFabParty.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/Splatform.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/Splatform.Steam.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/gui_framework.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/com.rlabrecque.steamworks.net.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/SoftReferenceableAssets.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
+    <Copy SourceFiles="$(BEPINEX_PATH)/core/BepInEx.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(BEPINEX_PATH)/core/0Harmony.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(BEPINEX_PATH)/core/Mono.Cecil.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(BEPINEX_PATH)/core/MonoMod.Utils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(BEPINEX_PATH)/core/MonoMod.RuntimeDetour.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(TargetDir)Jotunn.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/Assembly-CSharp.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_valheim.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_utils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_postprocessing.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_sunshafts.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_guiutils.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_lux.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_simplemeshcombine.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_googleanalytics.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/PlayFab.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/PlayFabParty.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/Splatform.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/Splatform.Steam.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/gui_framework.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/com.rlabrecque.steamworks.net.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/SoftReferenceableAssets.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
   </Target>
 
   <Target Name="JotunnPostBuildTask" AfterTargets="Build">
     <CallTarget Targets="CopyToUnity" Condition="Exists('$(UNITY_FOLDER)')" />
   </Target>
 
+  <Target Name="CopyToModManagers" AfterTargets="Build">
+    <Message Text="Copying to mod managers" Importance="high" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\com.kesomannen.gale\valheim\profiles\Modtest\BepInEx\plugins\" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\r2modmanPlus-local\Valheim\profiles\Modtest\BepInEx\plugins\" />
+    <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Modtesting\BepInEx\plugins\" />
+  </Target>
+
   <Target Name="JotunnPostBuildTaskWin" AfterTargets="Build" Condition=" '$(OS)' == 'Windows_NT' ">
-    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_valheim.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/Assemblies" />
+    <Copy SourceFiles="$(VALHEIM_MANAGED)/assembly_valheim.dll" DestinationFolder="$(UNITY_FOLDER)/Assets/ExternalLibraries" />
     <!-- <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;$(SolutionDir)publish.ps1&quot; -Target &quot;$(ConfigurationName)&quot; -TargetPath &quot;$(TargetDir.TrimEnd('\'))&quot; -TargetAssembly &quot;$(TargetFileName)&quot; -ValheimPath &quot;$(VALHEIM_INSTALL.TrimEnd('\'))&quot; -DeployPath &quot;$(MOD_DEPLOYPATH.TrimEnd('\'))&quot; -ProjectPath &quot;$(ProjectDir.TrimEnd('\'))&quot; " /> -->
   </Target>
 
