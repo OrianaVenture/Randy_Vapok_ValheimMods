@@ -73,6 +73,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Jotunn">
+      <HintPath>..\Libs\Jotunn.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Update="UnityEngine.ImageConversionModule">
       <SpecificVersion>True</SpecificVersion>
     </Reference>
