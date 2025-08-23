@@ -458,8 +458,11 @@ namespace EpicLoot
                     if (setUnidentified) {
                         // If the item is rolled to be unidentified, we need to check if it is a valid item type, if its not we don't make it unidentified
                         GameObject lootTableDrop = ObjectDB.instance.GetItemPrefab(lootDrop.Item);
-                        ItemDrop id = lootTableDrop.GetComponent<ItemDrop>();
-                        if (EpicLoot.AllowedMagicItemTypes.Contains(id.m_itemData.m_shared.m_itemType)) {
+                        ItemDrop.ItemData.ItemType id = ItemDrop.ItemData.ItemType.OneHandedWeapon;
+                        if (lootTableDrop != null) {
+                            id = lootTableDrop.GetComponent<ItemDrop>().m_itemData.m_shared.m_itemType;
+                        }
+                        if (EpicLoot.AllowedMagicItemTypes.Contains(id)) {
                             var rarity = RollItemRarity(lootDrop, luckFactor);
                             
                             // Determine which biome this item is a part of, and set the drop biome to that tier
