@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Common;
 using HarmonyLib;
@@ -14,17 +15,20 @@ namespace EpicLoot.LegendarySystem
         public static readonly Dictionary<string, LegendaryInfo> MythicInfo = new Dictionary<string, LegendaryInfo>();
         public static readonly Dictionary<string, LegendarySetInfo> MythicSets = new Dictionary<string, LegendarySetInfo>();
 
-        private static readonly Dictionary<string, LegendarySetInfo> _legendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
-        private static readonly Dictionary<string, LegendarySetInfo> _mythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> _legendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> _mythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
 
         public static readonly LegendaryInfo GenericLegendaryInfo = new LegendaryInfo
         {
             ID = nameof(GenericLegendaryInfo)
         };
+        
+        public static event Action OnSetupLegendaryItemConfig;
 
         public static void Initialize(LegendaryItemConfig config)
         {
             Config = config;
+            OnSetupLegendaryItemConfig?.Invoke();
             LegendaryInfo.Clear();
             AddLegendaryInfo(config.LegendaryItems);
 
@@ -38,6 +42,7 @@ namespace EpicLoot.LegendarySystem
             MythicSets.Clear();
             _mythicItemsToSetMap.Clear();
             AddMythicSets(config.MythicSets);
+            
         }
 
         public static LegendaryItemConfig GetCFG()

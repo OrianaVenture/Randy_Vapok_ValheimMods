@@ -70,7 +70,7 @@ namespace EpicLoot.GatedItemType
                     });
                 }
 
-                Dictionary<string, List<string>> itemsByBoss = [];
+                Dictionary<string, List<string>> itemsByBoss = new() { };
                 foreach (var itemByBoss in info.ItemsByBoss)
                 {
                     if (itemsByBoss.ContainsKey(itemByBoss.Key))
