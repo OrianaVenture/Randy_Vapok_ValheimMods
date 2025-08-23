@@ -155,7 +155,7 @@ namespace EpicLoot
         };
 
         public static EpicAssets Assets = new EpicAssets();
-        private static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
+        public static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
         public static bool AlwaysDropCheat = false;
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;

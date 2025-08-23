@@ -1,5 +1,6 @@
-﻿using Common;
-using EpicLoot.CraftingV2;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using EpicLoot_UnityLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,11 @@ namespace EpicLoot.Crafting
             MagicEffectType.ReduceWeight,
             MagicEffectType.AddChoppingResistancePercentage
         };
-
+        public static event Action? OnSetupEnchantingCosts;
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;
+            OnSetupEnchantingCosts?.Invoke();
         }
 
         public static EnchantingCostsConfig GetCFG()
