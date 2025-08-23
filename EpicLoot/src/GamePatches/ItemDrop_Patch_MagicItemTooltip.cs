@@ -198,13 +198,6 @@ namespace EpicLoot
                         float ChainLightningValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
                     }
 
-                    bool ReducedReloadSpeed = magicItem.HasEffect(MagicEffectType.ReducedReloadSpeed);
-                    string ReducedReloadSpeedColor = ReducedReloadSpeed ? magicColor : "orange";
-                    if (ReducedReloadSpeed)
-                    {
-                        float ReducedReloadSpeedValue = magicItem.GetTotalEffectValue(MagicEffectType.ReducedReloadSpeed, 1f);
-                    }
-
                     bool Apportation = magicItem.HasEffect(MagicEffectType.Apportation);
                     string ApportationColor = Apportation ? magicColor : "orange";
                     if (Apportation)

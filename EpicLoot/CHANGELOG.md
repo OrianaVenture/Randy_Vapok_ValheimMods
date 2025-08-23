@@ -12,15 +12,19 @@
     * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
     * `Vanilla` - A configuration that is closer to the vanilla experience. Enchantments give you an edge, but are not as powerful.
 * Added the following new enchantments
-    * `DartingThoughts` - Converts a portion of max eitr into eitr regen
-    * `AddCrafterskills` - Increases crafting and cooking skills
-    * `Headhunter` - Increases chance to drop trophies from creatures
+    * `DartingThoughts` - Converts a portion of max eitr into eitr regen (sal)
+    * `AddCrafterskills` - Increases crafting and cooking skills (midnight)
+    * `Headhunter` - Increases chance to drop trophies from creatures (midnight)
     * `ModifyBlockForce` - Increases knockback on shields (warp)
     * `ModifyNoise` - Reduces character noise (makes you more stealthy) (warp)
     * `ModifyBuildDistance` - Increases the range you can build at (warp)
     * `ModifyPickupRange` - Increases the range you can autopickup items (warp)
     * `ModifyFireRate` - Increases fire rate of ranged weapons (warp)
     * `ModifyProjectileSpeed` - Increases the speed of fired projectiles (warp)
+    * `AdrenalineRush` - Dodging an attack provides a short burst of increased damage (Leslie)
+    * `Apportation` - Teleports you to your thrown weapons location (Leslie)
+    * `Chain Lightning` - Chance to cause chain lighting on hit (Leslie)
+    * `OffsetAttack` - Third attack in a combo provides stagger immunity and a damage reduction for you, when timed (Leslie)
 * Weapons, armor and items are automatically added to the drop system. Any mods that add craftable weapons armor will now automatically be droppable (at the correct levels)
 * Core configuration options are available again!
     * All core configuration values are editable directly, but will revert to internal defaults if they become invalid
@@ -43,6 +47,17 @@
 * Some extremely powerful enchantments have been enabled for the Legendary config
 * Optimized woodcutting and mining enchantments
 * Removed Deer as a bounty target, all bounty targets now will try to kill you instead of run away
+* EpicLoot API is now available! (Thanks Rusty!)
+    * Easily retrieve enchantments that are active on the player
+    * Magic Effects can be added by API
+    * Abilities can be added by API
+    * Sets can be added by API
+    * Material conversions
+    * Recipes
+    * Sacrifices
+    * Treasure Maps
+    * Bounties
+    * Secret stash items
 * Small code cleanups
 
 ## Version 0.11.4

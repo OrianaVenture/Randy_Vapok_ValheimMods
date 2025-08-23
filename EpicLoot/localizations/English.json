@@ -1183,11 +1183,6 @@
   "mod_epicloot_me_chainlightning_suffix1": "of Chain Lightning",
   "mod_epicloot_me_chainlightning_desc": "Spawns ChainLightning at +15% chance on hit. Deals +{0}% damage.",
   "mod_epicloot_me_chainlightning_display": "ChainLightning +{0}%",
-  "mod_epicloot_me_reducedreloadspeed_prefix1": "Fast hands",
-  "mod_epicloot_me_reducedreloadspeed_suffix1": "of reloading",
-  "mod_epicloot_me_reducedreloadspeed": "Reduced Reload Speed +{0}%",
-  "mod_epicloot_me_reducedreloadspeed_desc": "Reduces base reloading time by +.{0} seconds",
-  "mod_epicloot_me_reducedreloadspeed_display": "ReducedReloadingSpeed +{0}%",
   "mod_epicloot_me_apportation_prefix1": "Aportating",
   "mod_epicloot_me_apportation_suffix1": "of Apportation",
   "mod_epicloot_me_apportation": "Apportation",
@@ -1463,11 +1458,11 @@
   "mod_epicloot_set_heimdall": "Heimdall's Legacy",
   "mod_epicloot_set_ragnar": "Ragnar's Fury",
 
-  "mod_epicloot_magic": "Magic",
-  "mod_epicloot_rare": "Rare",
-  "mod_epicloot_epic": "Epic",
-  "mod_epicloot_legendary": "Legendary",
   "mod_epicloot_legendarysetlabel": "Legendary Set Item",
-  "mod_epicloot_mythic": "Mythic",
-  "mod_epicloot_mythicsetlabel": "Mythic Set Item"
+  "mod_epicloot_mythicsetlabel": "Mythic Set Item",
+  "mod_epicloot_Magic": "Magic",
+  "mod_epicloot_Rare": "Rare",
+  "mod_epicloot_Epic": "Epic",
+  "mod_epicloot_Legendary": "Legendary",
+  "mod_epicloot_Mythic": "Mythic"
 }

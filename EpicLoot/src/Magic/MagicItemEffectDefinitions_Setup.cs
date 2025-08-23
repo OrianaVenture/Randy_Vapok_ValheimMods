@@ -145,7 +145,6 @@ namespace EpicLoot
         public static string DodgeBuff = nameof(DodgeBuff);
         public static string OffSetAttack = nameof(OffSetAttack);
         public static string ChainLightning = nameof(ChainLightning);
-        public static string ReducedReloadSpeed = nameof(ReducedReloadSpeed);
         public static string Apportation = nameof(Apportation);
         public static string ModifyFireRate = nameof(ModifyFireRate);
 

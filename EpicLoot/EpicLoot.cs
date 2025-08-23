@@ -611,37 +611,6 @@ namespace EpicLoot
                     prefab.name = prefabName;
                     // EpicLoot.Log($"Set prefab name");
 
-                    //ZNetView zview = prefab.AddComponent<ZNetView>();
-                    //zview.m_persistent = true;
-                    //EpicLoot.Log($"Add Znetview");
-                    //ZSyncTransform zsync = prefab.AddComponent<ZSyncTransform>();
-                    //zsync.m_syncPosition = true;
-                    //zsync.m_syncRotation = true;
-                    //EpicLoot.Log($"Add ZsyncTransform");
-
-                    //ItemDrop pid = prefab.AddComponent<ItemDrop>();
-                    //pid.enabled = false;
-                    //EpicLoot.Log($"Added ID Comp");
-                    //pid.m_autoPickup = true;
-                    //pid.m_autoDestroy = true;
-                    //EpicLoot.Log($"Auto pickup/destroy");
-                    //Sprite sprite = Assets.AssetBundle.LoadAsset<Sprite>("unidentified.png");
-                    //EpicLoot.Log($"Loaded sprite");
-                    //pid.m_itemData.m_shared.m_icons = new Sprite[] { sprite };
-                    //EpicLoot.Log($"Set icon");
-                    //pid.m_itemData.m_shared.m_name = $"$mod_epicloot_Unidentified_{type}"; //mod_epicloot_unidentified_blackforest
-                    //EpicLoot.Log($"set name");
-                    //pid.m_itemData.m_shared.m_description = $"${type}_{rarity}_Unidentified_desc $mod_epicloot_unidentified_introduce";
-
-                    //pid.m_itemData.m_shared.m_maxStackSize = 100;
-                    //EpicLoot.Log($"Set stack size");
-                    //pid.m_itemData.m_shared.m_autoStack = true;
-                    //EpicLoot.Log($"Set autostack");
-                    //pid.m_itemData.m_shared.m_itemType = ItemDrop.ItemData.ItemType.Misc;
-                    //EpicLoot.Log($"Set category");
-                    //pid.m_itemData.m_shared.m_ammoType = $"{rarity}|MagicCraftingMaterial";
-                    //EpicLoot.Log($"Added Itemdrop");
-
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
                     //if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
@@ -654,7 +623,7 @@ namespace EpicLoot
                     magicItemComponent.Save();
                     //itemDrop.m_itemData
                     ItemConfig unidentifiedIC = new ItemConfig() {
-                        Name = $"$mod_epicloot_unidentified_{type}",
+                        Name = $"$mod_epicloot_{rarity} $mod_epicloot_unidentified_{type}",
                         Description = "$mod_epicloot_unidentified_introduce",
                     };
                     CustomItem custom = new CustomItem(prefab, false, unidentifiedIC);
@@ -838,15 +807,15 @@ namespace EpicLoot
             switch (rarity)
             {
                 case ItemRarity.Magic:
-                    return "$mod_epicloot_magic";
+                    return "$mod_epicloot_Magic";
                 case ItemRarity.Rare:
-                    return "$mod_epicloot_rare";
+                    return "$mod_epicloot_Rare";
                 case ItemRarity.Epic:
-                    return "$mod_epicloot_epic";
+                    return "$mod_epicloot_Epic";
                 case ItemRarity.Legendary:
-                    return "$mod_epicloot_legendary";
+                    return "$mod_epicloot_Legendary";
                 case ItemRarity.Mythic:
-                    return "$mod_epicloot_mythic";
+                    return "$mod_epicloot_Mythic";
                 default:
                     return "<non magic>";
             }

@@ -23,7 +23,7 @@ namespace EpicLoot.src.Magic
         private static readonly List<string> PlainsResources = new List<string> { "Needle", "BlackMetal" };
         private static readonly List<string> MountainResources = new List<string> { "Silver", "Obsidian", "WolfHairBundle", "WolfClaw", "WolfFang" };
         private static readonly List<string> SwampResources = new List<string> { "Iron", "Chain", "ElderBark", "Guck" };
-        private static readonly List<string> BlackForestResources = new List<string> { "Copper", "Tin", "Bronze", "RoundLog", "FineWood", "TrollHide" };
+        private static readonly List<string> BlackForestResources = new List<string> { "Copper", "Tin", "Bronze", "RoundLog", "FineWood", "TrollHide", "BjornHide" };
         private static readonly List<string> MeadowsResources = new List<string> { "Wood", "Stone", "Flint", "LeatherScraps", "DeerHide" };
 
         private static readonly Dictionary<string, string> tierToBossKey = new Dictionary<string, string>() {

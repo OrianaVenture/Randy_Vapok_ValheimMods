@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Object = UnityEngine.Object;
 
 namespace EpicLootAPI;
 public static class EpicLoot
@@ -45,7 +44,7 @@ public static class EpicLoot
     /// <param name="asset"><see cref="Object"/></param>
     /// <returns></returns>
     [PublicAPI][Description("Register asset into EpicLoot in order to target them in your definitions")]
-    public static bool RegisterAsset(string name, Object asset)
+    public static bool RegisterAsset(string name, object asset)
     {
         object?[] result = API_RegisterAsset.Invoke(name, asset);
         bool output = (bool)(result[0] ?? false);

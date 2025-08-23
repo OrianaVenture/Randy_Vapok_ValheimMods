@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EpicLoot_UnityLib;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using EpicLoot.CraftingV2;
 
 namespace EpicLoot.Crafting
 {
