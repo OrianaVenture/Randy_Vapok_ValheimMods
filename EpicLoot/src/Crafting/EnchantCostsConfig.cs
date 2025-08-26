@@ -58,8 +58,15 @@ namespace EpicLoot.Crafting
     public class IdentifyCostConfig
     {
         public Heightmap.Biome Biome;
-        public Dictionary<LootRoller.LootRollCategories, List<ItemAmountConfig>> CostByIDType = new Dictionary<LootRoller.LootRollCategories, List<ItemAmountConfig>>();
         public Dictionary<ItemRarity, List<ItemAmountConfig>> CostByRarity = new Dictionary<ItemRarity, List<ItemAmountConfig>>();
+    }
+
+    [Serializable]
+    public class IdentifyTypeConfig
+    {
+        public string localization;
+        public Dictionary<Heightmap.Biome, List<string>> BiomeLootLists = new Dictionary<Heightmap.Biome, List<string>>();
+        public List<ItemAmountConfig> Costs = new List<ItemAmountConfig>();
     }
 
     [Serializable]
@@ -72,6 +79,7 @@ namespace EpicLoot.Crafting
         public List<ItemAmountConfig> ReAugmentCosts = new List<ItemAmountConfig>();
         public List<RuneCostConfig> RuneExtractCosts = new List<RuneCostConfig>();
         public List<RuneCostConfig> RuneEtchCosts = new List<RuneCostConfig>();
+        public Dictionary<string, IdentifyTypeConfig> IdentifyTypes = new Dictionary<string, IdentifyTypeConfig>();
         public Dictionary<Heightmap.Biome, IdentifyCostConfig> IdentifyCosts = new Dictionary<Heightmap.Biome, IdentifyCostConfig>();
     }
 }

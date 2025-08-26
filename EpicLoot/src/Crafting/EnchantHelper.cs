@@ -31,7 +31,7 @@ namespace EpicLoot.Crafting
             return costList;
         }
 
-        public static List<KeyValuePair<ItemDrop, int>> GetIdentifyCost(List<Tuple<ItemDrop.ItemData, int>> items, LootRoller.LootRollCategories category) {
+        public static List<KeyValuePair<ItemDrop, int>> GetIdentifyCost(List<Tuple<ItemDrop.ItemData, int>> items, string category) {
             var costList = new Dictionary<ItemDrop, int>();
             foreach (var item in items) {
                 Enum.TryParse<Heightmap.Biome>(item.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);

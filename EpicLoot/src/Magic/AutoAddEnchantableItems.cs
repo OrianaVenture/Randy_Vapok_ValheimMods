@@ -79,7 +79,7 @@ namespace EpicLoot.src.Magic
             EpicLoot.Log($"Checking all equipment in game.");
 
             foreach (ItemDrop item in allEquipment) {
-                EpicLoot.Log($"Checking {item}");
+                //EpicLoot.Log($"Checking {item}");
                 string itemType = DetermineItemType(item.m_itemData);
                 string itemName = item.name;
                 bool rune = item.m_itemData.IsRunestone();
@@ -257,7 +257,7 @@ namespace EpicLoot.src.Magic
                     // Validate existing entries in the lootset
                     EpicLoot.Log($"Checking LootSet entry: {lis.Name}");
                     foreach (var loot in lis.Loot) {
-                        EpicLoot.Log($"Validating: {loot.Item}");
+                        //EpicLoot.Log($"Validating: {loot.Item}");
                         if (allItemNames.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item)) {
                             entries.Add(loot);
                             addedItems.Add(loot.Item);
@@ -275,7 +275,7 @@ namespace EpicLoot.src.Magic
                             if (!setsToCategories.ContainsKey(loottype) || !setsToCategories[loottype].Contains(itemType.Type)) { continue; }
                             EpicLoot.Log($"Checking for ItemType entry: {itemType.Type}");
                             foreach (var gateditem in itemType.ItemsByBoss[bosskey]) {
-                                EpicLoot.Log($"Checking if the item was already added: {gateditem}");
+                                // EpicLoot.Log($"Checking if the item was already added: {gateditem}");
                                 if (addedItems.Contains(gateditem)) { continue; }
 
                                 entries.Add(new LootDrop() { Item = gateditem, Rarity = DetermineRarityForLoot(tier) });
@@ -484,7 +484,7 @@ namespace EpicLoot.src.Magic
                 }
 
 
-            EpicLoot.LogWarning($"Unknown item type for item {item.m_shared.m_name}: {itemType}");
+            EpicLoot.Log($"Unknown item type for item {item.m_shared.m_name}: {itemType}");
             return "Unkown";
         }
 

@@ -1488,6 +1488,96 @@
       ]
     }
   ],
+  "IdentifyTypes": {
+    "Random": {
+      "localization": "$mod_epicloot_identify_random",
+      "BiomeLootLists": {
+        "none": [ "Tier0Everything" ],
+        "Meadows": [ "Tier1Everything" ],
+        "BlackForest": [ "Tier2Everything" ],
+        "Swamp": [ "Tier3Everything" ],
+        "Mountain": [ "Tier4Everything" ],
+        "Plains": [ "Tier5Everything" ],
+        "Mistlands": [ "Tier6Everything" ],
+        "AshLands": [ "Tier7Everything" ]
+      },
+      "Costs": [
+        {
+          "Item": "Coins",
+          "Amount": 5
+        }
+      ]
+    },
+    "Weapon": {
+      "localization": "$mod_epicloot_identify_weapon",
+      "BiomeLootLists": {
+        "none": [ "Tier0Weapons" ],
+        "Meadows": [ "Tier1Weapons" ],
+        "BlackForest": [ "Tier2Weapons" ],
+        "Swamp": [ "Tier3Weapons" ],
+        "Mountain": [ "Tier4Weapons" ],
+        "Plains": [ "Tier5Weapons" ],
+        "Mistlands": [ "Tier6Weapons" ],
+        "AshLands": [ "Tier7Weapons" ]
+      },
+      "Costs": [
+        {
+          "Item": "Coins",
+          "Amount": 50
+        },
+        {
+          "Item": "IronBountyToken",
+          "Amount": 2
+        }
+      ]
+    },
+    "Armor": {
+      "localization": "$mod_epicloot_identify_armor",
+      "BiomeLootLists": {
+        "none": [ "Tier0Armor", "Tier0Shields" ],
+        "Meadows": [ "Tier1Armor", "Tier1Shields" ],
+        "BlackForest": [ "Tier2Armor", "Tier2Shields" ],
+        "Swamp": [ "Tier3Armor", "Tier3Shields" ],
+        "Mountain": [ "Tier4Armor", "Tier4Shields" ],
+        "Plains": [ "Tier5Armor", "Tier5Shields" ],
+        "Mistlands": [ "Tier6Armor", "Tier6Shields" ],
+        "AshLands": [ "Tier7Armor", "Tier7Shields" ]
+      },
+      "Costs": [
+        {
+          "Item": "Coins",
+          "Amount": 50
+        },
+        {
+          "Item": "IronBountyToken",
+          "Amount": 2
+        }
+      ]
+    },
+    "Utility": {
+      "localization": "$mod_epicloot_identify_accessory",
+      "BiomeLootLists": {
+        "none": [ "ModUtility" ],
+        "Meadows": [ "Tier1Tools", "ModUtility" ],
+        "BlackForest": [ "Tier2Tools", "ModUtility" ],
+        "Swamp": [ "Tier3Tools", "ModUtility" ],
+        "Mountain": [ "Tier3Tools", "ModUtility" ],
+        "Plains": [ "Tier3Tools", "ModUtility" ],
+        "Mistlands": [ "Tier6Tools", "ModUtility" ],
+        "AshLands": [ "Tier6Tools", "ModUtility" ]
+      },
+      "Costs": [
+        {
+          "Item": "Coins",
+          "Amount": 150
+        },
+        {
+          "Item": "GoldBountyToken",
+          "Amount": 3
+        }
+      ]
+    }
+  },
   "IdentifyCosts": {
     "Meadows": {
       "CostByRarity": {
@@ -1519,74 +1609,6 @@
           {
             "Item": "Flint",
             "Amount": 5
-          }
-        ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
           }
         ]
       }
@@ -1623,74 +1645,6 @@
             "Amount": 25
           }
         ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
-          }
-        ]
       }
     },
     "Swamp": {
@@ -1723,74 +1677,6 @@
           {
             "Item": "Iron",
             "Amount": 5
-          }
-        ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
           }
         ]
       }
@@ -1827,74 +1713,6 @@
             "Amount": 5
           }
         ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
-          }
-        ]
       }
     },
     "Mountain": {
@@ -1927,74 +1745,6 @@
           {
             "Item": "Silver",
             "Amount": 5
-          }
-        ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
           }
         ]
       }
@@ -2031,74 +1781,6 @@
             "Amount": 5
           }
         ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
-          }
-        ]
       }
     },
     "Mistlands": {
@@ -2131,74 +1813,6 @@
           {
             "Item": "Eitr",
             "Amount": 5
-          }
-        ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
           }
         ]
       }
@@ -2235,74 +1849,6 @@
             "Amount": 5
           }
         ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
-          }
-        ]
       }
     },
     "DeepNorth": {
@@ -2335,74 +1881,6 @@
           {
             "Item": "FlametalNew",
             "Amount": 5
-          }
-        ]
-      },
-      "CostByIDType": {
-        "random": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          }
-        ],
-        "weapon": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "armor": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 1
-          }
-        ],
-        "ranged": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "melee": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 3
-          }
-        ],
-        "magic": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 5
-          }
-        ],
-        "accessory": [
-          {
-            "Item": "Coins",
-            "Amount": 5
-          },
-          {
-            "Item": "GoldBountyToken",
-            "Amount": 10
           }
         ]
       }

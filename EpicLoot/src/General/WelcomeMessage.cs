@@ -72,6 +72,8 @@ namespace EpicLoot
         public void SetOverhaulBalancedAndClick()
         {
             ELConfig.BalanceConfigurationType.Value = "balanced";
+            ELConfig.ItemsUnidentifiedDropRatio.Value = 0.8f;
+            ELConfig.ItemsToMaterialsDropRatio.Value = 0.95f;
             OnOverhaulButtomClick();
             Close();
         }
@@ -79,6 +81,7 @@ namespace EpicLoot
         public void SetOverhaulMinimalAndClick()
         {
             ELConfig.BalanceConfigurationType.Value = "minimal";
+            ELConfig.ItemsToMaterialsDropRatio.Value = 1.0f;
             OnOverhaulButtomClick();
             Close();
         }
@@ -86,6 +89,8 @@ namespace EpicLoot
         public void SetOverhaulLegendaryAndClick()
         {
             ELConfig.BalanceConfigurationType.Value = "legendary";
+            ELConfig.ItemsUnidentifiedDropRatio.Value = 0.2f;
+            ELConfig.ItemsToMaterialsDropRatio.Value = 0.1f;
             OnOverhaulButtomClick();
             Close();
         }

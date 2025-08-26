@@ -564,6 +564,18 @@
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>Assets\ExternalLibraries\assembly_utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>Assets\ExternalLibraries\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>Assets\ExternalLibraries\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
       <HintPath>Library\PackageCache\com.unity.collections@56bff8827a7e\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
       <Private>False</Private>
@@ -572,68 +584,64 @@
       <HintPath>Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="assembly_simplemeshcombine">
+      <HintPath>Assets\ExternalLibraries\assembly_simplemeshcombine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PlayFabParty">
       <HintPath>Assets\ExternalLibraries\valheim\PlayFabParty.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>Assets\ExternalLibraries\valheim\MonoMod.Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>Assets\ExternalLibraries\valheim\MonoMod.RuntimeDetour.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Splatform.Steam">
-      <HintPath>Assets\ExternalLibraries\valheim\Splatform.Steam.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="assembly_lux">
-      <HintPath>Assets\ExternalLibraries\valheim\assembly_lux.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="assembly_simplemeshcombine">
-      <HintPath>Assets\ExternalLibraries\valheim\assembly_simplemeshcombine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>Assets\ExternalLibraries\valheim\BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SoftReferenceableAssets">
-      <HintPath>Assets\ExternalLibraries\valheim\SoftReferenceableAssets.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="com.rlabrecque.steamworks.net">
-      <HintPath>Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>Assets\ExternalLibraries\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>Assets\ExternalLibraries\valheim\0Harmony.dll</HintPath>
+    <Reference Include="MonoMod.Utils">
+      <HintPath>Assets\ExternalLibraries\valheim\MonoMod.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="gui_framework">
+      <HintPath>Assets\ExternalLibraries\gui_framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Splatform.Steam">
+      <HintPath>Assets\ExternalLibraries\valheim\Splatform.Steam.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PlayFab">
+      <HintPath>Assets\ExternalLibraries\PlayFab.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="assembly_lux">
+      <HintPath>Assets\ExternalLibraries\valheim\assembly_lux.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="assembly_sunshafts">
+      <HintPath>Assets\ExternalLibraries\assembly_sunshafts.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SoftReferenceableAssets">
+      <HintPath>Assets\ExternalLibraries\SoftReferenceableAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Jotunn">
       <HintPath>Assets\ExternalLibraries\Jotunn.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PlayFab">
-      <HintPath>Assets\ExternalLibraries\valheim\PlayFab.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>Assets\ExternalLibraries\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Assets\ExternalLibraries\valheim\Assembly-CSharp.dll</HintPath>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>Assets\ExternalLibraries\valheim\com.rlabrecque.steamworks.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EpicLoot-UnityLib">
       <HintPath>Assets\ExternalLibraries\EpicLoot-UnityLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="gui_framework">
-      <HintPath>Assets\ExternalLibraries\valheim\gui_framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
@@ -1184,6 +1192,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.ShaderGraph.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
       <Private>False</Private>
@@ -1194,10 +1206,6 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">

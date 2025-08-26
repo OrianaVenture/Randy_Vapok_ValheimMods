@@ -42,9 +42,8 @@ namespace EpicLoot.src.Loot
             T result = default(T);
             foreach (var item in from weightedItem in _list select new { Value = weightedItem, Weight = _weightSelector(weightedItem) }) {
                 currentWeightIndex += item.Weight;
-                EpicLoot.Log($"{currentWeightIndex} >= {itemWeightIndex} for {item.Value} | Weight sum: {TotalWeight}");
-                if (currentWeightIndex >= itemWeightIndex)
-                {
+                //EpicLoot.Log($"{currentWeightIndex} >= {itemWeightIndex} for {item.Value} | Weight sum: {TotalWeight}");
+                if (currentWeightIndex >= itemWeightIndex) {
                     result = item.Value;
                     break;
                 }

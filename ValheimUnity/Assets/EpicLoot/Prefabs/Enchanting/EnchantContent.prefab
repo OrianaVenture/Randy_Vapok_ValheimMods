@@ -2705,6 +2705,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -3796,7 +3797,7 @@ PrefabInstance:
     - target: {fileID: 2495945787080886843, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_Text
-      value: $mod_epicloot_rare
+      value: $mod_epicloot_Rare
       objectReference: {fileID: 0}
     - target: {fileID: 3346659526286530004, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
@@ -4155,6 +4156,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3538952330200441581}
     m_Modifications:
+    - target: {fileID: 2495945787080886843, guid: 280a97c6e1516804dac16ab67455a8c8,
+        type: 3}
+      propertyPath: m_Text
+      value: $mod_epicloot_Magic
+      objectReference: {fileID: 0}
     - target: {fileID: 3346659526286530004, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_Name
@@ -4446,7 +4452,7 @@ PrefabInstance:
     - target: {fileID: 2495945787080886843, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_Text
-      value: $mod_epicloot_epic
+      value: $mod_epicloot_Epic
       objectReference: {fileID: 0}
     - target: {fileID: 3346659526286530004, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
@@ -4613,7 +4619,7 @@ PrefabInstance:
     - target: {fileID: 2495945787080886843, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_Text
-      value: $mod_epicloot_legendary
+      value: $mod_epicloot_Legendary
       objectReference: {fileID: 0}
     - target: {fileID: 3346659526286530004, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
@@ -4780,7 +4786,7 @@ PrefabInstance:
     - target: {fileID: 2495945787080886843, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}
       propertyPath: m_Text
-      value: $mod_epicloot_mythic
+      value: $mod_epicloot_Mythic
       objectReference: {fileID: 0}
     - target: {fileID: 3346659526286530004, guid: 280a97c6e1516804dac16ab67455a8c8,
         type: 3}

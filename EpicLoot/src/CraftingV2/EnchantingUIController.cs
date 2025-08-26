@@ -53,6 +53,7 @@ namespace EpicLoot.CraftingV2
             SacrificeUI.GetSacrificeProducts = GetSacrificeProducts;
             SacrificeUI.GetIdentifyCost = GetIdentifyCostForCategory;
             SacrificeUI.GetIdentifyItems = GetUnidentifiedItems;
+            SacrificeUI.GetIdentifyStyles = GetIdentifyStyles;
             SacrificeUI.GetRandomFilteredLoot = LootRollSelectedItems;
             SacrificeUI.GetPotentialIdentifications = GetPotentialItemRollsByCategory;
             ConvertUI.GetConversionRecipes = GetConversionRecipes;
@@ -539,46 +540,41 @@ namespace EpicLoot.CraftingV2
             return successDialog.gameObject;
         }
 
-        private static LootRoller.LootRollCategories SelectLootCategory(int filter)
+        private static IdentifyTypeConfig SelectLootIdentifyDetails(string filter)
         {
-            var category = LootRoller.LootRollCategories.random;
-            switch (filter)
-            {
-                case 0:
-                    category = LootRoller.LootRollCategories.random;
-                    break;
-                case 1:
-                    category = LootRoller.LootRollCategories.weapon;
-                    break;
-                case 2:
-                    category = LootRoller.LootRollCategories.armor;
-                    break;
-                case 3:
-                    category = LootRoller.LootRollCategories.ranged;
-                    break;
-                case 4:
-                    category = LootRoller.LootRollCategories.melee;
-                    break;
-                case 5:
-                    category = LootRoller.LootRollCategories.magic;
-                    break;
-                case 6:
-                    category = LootRoller.LootRollCategories.accessory;
-                    break;
+            foreach (var identifyStyle in EnchantCostsHelper.Config.IdentifyTypes) {
+                if (Localization.instance.Localize(identifyStyle.Value.localization) == filter) {
+                    return identifyStyle.Value;
+                }
             }
-            return category;
+            return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
         }
 
-        private static List<InventoryItemListElement> LootRollSelectedItems(int filter, List<Tuple<ItemDrop.ItemData, int>> items, float power_modifier)
+        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, Heightmap.Biome biome) {
+            EpicLoot.Log($"Getting loot tables for identify style {Localization.instance.Localize(cfg.localization)} in biome {biome} cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
+            Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(biome, EpicLoot.GetGatedItemTypeMode());
+
+            List<LootTable> lootTables = new List<LootTable>() { };
+            foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome]) {
+                EpicLoot.Log($" - Checking loot set {lootSetName}");
+                List<LootTable> lootTable = LootRoller.GetFullyResolvedLootTable(lootSetName);
+                if (lootTable != null) { lootTables.AddRange(lootTable); }
+            }
+            EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.localization)} {lootTables.Count}");
+            return lootTables;
+        }
+
+        private static List<InventoryItemListElement> LootRollSelectedItems(string filter, List<Tuple<ItemDrop.ItemData, int>> items, float power_modifier)
         {
             var player = Player.m_localPlayer;
-            var category = SelectLootCategory(filter);
+            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+            
 
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
             foreach (var itemstack in items) {
                 Enum.TryParse<Heightmap.Biome>(itemstack.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
-                var bosskey = DetermineBossKeysByConfig(biome, ELConfig._gatedItemTypeModeConfig.Value);
-                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, 0.85f, category, itemstack.Item2, itemstack.Item1.GetRarity(), true, bosskey, power_modifier);
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
+                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, power_modifier);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
                 totalRolledItems.AddRange(rolledItems);
                 foreach (var item in rolledItems) { InventoryManagement.Instance.GiveItem(item); }
@@ -588,71 +584,25 @@ namespace EpicLoot.CraftingV2
             return totalRolledItems.Select(item => new InventoryItemListElement() { Item = item }).ToList();
         }
 
-        private static List<string> DetermineBossKeysByConfig(Heightmap.Biome biome, GatedItemTypeMode mode) {
-            List<string> previous_boss_key = new List<string> { "none" };
-            List<string> validDefeatedBoss_Keys = GatedItemTypeHelper.DetermineValidBosses(mode);
-            foreach (var bossentry in AdventureDataManager.Config.Bounties.Bosses) {
-                if (bossentry.Biome == biome) {
-                    EpicLoot.Log($"{biome} Boss match found.");
-                    switch (mode) {
-                        case GatedItemTypeMode.PlayerMustHaveCraftedItem:
-                        case GatedItemTypeMode.PlayerMustKnowRecipe:
-                        case GatedItemTypeMode.Unlimited:
-                            EpicLoot.Log($"{biome} with Unlimited mode {bossentry.BossDefeatedKey}");
-                            return new List<string> { bossentry.BossDefeatedKey };
-
-                        case GatedItemTypeMode.BossKillUnlocksNextBiomeItems:
-                            EpicLoot.Log($"Boss kills unlock next Check");
-                            // Check if the player has defeated the previous boss or the current boss
-                            if (validDefeatedBoss_Keys.Contains(previous_boss_key.First()) || validDefeatedBoss_Keys.Contains(bossentry.BossDefeatedKey)) {
-                                EpicLoot.Log($"{biome} with defeated current {bossentry.BossDefeatedKey}");
-                                return new List<string> { bossentry.BossDefeatedKey };
-                            } else {
-                                EpicLoot.Log($"Player has not defeated the current or previous boss, setting to all defeated bosses.");
-                                return validDefeatedBoss_Keys;
-                            }
-
-                        case GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems:
-                            EpicLoot.Log($"{biome} with defeated previous {previous_boss_key.First()}");
-                            if (biome == Heightmap.Biome.AshLands && validDefeatedBoss_Keys.Contains("defeated_fader")) {
-                                // Special case for AshLands, where defeating Fader unlocks current biome items since there is no next boss
-                                return new List<string> { bossentry.BossDefeatedKey, previous_boss_key.First() };
-                            }
-                            return previous_boss_key;
-
-                        default:
-                            EpicLoot.Log($"{biome} match fallthrough gating.");
-                            return validDefeatedBoss_Keys;
-                    }
-                }
-                previous_boss_key.Clear();
-                previous_boss_key.Add(bossentry.BossDefeatedKey);
-            }
-            EpicLoot.Log($"Fallthrough {biome} was not matched in {string.Join(",",AdventureDataManager.Config.Bounties.Bosses.Select(x => x.Biome))}");
-            // Fallback is to fail open to all of the bosses that are defeated in the world
-            return validDefeatedBoss_Keys;
-        }
-
-        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(int filter, List<ItemDrop.ItemData> items_selected)
+        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(string filter, List<ItemDrop.ItemData> items_selected)
         {
             var player = Player.m_localPlayer;
-            var category = SelectLootCategory(filter);
-            List<string> selectedBossKeys = new List<string>();
+            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+            List<string> resultItemNames = new List<string>();
+
+            List<Heightmap.Biome> biomesCovered = new List<Heightmap.Biome> { };
             foreach (var item in items_selected) {
                 if (item == null || item.m_dropPrefab == null) { continue; }
+                
                 Enum.TryParse<Heightmap.Biome>(item.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
-                var bosskey = DetermineBossKeysByConfig(biome, EpicLoot.GetGatedItemTypeMode());
-                if (bosskey.Count == 0) { continue; }
-                selectedBossKeys.AddRange(bosskey);
-                EpicLoot.Log($"Selected Item {item.m_dropPrefab.name} got {biome} and bosskey {bosskey.First()} {bosskey.Count}");
-            }
-            
-            List<string> selected_categories = LootRoller.GetLootCategoryList(category);
-            List<string> resultItemNames = new List<string>();
-            foreach (var selected_category in selected_categories) {
-                foreach (var bosskey in selectedBossKeys.Distinct()) {
-                    if (!GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category].ContainsKey(bosskey)) { continue; }
-                    resultItemNames.AddRange(GatedItemTypeHelper.ItemsByTypeAndBoss[selected_category][bosskey]);
+                if (biomesCovered.Contains(biome)) { continue; }
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
+                biomesCovered.Add(biome);
+                Dictionary<string, float> itemChances = LootRoller.GetLootTableChances(player.transform.position, selectedLootTables);
+                foreach (var entry in itemChances) {
+                    if (!resultItemNames.Contains(entry.Key)) {
+                        resultItemNames.Add(entry.Key);
+                    }
                 }
             }
             var result = new List<InventoryItemListElement>();
@@ -668,20 +618,29 @@ namespace EpicLoot.CraftingV2
             return result;
         }
 
-        private static List<InventoryItemListElement> GetIdentifyCostForCategory(int filter, List<Tuple<ItemDrop.ItemData, int>> items, float cost_modifier = 1.0f)
+        private static Dictionary<string, string> GetIdentifyStyles() {
+            return EnchantCostsHelper.GetIdentificationCategories();
+        }
+
+        private static List<InventoryItemListElement> GetIdentifyCostForCategory(string filter, List<Tuple<ItemDrop.ItemData, int>> items, float cost_modifier = 1.0f)
         {
-            var category = SelectLootCategory(filter);
+            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
-            var costs = EnchantHelper.GetIdentifyCost(items, category);
             var results = new List<InventoryItemListElement>() { };
-            foreach (var entry in costs) {
-                var itemData = entry.Key.m_itemData;
-                itemData.m_dropPrefab = entry.Key.gameObject;
-                var cost = entry.Value;
-                if (cost_modifier != float.NaN) {
-                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+            foreach (var entry in category.Costs) {
+                GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
+                if (costGo == null) { 
+                    EpicLoot.LogWarning($"Could not find identify cost item {entry.Item} in ObjectDB");
+                    continue;
                 }
-                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+                ItemDrop id = costGo.GetComponent<ItemDrop>();
+                ItemDrop.ItemData itemData = id.m_itemData;
+                itemData.m_dropPrefab = costGo.gameObject;
+                var cost = entry.Amount;
+                if (cost_modifier != float.NaN) {
+                    cost = Mathf.RoundToInt(entry.Amount * cost_modifier);
+                }
+                EpicLoot.Log($"Cost settings: E:{entry.Amount} modifier:{cost_modifier} result:{cost}");
                 itemData.m_stack = cost;
                 if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
                 results.Add(new InventoryItemListElement() { Item = itemData });

@@ -427,7 +427,7 @@ namespace EpicLoot.Config
 
             ZPackage SendInitialConfig() {
                 string cfgs = JsonConvert.SerializeObject(getConfig());
-                EpicLoot.Log($"sending {filename} configs: {cfgs}");
+                //EpicLoot.Log($"sending {filename} configs: {cfgs}");
                 return SendConfig(cfgs);
             }
 
@@ -556,77 +556,77 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved LootConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved LootConfigs");
             LootRoller.Initialize(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMagicConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved MagicEffectConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved MagicEffectConfigs");
             MagicItemEffectDefinitions.Initialize(ClientRecieveParseJsonConfig<MagicItemEffectsList>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemInfoConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved ItemInfoConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved ItemInfoConfigs");
             GatedItemTypeHelper.Initialize(ClientRecieveParseJsonConfig<ItemInfoConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveRecipesConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved RecipeConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved RecipeConfigs");
             RecipesHelper.Initialize(ClientRecieveParseJsonConfig<RecipesConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingCostsConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved EnchantingCostConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved EnchantingCostConfigs");
             EnchantCostsHelper.Initialize(ClientRecieveParseJsonConfig<EnchantingCostsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemNameConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved ItemNameConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved ItemNameConfigs");
             MagicItemNames.Initialize(ClientRecieveParseJsonConfig<ItemNameConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved AdventureDataConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved AdventureDataConfigs");
             AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveLegendaryItemConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved LegendaryItemConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved LegendaryItemConfigs");
             UniqueLegendaryHelper.Initialize(ClientRecieveParseJsonConfig<LegendaryItemConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAbilityConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved AbilityConfigs");
+            //Jotunn.Logger.LogInfo($"Recieved AbilityConfigs");
             AbilityDefinitions.Initialize(ClientRecieveParseJsonConfig<AbilityConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMaterialConversionConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved MaterialConversionConfig");
+            //Jotunn.Logger.LogInfo($"Recieved MaterialConversionConfig");
             MaterialConversions.Initialize(ClientRecieveParseJsonConfig<MaterialConversionsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
-            Jotunn.Logger.LogInfo($"Recieved EnchantingUpgradesConfig");
+            //Jotunn.Logger.LogInfo($"Recieved EnchantingUpgradesConfig");
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
             yield return null;
         }
