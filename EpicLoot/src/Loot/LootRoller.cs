@@ -322,7 +322,7 @@ namespace EpicLoot
                         itemDrop.Save();
                         InitializeMagicItem(itemDrop.m_itemData);
                         results.Add(itemDrop.m_itemData);
-                        GameObject.Destroy(droppedItem); // Destroy the object, we just needed the itemdata
+                        ZNetScene.instance.Destroy(droppedItem); // Destroy the object, we just needed the itemdata
                     }
                 }
                 

@@ -580,8 +580,8 @@
     },
     {
       "IsMagic": true,
-      "ItemNames": [
-        "$mod_epicloot_unidentified"
+      "ItemTypes": [
+        "Misc"
       ],
       "Rarity": "Magic",
       "Products": [
@@ -601,8 +601,8 @@
     },
     {
       "IsMagic": true,
-      "ItemNames": [
-        "$mod_epicloot_unidentified"
+      "ItemTypes": [
+        "Misc"
       ],
       "Rarity": "Rare",
       "Products": [
@@ -622,8 +622,8 @@
     },
     {
       "IsMagic": true,
-      "ItemNames": [
-        "$mod_epicloot_unidentified"
+      "ItemTypes": [
+        "Misc"
       ],
       "Rarity": "Epic",
       "Products": [
@@ -643,8 +643,8 @@
     },
     {
       "IsMagic": true,
-      "ItemNames": [
-        "$mod_epicloot_unidentified"
+      "ItemTypes": [
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Products": [
@@ -664,8 +664,8 @@
     },
     {
       "IsMagic": true,
-      "ItemNames": [
-        "$mod_epicloot_unidentified"
+      "ItemTypes": [
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Products": [
