@@ -614,7 +614,8 @@ namespace EpicLoot
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
                     //if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    
+                    pid.m_itemData.m_dropPrefab = prefab;
+
                     magicItemComponent.SetMagicItem(new MagicItem {
                         Rarity = rarity,
                         IsUnidentified = true,
@@ -631,9 +632,12 @@ namespace EpicLoot
                     // Need to add prefab names to a list and once its time, enable all of them
                     ItemManager.Instance.AddItem(custom);
 
-                    ItemManager.OnItemsRegistered += () => {
+                    void EnableUnidentified(string prefabname) {
                         PrefabManager.Instance.GetPrefab(prefabName)?.SetActive(true);
-                    };
+                        ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
+                    }
+
+                    ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
                 }
             }
         }
