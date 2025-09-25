@@ -633,7 +633,8 @@ namespace EpicLoot
                     ItemManager.Instance.AddItem(custom);
 
                     void EnableUnidentified(string prefabname) {
-                        PrefabManager.Instance.GetPrefab(prefabName)?.SetActive(true);
+                        PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
+                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
                         ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
                     }
 

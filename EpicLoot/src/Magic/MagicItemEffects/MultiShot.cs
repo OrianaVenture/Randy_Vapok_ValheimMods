@@ -184,4 +184,22 @@ namespace EpicLoot.MagicItemEffects
             }
         }
     }
+
+    [HarmonyPriority(Priority.HigherThanNormal)]
+    [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackStamina))]
+    public class DoubleMagicShot_Attack_GetAttackStamina_Patch {
+        public static void Postfix(Attack __instance, ref float __result) {
+            if (__instance.m_character is Player player) {
+                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(
+                    player, __instance.m_weapon, MagicEffectType.DoubleMagicShot, out float effectValue)) {
+                    var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
+                    if (tripleshotcfg != null && tripleshotcfg.ContainsKey("EitrCostScale")) {
+                        __result *= tripleshotcfg["EitrCostScale"];
+                    } else {
+                        __result *= 2;
+                    }
+                }
+            }
+        }
+    }
 }

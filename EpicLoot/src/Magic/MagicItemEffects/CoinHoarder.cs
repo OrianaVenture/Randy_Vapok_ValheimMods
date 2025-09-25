@@ -18,7 +18,7 @@ public class CoinHoarder
         }
 
         ItemDrop.ItemData[] mcoins = player.m_inventory.GetAllItems()
-                .Where(val => val.m_dropPrefab.name == "Coins").ToArray();
+                .Where(val => val.m_dropPrefab != null && val.m_dropPrefab.name == "Coins").ToArray();
 
         if (mcoins.Length == 0)
         {
