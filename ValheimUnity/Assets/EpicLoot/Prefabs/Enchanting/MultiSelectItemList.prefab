@@ -1791,6 +1791,7 @@ MonoBehaviour:
   Filterable: 1
   Sortable: 1
   ReadOnly: 0
+  UseEnchantAsName: 0
   ListContainer: {fileID: 1549635453510366445}
   ElementPrefab: {fileID: 7900331960064265812, guid: 59aec59ce6b902746bd2acccca74305e,
     type: 3}
@@ -2193,7 +2194,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 0
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 40
+  m_ScrollSensitivity: 800
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 2361681001002722280}

@@ -211,7 +211,7 @@ namespace EpicLoot
         private static void RegisterMagicEffectEvents()
         {
             // This needs to not run until after the game is loaded, otherwise it will not be able to find the ObjectDB
-            //MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
+            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)
@@ -600,6 +600,8 @@ namespace EpicLoot
             //genericPrefab.SetActive(false);
             //Destroy(genericPrefab.GetComponent<ZNetView>());
             GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
+            ItemManager.Instance.AddItem(genericUnidentified);
             genericPrefab.SetActive(false);
             foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
                 // Skip invalid types

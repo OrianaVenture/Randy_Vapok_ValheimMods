@@ -1,10 +1,11 @@
-﻿using System;
+﻿using EpicLoot.Crafting;
+using EpicLoot.GatedItemType;
+using EpicLoot.MagicItemEffects;
+using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EpicLoot.Crafting;
-using EpicLoot.GatedItemType;
-using JetBrains.Annotations;
 
 namespace EpicLoot
 {

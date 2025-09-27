@@ -227,6 +227,31 @@ namespace EpicLoot.GatedItemType
 
             List<string> bossList = null;
 
+            // Check if this is a loot table category
+            
+            if (LootRoller.LootSetContainsEntry(itemOrType)) {
+                List<LootTable> ltcategory = LootRoller.GetFullyResolvedLootTable(itemOrType);
+                List<string> potentialItems = new List<string>();
+                foreach (LootTable lt in ltcategory) {
+                    potentialItems.AddRange(lt.Loot.Select(x => x.Item).ToList());
+                }
+                if (potentialItems.Count == 0) { return null; }
+                
+                string item = potentialItems[UnityEngine.Random.Range(0, potentialItems.Count - 1)];
+                
+                if (!CheckIfItemNeedsGate(gatedMode, item, out GatedItemDetails itemDetails)) {
+                    // This item doesn't need gating, return it, otherwise we setup the category for a fallback
+                    return item;
+                }
+                if (itemDetails == null) {
+                    return null;
+                }
+
+                type = itemDetails.Type;
+                bossList = itemDetails.RequiredBosses;
+            }
+
+            // Check if this is a category of ItemType
             if (!ItemsByTypeAndBoss.ContainsKey(itemOrType))
             {
                 // Passed string is an item
@@ -248,6 +273,7 @@ namespace EpicLoot.GatedItemType
                 type = itemDetails.Type;
                 bossList = itemDetails.RequiredBosses;
             }
+
 
             validBosses = DetermineValidBosses(gatedMode, false, bossList);
 

@@ -10,6 +10,7 @@ using EpicLoot.MagicItemEffects;
 using EpicLoot.src.Loot;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
+using Jotunn.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -293,11 +294,21 @@ namespace EpicLoot
                         var rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
 
-                        var gatedItemName = (CheatDisableGating) ?
-                        GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, GatedItemTypeMode.Unlimited) :
-                        GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, EpicLoot.GetGatedItemTypeMode());
+                        if (itemName == "Invalid Item Name") {
+                            failures += 1;
+                            continue;
+                        }
 
-                        
+                        var gatedItemName = (CheatDisableGating) ?
+                            GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, GatedItemTypeMode.Unlimited) :
+                            GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, EpicLoot.GetGatedItemTypeMode());
+
+                        GameObject prefab = PrefabManager.Instance.GetPrefab(gatedItemName); // Ensure the prefab is loaded
+                        if (prefab == null) {
+                            failures += 1;
+                            continue;
+                        }
+
                         GameObject selectedPrefab = ObjectDB.instance.GetItemPrefab(gatedItemName);
                         GameObject droppedItem = Object.Instantiate(selectedPrefab, location, new Quaternion(0, 0, 0, 0));
                         if (droppedItem == null) {
@@ -956,6 +967,11 @@ namespace EpicLoot
             return false;
         }
 
+        public static bool LootSetContainsEntry(string lootdrop)
+        {
+            return ItemSets.ContainsKey(lootdrop);
+        }
+
         public static KeyValuePair<string, List<LootTable>> GetLootTableOrDefault(string objectName)
         {
             KeyValuePair<string, List<LootTable>> results = LootTables.FirstOrDefault(x => x.Key == objectName);
@@ -1069,28 +1085,23 @@ namespace EpicLoot
             if (!float.IsNaN(featureValues.Item1))
                 augmentChoices = (int)featureValues.Item1;
 
+            List<string> currentEffectTypes = new List<string>();
+
             for (var i = 0; i < augmentChoices && i < availableEffects.Count; i++)
             {
-                bool skip = false;
-                var newEffect = RollEffects(availableEffects, rarity, 1, false).FirstOrDefault();
-                foreach(var existingEffect in results) {
-                    if (existingEffect.EffectType == newEffect.EffectType) {
-                        EpicLoot.LogWarning($"Rolled an augment effect that already exists: {existingEffect.EffectType} for item: {item.m_shared.m_name}");
-                        skip = true;
-                        break;
-                    }
-                }
-                if (skip) {
-                    continue;
-                }
-                if (newEffect == null)
-                {
-                    EpicLoot.LogError($"Rolled a null effect: item:{item.m_shared.m_name}, index:{effectIndex}");
-                    continue;
+                int fallbackAttempts = 0;
+                var newEffect = RollEffects(availableEffects, rarity, 1, true).FirstOrDefault();
+                while (newEffect != null && currentEffectTypes.Contains(newEffect.EffectType) && fallbackAttempts < 5) {
+                    // If we rolled the same effect as the current one, try again a few times
+                    EpicLoot.LogWarning($"Rolled a duplicate effect: {newEffect.EffectType} for item: {item.m_shared.m_name}, retrying...");
+                    MagicItemEffect nmieffect = RollEffects(availableEffects, rarity, 1, true).FirstOrDefault();
+                    if (nmieffect == null) { continue; }
+                    newEffect = nmieffect;
+                    fallbackAttempts++;
                 }
 
                 results.Add(newEffect);
-
+                currentEffectTypes.Add(newEffect.EffectType);
                 var newEffectIsValueless = MagicItemEffectDefinitions.IsValuelessEffect(newEffect.EffectType, rarity);
                 if (newEffectIsValueless)
                 {

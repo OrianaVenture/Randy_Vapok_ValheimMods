@@ -64,8 +64,16 @@ namespace EpicLoot_UnityLib
 
             var inGameGui = StoreGui.instance.transform.parent;
             var siblingIndex = StoreGui.instance.transform.GetSiblingIndex() + 1;
+
+            // Call to arms compatibility: increase scroll sensitivity
+            foreach (var scrollRect in source.EnchantingUIPrefab.GetComponentsInChildren<ScrollRect>(true)) {
+                scrollRect.scrollSensitivity = 800f;
+            }
+
             var enchantingUI = Instantiate(source.EnchantingUIPrefab, inGameGui);
             enchantingUI.transform.SetSiblingIndex(siblingIndex);
+
+
 
             // TODO: Reduce duplicate code, mock this inside unity in the future
             var existingBackground = StoreGui.instance.m_rootPanel.transform.Find("border (1)");

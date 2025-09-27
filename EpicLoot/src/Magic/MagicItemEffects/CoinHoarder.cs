@@ -31,7 +31,10 @@ public class CoinHoarder
             // Linear fraction increase up till 1000 coins, then logarithmic decay increase (1.145x at 1000)
             return (1f + totalCoins * 0.000145f);
         }
-        float coinHoarderBonus = (Mathf.Log10(effectValue * totalCoins) * 5.5f / 150f) + 1f;
+        // Slope intercept at effectValue 3 * 1000 coins = 0.145065498747
+        // This will result in a bump at higher effects and higher coin coints when going just over 1000 coins
+        // But the logarithmic curve quickly diminishes these returns, 20,000 coins and 10 coinhoarder results in 0.22115
+        float coinHoarderBonus = (Mathf.Log10(effectValue * totalCoins) * 6.258f / 150f) + 1f;
         return coinHoarderBonus;
     }
 
