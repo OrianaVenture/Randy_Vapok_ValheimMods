@@ -5,27 +5,47 @@ namespace EpicLoot.MagicItemEffects;
 
 public abstract class IncreaseDrop
 {
-    public static void TryDropExtraItems(Character character, string effect, DropTable dropTable, Vector3 objPosition)
-    {
-        if (character is Player)
-        {
-            (character as Player).HasActiveMagicEffect(effect, out float effectValue);
+    public string MagicEffect { get; set; }
+    public string ZDOVar { get; set; }
 
-            if (effectValue > 0)
+    public void DoPrefix(HitData hit)
+    {
+        if (hit != null)
+        {
+            Player player = Player.m_localPlayer;
+            if (player != null &&
+                MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, player.GetCurrentWeapon(),
+                    MagicEffect, out float effectValue) &&
+                player.m_nview.GetZDO().GetInt(ZDOVar) != (int)effectValue)
             {
-                DropExtraItems(dropTable.GetDropList(Mathf.RoundToInt(effectValue)), objPosition);
+                EpicLoot.Log($"Setting {ZDOVar} from prefix to {(int)effectValue}");
+                player.m_nview.GetZDO().Set(ZDOVar, (int)effectValue);
             }
         }
     }
 
-    public static void DropExtraItems(List<GameObject> dropList, Vector3 objPosition)
+    public void TryDropExtraItems(Character character, DropTable dropTable, Vector3 objPosition)
+    {
+        if (character is Player)
+        {
+            int effectValue = (character as Player).m_nview.GetZDO().GetInt(ZDOVar);
+
+            if (effectValue > 0)
+            {
+                DropExtraItems(dropTable.GetDropList(effectValue), objPosition);
+            }
+        }
+    }
+
+    public void DropExtraItems(List<GameObject> dropList, Vector3 objPosition)
     {
         EpicLoot.Log($"DropExtraItems!");
         Vector2 vector = UnityEngine.Random.insideUnitCircle * 0.5f;
         Vector3 position = objPosition + Vector3.up + new Vector3(vector.x, 0, vector.y);
         Quaternion rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0, 360), 0f);
 
-        for (int i = 0; i < dropList.Count; i++) {
+        for (int i = 0; i < dropList.Count; i++)
+        {
             GameObject drop = dropList[i];
             ItemDrop.OnCreateNew(UnityEngine.Object.Instantiate(drop, position, rotation));
         }
