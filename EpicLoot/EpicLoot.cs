@@ -596,33 +596,32 @@ namespace EpicLoot
         }
 
         private static void LoadUnidentifiedItems() {
-            //var genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
-            //genericPrefab.SetActive(false);
-            //Destroy(genericPrefab.GetComponent<ZNetView>());
-            GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
-            CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
-            ItemManager.Instance.AddItem(genericUnidentified);
-            genericPrefab.SetActive(false);
-            foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
-                // Skip invalid types
-                if (type == "None" || type == "All") { continue; }
+            // TODO: Add Deep North when its time
+            List<Heightmap.Biome> biomesWithUnidentifiedItems = new List<Heightmap.Biome>() { 
+                Heightmap.Biome.Meadows,
+                Heightmap.Biome.BlackForest,
+                Heightmap.Biome.Swamp,
+                Heightmap.Biome.Mountain,
+                Heightmap.Biome.Plains,
+                Heightmap.Biome.Mistlands,
+                Heightmap.Biome.AshLands,
+            };
+            foreach (Heightmap.Biome type in biomesWithUnidentifiedItems) {
                 foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
                     //EpicLoot.Log($"Loading Unidentified_{type}_{rarity}");
-                    var prefab = Object.Instantiate(genericPrefab);
                     string prefabName = $"{type}_{rarity}_Unidentified";
-                    prefab.name = prefabName;
+                    GameObject prefab = Assets.AssetBundle.LoadAsset<GameObject>(prefabName); ;
+                    //prefab.name = prefabName;
                     // EpicLoot.Log($"Set prefab name");
-
+                    // Set Rarity and unidentified status
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
-                    //if (pid == null) { EpicLoot.Log($"Unidentified item ItemDrop null"); }
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    pid.m_itemData.m_dropPrefab = prefab;
-
+                    //pid.m_itemData.m_dropPrefab = prefab;
                     magicItemComponent.SetMagicItem(new MagicItem {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
-                    //EpicLoot.Log($"Added magicitem");
+                    
                     magicItemComponent.Save();
                     //itemDrop.m_itemData
                     ItemConfig unidentifiedIC = new ItemConfig() {
@@ -633,14 +632,15 @@ namespace EpicLoot
                     //prefab.SetActive(true);
                     // Need to add prefab names to a list and once its time, enable all of them
                     ItemManager.Instance.AddItem(custom);
+                    EpicLoot.Log($"Added {prefabName}");
 
-                    void EnableUnidentified(string prefabname) {
-                        PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
-                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
-                        ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
-                    }
+                    //void EnableUnidentified(string prefabname) {
+                    //    //PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
+                    //    //PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
+                    //    ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
+                    //}
 
-                    ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
+                    //ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
                 }
             }
         }

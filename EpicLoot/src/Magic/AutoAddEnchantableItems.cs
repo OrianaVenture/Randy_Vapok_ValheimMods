@@ -20,7 +20,7 @@ namespace EpicLoot.src.Magic
 
         private static readonly List<string> AshLandsResources = new List<string> { "FlametalNew", "Blackwood", "CharredBone", "MoltenCore", "GemstoneBlue", "GemstoneGreen", "GemstoneRed", "CelestialFeather" };
         private static readonly List<string> MistlandsResources = new List<string> { "YggdrasilWood", "BlackMarble", "Eitr", "BlackCore", "Mandible", "Carapace", "ScaleHide", "YagluthDrop" };
-        private static readonly List<string> PlainsResources = new List<string> { "Needle", "BlackMetal", "LinenThread", "UndeadBjornRibcage" };
+        private static readonly List<string> PlainsResources = new List<string> { "Needle", "BlackMetal", "LinenThread", "UndeadBjornRibcage", "TrophyBjornUndead" };
         private static readonly List<string> MountainResources = new List<string> { "Silver", "Obsidian", "WolfHairBundle", "WolfClaw", "WolfFang" };
         private static readonly List<string> SwampResources = new List<string> { "Iron", "Chain", "ElderBark", "Guck" };
         private static readonly List<string> BlackForestResources = new List<string> { "Copper", "Tin", "Bronze", "RoundLog", "FineWood", "TrollHide", "BjornHide", "BjornPaw" };

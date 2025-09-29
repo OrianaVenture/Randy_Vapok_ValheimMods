@@ -4760,13 +4760,7 @@
       "Description": "$mod_epicloot_me_quicklearner_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "OneHandedWeapon",
-          "TwoHandedWeapon",
-          "TwoHandedWeaponLeft",
-          "Bow",
-          "Shield",
-          "Staff",
-          "Tools"
+          "Helmet"
         ],
         "ExclusiveEffectTypes": [
           "AddAxesSkill",

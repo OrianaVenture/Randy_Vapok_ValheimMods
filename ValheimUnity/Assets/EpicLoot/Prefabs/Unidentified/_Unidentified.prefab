@@ -119,6 +119,7 @@ MonoBehaviour:
     m_pickedUp: 0
     m_shared:
       m_name: $mod_epicloot_unidentified_ashlands
+      m_subtitle: 
       m_dlc: 
       m_itemType: 16
       m_icons:
@@ -174,6 +175,18 @@ MonoBehaviour:
       m_deflectionForce: 0
       m_deflectionForcePerLevel: 0
       m_timedBlockBonus: 1.5
+      m_perfectBlockStaminaRegen: 0
+      m_perfectBlockStatusEffect: {fileID: 0}
+      m_buildBlockCharges: 0
+      m_maxBlockCharges: 5
+      m_blockChargeDecayTime: 1
+      m_blockChargeBlockingDecayMult: 0.25
+      m_blockChargeEffects:
+        m_effectPrefabs: []
+      m_maxAdrenaline: 0
+      m_fullAdrenalineSE: {fileID: 0}
+      m_blockAdrenaline: 2
+      m_perfectBlockAdrenaline: 5
       m_animationState: 1
       m_skillType: 1
       m_toolTier: 0
@@ -225,6 +238,8 @@ MonoBehaviour:
         m_hitFriendly: 0
         m_isHomeItem: 0
         m_attackStamina: 20
+        m_attackAdrenaline: 1
+        m_attackUseAdrenaline: 0
         m_attackEitr: 0
         m_attackHealth: 0
         m_attackHealthPercentage: 0
@@ -246,6 +261,8 @@ MonoBehaviour:
         m_attackOriginJoint: 
         m_attackRange: 1.5
         m_attackHeight: 0.6
+        m_attackHeightChar1: 0
+        m_attackHeightChar2: 0
         m_attackOffset: 0
         m_spawnOnTrigger: {fileID: 0}
         m_toggleFlying: 0
@@ -287,6 +304,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         m_attackAngle: 90
         m_attackRayWidth: 0
+        m_attackRayWidthCharExtra: 0
         m_maxYAngle: 0
         m_lowerDamagePerHit: 1
         m_hitPointtype: 0
@@ -345,6 +363,8 @@ MonoBehaviour:
         m_hitFriendly: 0
         m_isHomeItem: 0
         m_attackStamina: 20
+        m_attackAdrenaline: 1
+        m_attackUseAdrenaline: 0
         m_attackEitr: 0
         m_attackHealth: 0
         m_attackHealthPercentage: 0
@@ -366,6 +386,8 @@ MonoBehaviour:
         m_attackOriginJoint: 
         m_attackRange: 1.5
         m_attackHeight: 0.6
+        m_attackHeightChar1: 0
+        m_attackHeightChar2: 0
         m_attackOffset: 0
         m_spawnOnTrigger: {fileID: 0}
         m_toggleFlying: 0
@@ -407,6 +429,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         m_attackAngle: 90
         m_attackRayWidth: 0
+        m_attackRayWidthCharExtra: 0
         m_maxYAngle: 0
         m_lowerDamagePerHit: 1
         m_hitPointtype: 0
@@ -453,9 +476,7 @@ MonoBehaviour:
           m_effectPrefabs: []
         m_burstEffect:
           m_effectPrefabs: []
-      m_ISHorizontalPos: {x: 0, y: 0, z: 0}
-      m_ISHorizontalRot: {x: 0, y: 0, z: 0}
-      m_iSHorizontalScale: {x: 1, y: 1, z: 1}
+      m_itemStandOffsets: []
       m_useDurability: 0
       m_destroyBroken: 1
       m_canBeReparied: 1
@@ -568,6 +589,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
