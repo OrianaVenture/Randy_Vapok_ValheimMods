@@ -51,7 +51,7 @@ namespace EpicLoot.MagicItemEffects
             {
                 var v = player.transform.position - __instance.transform.position;
                 var distSq = v.sqrMagnitude;
-                EpicLoot.Log($"Distance from player: {v.magnitude:F1}");
+                //EpicLoot.Log($"Distance from player: {v.magnitude:F1}");
                 if (distSq > AutoRecallDistance * AutoRecallDistance)
                 {
                     EpicLoot.LogWarning($"[RecallWeapon] Destroying projectile and recalling weapon when over {AutoRecallDistance} meters away from the player.");

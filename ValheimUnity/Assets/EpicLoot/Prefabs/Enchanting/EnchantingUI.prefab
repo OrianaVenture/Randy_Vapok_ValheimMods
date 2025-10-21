@@ -511,6 +511,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -621,7 +622,7 @@ MonoBehaviour:
   - {fileID: 6681859201276687428}
   - {fileID: 3645401463143451566}
   Audio: {fileID: 3559490366599003277}
-  TabClickSFX: {fileID: 8300000, guid: 58c25c77739b4284f8b296c940d61203, type: 3}
+  TabClickSFX: {fileID: 8300000, guid: 2172398bc32a1e741977becabd38ce2e, type: 3}
   EnchantBonusSFX: {fileID: 8300000, guid: a93817225292f6248bbd990a6825b347, type: 3}
 --- !u!82 &1656226832542891894
 AudioSource:
@@ -633,7 +634,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: a93817225292f6248bbd990a6825b347, type: 3}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: a93817225292f6248bbd990a6825b347, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -983,6 +985,7 @@ MonoBehaviour:
     m_onClick:
       m_PersistentCalls:
         m_Calls: []
+  m_blockingElements: []
   m_setActiveTabEffects:
     m_effectPrefabs: []
 --- !u!114 &6411906888522215171
@@ -1641,12 +1644,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7808652292077297198, guid: 88723b65d7ef252429f8cc3b7ca9f6ab,
         type: 3}
-      propertyPath: Lists.Array.data[2]
+      propertyPath: 'Lists.Array.data[2]'
       value: 
       objectReference: {fileID: 7120266538336570460}
     - target: {fileID: 7808652292077297198, guid: 88723b65d7ef252429f8cc3b7ca9f6ab,
         type: 3}
-      propertyPath: Lists.Array.data[3]
+      propertyPath: 'Lists.Array.data[3]'
       value: 
       objectReference: {fileID: 7120266538336570460}
     - target: {fileID: 8602604198656782146, guid: 88723b65d7ef252429f8cc3b7ca9f6ab,
@@ -5083,6 +5086,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7123547939108130112, guid: d20a9ed04e023aa49bf9c470517aeb86,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7123547939108130112, guid: d20a9ed04e023aa49bf9c470517aeb86,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7123547939108130112, guid: d20a9ed04e023aa49bf9c470517aeb86,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

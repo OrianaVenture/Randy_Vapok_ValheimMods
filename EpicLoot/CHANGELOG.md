@@ -59,6 +59,9 @@
     * Bounties
     * Secret stash items
 * Small code cleanups
+* Makes tooltips wider and scrollable, supports sets of infinite size
+* Fix for attacker stagger that would stagger non-pvp enabled players, now only staggers attackers that are pvp enabled
+* Adds status effect on-hit chance display data to magic item tooltips
 
 ## Version 0.11.4
 

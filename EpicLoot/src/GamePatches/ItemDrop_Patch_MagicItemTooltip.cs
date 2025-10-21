@@ -4,6 +4,7 @@ using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.src.GamePatches;
+using EpicLoot.src.integrations;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -159,6 +160,13 @@ namespace EpicLoot
                         text.Append(consumeStatusEffectTooltip);
                     }
 
+                    string chainTooltip = item.GetChainTooltip(qualityLevel, skillLevel);
+                    if (chainTooltip.Length > 0)
+                    {
+                        text.Append("\n\n");
+                        text.Append(chainTooltip);
+                    }
+
                     break;
 
                 case ItemDrop.ItemData.ItemType.OneHandedWeapon:
@@ -296,6 +304,13 @@ namespace EpicLoot
                         text.Append(statusEffectTooltip2);
                     }
 
+                    string chainTooltip2 = item.GetChainTooltip(qualityLevel, skillLevel);
+                    if (chainTooltip2.Length > 0)
+                    {
+                        text.Append("\n\n");
+                        text.Append(chainTooltip2);
+                    }
+
                     break;
 
                 case ItemDrop.ItemData.ItemType.Shield:
@@ -343,6 +358,13 @@ namespace EpicLoot
                     {
                         text.Append("\n");
                         text.Append(statusEffectTooltip3);
+                    }
+
+                    string chainTooltip3 = item.GetChainTooltip(qualityLevel, skillLevel);
+                    if (chainTooltip3.Length > 0)
+                    {
+                        text.Append("\n\n");
+                        text.Append(chainTooltip3);
                     }
 
                     break;

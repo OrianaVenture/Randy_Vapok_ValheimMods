@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection.Emit;
 using UnityEngine;
 
@@ -40,22 +41,11 @@ namespace EpicLoot.MagicItemEffects
                 if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Damage")) {
                     weaponDamage.Modify(tripleshotcfg["Damage"]);
                 } else {
-                    weaponDamage.Modify(0.35f);
+                    weaponDamage.Modify(0.75f);
                 }
                 __instance.GetWeapon().m_shared.m_damages = weaponDamage;
 
-                if (__instance.GetWeapon().m_shared.m_attack.m_attackHealth > 0) {
-                    if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Projectiles")) {
-                        int projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * Mathf.RoundToInt(tripleshotcfg["Projectiles"]);
-                        // If more than 1 projectile we remove 1, as the cost for the initial item is already paid
-                        if (projectiles > 1) { projectiles -= 1; }
-                        player.UseHealth(__instance.GetWeapon().m_shared.m_attack.m_attackHealth *= projectiles);
-                    }
-                    else {
-                        player.UseHealth(__instance.GetWeapon().m_shared.m_attack.m_attackHealth *= 2);
-                    }
-                     
-                }
+                ModifyAttackCost(player, tripleshotcfg, __instance.GetAttackStamina(), __instance.GetAttackEitr(), __instance.GetAttackHealth());
 
                 // Modify the shots accuracy, if its not defined, no accuracy change
                 if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Accuracy"))
@@ -74,7 +64,7 @@ namespace EpicLoot.MagicItemEffects
             }
 
             if (player.HasActiveMagicEffect(MagicEffectType.DoubleMagicShot, out float doubleMagicEffectValue)) {
-                var magicshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
+                Dictionary<string, float> magicshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
 
                 // If chance is enabled, roll to see if the effect will run
                 if (magicshotcfg != null && magicshotcfg["Chance"] < 1f) {
@@ -86,7 +76,7 @@ namespace EpicLoot.MagicItemEffects
                 if (magicshotcfg != null && magicshotcfg.ContainsKey("Damage")) {
                     weaponDamage.Modify(magicshotcfg["Damage"]);
                 } else {
-                    weaponDamage.Modify(0.6f);
+                    weaponDamage.Modify(0.9f);
                 }
                 __instance.GetWeapon().m_shared.m_damages = weaponDamage;
 
@@ -101,6 +91,8 @@ namespace EpicLoot.MagicItemEffects
                 //    __instance.m_projectileAccuracy = 5;
                 //    __instance.m_projectileAccuracyMin = 3;
                 //}
+
+                ModifyAttackCost(player, magicshotcfg, __instance.GetAttackStamina(), __instance.GetAttackEitr(), __instance.GetAttackHealth());
 
                 // Set projectiles, if config is not defined its x3
                 if (magicshotcfg != null && magicshotcfg.ContainsKey("Projectiles")) {
@@ -117,6 +109,18 @@ namespace EpicLoot.MagicItemEffects
             if (__state != null)
             {
                 __instance.GetWeapon().m_shared.m_damages = __state.Value;
+            }
+        }
+
+        public static void ModifyAttackCost(Player player, Dictionary<string, float> config, float stamcost, float eitrcost, float healthcost) {
+            if (config != null && config.ContainsKey("CostScale")) {
+                if (stamcost > 0) { player.UseStamina(healthcost * config["CostScale"]); }
+                if (eitrcost > 0) { player.UseEitr(healthcost * config["CostScale"]); }
+                if (healthcost > 0) { player.UseHealth(healthcost * config["CostScale"]); }
+            } else {
+                if (stamcost > 0) { player.UseStamina(healthcost * 2); }
+                if (eitrcost > 0) { player.UseEitr(healthcost * 2); }
+                if (healthcost > 0) { player.UseHealth(healthcost * 2); }
             }
         }
     }
@@ -150,56 +154,15 @@ namespace EpicLoot.MagicItemEffects
             if (MultiShot.isTripleShotActive) {
                 MultiShot.isTripleShotActive = false;
                 var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
-
-                // If chance is enabled, roll to see if the effect will run
                 if (tripleshotcfg != null && tripleshotcfg["Projectiles"] < 1f) {
                     amount *= Mathf.RoundToInt(tripleshotcfg["Projectiles"]);
                 } else {
                     amount *= 3;
                 }
             }
-
             return inventory.RemoveItem(item, amount);
         }
+
     }
 
-    [HarmonyPriority(Priority.HigherThanNormal)]
-    [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackEitr))]
-    public class DoubleMagicShot_Attack_GetAttackEitr_Patch
-    {
-        public static void Postfix(Attack __instance, ref float __result)
-        {
-            if (__instance.m_character is Player player)
-            {
-                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(
-                    player, __instance.m_weapon, MagicEffectType.DoubleMagicShot, out float effectValue))
-                {
-                    var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
-                    if (tripleshotcfg != null && tripleshotcfg.ContainsKey("EitrCostScale")) {
-                        __result *= tripleshotcfg["EitrCostScale"];
-                    } else {
-                        __result *= 2;
-                    }
-                }
-            }
-        }
-    }
-
-    [HarmonyPriority(Priority.HigherThanNormal)]
-    [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackStamina))]
-    public class DoubleMagicShot_Attack_GetAttackStamina_Patch {
-        public static void Postfix(Attack __instance, ref float __result) {
-            if (__instance.m_character is Player player) {
-                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(
-                    player, __instance.m_weapon, MagicEffectType.DoubleMagicShot, out float effectValue)) {
-                    var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
-                    if (tripleshotcfg != null && tripleshotcfg.ContainsKey("EitrCostScale")) {
-                        __result *= tripleshotcfg["EitrCostScale"];
-                    } else {
-                        __result *= 2;
-                    }
-                }
-            }
-        }
-    }
 }

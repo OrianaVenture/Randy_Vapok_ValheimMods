@@ -310,7 +310,9 @@ namespace EpicLoot
                         }
 
                         GameObject selectedPrefab = ObjectDB.instance.GetItemPrefab(gatedItemName);
+                        ZNetView.m_forceDisableInit = true;
                         GameObject droppedItem = Object.Instantiate(selectedPrefab, location, new Quaternion(0, 0, 0, 0));
+                        ZNetView.m_forceDisableInit = false;
                         if (droppedItem == null) {
                             failures += 1;
                             continue;
@@ -473,8 +475,17 @@ namespace EpicLoot
                                 EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified but prefab was not found! Dropping {lootDrop.Item} instead.");
                             } else {
                                 EpicLoot.Log($"Adding {rarity} unidentified item");
-                                SpawnLootForDrop(prefab, dropPoint, initializeObject);
-                                results.Add(prefab);
+                                Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+                                ZNetView.m_forceDisableInit = !initializeObject;
+                                GameObject lootdrop = Object.Instantiate(prefab, dropPoint, randomRotation);
+                                // Ensure that the unidentified item has the correct magic item data for the rarity
+                                var mic = lootdrop.GetComponent<ItemDrop>().m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                                mic.SetMagicItem(new MagicItem {
+                                    Rarity = rarity,
+                                    IsUnidentified = true,
+                                });
+                                ZNetView.m_forceDisableInit = false;
+                                results.Add(lootdrop);
                                 continue;
                             }
                         }
@@ -581,9 +592,9 @@ namespace EpicLoot
 
         public static GameObject SpawnLootForDrop(GameObject itemPrefab, Vector3 dropPoint, bool initializeObject)
         {
-            var randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+            Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
             ZNetView.m_forceDisableInit = !initializeObject;
-            var item = Object.Instantiate(itemPrefab, dropPoint, randomRotation);
+            GameObject item = Object.Instantiate(itemPrefab, dropPoint, randomRotation);
             ZNetView.m_forceDisableInit = false;
             return item;
         }

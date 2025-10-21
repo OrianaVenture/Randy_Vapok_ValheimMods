@@ -320,7 +320,7 @@
           "Chest"
         ]
       },
-      "GuaranteedEffectCount": 6, 
+      "GuaranteedEffectCount": 6,
       "GuaranteedMagicEffects": [
         { "Type": "ModifyArmor" },
         { "Type": "IncreaseStamina" }

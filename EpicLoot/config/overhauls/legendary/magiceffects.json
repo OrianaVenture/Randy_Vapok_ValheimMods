@@ -6325,7 +6325,7 @@
         "Damage": 1,
         "Accuracy": 1.1,
         "Projectiles": 2,
-        "EitrCostScale": 1.2
+        "CostScale": 1.2
       },
       "Prefixes": [
         "$mod_epicloot_me_doublemagicshot_prefix1"
@@ -6354,7 +6354,8 @@
         "Chance": 1,
         "Damage": 1,
         "Accuracy": 1.05,
-        "Projectiles": 3
+        "Projectiles": 3,
+        "CostScale": 2
       },
       "Prefixes": [
         "$mod_epicloot_me_triplebowshot_prefix1"

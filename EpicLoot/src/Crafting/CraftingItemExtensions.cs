@@ -10,6 +10,11 @@ namespace EpicLoot.Crafting
                 item.m_shared.m_ammoType.EndsWith("MagicCraftingMaterial");
         }
 
+        public static bool IsUnidentified(this ItemDrop.ItemData item)
+        {
+            return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material && item.m_shared.m_ammoType.EndsWith("Unidentified");
+        }
+
         public static ItemRarity GetCraftingMaterialRarity(this ItemDrop.ItemData item)
         {
             var typeParts = item.m_shared.m_ammoType.Split(new [] { '|' }, StringSplitOptions.RemoveEmptyEntries);

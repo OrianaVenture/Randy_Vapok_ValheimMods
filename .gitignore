@@ -94,3 +94,4 @@ ValheimUnity/UserSettings
 Common
 ValheimMods.sln
 EpicLootAPI/EpicLootAPI/bin/
+*.env

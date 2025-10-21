@@ -889,7 +889,7 @@ namespace EpicLoot.CraftingV2
         private static List<Tuple<string, bool>> GetEnchantmentEffects(ItemDrop.ItemData item, bool runecheck = false)
         {
             var result = new List<Tuple<string, bool>>();
-
+            EpicLoot.Log($"Checking for {item} potential enchantments");
             var magicItem = item?.GetMagicItem();
             if (magicItem != null)
             {

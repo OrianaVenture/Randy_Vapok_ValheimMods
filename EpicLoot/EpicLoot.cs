@@ -99,7 +99,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.0";
+        public const string Version = "0.12.2";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -183,7 +183,6 @@ namespace EpicLoot
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
             Jotunn.Logger.LogInfo("Setting up config");
             cfg = new ELConfig(Config);
-
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
             Jotunn.Logger.LogInfo("Applying config patches");
@@ -596,51 +595,40 @@ namespace EpicLoot
         }
 
         private static void LoadUnidentifiedItems() {
-            // TODO: Add Deep North when its time
-            List<Heightmap.Biome> biomesWithUnidentifiedItems = new List<Heightmap.Biome>() { 
-                Heightmap.Biome.Meadows,
-                Heightmap.Biome.BlackForest,
-                Heightmap.Biome.Swamp,
-                Heightmap.Biome.Mountain,
-                Heightmap.Biome.Plains,
-                Heightmap.Biome.Mistlands,
-                Heightmap.Biome.AshLands,
-            };
-            foreach (Heightmap.Biome type in biomesWithUnidentifiedItems) {
+            GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
+            ItemManager.Instance.AddItem(genericUnidentified);
+            genericPrefab.SetActive(false);
+            foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
+                if (type == "None" || type == "All") { continue; }
                 foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
-                    //EpicLoot.Log($"Loading Unidentified_{type}_{rarity}");
+                    var prefab = Object.Instantiate(genericPrefab);
                     string prefabName = $"{type}_{rarity}_Unidentified";
-                    GameObject prefab = Assets.AssetBundle.LoadAsset<GameObject>(prefabName); ;
-                    //prefab.name = prefabName;
-                    // EpicLoot.Log($"Set prefab name");
-                    // Set Rarity and unidentified status
+                    prefab.name = prefabName;
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    //pid.m_itemData.m_dropPrefab = prefab;
+                    pid.m_itemData.m_dropPrefab = prefab;
                     magicItemComponent.SetMagicItem(new MagicItem {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
-                    
                     magicItemComponent.Save();
-                    //itemDrop.m_itemData
                     ItemConfig unidentifiedIC = new ItemConfig() {
                         Name = $"$mod_epicloot_{rarity} $mod_epicloot_unidentified_{type}",
                         Description = "$mod_epicloot_unidentified_introduce",
                     };
                     CustomItem custom = new CustomItem(prefab, false, unidentifiedIC);
-                    //prefab.SetActive(true);
-                    // Need to add prefab names to a list and once its time, enable all of them
                     ItemManager.Instance.AddItem(custom);
-                    EpicLoot.Log($"Added {prefabName}");
 
-                    //void EnableUnidentified(string prefabname) {
-                    //    //PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
-                    //    //PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
-                    //    ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
-                    //}
+                    // Enable Items once things are working so that ZNet issues don't happen
+                    void EnableUnidentified(string prefabname)
+                    {
+                        PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
+                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
+                        ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
+                    }
 
-                    //ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
+                    ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
                 }
             }
         }

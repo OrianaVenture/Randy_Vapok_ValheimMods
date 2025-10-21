@@ -63,9 +63,9 @@ namespace EpicLoot_UnityLib
             }
 
             // Trigger cost update when the identify style changes
-            IdentifyStyle.onValueChanged.AddListener((value) => {
-                OnSelectedItemsChanged();
-            });
+            //IdentifyStyle.onValueChanged.AddListener((value) => {
+            //    OnSelectedItemsChanged();
+            //});
         }
 
         [UsedImplicitly]

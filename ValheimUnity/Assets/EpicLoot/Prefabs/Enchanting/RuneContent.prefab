@@ -5759,7 +5759,6 @@ GameObject:
   - component: {fileID: 6348817607152494085}
   - component: {fileID: 8170666090700300620}
   - component: {fileID: 5375318164601462906}
-  - component: {fileID: 5555382474797790774}
   m_Layer: 5
   m_Name: ModeExtractButton
   m_TagString: Untagged
@@ -5888,20 +5887,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
---- !u!114 &5555382474797790774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763506451051930469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 2091986947, guid: 2f9828d4dfcaa584280fbdd93cb3976a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Audio: {fileID: 3999165617330130774}
-  SFX: {fileID: 8300000, guid: 2172398bc32a1e741977becabd38ce2e, type: 3}
 --- !u!1 &7801494972433146957
 GameObject:
   m_ObjectHideFlags: 0
