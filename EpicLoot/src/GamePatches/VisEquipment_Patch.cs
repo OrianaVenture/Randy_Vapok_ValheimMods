@@ -214,7 +214,7 @@ namespace EpicLoot
 
         [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.DropItem))]
         [HarmonyPostfix]
-        public static void Humanoid_DropITem(Humanoid __instance, ItemDrop.ItemData item)
+        public static void Humanoid_DropItem(Humanoid __instance, ItemDrop.ItemData item)
         {
             var equipFx = GetEquipFxName(item, out var mode);
             if (OtherItemsUseThisEffect(__instance, equipFx, item, mode))
