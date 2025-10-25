@@ -185,11 +185,6 @@ namespace EpicLoot.Patching
             if (!string.IsNullOrEmpty(patchFile.TargetFile))
                 defaultTargetFile = patchFile.TargetFile;
 
-            // Target files do not need to be extension specific
-            if (patchFile.TargetFile.Contains(".json") || patchFile.TargetFile.Contains(".yaml")) {
-                defaultTargetFile = patchFile.TargetFile.Replace(".json", "").Replace(".yaml", "");
-            }
-
             if (!string.IsNullOrEmpty(defaultTargetFile) && !ConfigFileNames.Contains(defaultTargetFile))
             {
                 EpicLoot.LogErrorForce($"TargetFile ({defaultTargetFile}) specified in patch file ({file.Name}) " +
@@ -288,14 +283,14 @@ namespace EpicLoot.Patching
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
-            string base_cfg_file = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
-            EpicLoot.Log($"Loading config base file {base_cfg_file}");
+            string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
+            EpicLoot.Log($"Loading config base file {baseCfgFile}");
             try {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
-                var base_json_string = JObject.Parse(File.ReadAllText(base_cfg_file));
-                var patchedString = BuildPatchedConfig(filename, base_json_string);
+                var baseJsonString = JObject.Parse(File.ReadAllText(baseCfgFile));
+                var patchedString = BuildPatchedConfig(filename, baseJsonString);
                 // We only need to write the file result if its valid. If this file is changed it will trigger a reload of the config.
-                File.WriteAllText(base_cfg_file, patchedString);
+                File.WriteAllText(baseCfgFile, patchedString);
             } catch (Exception e) {
                 EpicLoot.LogWarningForce($"Patching config file {filename} failed." + e);
             }

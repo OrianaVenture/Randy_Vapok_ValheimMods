@@ -559,7 +559,7 @@ public static class API
                     UniqueLegendaryHelper.Config.LegendarySets.Add(config);
                     foreach (var name in config.LegendaryIDs)
                     {
-                        UniqueLegendaryHelper._legendaryItemsToSetMap[name] = config;
+                        UniqueLegendaryHelper.LegendaryItemsToSetMap[name] = config;
                     }
                     break;
                 case ItemRarity.Mythic:
@@ -567,7 +567,7 @@ public static class API
                     UniqueLegendaryHelper.Config.MythicSets.Add(config);
                     foreach (var name in config.LegendaryIDs)
                     {
-                        UniqueLegendaryHelper._mythicItemsToSetMap[name] = config;
+                        UniqueLegendaryHelper.MythicItemsToSetMap[name] = config;
                     }
                     break;
             }

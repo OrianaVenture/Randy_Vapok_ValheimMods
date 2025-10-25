@@ -60,7 +60,6 @@ namespace EpicLoot.MagicItemEffects
 
         private static void DetermineBulkhealthValue(bool skip_if_set = false)
         {
-            //EpicLoot.Log($"Checking Bulk Health Values, current bonus {health_bonus_from_effect}");
             // Skip the details if the value is already set and we arn't updating it.
             if (skip_if_set && health_bonus_from_effect > 0) { return; }
 
@@ -83,7 +82,6 @@ namespace EpicLoot.MagicItemEffects
                 // The bulkup bonus to health
                 float bulk_health_bonus = ((bulkupValue / 30f) * 0.8f) + 1.5f;
                 health_bonus_from_effect = bulk_health_bonus * health_regen_from_food;
-                //EpicLoot.Log($"Regen {health_regen_from_food} Bulkup Health bonus {bulk_health_bonus} = {health_bonus_from_effect}");
             }
             else
             {

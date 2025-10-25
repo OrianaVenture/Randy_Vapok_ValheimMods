@@ -22,7 +22,7 @@ namespace EpicLoot.MagicItemEffects
                     player.HasActiveMagicEffect(MagicEffectType.StaggerOnDamageTaken, out float effectValue, 0.01f))
             {
                 // Don't stagger friendly players, only PvP enabled ones
-                if (attacker.IsPlayer() && attacker.IsPVPEnabled() == false) {
+                if (attacker.IsPVPEnabled() == false) {
                     return;
                 }
                 if (Random.Range(0f, 1f) < effectValue)

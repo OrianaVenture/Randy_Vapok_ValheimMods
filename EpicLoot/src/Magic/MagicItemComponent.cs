@@ -168,7 +168,9 @@ namespace EpicLoot
 
         public static bool IsUnidentified(this ItemDrop.ItemData itemData)
         {
-            return itemData.Data().Get<MagicItemComponent>()?.MagicItem?.IsUnidentified ?? false;
+            MagicItemComponent mic = itemData.Data().Get<MagicItemComponent>();
+            if (mic == null) { return false; }
+            return mic.MagicItem.IsUnidentified;
         }
 
         public static bool IsMagic(this ItemDrop.ItemData itemData, out MagicItem magicItem)
@@ -357,13 +359,9 @@ namespace EpicLoot
             return !string.IsNullOrEmpty(itemData.GetSetID());
         }
 
-        public static bool IsLegendarySetItem(this ItemDrop.ItemData itemData)
+        public static bool IsMagicSetItem(this ItemDrop.ItemData itemData)
         {
-            return itemData.IsMagic(out var magicItem) && magicItem.Rarity == ItemRarity.Legendary && !string.IsNullOrEmpty(magicItem.SetID);
-        }
-
-        public static bool IsMythicSetItem(this ItemDrop.ItemData itemData) {
-            return itemData.IsMagic(out var magicItem) && magicItem.Rarity == ItemRarity.Mythic && !string.IsNullOrEmpty(magicItem.SetID);
+            return itemData.IsMagic(out var magicItem) && !string.IsNullOrEmpty(magicItem.SetID);
         }
 
         public static bool IsMundaneSetItem(this ItemDrop.ItemData itemData)

@@ -15,8 +15,8 @@ namespace EpicLoot.LegendarySystem
         public static readonly Dictionary<string, LegendaryInfo> MythicInfo = new Dictionary<string, LegendaryInfo>();
         public static readonly Dictionary<string, LegendarySetInfo> MythicSets = new Dictionary<string, LegendarySetInfo>();
 
-        public static readonly Dictionary<string, LegendarySetInfo> _legendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
-        public static readonly Dictionary<string, LegendarySetInfo> _mythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> LegendaryItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
+        public static readonly Dictionary<string, LegendarySetInfo> MythicItemsToSetMap = new Dictionary<string, LegendarySetInfo>();
 
         public static readonly LegendaryInfo GenericLegendaryInfo = new LegendaryInfo
         {
@@ -33,14 +33,14 @@ namespace EpicLoot.LegendarySystem
             AddLegendaryInfo(config.LegendaryItems);
 
             LegendarySets.Clear();
-            _legendaryItemsToSetMap.Clear();
+            LegendaryItemsToSetMap.Clear();
             AddLegendarySets(config.LegendarySets);
 
             MythicInfo.Clear();
             AddMythicInfo(config.MythicItems);
 
             MythicSets.Clear();
-            _mythicItemsToSetMap.Clear();
+            MythicItemsToSetMap.Clear();
             AddMythicSets(config.MythicSets);
             
         }
@@ -99,9 +99,9 @@ namespace EpicLoot.LegendarySystem
 
                 foreach (var legendaryID in legendarySetInfo.LegendaryIDs)
                 {
-                    if (!_legendaryItemsToSetMap.ContainsKey(legendaryID))
+                    if (!LegendaryItemsToSetMap.ContainsKey(legendaryID))
                     {
-                        _legendaryItemsToSetMap.Add(legendaryID, legendarySetInfo);
+                        LegendaryItemsToSetMap.Add(legendaryID, legendarySetInfo);
                     }
                     else
                     {
@@ -129,9 +129,9 @@ namespace EpicLoot.LegendarySystem
 
                 foreach (var mythicID in mythicSetInfo.LegendaryIDs)
                 {
-                    if (!_mythicItemsToSetMap.ContainsKey(mythicID))
+                    if (!MythicItemsToSetMap.ContainsKey(mythicID))
                     {
-                        _mythicItemsToSetMap.Add(mythicID, mythicSetInfo);
+                        MythicItemsToSetMap.Add(mythicID, mythicSetInfo);
                     }
                     else
                     {
@@ -226,11 +226,11 @@ namespace EpicLoot.LegendarySystem
         {
             if (legendary != null && legendary.IsSetItem && !string.IsNullOrEmpty(legendary.ID))
             {
-                if (_mythicItemsToSetMap.TryGetValue(legendary.ID, out var mythicSetInfo))
+                if (MythicItemsToSetMap.TryGetValue(legendary.ID, out var mythicSetInfo))
                 {
                     return mythicSetInfo.ID;
                 }
-                else if (_legendaryItemsToSetMap.TryGetValue(legendary.ID, out var setInfo))
+                else if (LegendaryItemsToSetMap.TryGetValue(legendary.ID, out var setInfo))
                 {
                     return setInfo.ID;
                 }

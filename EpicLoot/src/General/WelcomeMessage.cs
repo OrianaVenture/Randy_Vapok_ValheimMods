@@ -9,7 +9,7 @@ namespace EpicLoot
     public class WelcomeMessage : MonoBehaviour
     {
         public static void SetPlayerHasSeenMessage() {
-            ELConfig.ShowWelcomeMessage.Value = false;
+            ELConfig.AlwaysShowWelcomeMessage.Value = false;
         }
 
         public void Awake()
@@ -108,7 +108,7 @@ namespace EpicLoot
     {
         public static void Postfix(FejdStartup __instance)
         {
-            if (ELConfig.ShowWelcomeMessage.Value)
+            if (ELConfig.AlwaysShowWelcomeMessage.Value)
             {
                 var welcomeMessage = Object.Instantiate(EpicLoot.Assets.WelcomMessagePrefab, __instance.transform, false);
                 welcomeMessage.name = "WelcomeMessage";

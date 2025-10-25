@@ -121,7 +121,7 @@ namespace EpicLoot.Crafting
         public static Dictionary<string, string> GetIdentificationCategories() {
             Dictionary<string, string> categories = new Dictionary<string, string>();
             foreach(var identifyStyle in Config.IdentifyTypes) {
-                categories.Add(identifyStyle.Key, identifyStyle.Value.localization);
+                categories.Add(identifyStyle.Key, identifyStyle.Value.Localization);
             }
             return categories;
         }

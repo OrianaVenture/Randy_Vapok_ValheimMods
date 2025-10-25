@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EpicLoot.src.Loot
+namespace EpicLoot.Loot
 {
     public class WeightedRandomCollection<T>
     {

@@ -543,7 +543,7 @@ namespace EpicLoot.CraftingV2
         private static IdentifyTypeConfig SelectLootIdentifyDetails(string filter)
         {
             foreach (var identifyStyle in EnchantCostsHelper.Config.IdentifyTypes) {
-                if (Localization.instance.Localize(identifyStyle.Value.localization) == filter) {
+                if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter) {
                     return identifyStyle.Value;
                 }
             }
@@ -551,7 +551,7 @@ namespace EpicLoot.CraftingV2
         }
 
         private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, Heightmap.Biome biome) {
-            EpicLoot.Log($"Getting loot tables for identify style {Localization.instance.Localize(cfg.localization)} in biome {biome} cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
+            EpicLoot.Log($"Getting loot tables for identify style {Localization.instance.Localize(cfg.Localization)} in biome {biome} cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
             Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(biome, EpicLoot.GetGatedItemTypeMode());
 
             List<LootTable> lootTables = new List<LootTable>() { };
@@ -560,7 +560,7 @@ namespace EpicLoot.CraftingV2
                 List<LootTable> lootTable = LootRoller.GetFullyResolvedLootTable(lootSetName);
                 if (lootTable != null) { lootTables.AddRange(lootTable); }
             }
-            EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.localization)} {lootTables.Count}");
+            EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.Localization)} {lootTables.Count}");
             return lootTables;
         }
 
@@ -901,7 +901,7 @@ namespace EpicLoot.CraftingV2
                     var augmentableEffect = augmentableEffects[index];
                     var effectDef = MagicItemEffectDefinitions.Get(augmentableEffect.EffectType);
                     var canAugment = effectDef != null && effectDef.CanBeAugmented;
-                    if (runecheck) { canAugment = effectDef != null && effectDef.CanBeRuned; }
+                    if (runecheck) { canAugment = effectDef != null && effectDef.CanBeRunified; }
 
                     var text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
                     var color = EpicLoot.GetRarityColor(rarity);

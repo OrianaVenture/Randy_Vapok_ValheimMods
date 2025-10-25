@@ -11,6 +11,7 @@ namespace EpicLoot.MagicItemEffects
     public class DodgeDetectionandBuffApplicationPatch
     {
         public static bool DodgeWasDetected = false;
+        static int rushHash = "Adrenaline_Rush".GetStableHashCode();
 
         static void Postfix(Attack __instance)
         {
@@ -57,8 +58,6 @@ namespace EpicLoot.MagicItemEffects
                     Player player = hitCharacter as Player;
                     if (player != null)
                     {
-                        int rushHash = "Adrenaline_Rush".GetStableHashCode();
-
                         if (player.GetSEMan().GetStatusEffect(rushHash) == null &&
                             player.GetTotalActiveMagicEffectValue(MagicEffectType.DodgeBuff, 1f) > 0f &&
                             dodgedHit)
@@ -85,8 +84,8 @@ namespace EpicLoot.MagicItemEffects
 
             //fill out fields in se_stats to make the status effect I want
             myStatusEffect.name = "Adrenaline_Rush";
-            myStatusEffect.m_name = "Adrenaline Rush";
-            myStatusEffect.m_tooltip = "Increased damage for the duration of the effect.";
+            myStatusEffect.m_name = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush");
+            myStatusEffect.m_tooltip = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush_desc");
             myStatusEffect.m_icon = iconSprite;
             myStatusEffect.m_ttl = 10f;
 

@@ -4,6 +4,7 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -24,8 +25,11 @@ namespace EpicLoot.MagicItemEffects
         public static KeyValuePair<GameObject, int> LowestCostEntry = new KeyValuePair<GameObject, int>(null, 0);
 
         public static void UpdateRichesOnEffectSetup() {
-            // Don't do setup if things are not available yet
-            if (PrefabManager.Instance.GetPrefab("Coins") == null) { return; }
+            // Don't do setup if we are not in the game scene yet (main menu doesn't count)
+            if (!SceneManager.GetActiveScene().name.Equals("main"))
+            {
+                return;
+            }
 
             EpicLoot.Log("Updating riches table.");
 
@@ -47,7 +51,6 @@ namespace EpicLoot.MagicItemEffects
             Dictionary<GameObject, int> newRichesTable = new Dictionary<GameObject, int>();
             LowestCostEntry = new KeyValuePair<GameObject, int>(null, 100);
             foreach (KeyValuePair<string, float> kv in config) {
-                EpicLoot.Log($"Riches checking config item: {kv.Key} with value {kv.Value}");
                 if (ObjectDB.instance.TryGetItemPrefab(kv.Key, out GameObject itemPrefab)) {
                     newRichesTable.Add(itemPrefab, Mathf.RoundToInt(kv.Value));
                     if (kv.Value < LowestCostEntry.Value) {
@@ -64,7 +67,6 @@ namespace EpicLoot.MagicItemEffects
             RichesTable = newRichesTable;
 
             if (RichesTable.Count == 0) {
-                EpicLoot.Log($"Riches Table using defaults.");
                 foreach (KeyValuePair<string, float> kv in DefaultRichesTable) {
                     if (ObjectDB.instance.TryGetItemPrefab(kv.Key, out GameObject itemPrefab)) {
                         RichesTable.Add(itemPrefab, Mathf.RoundToInt(kv.Value));
@@ -78,8 +80,7 @@ namespace EpicLoot.MagicItemEffects
         {
             // Only do network updates for riches every minute
             if (lastUpdateCheck < Time.time) {
-                EpicLoot.Log($"{lastUpdateCheck} < {Time.time}");
-                lastUpdateCheck = Time.time + 60f;
+                lastUpdateCheck = Time.time + 5f;
 
                 var playerList = new List<Player>();
                 Player.GetPlayersInRange(__instance.m_character.transform.position, 100f, playerList);
@@ -97,7 +98,6 @@ namespace EpicLoot.MagicItemEffects
             }
 
             float richesActivateRoll = Random.Range(0f, 1f);
-            EpicLoot.Log($"Riches roll amount: {richesActivateRoll} < {richesRandomRoll}");
             if (richesActivateRoll < richesRandomRoll) {
 
                 // Riches table not setup, so we need to update it
@@ -113,11 +113,9 @@ namespace EpicLoot.MagicItemEffects
                 int amount = richesAmount < 1 ? 0 : Mathf.RoundToInt(richesAmount);
                 GameObject selectedPrefab = RichesTable.Keys.ElementAt(selected);
                 if (amount == 0 && LowestCostEntry.Key != null) {
-                    EpicLoot.Log($"Riches unable to afford {selectedPrefab} ( {richesValueRoll} / {richesCost}), falling back to lowest cost item {LowestCostEntry.Key} at cost {LowestCostEntry.Value}");
                     amount = Mathf.RoundToInt(richesValueRoll / LowestCostEntry.Value);
                     selectedPrefab = LowestCostEntry.Key;
                 }
-                EpicLoot.Log($"Riches awarding {amount} of {selectedPrefab} ( {richesValueRoll} / {richesCost})");
                 if (amount >= 1) {
                     __result.Add(new KeyValuePair<GameObject, int>(selectedPrefab, amount));
                 }

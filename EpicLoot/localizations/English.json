@@ -1188,6 +1188,8 @@
   "mod_epicloot_me_apportation": "Apportation",
   "mod_epicloot_me_apportation_desc": "Teleports player to thrown weapon when an enemy is hit.",
   "mod_epicloot_me_apportation_display": "Apportation",
+  "mod_epicloot_me_adrenaline_rush": "Adrenaline Rush",
+  "mod_epicloot_me_adrenaline_rush_desc": "Increased damage for the duration of the effect.",
 
   "mod_epicloot_set_me_bulwark": "Bulwark [Activated]: Prevent all damage for 5 seconds. Cooldown: 60 seconds.",
   "mod_epicloot_set_me_undying": "Undying [Passive]: On death, regain full health. Cooldown: 20 minutes.",

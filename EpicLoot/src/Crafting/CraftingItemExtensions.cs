@@ -4,15 +4,18 @@ namespace EpicLoot.Crafting
 {
     public static class CraftingItemExtensions
     {
+        const string magicMat = "MagicCraftingMaterial";
+        const string magicUnidentified = "Unidentified";
+
         public static bool IsMagicCraftingMaterial(this ItemDrop.ItemData item)
         {
             return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material &&
-                item.m_shared.m_ammoType.EndsWith("MagicCraftingMaterial");
+                item.m_shared.m_ammoType.EndsWith(magicMat);
         }
 
         public static bool IsUnidentified(this ItemDrop.ItemData item)
         {
-            return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material && item.m_shared.m_ammoType.EndsWith("Unidentified");
+            return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material && item.m_shared.m_ammoType.EndsWith(magicUnidentified);
         }
 
         public static ItemRarity GetCraftingMaterialRarity(this ItemDrop.ItemData item)

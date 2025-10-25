@@ -8,10 +8,11 @@ namespace EpicLoot.MagicItemEffects
     {
         public static void Prefix(Character __instance, HitData hit)
         {
-            if (__instance is not Player player) {
+            if (__instance is not Player player)
+            {
                 return;
             }
-            
+
             float elementalResistance = GetCappedSharedResistance(player, MagicEffectType.AddElementalResistancePercentage);
             float physicalResistance = GetCappedSharedResistance(player, MagicEffectType.AddPhysicalResistancePercentage);
 
@@ -23,7 +24,7 @@ namespace EpicLoot.MagicItemEffects
             hit.m_damage.m_lightning *= GetCappedResistanceValue(player, MagicEffectType.AddLightningResistancePercentage, elementalResistance);
             hit.m_damage.m_poison *= GetCappedResistanceValue(player, MagicEffectType.AddPoisonResistancePercentage, elementalResistance);
             hit.m_damage.m_spirit *= GetCappedResistanceValue(player, MagicEffectType.AddSpiritResistancePercentage, elementalResistance);
-            
+
             // physical resistances
             hit.m_damage.m_blunt *= GetCappedResistanceValue(player, MagicEffectType.AddBluntResistancePercentage, physicalResistance);
             hit.m_damage.m_slash *= GetCappedResistanceValue(player, MagicEffectType.AddSlashingResistancePercentage, physicalResistance);
@@ -33,15 +34,18 @@ namespace EpicLoot.MagicItemEffects
             EpicLoot.Log($"Final damage after resistances for {player.GetPlayerName()}: {hit.m_damage}");
         }
 
-        private static float GetCappedSharedResistance(Player player, string effect) {
-            if (player.HasActiveMagicEffect(effect, out float value, 0.01f)) {
+        private static float GetCappedSharedResistance(Player player, string effect)
+        {
+            if (player.HasActiveMagicEffect(effect, out float value, 0.01f))
+            {
                 EpicLoot.Log($"{effect} active with value {value}");
                 return value;
             }
             return 0f;
         }
 
-        private static float GetCappedResistanceValue(Player player, string effect, float additional_resistance = 0f) {
+        private static float GetCappedResistanceValue(Player player, string effect, float additional_resistance = 0f)
+        {
             Dictionary<string, float> cfg = MagicItemEffectDefinitions.GetEffectConfig(effect);
             // No config for this type, default it (uncapped)
             if (cfg == null || !cfg.ContainsKey("MaxResistance")) { return (1f - player.GetTotalActiveMagicEffectValue(effect, 0.01f)); }
@@ -50,15 +54,16 @@ namespace EpicLoot.MagicItemEffects
             if (resistance == 0f) { return 1f; } // No resistance, return 100% damage
 
             EpicLoot.Log($"{effect} total resistance {resistance} including bonus {additional_resistance}");
-            float max_resistance = (cfg["MaxResistance"]/100f);
-            if (resistance > max_resistance) {
+            float max_resistance = (cfg["MaxResistance"] / 100f);
+            if (resistance > max_resistance)
+            {
                 EpicLoot.Log($"Capped resistance for {effect} is {max_resistance}");
                 resistance = max_resistance;
             }
             if (resistance >= 1) { EpicLoot.LogWarning($"Resistance calculated to 100%, player immune. Reduce max resistance below 100 in your configuration."); }
             float reduction = (1f - resistance);
             if (reduction < 0) { reduction = 1f; }
-            EpicLoot.Log($"Resistance for {effect}: {reduction * 100}%");
+            // EpicLoot.Log($"Resistance for {effect}: {reduction * 100}%");
             return reduction;
         }
     }

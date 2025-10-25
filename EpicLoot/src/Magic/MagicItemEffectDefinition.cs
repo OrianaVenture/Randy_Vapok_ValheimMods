@@ -1,11 +1,10 @@
 ﻿using EpicLoot.Crafting;
 using EpicLoot.GatedItemType;
-using EpicLoot.MagicItemEffects;
+using EpicLoot.General;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace EpicLoot
 {
@@ -189,12 +188,7 @@ namespace EpicLoot
             }
 
             if (ItemHasElementalDamage != null && 
-                (ItemHasElementalDamage == (itemData.m_shared.m_damages.m_fire +
-                itemData.m_shared.m_damages.m_frost +
-                itemData.m_shared.m_damages.m_lightning +
-                itemData.m_shared.m_damages.m_poison +
-                itemData.m_shared.m_damages.m_spirit
-                ) <= 0))
+                (ItemHasElementalDamage == itemData.hasElelemtalDamage()))
             {
                 return false;
             }
@@ -344,7 +338,7 @@ namespace EpicLoot
         public float SelectionWeight = 1;
         public bool CanBeAugmented = true;
         public bool CanBeDisenchanted = true;
-        public bool CanBeRuned = true;
+        public bool CanBeRunified = true;
         public string Comment;
         public List<string> Prefixes = new List<string>();
         public List<string> Suffixes = new List<string>();

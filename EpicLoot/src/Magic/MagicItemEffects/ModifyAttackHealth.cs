@@ -3,18 +3,22 @@
 namespace EpicLoot.MagicItemEffects
 {
     [HarmonyPatch(typeof(Attack), nameof(Attack.GetAttackHealth))]
-    [HarmonyPriority(Priority.High)]
     public class ModifyAttackHealth_Attack_GetAttackHealth_Patch
     {
-        public static void Postfix(Attack __instance, float __result)
+        public static void Prefix(Attack __instance, ref float __state)
         {
-            if (__instance.m_character is Player player) {
+            if (__instance.m_character is Player player)
+            {
+                __state = __instance.m_attackHealthPercentage;
                 float modifier = MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                     player, __instance.m_weapon, MagicEffectType.ModifyAttackHealthUse, 0.01f);
-                float reduction = 1.0f - modifier;
-                //EpicLoot.Log($"Modifying health cost HP {__result} * {reduction} = {__result * reduction}");
-                __result *= reduction;
+                __instance.m_attackHealthPercentage *= 1.0f - modifier;
             }
+        }
+
+        public static void Postfix(Attack __instance, ref float __state)
+        {
+            __instance.m_attackHealthPercentage = __state;
         }
     }
 }

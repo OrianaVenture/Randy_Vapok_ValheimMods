@@ -9,7 +9,7 @@ using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
-using EpicLoot.src.Loot;
+using EpicLoot.Loot;
 using HarmonyLib;
 using Jotunn.Managers;
 using UnityEngine;

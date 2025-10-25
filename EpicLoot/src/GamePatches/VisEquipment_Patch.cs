@@ -216,28 +216,17 @@ namespace EpicLoot
         [HarmonyPostfix]
         public static void Humanoid_DropItem(Humanoid __instance, ItemDrop.ItemData item)
         {
-            var equipFx = GetEquipFxName(item, out var mode);
-            if (OtherItemsUseThisEffect(__instance, equipFx, item, mode))
-            {
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(equipFx) && mode == FxAttachMode.Player)
-            {
-                var effect = __instance.transform.Find(equipFx);
-                if (effect == null)
-                {
-                    EpicLoot.Log($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
-                    return;
-                }
-
-                ZNetScene.instance.Destroy(effect.gameObject);
-            }
+            RemoveEffect(__instance, item);
         }
 
         [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.UnequipItem))]
         [HarmonyPrefix]
         public static void Humanoid_UnequipItem_Prefix(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects)
+        {
+            RemoveEffect(__instance, item, triggerEquipEffects);
+        }
+
+        private static void RemoveEffect(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects = true)
         {
             if (item == null || !item.m_equipped || !triggerEquipEffects)
             {

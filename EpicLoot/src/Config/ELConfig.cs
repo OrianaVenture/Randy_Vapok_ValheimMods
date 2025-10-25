@@ -59,7 +59,7 @@ namespace EpicLoot.Config
         public static ConfigEntry<float> SetItemDropChance;
         public static ConfigEntry<float> GlobalDropRateModifier;
         public static ConfigEntry<float> ItemsToMaterialsDropRatio;
-        public static ConfigEntry<bool> ShowWelcomeMessage;
+        public static ConfigEntry<bool> AlwaysShowWelcomeMessage;
         public static ConfigEntry<bool> OutputPatchedConfigFiles;
         public static ConfigEntry<bool> EnchantingTableUpgradesActive;
         public static ConfigEntry<bool> EnableLimitedBountiesInProgress;
@@ -302,7 +302,7 @@ namespace EpicLoot.Config
 
 
             // Debug
-            ShowWelcomeMessage = Config.Bind("Debug", "Show Welcome Message", true,
+            AlwaysShowWelcomeMessage = Config.Bind("Debug", "Show Welcome Message, automatically set to false once config is viewed.", true,
                 "Sets whether or not the welcome message is displayed on startup, this is automatically set to false once the player has viewed the message.");
             OutputPatchedConfigFiles = Config.Bind("Debug", "OutputPatchedConfigFiles", false,
                 "Just a debug flag for testing the patching system, do not use.");
@@ -358,7 +358,6 @@ namespace EpicLoot.Config
             SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, MaterialConversionRPC, MaterialConversions.GetCFG);
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, EnchantingUpgradesRPC, EnchantingTableUpgrades.GetCFG);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
-            // SetupConfigFileWatcher(ELConfig.GetOverhaulDirectoryPath());
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
         }
@@ -451,9 +450,7 @@ namespace EpicLoot.Config
                 if (valid_update == false) { return; }
                 if (GUIManager.IsHeadless()) {
                     try {
-                        Jotunn.Logger.LogInfo($"Sending {filename} to clients.");
                         targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(getConfig())));
-                        Jotunn.Logger.LogInfo($"Sent {filename} to clients.");
                     }
                     catch {
                         Jotunn.Logger.LogError($"Error while server syncing {filename} configs");
@@ -518,7 +515,6 @@ namespace EpicLoot.Config
 
             var fileInfo = new FileInfo(e.FullPath);
             if (!fileInfo.FullName.Contains(".json")) {
-                EpicLoot.Log($"File: {fileInfo} is not a supported format, ignoring.");
                 return;
             }
             EpicLoot.Log($"Processing patch file update: {fileInfo}");
@@ -556,77 +552,66 @@ namespace EpicLoot.Config
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved LootConfigs");
             LootRoller.Initialize(ClientRecieveParseJsonConfig<LootConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMagicConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved MagicEffectConfigs");
             MagicItemEffectDefinitions.Initialize(ClientRecieveParseJsonConfig<MagicItemEffectsList>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemInfoConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved ItemInfoConfigs");
             GatedItemTypeHelper.Initialize(ClientRecieveParseJsonConfig<ItemInfoConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveRecipesConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved RecipeConfigs");
             RecipesHelper.Initialize(ClientRecieveParseJsonConfig<RecipesConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingCostsConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved EnchantingCostConfigs");
             EnchantCostsHelper.Initialize(ClientRecieveParseJsonConfig<EnchantingCostsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveItemNameConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved ItemNameConfigs");
             MagicItemNames.Initialize(ClientRecieveParseJsonConfig<ItemNameConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAdventureDataConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved AdventureDataConfigs");
             AdventureDataManager.UpdateAventureData(ClientRecieveParseJsonConfig<AdventureDataConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveLegendaryItemConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved LegendaryItemConfigs");
             UniqueLegendaryHelper.Initialize(ClientRecieveParseJsonConfig<LegendaryItemConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveAbilityConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved AbilityConfigs");
             AbilityDefinitions.Initialize(ClientRecieveParseJsonConfig<AbilityConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveMaterialConversionConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved MaterialConversionConfig");
             MaterialConversions.Initialize(ClientRecieveParseJsonConfig<MaterialConversionsConfig>(package.ReadString()));
             yield return null;
         }
 
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
-            //Jotunn.Logger.LogInfo($"Recieved EnchantingUpgradesConfig");
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
             yield return null;
         }
@@ -634,7 +619,6 @@ namespace EpicLoot.Config
         private static T ClientRecieveParseJsonConfig<T>(string json)
         {
             try {
-                EpicLoot.Log($"Parsing string of length {json.Length}");
                 return JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
                 EpicLoot.LogError($"There was an error syncing client configs: {e}");
