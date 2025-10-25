@@ -50,7 +50,7 @@ namespace EpicLoot
         BossKillUnlocksNextBiomeBounties
     }
 
-    public class EpicAssets
+    public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
         public Sprite EquippedSprite;
@@ -75,7 +75,7 @@ namespace EpicLoot
         public GameObject WelcomMessagePrefab;
     }
 
-    public class PieceDef
+    public sealed class PieceDef
     {
         public string Table;
         public string CraftingStation;
@@ -89,7 +89,7 @@ namespace EpicLoot
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
-    public class EpicLoot : BaseUnityPlugin
+    public sealed class EpicLoot : BaseUnityPlugin
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
@@ -165,11 +165,11 @@ namespace EpicLoot
         internal ELConfig cfg;
 
         [UsedImplicitly]
-        public void Awake()
+        void Awake()
         {
             _instance = this;
 
-            var assembly = Assembly.GetExecutingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
             
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
@@ -215,7 +215,7 @@ namespace EpicLoot
             }
         }
 
-        public void Start()
+        void Start()
         {
             HasAuga = Auga.API.IsLoaded();
 
@@ -576,7 +576,7 @@ namespace EpicLoot
         }
 
         [UsedImplicitly]
-        public void OnDestroy()
+        void OnDestroy()
         {
             Config.Save();
             _instance = null;
