@@ -113,6 +113,8 @@ namespace EpicLoot
                 var welcomeMessage = Object.Instantiate(EpicLoot.Assets.WelcomMessagePrefab, __instance.transform, false);
                 welcomeMessage.name = "WelcomeMessage";
                 welcomeMessage.AddComponent<WelcomeMessage>();
+                welcomeMessage.GetComponent<WelcomeMessage>();
+                ELConfig.AlwaysShowWelcomeMessage.Value = false;
             }
         }
     }

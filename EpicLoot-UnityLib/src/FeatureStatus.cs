@@ -55,17 +55,23 @@ namespace EpicLoot_UnityLib
                 return;
 
             if (EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature) == false) {
-                UnlockedContainer?.gameObject.SetActive(false);
-                LockedContainer?.gameObject.SetActive(false);
+                if (UnlockedContainer != null)
+                    UnlockedContainer.gameObject.SetActive(false);
+                if (LockedContainer != null)
+                    LockedContainer.gameObject.SetActive(false);
                 return;
             }
 
             if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature) == true) {
-                UnlockedContainer?.gameObject.SetActive(false);
-                LockedContainer?.gameObject.SetActive(true);
+                if (UnlockedContainer != null)
+                    UnlockedContainer.gameObject.SetActive(false);
+                if (LockedContainer != null)
+                    LockedContainer.gameObject.SetActive(true);
             } else {
-                UnlockedContainer?.gameObject.SetActive(true);
-                LockedContainer?.gameObject.SetActive(false);
+                if (UnlockedContainer != null)
+                    UnlockedContainer.gameObject.SetActive(true);
+                if (LockedContainer != null)
+                    LockedContainer.gameObject.SetActive(false);
 
                 var level = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
                 if (level > Stars.Length)

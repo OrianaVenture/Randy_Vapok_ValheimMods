@@ -126,7 +126,6 @@ namespace EpicLoot_UnityLib
         {
             if (index != _augmentIndex)
             {
-                Debug.Log($"Setting augment index {index}");
                 _augmentIndex = index;
                 OnAugmentIndexChanged();
             }
@@ -145,8 +144,6 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-
-
             if (_augmentIndex < 0)
             {
                 AvailableEffectsText.text = string.Empty;
@@ -157,7 +154,6 @@ namespace EpicLoot_UnityLib
             else
             {
                 var item = selectedItem.Item1.GetItem();
-                Debug.Log($"OnAugmentIndexChanged called with index {_augmentIndex} for item {item}");
                 var info = GetAvailableEffects(item, _augmentIndex);
 
                 AvailableEffectsText.text = info;
@@ -251,8 +247,6 @@ namespace EpicLoot_UnityLib
         private void RefreshAugmentSelectors()
         {
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
-            Debug.Log($"Refreshing augment selectors for {entry} selectors");
-            // Clear the enchantment list
             if (EnchantList.childCount > 0)
             {
                 foreach (Transform child in EnchantList)
@@ -261,21 +255,16 @@ namespace EpicLoot_UnityLib
                 }
             }
             _AugmentSelectors.Clear();
-            Debug.Log($"Cleared lists");
             if (entry == null || entry.Item1 == null)
             {
                 return;
             }
             var item = entry?.Item1.GetItem();
-            Debug.Log($"Getting augment effects for {item}");
             var augmentableEffects = GetAugmentableEffects(item, false);
-
-            Debug.Log($"Got augmentable effects {augmentableEffects.Count}");
 
             int enchantIndex = 0;
             foreach (var effect in augmentableEffects)
             {
-                Debug.Log($"Adding enchantment {effect.Item1} at index {enchantIndex}");
                 var enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
                 var enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
                 var enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
@@ -291,7 +280,6 @@ namespace EpicLoot_UnityLib
                         SelectAugmentIndex(_AugmentSelectors.IndexOf(enchantmentbutton));
                     }
                 });
-                //if (enchantmentbutton != null) { enchantmentbutton.interactable = true; }
                 if (enchantmentElement != null)
                 {
                     enchantmentElement.text = effect.Item1;
