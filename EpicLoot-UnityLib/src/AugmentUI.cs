@@ -124,7 +124,8 @@ namespace EpicLoot_UnityLib
 
         public void SelectAugmentIndex(int index)
         {
-            if (index != _augmentIndex) {
+            if (index != _augmentIndex)
+            {
                 Debug.Log($"Setting augment index {index}");
                 _augmentIndex = index;
                 OnAugmentIndexChanged();
@@ -144,7 +145,7 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            
+
 
             if (_augmentIndex < 0)
             {
@@ -158,7 +159,7 @@ namespace EpicLoot_UnityLib
                 var item = selectedItem.Item1.GetItem();
                 Debug.Log($"OnAugmentIndexChanged called with index {_augmentIndex} for item {item}");
                 var info = GetAvailableEffects(item, _augmentIndex);
-                
+
                 AvailableEffectsText.text = info;
                 ScrollEnchantInfoToTop();
 
@@ -223,7 +224,8 @@ namespace EpicLoot_UnityLib
 
             _choiceDialog = AugmentItem(item, _augmentIndex);
 
-            foreach (var audio_source in _choiceDialog.GetComponentsInChildren<AudioSource>()) {
+            foreach (var audio_source in _choiceDialog.GetComponentsInChildren<AudioSource>())
+            {
                 audio_source.volume = AudioVolumeLevel();
             }
 
@@ -251,14 +253,17 @@ namespace EpicLoot_UnityLib
             var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             Debug.Log($"Refreshing augment selectors for {entry} selectors");
             // Clear the enchantment list
-            if (EnchantList.childCount > 0) {
-                foreach (Transform child in EnchantList) {
+            if (EnchantList.childCount > 0)
+            {
+                foreach (Transform child in EnchantList)
+                {
                     Destroy(child.gameObject);
                 }
             }
             _AugmentSelectors.Clear();
             Debug.Log($"Cleared lists");
-            if (entry == null || entry.Item1 == null) {
+            if (entry == null || entry.Item1 == null)
+            {
                 return;
             }
             var item = entry?.Item1.GetItem();
@@ -274,24 +279,29 @@ namespace EpicLoot_UnityLib
                 var enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
                 var enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
                 var enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
-                foreach (var audio_source in enchantmentListElement.GetComponentsInChildren<AudioSource>()) {
+                foreach (var audio_source in enchantmentListElement.GetComponentsInChildren<AudioSource>())
+                {
                     audio_source.volume = AudioVolumeLevel();
                 }
                 _AugmentSelectors.Add(enchantmentbutton);
-                enchantmentbutton.onValueChanged.AddListener((isOn) => {
-                    if (isOn) {
+                enchantmentbutton.onValueChanged.AddListener((isOn) =>
+                {
+                    if (isOn)
+                    {
                         SelectAugmentIndex(_AugmentSelectors.IndexOf(enchantmentbutton));
                     }
                 });
                 //if (enchantmentbutton != null) { enchantmentbutton.interactable = true; }
-                if (enchantmentElement != null) {
+                if (enchantmentElement != null)
+                {
                     enchantmentElement.text = effect.Item1;
                 }
-                if (effect.Item2 == false) {
+                if (effect.Item2 == false)
+                {
                     enchantmentbutton.interactable = false;
                 }
                 enchantmentListElement.SetActive(true);
-                
+
                 enchantIndex++;
             }
         }

@@ -62,6 +62,7 @@
 * Makes tooltips wider and scrollable, supports sets of infinite size
 * Fix for attacker stagger that would stagger non-pvp enabled players, now only staggers attackers that are pvp enabled
 * Adds status effect on-hit chance display data to magic item tooltips
+* Localizations in all 26 languages (still looking for community translation improvements please!)
 
 ## Version 0.11.4
 
