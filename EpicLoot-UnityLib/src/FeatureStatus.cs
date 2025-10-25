@@ -51,28 +51,23 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
-            // Debug.Log($"Refreshing FeatureStatus for {Feature}");
             if (EnchantingTableUI.instance == null || EnchantingTableUI.instance.SourceTable == null)
                 return;
 
             if (EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature) == false) {
-                // Debug.Log($"{Feature} unavailable.");
                 UnlockedContainer?.gameObject.SetActive(false);
                 LockedContainer?.gameObject.SetActive(false);
                 return;
             }
 
             if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature) == true) {
-                // Debug.Log($"{Feature} locked.");
                 UnlockedContainer?.gameObject.SetActive(false);
                 LockedContainer?.gameObject.SetActive(true);
             } else {
-                // Debug.Log($"{Feature} unlocked.");
                 UnlockedContainer?.gameObject.SetActive(true);
                 LockedContainer?.gameObject.SetActive(false);
 
                 var level = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
-                // Debug.Log($"{Feature} level {level}.");
                 if (level > Stars.Length)
                 {
                     for (var index = 0; index < Stars.Length; index++)
@@ -101,7 +96,6 @@ namespace EpicLoot_UnityLib
             }
 
             if (Tooltip != null && UpgradesActive(Feature, out _)) {
-                // Debug.Log($"{Feature} building tooltip.");
                 Tooltip.m_topic = Localization.instance.Localize(EnchantingTableUpgrades.GetFeatureName(Feature));
 
                 var sb = new StringBuilder();

@@ -88,7 +88,7 @@ namespace EpicLoot_UnityLib
         private void SetupTabs() {
             foreach(var tab in TabHandler.m_tabs) {
                 tab.m_onClick.AddListener(PlayTabSelectSFX);
-                tab.m_button.gameObject.GetComponent<FeatureStatus>()?.Refresh();
+                tab.m_button.gameObject.GetComponent<FeatureStatus>().Refresh();
             }
 
             TabActivation(this);
