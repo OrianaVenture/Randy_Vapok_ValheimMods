@@ -34,6 +34,7 @@ namespace EpicLoot
                 case ItemDrop.ItemData.ItemType.Helmet: zdo.Set("hl-ell", data); break;
                 case ItemDrop.ItemData.ItemType.Shoulder: zdo.Set("sh-ell", data); break;
                 case ItemDrop.ItemData.ItemType.Utility: zdo.Set("ut-ell", data); break;
+                case ItemDrop.ItemData.ItemType.Trinket: zdo.Set("tr-ell", data); break;
             }
 
             //EpicLoot.Log($"Setting Equipment ZDO: {itemType}='{data}'");
@@ -88,6 +89,7 @@ namespace EpicLoot
                     changed = changed || DoCheck(__instance, zdo, "HelmetItem", "hl-ell", ref __instance.m_helmetItem);
                     changed = changed || DoCheck(__instance, zdo, "ShoulderItem", "sh-ell", ref __instance.m_shoulderItem);
                     changed = changed || DoCheck(__instance, zdo, "UtilityItem", "ut-ell", ref __instance.m_utilityItem);
+                    changed = changed || DoCheck(__instance, zdo, "TrinketItem", "tr-ell", ref __instance.m_trinketItem);
 
                     if (changed)
                     {
@@ -158,6 +160,7 @@ namespace EpicLoot
                     case ItemDrop.ItemData.ItemType.Shoulder:           humanoid.m_visEquipment.m_currentShoulderItemHash = -1; break;
                     case ItemDrop.ItemData.ItemType.Utility:            humanoid.m_visEquipment.m_currentUtilityItemHash = -1;  break;
                     case ItemDrop.ItemData.ItemType.Tool:               humanoid.m_visEquipment.m_currentRightItemHash = -1;    break;
+                    case ItemDrop.ItemData.ItemType.Trinket:            humanoid.m_visEquipment.m_currentTrinketItemHash = -1;  break;
 
                     default:
                         break;
