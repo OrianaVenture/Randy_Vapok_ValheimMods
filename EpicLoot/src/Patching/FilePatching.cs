@@ -183,7 +183,7 @@ namespace EpicLoot.Patching
             }
 
             if (!string.IsNullOrEmpty(patchFile.TargetFile))
-                defaultTargetFile = patchFile.TargetFile;
+                defaultTargetFile = patchFile.TargetFile.Replace(".json","");
 
             if (!string.IsNullOrEmpty(defaultTargetFile) && !ConfigFileNames.Contains(defaultTargetFile))
             {
