@@ -396,6 +396,10 @@ namespace EpicLoot
             {
                 __instance.m_visEquipment.m_currentUtilityItemHash = -1;
             }
+            else if (item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Trinket)
+            {
+                __instance.m_visEquipment.m_currentTrinketItemHash = -1;
+            }
         }
     }
 }
