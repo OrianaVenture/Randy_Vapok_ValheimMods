@@ -479,6 +479,12 @@
       ]
     },
     {
+      "Name": "Tier6Utility",
+      "Loot": [
+        { "Item": "Demister", "Weight": 1, "Rarity": [ 0, 10, 50, 30, 10 ] }
+      ]
+    },
+    {
       "Name": "Tier6Trinkets",
       "Loot": [
         { "Item": "TrinketCarapaceEitr",       "Weight": 1, "Rarity": [ 0, 10, 50, 30, 10 ] },
@@ -492,6 +498,7 @@
         { "Item": "Tier6Armor"   },
         { "Item": "Tier6Shields" },
         { "Item": "Tier6Tools"   },
+        { "Item": "Tier6Utility" },
         { "Item": "Tier6Trinkets" }
       ]
     },
