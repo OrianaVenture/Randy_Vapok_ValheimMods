@@ -29,7 +29,9 @@ namespace EpicLoot
                 PatchOnHoverFix.comparision_title = $"<color=#AAA><i>$mod_epicloot_currentlyequipped:" +
                     $"</i></color>" + otherItem.GetDecoratedName();
                 PatchOnHoverFix.comparision_tooltip = otherItem.GetTooltip();
-            } else {
+            }
+            else
+            {
                 PatchOnHoverFix.comparision_tooltip = "";
                 PatchOnHoverFix.comparision_added = false;
                 tooltipText = item.GetTooltip();
@@ -48,15 +50,19 @@ namespace EpicLoot
         private static bool Prefix(ref string __result, ItemDrop.ItemData item, int qualityLevel)
         {
             if (item == null)
+            {
                 return true;
+            }
 
-            var localPlayer = Player.m_localPlayer;
-            var text = new StringBuilder(256);
+            Player localPlayer = Player.m_localPlayer;
+            StringBuilder text = new StringBuilder(256);
 
             MagicItem magicItem = item.GetMagicItem();
 
             if (magicItem == null)
+            {
                 return true;
+            }
 
             string magicColor = magicItem.GetColorString();
             string itemTypeName = magicItem.GetItemTypeName(item.Extended());
@@ -137,6 +143,7 @@ namespace EpicLoot
             bool magicParry = magicItem.HasEffect(MagicEffectType.ModifyParry);
             float totalParryBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyParry, 0.01f);
             string magicParryColor = magicParry ? magicColor : "orange";
+
             switch (item.m_shared.m_itemType)
             {
                 case ItemDrop.ItemData.ItemType.Consumable:
@@ -376,7 +383,7 @@ namespace EpicLoot
 
             if (!item.IsMagic())
             {
-                var text = new StringBuilder();
+                StringBuilder text = new StringBuilder();
 
                 // Set stuff
                 if (item.IsSetItem())
@@ -512,7 +519,7 @@ namespace EpicLoot
     {
         public static Tuple<string, string> PreprocessTooltipStat(ItemDrop.ItemData item, string label, string value)
         {
-            var localPlayer = Player.m_localPlayer;
+            Player localPlayer = Player.m_localPlayer;
 
             if (item.IsMagic(out MagicItem magicItem))
             {
@@ -675,7 +682,7 @@ namespace EpicLoot
                     int colorIndex = label.IndexOf("<color", StringComparison.Ordinal);
                     if (colorIndex >= 0)
                     {
-                        var sb = new StringBuilder(label);
+                        StringBuilder sb = new StringBuilder(label);
                         sb.Remove(colorIndex, "<color=#XXXXXX>".Length);
                         sb.Insert(colorIndex, $"<color={magicColor}>");
 

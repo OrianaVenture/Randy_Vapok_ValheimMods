@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace EpicLoot.src.GamePatches
+namespace EpicLoot
 {
     [HarmonyPatch]
     public static class PatchOnHoverFix
@@ -46,7 +46,10 @@ namespace EpicLoot.src.GamePatches
                 GameObject new_tt = UnityEngine.Object.Instantiate(org_tt, UITooltip.m_tooltip.transform);
                 // Test and determine why the topic is not being set properly
                 // GameObject new_tt = UnityEngine.Object.Instantiate(org_tt);
-                new_tt.transform.position = new Vector3(org_tt.transform.position.x + 5 + (org_bktransform.sizeDelta.x * 1.35f), org_tt.transform.position.y, org_tt.transform.position.z);
+                new_tt.transform.position = new Vector3(
+                    org_tt.transform.position.x + 5 + (org_bktransform.sizeDelta.x * 1.35f),
+                    org_tt.transform.position.y,
+                    org_tt.transform.position.z);
                 
                 GameObject text_go = new_tt.transform.Find("Text").gameObject;
                 TextMeshProUGUI text_g = text_go.GetComponent<TextMeshProUGUI>();

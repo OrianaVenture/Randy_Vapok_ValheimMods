@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EpicLoot.LegendarySystem;
 using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -69,7 +70,8 @@ namespace EpicLoot
         [HarmonyPostfix]
         public static void AttachItem_Postfix(VisEquipment __instance, GameObject __result, int itemHash)
         {
-            if (!CanCreateEffect(__instance, itemHash, AttachingItemSlot, out var player, out var equippedItem, out var itemID))
+            if (!CanCreateEffect(__instance, itemHash, AttachingItemSlot, out Player player,
+                out ItemDrop.ItemData equippedItem, out string itemID))
             {
                 return;
             }
@@ -82,7 +84,8 @@ namespace EpicLoot
         [HarmonyPostfix]
         public static void AttachArmor_Postfix(VisEquipment __instance, List<GameObject> __result, int itemHash)
         {
-            if (!CanCreateEffect(__instance, itemHash, ItemSettingSlot.Armor, out var player, out var equippedItem, out var itemID))
+            if (!CanCreateEffect(__instance, itemHash, ItemSettingSlot.Armor, out Player player,
+                out ItemDrop.ItemData equippedItem, out string itemID))
             {
                 return;
             }
@@ -93,20 +96,30 @@ namespace EpicLoot
 
         private static void SetItemFx(GameObject __result, ItemDrop.ItemData equippedItem, Player player)
         {
-            var equipFx = GetEquipFxName(equippedItem, out var mode);
+            string equipFx = GetEquipFxName(equippedItem, out FxAttachMode mode);
             if (!string.IsNullOrEmpty(equipFx))
             {
-                var asset = EpicLoot.LoadAsset<GameObject>(equipFx);
+                GameObject asset = EpicLoot.LoadAsset<GameObject>(equipFx);
                 if (asset != null)
                 {
-                    var attachObject = mode == FxAttachMode.Player ? player.transform : __result?.transform;
+                    Transform attachObject = null;
+                    if (mode == FxAttachMode.Player && player != null)
+                    {
+                        attachObject = player.transform;
+                    }
+                    else if (__result != null)
+                    {
+                        attachObject = __result.transform;
+                    }
+
                     if (attachObject == null)
                     {
-                        EpicLoot.LogError($"Tried to attach FX to item that did not exist. item={equippedItem.m_shared.m_name}, equipFx={equipFx}, mode={mode}");
+                        EpicLoot.LogError($"Tried to attach FX to item that did not exist. " +
+                            $"item={equippedItem.m_shared.m_name}, equipFx={equipFx}, mode={mode}");
                         return;
                     }
 
-                    var equipEffects = attachObject.Find("equiped");
+                    Transform equipEffects = attachObject.Find("equiped");
                     if (equipEffects != null && mode == FxAttachMode.EquipRoot)
                     {
                         attachObject = equipEffects;
@@ -125,35 +138,36 @@ namespace EpicLoot
             }
 
             ZNetView.m_forceDisableInit = true;
-            var newEffect = Object.Instantiate(asset, attachObject, false);
+            GameObject newEffect = Object.Instantiate(asset, attachObject, false);
             ZNetView.m_forceDisableInit = false;
 
             newEffect.name = equipFx;
-            var audioSources = newEffect.GetComponentsInChildren<AudioSource>();
-            foreach (var audioSource in audioSources)
+            AudioSource[] audioSources = newEffect.GetComponentsInChildren<AudioSource>();
+            foreach (AudioSource audioSource in audioSources)
             {
                 audioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
             }
         }
 
-        private static void SetTextureOverrides(VisEquipment __instance, List<GameObject> __result, string itemID, ItemDrop.ItemData equippedItem)
+        private static void SetTextureOverrides(VisEquipment __instance, List<GameObject> __result,
+            string itemID, ItemDrop.ItemData equippedItem)
         {
-            GetTexOverrides(itemID, equippedItem, out var mainTexture, out var chestTex, out var legsTex);
+            GetTexOverrides(itemID, equippedItem, out string mainTexture, out string chestTex, out string legsTex);
             if (!string.IsNullOrEmpty(mainTexture))
             {
-                foreach (var go in __result)
+                foreach (GameObject go in __result)
                 {
-                    var skinnedMeshRenderers = go.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                    SkinnedMeshRenderer[] skinnedMeshRenderers = go.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                     SetMainTextureOnRenderers(skinnedMeshRenderers, mainTexture);
 
-                    var meshRenderers = go.GetComponentsInChildren<MeshRenderer>(true);
+                    MeshRenderer[] meshRenderers = go.GetComponentsInChildren<MeshRenderer>(true);
                     SetMainTextureOnRenderers(meshRenderers, mainTexture);
                 }
             }
 
             if (!string.IsNullOrEmpty(chestTex))
             {
-                var chestTexAsset = EpicLoot.LoadAsset<Texture>(chestTex);
+                Texture chestTexAsset = EpicLoot.LoadAsset<Texture>(chestTex);
                 if (chestTexAsset != null)
                 {
                     __instance.m_bodyModel.material.SetTexture("_ChestTex", chestTexAsset);
@@ -166,7 +180,7 @@ namespace EpicLoot
 
             if (!string.IsNullOrEmpty(legsTex))
             {
-                var legsTexAsset = EpicLoot.LoadAsset<Texture>(legsTex);
+                Texture legsTexAsset = EpicLoot.LoadAsset<Texture>(legsTex);
                 if (legsTexAsset != null)
                 {
                     __instance.m_bodyModel.material.SetTexture("_ChestTex", legsTexAsset);
@@ -180,10 +194,10 @@ namespace EpicLoot
 
         private static void SetMainTextureOnRenderers(IEnumerable<Renderer> renderers, string mainTexture)
         {
-            var mainTextureAsset = EpicLoot.LoadAsset<Texture>(mainTexture);
+            Texture mainTextureAsset = EpicLoot.LoadAsset<Texture>(mainTexture);
             if (mainTextureAsset != null)
             {
-                foreach (var renderer in renderers)
+                foreach (Renderer renderer in renderers)
                 {
                     renderer.material.mainTexture = mainTextureAsset;
                 }
@@ -194,15 +208,17 @@ namespace EpicLoot
             }
         }
 
-        private static void GetTexOverrides(string itemID, ItemDrop.ItemData equippedItem, out string mainTexture, out string chestTex, out string legsTex)
+        private static void GetTexOverrides(string itemID, ItemDrop.ItemData equippedItem,
+            out string mainTexture, out string chestTex, out string legsTex)
         {
             mainTexture = null;
             chestTex = null;
             legsTex = null;
 
-            if (equippedItem.IsMagic(out var magicItem) && magicItem.IsUniqueLegendary())
+            if (equippedItem.IsMagic(out MagicItem magicItem) && magicItem.IsUniqueLegendary())
             {
-                var textureOverride = magicItem.GetLegendaryInfo()?.TextureReplacements?.Find(x => x.ItemID == itemID);
+                TextureReplacement textureOverride =
+                    magicItem.GetLegendaryInfo()?.TextureReplacements?.Find(x => x.ItemID == itemID);
                 if (textureOverride != null)
                 {
                     mainTexture = textureOverride.MainTexture;
@@ -214,14 +230,15 @@ namespace EpicLoot
 
         [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.UnequipItem))]
         [HarmonyPrefix]
-        public static void Humanoid_UnequipItem_Prefix(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects)
+        public static void Humanoid_UnequipItem_Prefix(Humanoid __instance,
+            ItemDrop.ItemData item, bool triggerEquipEffects)
         {
             if (item == null || !item.m_equipped || !triggerEquipEffects)
             {
                 return;
             }
 
-            var equipFx = GetEquipFxName(item, out var mode);
+            string equipFx = GetEquipFxName(item, out FxAttachMode mode);
             if (OtherItemsUseThisEffect(__instance, equipFx, item, mode))
             {
                 return;
@@ -229,10 +246,11 @@ namespace EpicLoot
 
             if (!string.IsNullOrEmpty(equipFx) && mode == FxAttachMode.Player)
             {
-                var effect = __instance.transform.Find(equipFx);
+                Transform effect = __instance.transform.Find(equipFx);
                 if (effect == null)
                 {
-                    EpicLoot.LogError($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
+                    EpicLoot.LogError($"Unequipped item ({item.m_shared.m_name}) from player that had fx, " +
+                        $"but could not find fx ({equipFx})!");
                     return;
                 }
 
@@ -240,22 +258,23 @@ namespace EpicLoot
             }
         }
 
-        private static bool OtherItemsUseThisEffect(Humanoid humanoid, string equipFx, ItemDrop.ItemData item, FxAttachMode mode)
+        private static bool OtherItemsUseThisEffect(Humanoid humanoid, string equipFx,
+            ItemDrop.ItemData item, FxAttachMode mode)
         {
             if (humanoid == null || !humanoid.IsPlayer())
             {
                 return false;
             }
 
-            var player = (Player) humanoid;
-            foreach (var equipmentItemData in player.GetEquipment())
+            Player player = (Player)humanoid;
+            foreach (ItemDrop.ItemData equipmentItemData in player.GetEquipment())
             {
                 if (equipmentItemData == item)
                 {
                     continue;
                 }
 
-                if (GetEquipFxName(equipmentItemData, out var equippedItemMode) == equipFx && equippedItemMode == mode)
+                if (GetEquipFxName(equipmentItemData, out FxAttachMode equippedItemMode) == equipFx && equippedItemMode == mode)
                 {
                     return true;
                 }
@@ -264,7 +283,8 @@ namespace EpicLoot
             return false;
         }
 
-        public static bool CanCreateEffect(VisEquipment __instance, int itemHash, ItemSettingSlot slot, out Player player, out ItemDrop.ItemData equippedItem, out string itemID)
+        public static bool CanCreateEffect(VisEquipment __instance, int itemHash, ItemSettingSlot slot,
+            out Player player, out ItemDrop.ItemData equippedItem, out string itemID)
         {
             equippedItem = null;
             itemID = null;
@@ -274,14 +294,14 @@ namespace EpicLoot
                 return false;
             }
 
-            var itemPrefab = ObjectDB.instance.GetItemPrefab(itemHash);
+            GameObject itemPrefab = ObjectDB.instance.GetItemPrefab(itemHash);
             if (itemPrefab == null)
             {
                 return false;
             }
 
             itemID = itemPrefab.name;
-            var itemDrop = itemPrefab.GetComponent<ItemDrop>();
+            ItemDrop itemDrop = itemPrefab.GetComponent<ItemDrop>();
             if (itemDrop == null)
             {
                 return false;
@@ -289,11 +309,21 @@ namespace EpicLoot
 
             switch (slot)
             {
-                case ItemSettingSlot.None:      equippedItem = null;                break;
-                case ItemSettingSlot.Helmet:    equippedItem = player.m_helmetItem; break;
-                case ItemSettingSlot.LeftHand:  equippedItem = player.m_leftItem;   break;
-                case ItemSettingSlot.RightHand: equippedItem = player.m_rightItem;  break;
-                case ItemSettingSlot.Armor:     equippedItem = player.GetEquipmentOfType(itemDrop.m_itemData.m_shared.m_itemType); break;
+                case ItemSettingSlot.None:
+                    equippedItem = null;
+                    break;
+                case ItemSettingSlot.Helmet:
+                    equippedItem = player.m_helmetItem;
+                    break;
+                case ItemSettingSlot.LeftHand:
+                    equippedItem = player.m_leftItem;
+                    break;
+                case ItemSettingSlot.RightHand:
+                    equippedItem = player.m_rightItem;
+                    break;
+                case ItemSettingSlot.Armor:
+                    equippedItem = player.GetEquipmentOfType(itemDrop.m_itemData.m_shared.m_itemType);
+                    break;
                 default: throw new ArgumentOutOfRangeException();
             }
 
@@ -302,7 +332,7 @@ namespace EpicLoot
 
         public static string GetEquipFxName(ItemDrop.ItemData equippedItem, out FxAttachMode mode)
         {
-            if (equippedItem.IsMagic(out var magicItem))
+            if (equippedItem.IsMagic(out MagicItem magicItem))
             {
                 if (magicItem.IsUniqueLegendary())
                 {
@@ -314,7 +344,7 @@ namespace EpicLoot
                 }
                 else
                 {
-                    var equipEffect = magicItem.GetFirstEquipEffect(out mode);
+                    string equipEffect = magicItem.GetFirstEquipEffect(out mode);
                     if (!string.IsNullOrEmpty(equipEffect))
                     {
                         return equipEffect;
@@ -341,7 +371,9 @@ namespace EpicLoot
             }
             else if (item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon)
             {
-                if (__instance.m_rightItem != null && __instance.m_rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Torch && __instance.m_leftItem == null)
+                if (__instance.m_rightItem != null &&
+                    __instance.m_rightItem.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Torch &&
+                    __instance.m_leftItem == null)
                 {
                     __instance.m_visEquipment.m_currentLeftItemHash = -1;
                 }
