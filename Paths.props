@@ -48,6 +48,10 @@
     <Reference Include="CreatureLevelControlAPI">
       <HintPath>$(SolutionDir)Libs\CreatureLevelControlAPI.dll</HintPath>
     </Reference>
+    <Reference Include="Jotunn">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SolutionDir)Libs\Jotunn.dll</HintPath>
+    </Reference>
     <Reference Include="LitJSON, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)Packages\LitJson.0.10.0\lib\net45\LitJSON.dll</HintPath>
     </Reference>
@@ -93,8 +97,9 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>$(SolutionDir)Libs\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>$(GamePath)\valheim_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>

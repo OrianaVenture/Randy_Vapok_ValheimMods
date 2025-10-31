@@ -29,6 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedPortals", "Advanced
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreatureLevelAndLootControl", "CreatureLevelAndLootControl\CreatureLevelAndLootControl.csproj", "{39F2EDDE-D0CA-4CAD-8C51-5DBDF52A419A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		Paths.props = Paths.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,8 +73,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {87CB1828-E305-4424-820E-BC6A24BD777B}
 		        SolutionGuid = {20C82B5D-9BD3-4E26-B4F4-CBA6E8F3B3D1}
+		SolutionGuid = {87CB1828-E305-4424-820E-BC6A24BD777B}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Common\Common.projitems*{08ed5bc9-9e0c-4343-90a5-92497be6e216}*SharedItemsImports = 4
