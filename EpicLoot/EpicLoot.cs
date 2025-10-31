@@ -73,6 +73,8 @@ namespace EpicLoot
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
+        public const string DummyName = "EL_DummyPrefab";
+        public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
 
     public sealed class PieceDef
@@ -530,6 +532,14 @@ namespace EpicLoot
                 var customItem = new CustomItem(go, false);
                 ItemManager.Instance.AddItem(customItem);
             }
+
+            // Make a dummy empty game object for later use.
+            GameObject dummyGO = PrefabManager.Instance.CreateEmptyPrefab(EpicAssets.DummyName, true);
+            ItemDrop itemDrop = dummyGO.AddComponent<ItemDrop>();
+            itemDrop.m_itemData.m_shared = new ItemDrop.ItemData.SharedData();
+            itemDrop.m_itemData.m_shared.m_name = "";
+            var dummyItem = new CustomItem(dummyGO, false);
+            ItemManager.Instance.AddItem(dummyItem);
         }
 
         private static void LoadBountySpawner()
