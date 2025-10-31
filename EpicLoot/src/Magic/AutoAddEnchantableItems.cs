@@ -478,6 +478,7 @@ namespace EpicLoot.src.Magic
                 case ItemDrop.ItemData.ItemType.Tool:
                     return "Tools";
                 case ItemDrop.ItemData.ItemType.Utility:
+                case ItemDrop.ItemData.ItemType.Trinket:
                     return "Utility";
                 default:
                     return itemType.ToString().ToLower();

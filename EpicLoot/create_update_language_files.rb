@@ -2,6 +2,15 @@
 
 require "openai"
 
+#####
+# This script can be used to generate translations (or missing chunks of translations) for each of the 26 languages valheim supports
+# it is suggested to run this on Ruby 3.4.5+
+# it requires the openai gem `gem install ruby-openai`, it also requires a valid OpenAI key to be placed in a .env file (in the same directroy)
+# the .env file is gitignored and not present in the repo.
+# this script can be ran like: `ruby create_update_language_files.rb`
+#
+#
+
 file = File.open(".env")
 config = {
   skip_existing: false

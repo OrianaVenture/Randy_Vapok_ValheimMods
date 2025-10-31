@@ -52,7 +52,7 @@ namespace EpicLoot
         BossKillUnlocksNextBiomeBounties
     }
 
-    public class EpicAssets
+    sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
         public Sprite EquippedSprite;
@@ -81,7 +81,7 @@ namespace EpicLoot
         public GameObject WelcomMessagePrefab;
     }
 
-    public class PieceDef
+    sealed class PieceDef
     {
         public string Table;
         public string CraftingStation;
@@ -95,11 +95,11 @@ namespace EpicLoot
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
-    public class EpicLoot : BaseUnityPlugin
+    sealed class EpicLoot : BaseUnityPlugin
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.2";
+        public const string Version = "0.12.0";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -118,6 +118,7 @@ namespace EpicLoot
             ItemDrop.ItemData.ItemType.Shield,
             ItemDrop.ItemData.ItemType.Tool,
             ItemDrop.ItemData.ItemType.Torch,
+            ItemDrop.ItemData.ItemType.Trinket
         };
 
         public static readonly Dictionary<string, string> MagicItemColors = new Dictionary<string, string>()
@@ -171,11 +172,11 @@ namespace EpicLoot
         internal ELConfig cfg;
 
         [UsedImplicitly]
-        public void Awake()
+        void Awake()
         {
             _instance = this;
 
-            var assembly = Assembly.GetExecutingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
             Jotunn.Logger.LogInfo("Checking for EIDF");
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
@@ -230,7 +231,7 @@ namespace EpicLoot
             }
         }
 
-        //public void Start()
+        //sealed void Start()
         //{
         //    //HasAuga = Auga.API.IsLoaded();
 
@@ -634,7 +635,7 @@ namespace EpicLoot
         }
 
         [UsedImplicitly]
-        public void OnDestroy()
+        void OnDestroy()
         {
             Config.Save();
             _instance = null;

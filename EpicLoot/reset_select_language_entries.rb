@@ -2,6 +2,13 @@
 
 require "json"
 
+###
+# This script can clean out localization keys from non-English localization files
+# this can be used to reset or update existing translations
+# keys_to_remove below should be set to the key entries you want removed, if a key does not exist it is skipped
+# this script can be ran by `ruby reset_select_language_files.rb`, it does not have any dependencies
+#
+
 language_files = Dir["localizations/*"]
 keys_to_remove = %w[item_meteor_atgeir]
 

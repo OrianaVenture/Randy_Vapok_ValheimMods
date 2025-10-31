@@ -344,12 +344,12 @@
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
-                "defeated_gdking": [ "LeatherBelt", "GoldRubyRing" ],
-                "defeated_bonemass": [],
-                "defeated_dragon": [ "SilverRing" ],
-                "defeated_goblinking": [],
-                "defeated_queen": [],
-                "defeated_fader": []
+                "defeated_gdking": [ "LeatherBelt", "GoldRubyRing", "TrinketBronzeHealth", "TrinketBronzeStamina" ],
+                "defeated_bonemass": [ "TrinketIronHealth", "TrinketIronStamina", "TrinketChitinSwim" ],
+                "defeated_dragon": [ "SilverRing", "TrinketSilverDamage", "TrinketSilverResist" ],
+                "defeated_goblinking": [ "TrinketBlackDamageHealth", "TrinketBlackStamina" ],
+                "defeated_queen": [ "TrinketCarapaceEitr", "TrinketScaleStaminaDamage" ],
+                "defeated_fader": [ "TrinketFlametalEitr", "TrinketFlametalStaminaHealth" ]
             }
         }
     ]
