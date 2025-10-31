@@ -66,7 +66,7 @@
     },
     {
       "IsMagic": true, 
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Magic",
       "Products": [
         { "Item": "DustMagic",    "Amount": 1 },
@@ -75,7 +75,7 @@
     },
     {
       "IsMagic": true, 
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Rare",
       "Products": [
         { "Item": "DustRare",    "Amount": 1 },
@@ -84,7 +84,7 @@
     },
     {
       "IsMagic": true, 
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Epic",
       "Products": [
         { "Item": "DustEpic",    "Amount": 1 },
@@ -93,7 +93,7 @@
     },
     {
       "IsMagic": true, 
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Legendary",
       "Products": [
         { "Item": "DustLegendary",    "Amount": 1 },
@@ -101,8 +101,8 @@
       ]
     },
     {
-      "IsMagic": true, 
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "IsMagic": true,
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Mythic",
       "Products": [
         { "Item": "DustMythic",    "Amount": 1 },
@@ -116,7 +116,7 @@
     },
     {
       "ItemTypes" : [ "Trophy" ],
-      "ItemNames" : [ "$item_trophy_troll", "$item_trophy_greydwarfbrute", "$item_trophy_greydwarfshaman", "$item_trophy_blob", "$item_trophy_draugr", "$item_trophy_draugrelite", "$item_trophy_draugrfem", "$item_trophy_foresttroll", "$item_trophy_leech", "$item_trophy_surtling", "$item_trophy_wolf", "$item_trophy_wraith" ],
+      "ItemNames" : [ "$item_trophy_troll", "$item_trophy_greydwarfbrute", "$item_trophy_greydwarfshaman", "$item_trophy_blob", "$item_trophy_draugr", "$item_trophy_draugrelite", "$item_trophy_draugrfem", "$item_trophy_foresttroll", "$item_trophy_leech", "$item_trophy_surtling", "$item_trophy_wolf", "$item_trophy_wraith", "TrophyBjorn" ],
       "Products" : [ { "Item": "ShardRare", "Amount": 1 } ]
     },
     {
@@ -126,7 +126,7 @@
     },
     {
       "ItemTypes" : [ "Trophy" ],
-      "ItemNames" : [ "$item_trophy_deathsquito", "$item_trophy_goblinbrute", "$item_trophy_goblinshaman", "$item_trophy_serpent", "$item_trophy_seeker", "$item_trophy_seeker_brute", "$item_trophy_gjall", "$item_trophy_dvergr", "$item_trophy_brutebro", "$item_trophy_shamanbro", "$item_trophy_asksvin", "$item_trophy_bonemaw", "$item_trophy_volture" ],
+      "ItemNames" : [ "$item_trophy_deathsquito", "$item_trophy_goblinbrute", "$item_trophy_goblinshaman", "$item_trophy_serpent", "$item_trophy_seeker", "$item_trophy_seeker_brute", "$item_trophy_gjall", "$item_trophy_dvergr", "$item_trophy_brutebro", "$item_trophy_shamanbro", "$item_trophy_asksvin", "$item_trophy_bonemaw", "$item_trophy_volture", "TrophyBjornUndead" ],
       "Products" : [ { "Item": "ShardLegendary", "Amount": 1 } ]
     },
     {
@@ -268,7 +268,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Magic",
       "Cost": [
         { "Item": "RunestoneMagic", "Amount": 1 },
@@ -277,7 +277,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Rare",
       "Cost": [
         { "Item": "RunestoneRare", "Amount": 1 },
@@ -286,7 +286,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Epic",
       "Cost": [
         { "Item": "RunestoneEpic", "Amount": 1 },
@@ -295,7 +295,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Legendary",
       "Cost": [
         { "Item": "RunestoneLegendary", "Amount": 1 },
@@ -304,7 +304,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Mythic",
       "Cost": [
         { "Item": "RunestoneMythic", "Amount": 1 },
@@ -362,7 +362,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Magic",
       "Cost": [
         { "Item": "ShardMagic",   "Amount": 1 },
@@ -371,7 +371,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Rare",
       "Cost": [
         { "Item": "ShardRare",   "Amount": 1 },
@@ -380,7 +380,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Epic",
       "Cost": [
         { "Item": "ShardEpic",   "Amount": 1 },
@@ -389,7 +389,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Legendary",
       "Cost": [
         { "Item": "ShardLegendary",   "Amount": 1 },
@@ -398,7 +398,7 @@
       ]
     },
     {
-      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility" ],
+      "ItemTypes" : [ "Shield", "Helmet", "Chest", "Legs", "Shoulder", "Utility", "Trinket" ],
       "Rarity": "Mythic",
       "Cost": [
         { "Item": "ShardMythic",   "Amount": 1 },

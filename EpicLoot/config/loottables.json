@@ -1016,7 +1016,7 @@
     },
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Tier 2 Mobs (Greydwarf Brute, Greydwarf Shaman, Rancid Remains)
+    // Tier 2 Mobs (Greydwarf Brute, Greydwarf Shaman, Rancid Remains, Ghost)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     {
       "Object": "Greydwarf_Elite",
@@ -1031,16 +1031,20 @@
       "Object": "Skeleton_Poison",
       "RefObject": "Tier2Mob"
     },
+    {
+      "Object": "Ghost",
+      "RefObject": "Tier2Mob"
+    },
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Tier 3 Mobs (Troll, Ghost, Blob, Draugr, Draugr Archer, Leech, Surtling)
+    // Tier 3 Mobs (Troll, Bjorn, Blob, Draugr, Draugr Archer, Leech, Surtling)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     {
       "Object": "Troll",
       "RefObject": "Tier3Mob"
     },
     {
-      "Object": "Ghost",
+      "Object": "Bjorn",
       "RefObject": "Tier3Mob"
     },
     {
@@ -1149,6 +1153,10 @@
     {
       "Object": "GoblinShaman",
       "RefObject": "Tier6Mob"
+    },
+    {
+        "Object": "Unbjorn",
+        "RefObject": "Tier6Mob"
     },
     {
       "Object": "Tick",

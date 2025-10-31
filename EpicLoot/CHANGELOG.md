@@ -1,3 +1,12 @@
+## Version 0.11.5
+
+* Call To Arms content update!
+  * Reclassified Ghost as a Tier 2 mob.
+  * Added Bear (Bjorn) as a Tier 3 mob.
+  * Added Vile (Unbjorn) as a Tier 6 mob.
+  * Added new weapons, armor, and trinkets to appropriate drop tables.
+* Added Demister to loot tables.
+
 ## Version 0.11.4
 
 * Fixed some patches not applying properly on servers (could use more user verification).

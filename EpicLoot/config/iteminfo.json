@@ -72,10 +72,10 @@
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
-                "defeated_gdking": [],
+                "defeated_gdking": [ "FistBjornClaw" ],
                 "defeated_bonemass": [],
                 "defeated_dragon": [ "FistFenrirClaw" ],
-                "defeated_goblinking": [],
+                "defeated_goblinking": [ "FistBjornUndeadClaw" ],
                 "defeated_queen": [],
                 "defeated_fader": []
             }
@@ -248,10 +248,10 @@
             "ItemsByBoss": {
                 "none": [ "ArmorRagsChest" ],
                 "defeated_eikthyr": [ "ArmorLeatherChest" ],
-                "defeated_gdking": [ "ArmorBronzeChest", "ArmorTrollLeatherChest" ],
+                "defeated_gdking": [ "ArmorBronzeChest", "ArmorTrollLeatherChest", "ArmorBerserkerChest" ],
                 "defeated_bonemass": [ "ArmorIronChest", "ArmorRootChest" ],
                 "defeated_dragon": [ "ArmorWolfChest", "ArmorFenringChest" ],
-                "defeated_goblinking": [ "ArmorPaddedCuirass" ],
+                "defeated_goblinking": [ "ArmorPaddedCuirass", "ArmorBerserkerUndeadChest" ],
                 "defeated_queen": [ "ArmorCarapaceChest", "ArmorMageChest" ],
                 "defeated_fader": [ "ArmorFlametalChest", "ArmorAshlandsMediumChest", "ArmorMageChest_Ashlands" ]
             }
@@ -264,10 +264,10 @@
             "ItemsByBoss": {
                 "none": [ "ArmorRagsLegs" ],
                 "defeated_eikthyr": [ "ArmorLeatherLegs" ],
-                "defeated_gdking": [ "ArmorTrollLeatherLegs", "ArmorBronzeLegs" ],
+                "defeated_gdking": [ "ArmorTrollLeatherLegs", "ArmorBronzeLegs", "ArmorBerserkerLegs" ],
                 "defeated_bonemass": [ "ArmorIronLegs", "ArmorRootLegs" ],
                 "defeated_dragon": [ "ArmorWolfLegs", "ArmorFenringLegs" ],
-                "defeated_goblinking": [ "ArmorPaddedGreaves" ],
+                "defeated_goblinking": [ "ArmorPaddedGreaves", "ArmorBerserkerUndeadLegs" ],
                 "defeated_queen": [ "ArmorCarapaceLegs", "ArmorMageLegs" ],
                 "defeated_fader": [ "ArmorFlametalLegs", "ArmorAshlandsMediumlegs", "ArmorMageLegs_Ashlands" ]
             }
@@ -280,10 +280,10 @@
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "HelmetLeather" ],
-                "defeated_gdking": [ "HelmetTrollLeather", "HelmetBronze" ],
+                "defeated_gdking": [ "HelmetTrollLeather", "HelmetBronze", "HelmetBerserkerHood" ],
                 "defeated_bonemass": [ "HelmetIron", "HelmetRoot" ],
                 "defeated_dragon": [ "HelmetDrake", "HelmetFenring" ],
-                "defeated_goblinking": [ "HelmetPadded" ],
+                "defeated_goblinking": [ "HelmetPadded", "HelmetBerserkerUndead" ],
                 "defeated_queen": [ "HelmetCarapace", "HelmetMage" ],
                 "defeated_fader": [ "HelmetFlametal", "HelmetAshlandsMediumHood", "HelmetMage_Ashlands" ]
             }
@@ -348,8 +348,24 @@
                 "defeated_bonemass": [],
                 "defeated_dragon": [ "SilverRing" ],
                 "defeated_goblinking": [],
-                "defeated_queen": [],
+                "defeated_queen": [ "Demister" ],
                 "defeated_fader": []
+            }
+        },
+        {
+            "Type": "Trinket",
+            "Fallback": "Utility",
+            "ItemFallback": "Hoe",
+            "Items": [],
+            "ItemsByBoss": {
+                "none": [],
+                "defeated_eikthyr": [],
+                "defeated_gdking": [ "TrinketBronzeHealth", "TrinketBronzeStamina", "TrinketChitinSwim" ],
+                "defeated_bonemass": [ "TrinketIronHealth", "TrinketIronStamina" ],
+                "defeated_dragon": [ "TrinketSilverDamage", "TrinketSilverResist" ],
+                "defeated_goblinking": [ "TrinketBlackDamageHealth", "TrinketBlackStamina" ],
+                "defeated_queen": [ "TrinketCarapaceEitr", "TrinketScaleStaminaDamage" ],
+                "defeated_fader": [ "TrinketFlametalEitr", "TrinketFlametalStaminaHealth" ]
             }
         }
     ]
