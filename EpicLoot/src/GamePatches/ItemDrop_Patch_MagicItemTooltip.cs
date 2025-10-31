@@ -3,7 +3,6 @@ using System.Text;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.MagicItemEffects;
-using EpicLoot.src.GamePatches;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;

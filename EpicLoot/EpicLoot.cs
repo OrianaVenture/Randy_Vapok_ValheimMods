@@ -95,7 +95,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.11.4";
+        public const string Version = "0.11.5";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -114,6 +114,7 @@ namespace EpicLoot
             ItemDrop.ItemData.ItemType.Shield,
             ItemDrop.ItemData.ItemType.Tool,
             ItemDrop.ItemData.ItemType.Torch,
+            ItemDrop.ItemData.ItemType.Trinket
         };
 
         public static readonly Dictionary<string, string> MagicItemColors = new Dictionary<string, string>()

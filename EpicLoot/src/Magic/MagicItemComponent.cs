@@ -662,6 +662,8 @@ namespace EpicLoot
                 results.Add(player.m_shoulderItem);
             if (player.m_utilityItem != null)
                 results.Add(player.m_utilityItem);
+            if (player.m_trinketItem != null)
+                results.Add(player.m_trinketItem);
             return results;
         }
 
