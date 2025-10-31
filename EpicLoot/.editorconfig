@@ -1,0 +1,15 @@
+[*]
+
+# https://marketplace.visualstudio.com/items?itemName=PaulHarrington.EditorGuidelinesPreview
+guidelines = 120
+
+[*.cs]
+
+# IDE0003: Remove qualification
+dotnet_diagnostic.IDE0003.severity = none
+
+# IDE0051: Remove unused private members
+dotnet_diagnostic.IDE0051.severity = none
+
+# IDE0060: Remove unused parameter
+dotnet_diagnostic.IDE0060.severity = none

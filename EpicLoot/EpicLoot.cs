@@ -52,7 +52,7 @@ namespace EpicLoot
         BossKillUnlocksNextBiomeBounties
     }
 
-    sealed class EpicAssets
+    public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
         public Sprite EquippedSprite;
@@ -81,7 +81,7 @@ namespace EpicLoot
         public GameObject WelcomMessagePrefab;
     }
 
-    sealed class PieceDef
+    public sealed class PieceDef
     {
         public string Table;
         public string CraftingStation;
@@ -95,7 +95,7 @@ namespace EpicLoot
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
-    sealed class EpicLoot : BaseUnityPlugin
+    public sealed class EpicLoot : BaseUnityPlugin
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
@@ -177,7 +177,7 @@ namespace EpicLoot
             _instance = this;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            Jotunn.Logger.LogInfo("Checking for EIDF");
+            
             EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
             Jotunn.Logger.LogInfo("Loading unitylib");
