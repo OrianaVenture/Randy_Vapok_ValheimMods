@@ -29,9 +29,12 @@ namespace EpicLoot.src.GamePatches
         [HarmonyPostfix]
         public static void AddComparisionTooltip()
         {
-            if (UITooltip.m_tooltip == null) { return; }
+            if (UITooltip.m_tooltip == null) {
+                return;
+            }
             // Reset comparision tooltip if it was previously added
-            if (comparisionTT != null && comparision_tooltip == "") {
+            if (comparisionTT != null && comparision_tooltip == "")
+            {
                 GameObject.Destroy(comparisionTT);
                 comparisionTT = null;
                 comparision_added = false;
@@ -40,9 +43,11 @@ namespace EpicLoot.src.GamePatches
             // Build a comparision tooltip if we are requested to show one
             if (comparision_tooltip != "" && comparision_added != true) {
                 // Ensure the old tooltip is removed
-                if (comparisionTT != null) { GameObject.Destroy(comparisionTT); }
+                if (comparisionTT != null)
+                {
+                    GameObject.Destroy(comparisionTT);
+                }
                 comparisionTT = GameObject.Instantiate(UITooltip.m_tooltip, UITooltip.m_tooltip.transform);
-                //comparisionTT.transform.localScale
                 Transform scrollT = Utils.FindChild(comparisionTT.transform, "Canvas");
                 RectTransform scrollRT = scrollT.GetComponent<RectTransform>();
                 Transform header = Utils.FindChild(comparisionTT.transform, "Topic");
