@@ -18,7 +18,7 @@
     </When>
   </Choose>
   <ItemGroup>
-    <Reference Include="0Harmony">
+    <Reference Include="0Harmony, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(GamePath)\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="AdventureBackpacksAPI">
@@ -33,11 +33,8 @@
     <Reference Include="assembly_valheim_publicized">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_valheim_publicized.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx">
+      <Reference Include="BepInEx, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="CreatureLevelControl">
-      <HintPath>$(SolutionDir)Libs\CreatureLevelControl.dll</HintPath>
     </Reference>
     <Reference Include="CreatureLevelControlAPI">
       <HintPath>$(SolutionDir)Libs\CreatureLevelControlAPI.dll</HintPath>
@@ -52,9 +49,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)Packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ServerSync">
-      <HintPath>$(SolutionDir)Libs\ServerSync.dll</HintPath>
     </Reference>
     <Reference Include="Splatform, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\Splatform_publicized.dll</HintPath>

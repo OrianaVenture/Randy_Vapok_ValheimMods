@@ -71,8 +71,7 @@
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <BuildDependsOn>
       $(BuildDependsOn);
@@ -80,9 +79,7 @@
     </BuildDependsOn>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets'))" />
-    <Error Condition="!Exists('..\packages\JotunnLib.2.24.3\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.24.3\build\JotunnLib.props'))" />
-  </Target>
+    </Target>
   <Target Name="CopyToThunderstore">
     <Message Text="Copying to Thunderstore Deployment" Importance="high" />
     <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="C:/Users/carls/AppData/Roaming/Thunderstore Mod Manager/DataFolder/Valheim/profiles/modtesting/BepInEx/plugins" />
