@@ -8,7 +8,7 @@ using Common;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using ServerSync;
+//using ServerSync;
 using UnityEngine;
 
 namespace Jam
@@ -20,13 +20,13 @@ namespace Jam
         public const string DisplayName = "Jam";
         public const string Version = "1.0.9";
 
-        private readonly ConfigSync _configSync = new ConfigSync(PluginId) { DisplayName = DisplayName, CurrentVersion = Version, MinimumRequiredVersion = Version };
-        private static ConfigEntry<bool> _serverConfigLocked;
+        //private readonly ConfigSync _configSync = new ConfigSync(PluginId) { DisplayName = DisplayName, CurrentVersion = Version, MinimumRequiredVersion = Version };
+        //private static ConfigEntry<bool> _serverConfigLocked;
 
         private static Jam _instance;
         private Harmony _harmony;
         public static readonly Dictionary<string, GameObject> Prefabs = new Dictionary<string, GameObject>();
-        public static Dictionary<string, CustomSyncedValue<string>> SyncedJsonFiles = new Dictionary<string, CustomSyncedValue<string>>();
+        //public static Dictionary<string, CustomSyncedValue<string>> SyncedJsonFiles = new Dictionary<string, CustomSyncedValue<string>>();
 
         [UsedImplicitly]
         public void Awake()
@@ -34,8 +34,8 @@ namespace Jam
             _instance = this;
             PrefabCreator.Logger = Logger;
 
-            _serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", false, "[Server Only] The configuration is locked and may not be changed by clients once it has been synced from the server. Only valid for server config, will have no effect on clients.");
-            _configSync.AddLockingConfigEntry(_serverConfigLocked);
+            //_serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", false, "[Server Only] The configuration is locked and may not be changed by clients once it has been synced from the server. Only valid for server config, will have no effect on clients.");
+            //_configSync.AddLockingConfigEntry(_serverConfigLocked);
 
             var assetBundle = LoadAssetBundle("jamassets");
             if (assetBundle != null)
@@ -69,7 +69,7 @@ namespace Jam
 
             if (!update)
             {
-                SyncedJsonFiles.Add(filename, new CustomSyncedValue<string>(_instance._configSync, filename, jsonFile));
+                //SyncedJsonFiles.Add(filename, new CustomSyncedValue<string>(_instance._configSync, filename, jsonFile));
             }
 
             void Process()
@@ -77,7 +77,7 @@ namespace Jam
                 T result;
                 try
                 {
-                    result = string.IsNullOrEmpty(SyncedJsonFiles[filename].Value) ? null : JsonConvert.DeserializeObject<T>(SyncedJsonFiles[filename].Value);
+                    //result = string.IsNullOrEmpty(SyncedJsonFiles[filename].Value) ? null : JsonConvert.DeserializeObject<T>(SyncedJsonFiles[filename].Value);
                 }
                 catch (Exception)
                 {
@@ -85,10 +85,10 @@ namespace Jam
                     throw;
                 }
 
-                onFileLoad(result);
+                //onFileLoad(result);
             }
 
-            SyncedJsonFiles[filename].ValueChanged += Process;
+            //SyncedJsonFiles[filename].ValueChanged += Process;
             Process();
 
             if (jsonFile != null)
@@ -96,7 +96,7 @@ namespace Jam
                 //Primary JSON Watcher
                 void ConsumeConfigFileEvent(object s, FileSystemEventArgs e)
                 {
-                    SyncedJsonFiles[filename].AssignLocalValue(LoadJsonText(filename));
+                    //SyncedJsonFiles[filename].AssignLocalValue(LoadJsonText(filename));
                 }
 
                 var filePath = GetAssetPath(filename);
@@ -148,7 +148,7 @@ namespace Jam
             return assetFileName;
         }
 
-        public ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, string description, bool synchronizedSetting = true)
+        /*public ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, string description, bool synchronizedSetting = true)
         {
             var configEntry = Config.Bind(group, configName, value, new ConfigDescription(description));
 
@@ -156,7 +156,7 @@ namespace Jam
             syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
 
             return configEntry;
-        }
+        }*/
 
         [UsedImplicitly]
         public void OnDestroy()
