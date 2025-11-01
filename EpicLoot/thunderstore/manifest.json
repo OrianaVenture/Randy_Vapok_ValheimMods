@@ -5,7 +5,7 @@
   "description": "Adds loot drops, magic items, and enchanting to Valheim.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "ValheimModding-JsonDotNET-16.3.1",
+    "ValheimModding-JsonDotNET-13.0.4",
     "ValheimModding-Jotunn-2.27.0"
   ]
 }
