@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "드문",
   "mod_epicloot_Epic": "에픽",
   "mod_epicloot_Legendary": "전설적인",
-  "mod_epicloot_Mythic": "신화적인"
+  "mod_epicloot_Mythic": "신화적인",
+  "mod_epicloot_magic": "마법",
+  "mod_epicloot_rare": "드문",
+  "mod_epicloot_epic": "에픽",
+  "mod_epicloot_legendary": "전설적인",
+  "mod_epicloot_mythic": "신화적인"
 }

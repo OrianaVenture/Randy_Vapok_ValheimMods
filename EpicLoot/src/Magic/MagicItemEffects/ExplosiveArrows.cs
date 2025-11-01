@@ -44,7 +44,7 @@ namespace EpicLoot.MagicItemEffects
 
 
     [HarmonyPatch(typeof(Projectile), nameof(Projectile.Awake))]
-    public class RPC_ExplodingArrow_Projectile_Awake_Patch
+    public static class RPC_ExplodingArrow_Projectile_Awake_Patch
     {
         [UsedImplicitly]
         private static void Postfix(Projectile __instance)
@@ -82,7 +82,7 @@ namespace EpicLoot.MagicItemEffects
     }
 
     [HarmonyPatch(typeof(Projectile), nameof(Projectile.OnHit))]
-    public class ExplodingArrowHit_Projectile_OnHit_Patch
+    public static class ExplodingArrowHit_Projectile_OnHit_Patch
     {
         [UsedImplicitly]
         private static void Prefix(out Tuple<bool, bool> __state, Projectile __instance)
@@ -90,9 +90,15 @@ namespace EpicLoot.MagicItemEffects
             __state = new Tuple<bool, bool>(__instance.m_stayAfterHitStatic, __instance.m_stayAfterHitDynamic);
             __instance.m_stayAfterHitStatic = true;
             __instance.m_stayAfterHitDynamic = true;
+<<<<<<< HEAD
             //EpicLoot.Log($"Exploding Arrow onhit with static hit state: {__state.Item1}  dynamic hit state: {__state.Item2}");
         }
 
+=======
+        }
+
+        // TODO: Make custom data structure rather than using a tuple.
+>>>>>>> main
         [UsedImplicitly]
         private static void Postfix(Tuple<bool, bool> __state, Vector3 hitPoint, Projectile __instance)
         {
@@ -118,6 +124,43 @@ namespace EpicLoot.MagicItemEffects
 
             __instance.m_stayAfterHitStatic = __state.Item1;
             __instance.m_stayAfterHitDynamic = __state.Item2;
+<<<<<<< HEAD
+=======
+        }
+    }
+
+    [HarmonyPatch(typeof(Attack))]
+    public static class ExplodingArrow_Patch
+    {
+        [HarmonyTranspiler]
+        [HarmonyPatch(nameof(Attack.FireProjectileBurst))]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codeMatcher = new CodeMatcher(instructions);
+            codeMatcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Attack), nameof(Attack.m_weapon))),
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_lastProjectile)))
+                ).Advance(3).InsertAndAdvance(
+                new CodeInstruction(OpCodes.Ldloc_S, (byte)20),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                Transpilers.EmitDelegate(UpdateProjectileHit)
+                ).ThrowIfNotMatch("Unable to patch Exploding Arrows AOE.");
+            return codeMatcher.Instructions();
+        }
+
+        private static void UpdateProjectileHit(GameObject shot, Attack instance)
+        {
+            if (Player.m_localPlayer != null && instance.m_character == Player.m_localPlayer && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue, 0.01f))
+            {
+                Projectile projectile = shot.GetComponent<Projectile>();
+
+                if (projectile != null && projectile.m_nview != null)
+                {
+                    projectile.m_nview.GetZDO().Set("el-aw", effectValue);
+                }
+            }
+>>>>>>> main
         }
     }
 }

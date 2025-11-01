@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Nadir",
   "mod_epicloot_Epic": "Epik",
   "mod_epicloot_Legendary": "Efsanevi",
-  "mod_epicloot_Mythic": "Mitolojik"
+  "mod_epicloot_Mythic": "Mitolojik",
+  "mod_epicloot_magic": "Büyü",
+  "mod_epicloot_rare": "Nadir",
+  "mod_epicloot_epic": "Epik",
+  "mod_epicloot_legendary": "Efsanevi",
+  "mod_epicloot_mythic": "Mitolojik"
 }

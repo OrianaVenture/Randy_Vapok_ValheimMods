@@ -3,10 +3,11 @@
         {
             "Type": "Swords",
             "Fallback": "Knives",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "SwordWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SwordWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [ "SwordBronze" ],
                 "defeated_bonemass": [ "SwordIron" ],
@@ -19,10 +20,11 @@
         {
             "Type": "Axes",
             "Fallback": "Swords",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "AxeWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "AxeWood" ],
                 "defeated_eikthyr": [ "AxeStone", "AxeFlint" ],
                 "defeated_gdking": [ "AxeBronze" ],
                 "defeated_bonemass": [ "AxeIron" ],
@@ -35,10 +37,11 @@
         {
             "Type": "TwoHandAxes",
             "Fallback": "Sledges",
-            "ItemFallback": "Club",
+            "ItemFallback": "BattleaxeWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "BattleaxeWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [],
                 "defeated_bonemass": [ "Battleaxe" ],
@@ -51,10 +54,11 @@
         {
             "Type": "Knives",
             "Fallback": "Fists",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "KnifeWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "KnifeWood" ],
                 "defeated_eikthyr": [ "KnifeFlint" ],
                 "defeated_gdking": [ "KnifeCopper" ],
                 "defeated_bonemass": [ "KnifeChitin" ],
@@ -67,15 +71,16 @@
         {
             "Type": "Fists",
             "Fallback": "Clubs",
-            "ItemFallback": "Club",
+            "ItemFallback": "MaceWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "MaceWood" ],
                 "defeated_eikthyr": [],
-                "defeated_gdking": [],
+                "defeated_gdking": [ "FistBjornClaw" ],
                 "defeated_bonemass": [],
                 "defeated_dragon": [ "FistFenrirClaw" ],
-                "defeated_goblinking": [],
+                "defeated_goblinking": [ "FistBjornUndeadClaw" ],
                 "defeated_queen": [],
                 "defeated_fader": []
             }
@@ -99,10 +104,11 @@
         {
             "Type": "Clubs",
             "Fallback": "Staffs",
-            "ItemFallback": "Club",
+            "ItemFallback": "MaceWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "MaceWood" ],
                 "defeated_eikthyr": [ "Club" ],
                 "defeated_gdking": [ "MaceBronze" ],
                 "defeated_bonemass": [ "MaceIron" ],
@@ -115,10 +121,11 @@
         {
             "Type": "Sledges",
             "Fallback": "Polearms",
-            "ItemFallback": "Club",
+            "ItemFallback": "SledgeWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SledgeWood" ],
                 "defeated_eikthyr": [ "SledgeStagbreaker" ],
                 "defeated_gdking": [],
                 "defeated_bonemass": [ "SledgeIron" ],
@@ -131,10 +138,11 @@
         {
             "Type": "Polearms",
             "Fallback": "Pickaxes",
-            "ItemFallback": "Club",
+            "ItemFallback": "AtgeirWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "AtgeirWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [ "AtgeirBronze" ],
                 "defeated_bonemass": [ "AtgeirIron" ],
@@ -147,10 +155,11 @@
         {
             "Type": "Spears",
             "Fallback": "TwoHandAxes",
-            "ItemFallback": "Bow",
+            "ItemFallback": "SpearWood",
             "IgnoredItems": [],
+            "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SpearWood" ],
                 "defeated_eikthyr": [ "SpearFlint" ],
                 "defeated_gdking": [ "SpearBronze" ],
                 "defeated_bonemass": [ "SpearElderbark", "SpearChitin" ],
@@ -248,10 +257,10 @@
             "ItemsByBoss": {
                 "none": [ "ArmorRagsChest" ],
                 "defeated_eikthyr": [ "ArmorLeatherChest" ],
-                "defeated_gdking": [ "ArmorBronzeChest", "ArmorTrollLeatherChest" ],
+                "defeated_gdking": [ "ArmorBronzeChest", "ArmorTrollLeatherChest", "ArmorBerserkerChest" ],
                 "defeated_bonemass": [ "ArmorIronChest", "ArmorRootChest" ],
                 "defeated_dragon": [ "ArmorWolfChest", "ArmorFenringChest" ],
-                "defeated_goblinking": [ "ArmorPaddedCuirass" ],
+                "defeated_goblinking": [ "ArmorPaddedCuirass", "ArmorBerserkerUndeadChest" ],
                 "defeated_queen": [ "ArmorCarapaceChest", "ArmorMageChest" ],
                 "defeated_fader": [ "ArmorFlametalChest", "ArmorAshlandsMediumChest", "ArmorMageChest_Ashlands" ]
             }
@@ -264,10 +273,10 @@
             "ItemsByBoss": {
                 "none": [ "ArmorRagsLegs" ],
                 "defeated_eikthyr": [ "ArmorLeatherLegs" ],
-                "defeated_gdking": [ "ArmorTrollLeatherLegs", "ArmorBronzeLegs" ],
+                "defeated_gdking": [ "ArmorTrollLeatherLegs", "ArmorBronzeLegs", "ArmorBerserkerLegs" ],
                 "defeated_bonemass": [ "ArmorIronLegs", "ArmorRootLegs" ],
                 "defeated_dragon": [ "ArmorWolfLegs", "ArmorFenringLegs" ],
-                "defeated_goblinking": [ "ArmorPaddedGreaves" ],
+                "defeated_goblinking": [ "ArmorPaddedGreaves", "ArmorBerserkerUndeadLegs" ],
                 "defeated_queen": [ "ArmorCarapaceLegs", "ArmorMageLegs" ],
                 "defeated_fader": [ "ArmorFlametalLegs", "ArmorAshlandsMediumlegs", "ArmorMageLegs_Ashlands" ]
             }
@@ -280,10 +289,10 @@
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [ "HelmetLeather" ],
-                "defeated_gdking": [ "HelmetTrollLeather", "HelmetBronze" ],
+                "defeated_gdking": [ "HelmetTrollLeather", "HelmetBronze", "HelmetBerserkerHood" ],
                 "defeated_bonemass": [ "HelmetIron", "HelmetRoot" ],
                 "defeated_dragon": [ "HelmetDrake", "HelmetFenring" ],
-                "defeated_goblinking": [ "HelmetPadded" ],
+                "defeated_goblinking": [ "HelmetPadded", "HelmetBerserkerUndead" ],
                 "defeated_queen": [ "HelmetCarapace", "HelmetMage" ],
                 "defeated_fader": [ "HelmetFlametal", "HelmetAshlandsMediumHood", "HelmetMage_Ashlands" ]
             }
@@ -344,9 +353,25 @@
             "ItemsByBoss": {
                 "none": [],
                 "defeated_eikthyr": [],
-                "defeated_gdking": [ "LeatherBelt", "GoldRubyRing", "TrinketBronzeHealth", "TrinketBronzeStamina" ],
-                "defeated_bonemass": [ "TrinketIronHealth", "TrinketIronStamina", "TrinketChitinSwim" ],
-                "defeated_dragon": [ "SilverRing", "TrinketSilverDamage", "TrinketSilverResist" ],
+                "defeated_gdking": [ "LeatherBelt", "GoldRubyRing" ],
+                "defeated_bonemass": [],
+                "defeated_dragon": [ "SilverRing" ],
+                "defeated_goblinking": [],
+                "defeated_queen": [ "Demister" ],
+                "defeated_fader": []
+            }
+        },
+        {
+            "Type": "Trinket",
+            "Fallback": "Utility",
+            "ItemFallback": "Hoe",
+            "Items": [],
+            "ItemsByBoss": {
+                "none": [],
+                "defeated_eikthyr": [],
+                "defeated_gdking": [ "TrinketBronzeHealth", "TrinketBronzeStamina", "TrinketChitinSwim" ],
+                "defeated_bonemass": [ "TrinketIronHealth", "TrinketIronStamina" ],
+                "defeated_dragon": [ "TrinketSilverDamage", "TrinketSilverResist" ],
                 "defeated_goblinking": [ "TrinketBlackDamageHealth", "TrinketBlackStamina" ],
                 "defeated_queen": [ "TrinketCarapaceEitr", "TrinketScaleStaminaDamage" ],
                 "defeated_fader": [ "TrinketFlametalEitr", "TrinketFlametalStaminaHealth" ]

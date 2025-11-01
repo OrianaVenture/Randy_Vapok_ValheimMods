@@ -11,7 +11,11 @@ namespace EpicLoot
     [Serializable]
     public class MagicItemEffectRequirements
     {
+<<<<<<< HEAD
         public bool NoRoll = false; // If true, this effect cant be modified with a rune
+=======
+        public bool NoRoll;
+>>>>>>> main
         public bool ExclusiveSelf = true;
         public List<string> ExclusiveEffectTypes = new List<string>();
         public List<string> MustHaveEffectTypes = new List<string>();
@@ -188,7 +192,11 @@ namespace EpicLoot
             }
 
             if (ItemHasElementalDamage != null && 
+<<<<<<< HEAD
                 (ItemHasElementalDamage == itemData.hasElelemtalDamage()))
+=======
+                (ItemHasElementalDamage == itemData.EpicLootHasElementalDamage()))
+>>>>>>> main
             {
                 return false;
             }
@@ -310,8 +318,15 @@ namespace EpicLoot
             public ValueDef Legendary;
             public ValueDef Mythic;
 
+<<<<<<< HEAD
             public ValueDef GetValueDefForRarity(ItemRarity rarity) {
                 switch (rarity) {
+=======
+            public ValueDef GetValueDefForRarity(ItemRarity rarity)
+            {
+                switch (rarity)
+                {
+>>>>>>> main
                     case ItemRarity.Magic:
                         return Magic;
                     case ItemRarity.Rare:
@@ -437,7 +452,10 @@ namespace EpicLoot
                 AllDefinitions.Remove(effectDef.Type);
             }
 
+<<<<<<< HEAD
             //EpicLoot.Log($"Added MagicItemEffect: {effectDef.Type}");
+=======
+>>>>>>> main
             AllDefinitions.Add(effectDef.Type, effectDef);
         }
 

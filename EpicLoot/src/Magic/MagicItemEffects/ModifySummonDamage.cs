@@ -9,6 +9,7 @@ public static class ModifySummonDamage
     {
         public static void Postfix(Humanoid __instance)
         {
+<<<<<<< HEAD
             //EpicLoot.Log($"Starting summon damage check");
             // Setup the bonus damage for the summon when it is initially setup
             if (!__instance.IsPlayer() && Player.m_localPlayer != null) {
@@ -24,6 +25,24 @@ public static class ModifySummonDamage
                         if (item.GetDamage().GetTotalDamage() > 0)
                         {
                             //EpicLoot.Log($"Increasing summon item {item.m_shared.m_name} damage by {effectValue * 100}%");
+=======
+            // Setup the bonus damage for the summon when it is initially setup
+            if (!__instance.IsPlayer() && Player.m_localPlayer != null)
+            {
+                if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ModifySummonDamage, out float effectValue, 0.01f))
+                {
+                    // If things arn't setup yet, don't do anything
+                    if (__instance.m_nview.GetZDO() == null)
+                    {
+                        return;
+                    }
+                    __instance.m_nview.GetZDO().Set("el-msd", effectValue);
+
+                    foreach (var item in __instance.m_inventory.GetAllItems())
+                    {
+                        if (item.GetDamage().GetTotalDamage() > 0)
+                        {
+>>>>>>> main
                             item.m_shared.m_attack.m_damageMultiplier += effectValue;
                             item.m_shared.m_secondaryAttack.m_damageMultiplier += effectValue;
                         }
@@ -38,6 +57,7 @@ public static class ModifySummonDamage
     {
         public static void Postfix(Humanoid __instance)
         {
+<<<<<<< HEAD
             if (__instance.IsPlayer() || __instance.m_nview == null || __instance.m_nview.GetZDO() == null) { return; }
             // Apply Damage modification to all items in the inventory of the summon
             float summonDamageBonus = __instance.m_nview.GetZDO().GetFloat("el-msd", 0f);
@@ -50,6 +70,22 @@ public static class ModifySummonDamage
                     if (item.GetDamage().GetTotalDamage() > 0)
                     {
                         //EpicLoot.Log($"Increasing summon item {item.m_shared.m_name} damage by {summonDamageBonus * 100}%");
+=======
+            if (__instance.IsPlayer() || __instance.m_nview == null || __instance.m_nview.GetZDO() == null)
+            {
+                return;
+            }
+
+            // Apply Damage modification to all items in the inventory of the summon
+            float summonDamageBonus = __instance.m_nview.GetZDO().GetFloat("el-msd", 0f);
+
+            if (summonDamageBonus > 0f && !__instance.IsPlayer())
+            {
+                foreach (var item in __instance.m_inventory.GetAllItems())
+                {
+                    if (item.GetDamage().GetTotalDamage() > 0)
+                    {
+>>>>>>> main
                         item.m_shared.m_attack.m_damageMultiplier += summonDamageBonus;
                         item.m_shared.m_secondaryAttack.m_damageMultiplier += summonDamageBonus;
                     }

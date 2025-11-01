@@ -1,14 +1,11 @@
 ﻿using HarmonyLib;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace EpicLoot.src.integrations
+namespace EpicLoot
 {
     internal class AnimationSpeedManager
     {

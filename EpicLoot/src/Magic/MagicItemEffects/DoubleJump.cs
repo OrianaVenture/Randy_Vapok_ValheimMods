@@ -63,7 +63,7 @@ namespace EpicLoot.MagicItemEffects
                 player.RaiseSkill(Skills.SkillType.Jump);
             }
 
-            Vector3 jump = player.m_body.velocity;
+            Vector3 jump = player.m_body.linearVelocity;
             Vector3 playerUp = (new Vector3() + Vector3.up).normalized;
             float skillOffset = 1f + skillFactor * 0.4f;
             float jumpForce = player.m_jumpForce * skillOffset;

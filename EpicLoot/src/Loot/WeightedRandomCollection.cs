@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
+<<<<<<< HEAD
 namespace EpicLoot.Loot
+=======
+namespace EpicLoot
+>>>>>>> main
 {
     public class WeightedRandomCollection<T>
     {
@@ -42,8 +46,14 @@ namespace EpicLoot.Loot
             T result = default(T);
             foreach (var item in from weightedItem in _list select new { Value = weightedItem, Weight = _weightSelector(weightedItem) }) {
                 currentWeightIndex += item.Weight;
+<<<<<<< HEAD
                 //EpicLoot.Log($"{currentWeightIndex} >= {itemWeightIndex} for {item.Value} | Weight sum: {TotalWeight}");
                 if (currentWeightIndex >= itemWeightIndex) {
+=======
+                
+                if (currentWeightIndex >= itemWeightIndex)
+                {
+>>>>>>> main
                     result = item.Value;
                     break;
                 }
@@ -64,6 +74,7 @@ namespace EpicLoot.Loot
             {
                 return null;
             }
+
             var results = new List<T>();
             for (int i = 0; i < numberOfRolls; i++)
             {

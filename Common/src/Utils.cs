@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using BepInEx;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -38,6 +36,28 @@ namespace Common
             return output;
         }
 
+        // TODO: Fix or remove
+        /*public static Sprite LoadSpriteFromFile(string spritePath)
+        {
+            spritePath = Path.Combine(Paths.PluginPath, spritePath);
+            if (File.Exists(spritePath))
+            {
+                byte[] fileData = File.ReadAllBytes(spritePath);
+                Texture2D tex = new Texture2D(20, 20);
+                if (tex.LoadImage(fileData))
+                {
+                    return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(), 100);
+                }
+            }
+
+            return null;
+        }*/
+
+        /*public static Sprite LoadSpriteFromFile(string modFolder, string iconName)
+        {
+            var spritePath = Path.Combine(modFolder, iconName);
+            return LoadSpriteFromFile(spritePath);
+        }*/
 
         public static string RemoveBetween(string s, string from, string to)
         {

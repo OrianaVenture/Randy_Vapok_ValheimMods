@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "罕见",
   "mod_epicloot_Epic": "史诗级",
   "mod_epicloot_Legendary": "传奇",
-  "mod_epicloot_Mythic": "神话般的"
+  "mod_epicloot_Mythic": "神话般的",
+  "mod_epicloot_magic": "魔法",
+  "mod_epicloot_rare": "罕见",
+  "mod_epicloot_epic": "史诗级",
+  "mod_epicloot_legendary": "传奇",
+  "mod_epicloot_mythic": "神话般的"
 }

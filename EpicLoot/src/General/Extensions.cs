@@ -18,17 +18,15 @@ namespace EpicLoot.General
             int count = inputList.Count;
             for (int i = 0; i < count; i++)
             {
-                int tpos = UnityEngine.Random.Range(i, count);
+                int r = UnityEngine.Random.Range(i, count);
                 p = tempList[i];
-                tempList[i] = tempList[tpos];
-                tempList[tpos] = p;
+                tempList[i] = tempList[r];
+                tempList[r] = p;
             }
-            //EpicLoot.Log($"Input list: {string.Join(",", inputList)}");
-            //EpicLoot.Log($"Shuffled l: {string.Join(",", tempList)}");
             return tempList;
         }
 
-        public static bool hasElelemtalDamage(this ItemDrop.ItemData item)
+        public static bool EpicLootHasElementalDamage(this ItemDrop.ItemData item)
         {
             return item.m_shared.m_damages.m_fire +
                 item.m_shared.m_damages.m_frost +

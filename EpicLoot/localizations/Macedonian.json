@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Ретка",
   "mod_epicloot_Epic": "Епски",
   "mod_epicloot_Legendary": "Легендарно",
-  "mod_epicloot_Mythic": "Mitski"
+  "mod_epicloot_Mythic": "Mitski",
+  "mod_epicloot_magic": "Магија",
+  "mod_epicloot_rare": "Ретка",
+  "mod_epicloot_epic": "Епски",
+  "mod_epicloot_legendary": "Легендарно",
+  "mod_epicloot_mythic": "Mitski"
 }

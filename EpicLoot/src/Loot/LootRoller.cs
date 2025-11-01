@@ -10,7 +10,10 @@ using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using EpicLoot.Loot;
 using JetBrains.Annotations;
+<<<<<<< HEAD
 using Jotunn.Managers;
+=======
+>>>>>>> main
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using EpicLoot.Adventure.Feature;
+using System;
 using System.Linq;
 using System.Text;
-using EpicLoot.Adventure.Feature;
 using UnityEngine;
 using UnityEngine.UI;
 

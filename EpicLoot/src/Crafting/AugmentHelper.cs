@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Common;
+﻿using Common;
 using EpicLoot_UnityLib;
 using Jotunn.Managers;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

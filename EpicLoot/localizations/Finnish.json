@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Harvinainen",
   "mod_epicloot_Epic": "Mahtava",
   "mod_epicloot_Legendary": "Legendaarinen",
-  "mod_epicloot_Mythic": "Myyttinen"
+  "mod_epicloot_Mythic": "Myyttinen",
+  "mod_epicloot_magic": "Taika",
+  "mod_epicloot_rare": "Harvinainen",
+  "mod_epicloot_epic": "Mahtava",
+  "mod_epicloot_legendary": "Legendaarinen",
+  "mod_epicloot_mythic": "Myyttinen"
 }

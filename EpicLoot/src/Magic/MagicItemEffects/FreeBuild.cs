@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using EpicLoot.Config;
 using HarmonyLib;
 using JetBrains.Annotations;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace EpicLoot.MagicItemEffects
 {

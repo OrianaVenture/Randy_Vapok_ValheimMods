@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Rijetko",
   "mod_epicloot_Epic": "Epohalno",
   "mod_epicloot_Legendary": "Legendaran",
-  "mod_epicloot_Mythic": "Mitski"
+  "mod_epicloot_Mythic": "Mitski",
+  "mod_epicloot_magic": "Magija",
+  "mod_epicloot_rare": "Rijetko",
+  "mod_epicloot_epic": "Epohalno",
+  "mod_epicloot_legendary": "Legendaran",
+  "mod_epicloot_mythic": "Mitski"
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using HarmonyLib;
 using JetBrains.Annotations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EpicLoot.LegendarySystem
 {

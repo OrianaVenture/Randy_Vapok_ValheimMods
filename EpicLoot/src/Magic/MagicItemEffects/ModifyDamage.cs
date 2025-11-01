@@ -141,8 +141,15 @@ namespace EpicLoot.MagicItemEffects
             }
 
             var damageMod = 0f;
+<<<<<<< HEAD
             ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyDamage, effect => {
                 if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, effect, out float effectValue, 0.01f)) {
+=======
+            ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyDamage, effect =>
+            {
+                if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, effect, out float effectValue, 0.01f))
+                {
+>>>>>>> main
                     damageMod = effectValue;
                 }
             });

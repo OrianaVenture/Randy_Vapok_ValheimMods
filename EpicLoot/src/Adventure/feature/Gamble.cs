@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using EpicLoot.GatedItemType;
+using System.Collections.Generic;
 using System.Linq;
-using EpicLoot.GatedItemType;
 using Random = System.Random;
 
 namespace EpicLoot.Adventure.Feature

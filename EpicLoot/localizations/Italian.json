@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Raro",
   "mod_epicloot_Epic": "o",
   "mod_epicloot_Legendary": "Leggendario",
-  "mod_epicloot_Mythic": " Mito"
+  "mod_epicloot_Mythic": " Mito",
+  "mod_epicloot_magic": "Magia",
+  "mod_epicloot_rare": "Raro",
+  "mod_epicloot_epic": "o",
+  "mod_epicloot_legendary": "Leggendario",
+  "mod_epicloot_mythic": " Mito"
 }

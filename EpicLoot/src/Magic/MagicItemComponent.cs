@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Common;
+﻿using Common;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.LegendarySystem;
@@ -16,6 +7,14 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Managers;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using CodeInstruction = HarmonyLib.CodeInstruction;
@@ -638,7 +637,12 @@ namespace EpicLoot
             EquippedValues.Remove(player);
         }
 
+<<<<<<< HEAD
         public static float? Get(Player player, string effect, Func<float?> calculate) {
+=======
+        public static float? Get(Player player, string effect, Func<float?> calculate)
+        {
+>>>>>>> main
             if (effect == null || player == null) { return 0f; } // default fail out if the requested key is null
             var values = EquippedValues.GetOrCreateValue(player);
             if (values.TryGetValue(effect, out float? value))
@@ -669,6 +673,8 @@ namespace EpicLoot
                 results.Add(player.m_shoulderItem);
             if (player.m_utilityItem != null)
                 results.Add(player.m_utilityItem);
+            if (player.m_trinketItem != null)
+                results.Add(player.m_trinketItem);
             return results;
         }
 

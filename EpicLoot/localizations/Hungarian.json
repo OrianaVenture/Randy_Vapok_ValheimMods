@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Ritka",
   "mod_epicloot_Epic": "Epikus",
   "mod_epicloot_Legendary": "Legendás",
-  "mod_epicloot_Mythic": "mitikus"
+  "mod_epicloot_Mythic": "mitikus",
+  "mod_epicloot_magic": "Varázslat",
+  "mod_epicloot_rare": "Ritka",
+  "mod_epicloot_epic": "Epikus",
+  "mod_epicloot_legendary": "Legendás",
+  "mod_epicloot_mythic": "mitikus"
 }

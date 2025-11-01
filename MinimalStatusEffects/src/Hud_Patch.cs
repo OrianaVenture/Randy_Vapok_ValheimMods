@@ -82,10 +82,11 @@ namespace MinimalStatusEffects
                 cooldown.anchoredPosition = new Vector2(20, -10);
                 cooldown.Rotate(Vector3.forward * (-200 * Time.deltaTime));
 
-                if (_sprite == null)
+                // TODO: fix or remove
+                /*if (_sprite == null)
                 {
                     _sprite = Common.Utils.LoadSpriteFromFile("MinimalStatusEffects", "refresh_icon.png");
-                }
+                }*/
 
                 if (_sprite != null)
                 {

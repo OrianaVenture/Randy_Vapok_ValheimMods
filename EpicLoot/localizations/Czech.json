@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Vzácný",
   "mod_epicloot_Epic": "ký",
   "mod_epicloot_Legendary": "Legendární",
-  "mod_epicloot_Mythic": "Mystický"
+  "mod_epicloot_Mythic": "Mystický",
+  "mod_epicloot_magic": "Kouzlo",
+  "mod_epicloot_rare": "Vzácný",
+  "mod_epicloot_epic": "ký",
+  "mod_epicloot_legendary": "Legendární",
+  "mod_epicloot_mythic": "Mystický"
 }

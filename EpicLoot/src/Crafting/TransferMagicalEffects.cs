@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using EpicLoot.Config;
+﻿using EpicLoot.Config;
 using HarmonyLib;
 using JetBrains.Annotations;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EpicLoot.Crafting;

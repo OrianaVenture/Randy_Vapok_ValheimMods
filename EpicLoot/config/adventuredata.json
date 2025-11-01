@@ -54,7 +54,8 @@
       "LegsArmor",
       "HeadArmor",
       "ShouldersArmor",
-      "Utility"
+      "Utility",
+      "Trinket"
     ],
     "GamblesCount": 4,
     "GambleRarityChance": [ 10, 68, 15, 4, 2, 1 ],
@@ -105,8 +106,10 @@
       { "Item": "KnifeSilver",            "CoinsCost": 800 },
       { "Item": "KnifeBlackMetal",        "CoinsCost": 999 },
       { "Item": "KnifeSkollAndHati",      "CoinsCost": 1200 },
-
+      
+      { "Item": "FistBjornClaw",          "CoinsCost": 300 },
       { "Item": "FistFenrirClaw",         "CoinsCost": 800 },
+      { "Item": "FistBjornUndeadClaw",    "CoinsCost": 999 },
 
       { "Item": "StaffFireball",          "CoinsCost": 1200 },
       { "Item": "StaffIceShards",         "CoinsCost": 1200 },
@@ -174,11 +177,13 @@
       { "Item": "ArmorLeatherChest",      "CoinsCost": 200 },
       { "Item": "ArmorTrollLeatherChest", "CoinsCost": 300 },
       { "Item": "ArmorBronzeChest",       "CoinsCost": 400 },
+      { "Item": "ArmorBerserkerChest",    "CoinsCost": 400 },
       { "Item": "ArmorIronChest",         "CoinsCost": 600 },
       { "Item": "ArmorRootChest",         "CoinsCost": 600 },
       { "Item": "ArmorWolfChest",         "CoinsCost": 800 },
       { "Item": "ArmorFenringChest",      "CoinsCost": 800 },
       { "Item": "ArmorPaddedCuirass",     "CoinsCost": 999 },
+      { "Item": "ArmorBerserkerUndeadChest", "CoinsCost": 999 },
       { "Item": "ArmorCarapaceChest",     "CoinsCost": 1200 },
       { "Item": "ArmorMageChest",         "CoinsCost": 1200 },
       { "Item": "ArmorFlametalChest",     "CoinsCost": 1500 },
@@ -189,11 +194,13 @@
       { "Item": "ArmorLeatherLegs",       "CoinsCost": 200 },
       { "Item": "ArmorTrollLeatherLegs",  "CoinsCost": 300 },
       { "Item": "ArmorBronzeLegs",        "CoinsCost": 400 },
+      { "Item": "ArmorBerserkerLegs",        "CoinsCost": 400 },
       { "Item": "ArmorIronLegs",          "CoinsCost": 600 },
       { "Item": "ArmorRootLegs",          "CoinsCost": 600 },
       { "Item": "ArmorWolfLegs",          "CoinsCost": 800 },
       { "Item": "ArmorFenringLegs",       "CoinsCost": 800 },
       { "Item": "ArmorPaddedGreaves",     "CoinsCost": 999 },
+      { "Item": "ArmorBerserkerLegs",     "CoinsCost": 999 },
       { "Item": "ArmorCarapaceLegs",      "CoinsCost": 1200 },
       { "Item": "ArmorMageLegs",          "CoinsCost": 1200 },
       { "Item": "ArmorFlametalLegs",      "CoinsCost": 1500 },
@@ -203,11 +210,13 @@
       { "Item": "HelmetLeather",          "CoinsCost": 200 },
       { "Item": "HelmetTrollLeather",     "CoinsCost": 300 },
       { "Item": "HelmetBronze",           "CoinsCost": 400 },
+      { "Item": "HelmetBerserkerHood",    "CoinsCost": 400 },
       { "Item": "HelmetIron",             "CoinsCost": 600 },
       { "Item": "HelmetRoot",             "CoinsCost": 600 },
       { "Item": "HelmetDrake",            "CoinsCost": 800 },
       { "Item": "HelmetFenring",          "CoinsCost": 800 },
       { "Item": "HelmetPadded",           "CoinsCost": 999 },
+      { "Item": "HelmetBerserkerUndead",  "CoinsCost": 999 },
       { "Item": "HelmetCarapace",         "CoinsCost": 1200 },
       { "Item": "HelmetMage",             "CoinsCost": 1200 },
       { "Item": "HelmetFlametal",         "CoinsCost": 1500 },
@@ -225,7 +234,22 @@
 
       { "Item": "LeatherBelt",            "CoinsCost": 250 },
       { "Item": "GoldRubyRing",           "CoinsCost": 350 },
-      { "Item": "SilverRing",             "CoinsCost": 850 }
+      { "Item": "SilverRing",             "CoinsCost": 850 },
+      { "Item": "Demister",               "CoinsCost": 1200 },
+
+      { "Item": "TrinketBronzeHealth",    "CoinsCost": 400 },
+      { "Item": "TrinketBronzeStamina",   "CoinsCost": 400 },
+      { "Item": "TrinketChitinSwim",      "CoinsCost": 400 },
+      { "Item": "TrinketIronHealth",      "CoinsCost": 600 },
+      { "Item": "TrinketIronStamina",     "CoinsCost": 600 },
+      { "Item": "TrinketSilverDamage",    "CoinsCost": 800 },
+      { "Item": "TrinketSilverResist",    "CoinsCost": 800 },
+      { "Item": "TrinketBlackDamageHealth", "CoinsCost": 999 },
+      { "Item": "TrinketBlackStamina",    "CoinsCost": 999 },
+      { "Item": "TrinketCarapaceEitr",    "CoinsCost": 1200 },
+      { "Item": "TrinketScaleStaminaDamage", "CoinsCost": 1200 },
+      { "Item": "TrinketFlametalEitr",    "CoinsCost": 1500 },
+      { "Item": "TrinketFlametalStaminaHealth", "CoinsCost": 1500 }
     ]
   },
   "TreasureMap": { 
@@ -253,17 +277,17 @@
       { "Item": "RunestoneMythic",    "ForestTokenCost": 25 }
     ] 
   },
-  "Bounties": { 
+  "Bounties": {
     "RefreshInterval": 7,
     "IronMinLevel": 2,
     "IronMaxLevel": 3,
-    "IronHealthMultiplier": 2.0, 
+    "IronHealthMultiplier": 2.0,
     "GoldMinLevel": 3,
     "GoldMaxLevel": 3,
-    "GoldHealthMultiplier": 3.0, 
+    "GoldHealthMultiplier": 3.0,
     "AddsMinLevel": 1,
     "AddsMaxLevel": 2,
-    "AddsHealthMultiplier": 1.5, 
+    "AddsHealthMultiplier": 1.5,
     "Targets": [
       { "Biome": "Meadows",     "TargetID": "Deer",             "RewardGold": 0, "RewardIron": 1, "RewardCoins": 25 },
       { "Biome": "Meadows",     "TargetID": "Boar",             "RewardGold": 0, "RewardIron": 1, "RewardCoins": 25 },
@@ -284,6 +308,7 @@
       { "Biome": "BlackForest", "TargetID": "Troll",            "RewardGold": 1, "RewardIron": 0, "RewardCoins": 90 },
       { "Biome": "BlackForest", "TargetID": "Greydwarf_Shaman", "RewardGold": 1, "RewardIron": 4, "RewardCoins": 85, "Adds":
         [ { "ID": "Greydwarf",    "Count": 3 } ] },
+      { "Biome": "BlackForest", "TargetID": "Bjorn",            "RewardGold": 1, "RewardIron": 0, "RewardCoins": 80 },
       
       { "Biome": "Swamp",       "TargetID": "Blob",             "RewardGold": 0, "RewardIron": 3, "RewardCoins": 155 },
       { "Biome": "Swamp",       "TargetID": "Skeleton",         "RewardGold": 0, "RewardIron": 3, "RewardCoins": 150 },
@@ -333,6 +358,8 @@
         [ { "ID": "Goblin",       "Count": 3 }  ] },
       { "Biome": "Plains",      "TargetID": "GoblinShaman",     "RewardGold": 5, "RewardIron": 4,"RewardCoins": 400, "Adds":
         [ { "ID": "GoblinBrute",  "Count": 1 }, { "ID": "Goblin", "Count": 2 } ] },
+      { "Biome": "Plains",      "TargetID": "Unbjorn",          "RewardGold": 3, "RewardIron": 1, "RewardCoins": 310 },
+      { "Biome": "Plains",      "TargetID": "Unbjorn",          "RewardGold": 3, "RewardIron": 1, "RewardCoins": 310 },
     
       { "Biome": "Ocean",       "TargetID": "Serpent",          "RewardGold": 1, "RewardIron": 0, "RewardCoins": 330 },
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using BepInEx;
+﻿using BepInEx;
 using Common;
 using EpicLoot.Abilities;
 using EpicLoot.Adventure;
@@ -15,6 +10,11 @@ using EpicLoot.LegendarySystem;
 using EpicLoot_UnityLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace EpicLoot.Patching

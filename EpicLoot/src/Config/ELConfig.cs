@@ -370,9 +370,13 @@ namespace EpicLoot.Config
         {
             var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.recipes.json");
             var result = JsonConvert.DeserializeObject<RecipesConfig>(jsonFile);
-            if (RecipesHelper.Config == null) {
+
+            if (RecipesHelper.Config == null)
+            {
                 RecipesHelper.Initialize(result);
-            } else {
+            }
+            else
+            {
                 RecipesHelper.Initialize(RecipesHelper.Config);
             }
             ItemManager.OnItemsRegistered -= InitializeRecipeOnReady;
@@ -626,8 +630,8 @@ namespace EpicLoot.Config
             return default;
         }
 
-        public static ZPackage SendConfig(string zpackage_content) {
-            //Jotunn.Logger.LogInfo($"Writing {zpackage_content.Length}.");
+        public static ZPackage SendConfig(string zpackage_content)
+        {
             ZPackage package = new ZPackage();
             package.Write(zpackage_content);
             return package;

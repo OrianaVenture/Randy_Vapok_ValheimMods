@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
+<<<<<<< HEAD
 using Jotunn.Managers;
+=======
+using System.Collections.Generic;
+using System.Linq;
+>>>>>>> main
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

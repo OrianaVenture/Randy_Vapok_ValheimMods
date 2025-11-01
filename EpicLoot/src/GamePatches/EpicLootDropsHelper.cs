@@ -1,7 +1,7 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,9 +18,9 @@ namespace EpicLoot
                 return;
             }
 
-            var characterName = EpicLoot.GetCharacterCleanName(characterDrop.m_character);
-            var level = characterDrop.m_character.GetLevel();
-            var dropPoint = characterDrop.m_character.GetCenterPoint() +
+            string characterName = EpicLoot.GetCharacterCleanName(characterDrop.m_character);
+            int level = characterDrop.m_character.GetLevel();
+            Vector3 dropPoint = characterDrop.m_character.GetCenterPoint() +
                 characterDrop.transform.TransformVector(characterDrop.m_spawnOffset);
 
             OnCharacterDeath(characterName, level, dropPoint);
@@ -33,17 +33,17 @@ namespace EpicLoot
 
         public static void OnCharacterDeath(string characterName, int level, Vector3 dropPoint)
         {
-            var lootTables = LootRoller.GetLootTable(characterName);
+            List<LootTable> lootTables = LootRoller.GetLootTable(characterName);
             if (lootTables != null && lootTables.Count > 0)
             {
-                var loot = LootRoller.RollLootTableAndSpawnObjects(lootTables, level, characterName, dropPoint);
+                List<GameObject> loot = LootRoller.RollLootTableAndSpawnObjects(lootTables, level, characterName, dropPoint);
                 EpicLoot.Log($"Rolling on loot table: {characterName} (lvl {level}), " +
                     $"spawned {loot.Count} items at drop point({dropPoint}).");
                 DropItems(loot, dropPoint);
-                foreach (var l in loot)
+                foreach (GameObject l in loot)
                 {
-                    var itemData = l.GetComponent<ItemDrop>().m_itemData;
-                    var magicItem = itemData.GetMagicItem();
+                    ItemDrop.ItemData itemData = l.GetComponent<ItemDrop>().m_itemData;
+                    MagicItem magicItem = itemData.GetMagicItem();
                     if (magicItem != null)
                     {
                         EpicLoot.Log($"  - {itemData.m_shared.m_name} <{l.transform.position}>: " +
@@ -59,17 +59,17 @@ namespace EpicLoot
 
         public static void DropItems(List<GameObject> loot, Vector3 centerPos, float dropHemisphereRadius = 0.5f)
         {
-            foreach (var item in loot)
+            foreach (GameObject item in loot)
             {
-                var vector3 = Random.insideUnitSphere * dropHemisphereRadius;
+                Vector3 vector3 = Random.insideUnitSphere * dropHemisphereRadius;
                 vector3.y = Mathf.Abs(vector3.y);
                 item.transform.position = centerPos + vector3;
                 item.transform.rotation = Quaternion.Euler(0.0f, Random.Range(0, 360), 0.0f);
 
-                var rigidbody = item.GetComponent<Rigidbody>();
+                Rigidbody rigidbody = item.GetComponent<Rigidbody>();
                 if (rigidbody != null)
                 {
-                    var insideUnitSphere = Random.insideUnitSphere;
+                    Vector3 insideUnitSphere = Random.insideUnitSphere;
                     if (insideUnitSphere.y < 0.0)
                     {
                         insideUnitSphere.y = -insideUnitSphere.y;
@@ -109,8 +109,8 @@ namespace EpicLoot
 
             EpicLootDropsHelper.InstantDropsEnabled = false;
 
-            var characterName = EpicLoot.GetCharacterCleanName(characterDrop.m_character);
-            var level = characterDrop.m_character.GetLevel();
+            string characterName = EpicLoot.GetCharacterCleanName(characterDrop.m_character);
+            int level = characterDrop.m_character.GetLevel();
             __instance.m_nview.m_zdo.Set("characterName", characterName);
             __instance.m_nview.m_zdo.Set("level", level);
         }
@@ -121,8 +121,8 @@ namespace EpicLoot
     {
         public static void Postfix(Ragdoll __instance, Vector3 center)
         {
-            var characterName = __instance.m_nview.m_zdo.GetString("characterName");
-            var level = __instance.m_nview.m_zdo.GetInt("level");
+            string characterName = __instance.m_nview.m_zdo.GetString("characterName");
+            int level = __instance.m_nview.m_zdo.GetInt("level");
 
             if (!string.IsNullOrEmpty(characterName))
             {
@@ -130,6 +130,7 @@ namespace EpicLoot
             }
         }
     }
+
     [HarmonyPatch(typeof(CharacterDrop), nameof(CharacterDrop.GenerateDropList))]
     public static class CharacterDrop_GenerateDropList_DropsEnabled
     {
@@ -149,11 +150,11 @@ namespace EpicLoot
             if (__instance.m_character != null && __instance.m_character.IsBoss() &&
                 EpicLoot.GetBossTrophyDropMode() != BossDropMode.Default)
             {
-                foreach (var drop in __instance.m_drops)
+                foreach (CharacterDrop.Drop drop in __instance.m_drops)
                 {
                     if (!(drop.m_prefab == null))
                     {
-                        if ((drop.m_prefab.name.Equals("Wishbone") && EpicLoot.GetBossWishboneDropMode() != BossDropMode.Default) || 
+                        if ((drop.m_prefab.name.Equals("Wishbone") && EpicLoot.GetBossWishboneDropMode() != BossDropMode.Default) ||
                             (drop.m_prefab.name.Equals("CryptKey") && EpicLoot.GetBossCryptKeyDropMode() != BossDropMode.Default))
                             if (drop.m_onePerPlayer)
                                 drop.m_onePerPlayer = false;
@@ -166,12 +167,12 @@ namespace EpicLoot
         {
             if (__instance.m_character != null && __instance.m_character.IsBoss() && EpicLoot.GetBossTrophyDropMode() != BossDropMode.Default)
             {
-                for (var index = 0; index < __result.Count; index++)
+                for (int index = 0; index < __result.Count; index++)
                 {
-                    var entry = __result[index];
-                    var prefab = entry.Key;
+                    KeyValuePair<GameObject, int> entry = __result[index];
+                    GameObject prefab = entry.Key;
 
-                    var itemDrop = prefab.GetComponent<ItemDrop>();
+                    ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
 
                     if (itemDrop == null || itemDrop.m_itemData == null)
                     {
@@ -179,11 +180,11 @@ namespace EpicLoot
                     }
 
                     if (itemDrop.m_itemData.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Trophy ||
-                        prefab.name.Equals("Wishbone") || 
+                        prefab.name.Equals("Wishbone") ||
                         prefab.name.Equals("CryptKey"))
                     {
                         int dropCount;
-                        var playerList = ZNet.instance.GetPlayerList();
+                        List<ZNet.PlayerInfo> playerList = ZNet.instance.GetPlayerList();
                         switch (EpicLoot.GetBossTrophyDropMode())
                         {
                             case BossDropMode.OnePerPlayerOnServer:

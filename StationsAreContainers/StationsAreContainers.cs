@@ -4,7 +4,7 @@ using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using JetBrains.Annotations;
-using ServerSync;
+//using ServerSync;
 
 namespace StationsAreContainers
 {
@@ -24,9 +24,9 @@ namespace StationsAreContainers
             public ConfigEntry<int>  Height;
         }
 
-        private static ConfigEntry<bool> _serverConfigLocked;
-        private readonly ConfigSync _configSync = new ConfigSync(PluginId) { DisplayName = DisplayName,
-            CurrentVersion = Version, MinimumRequiredVersion = Version };
+        //private static ConfigEntry<bool> _serverConfigLocked;
+        //private readonly ConfigSync _configSync = new ConfigSync(PluginId) { DisplayName = DisplayName,
+        //    CurrentVersion = Version, MinimumRequiredVersion = Version };
 
         private static StationsAreContainers _instance;
         private Harmony _harmony;
@@ -45,10 +45,10 @@ namespace StationsAreContainers
             InitConfigForStation("$piece_blackforge", "Black Forge");
             InitConfigForStation("$piece_magetable", "Galdr Table");
 
-            _serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", false,
-                "[Server Only] The configuration is locked and may not be changed by clients once it has been synced from the server. " +
-                "Only valid for server config, will have no effect on clients.");
-            _configSync.AddLockingConfigEntry(_serverConfigLocked);
+            //_serverConfigLocked = SyncedConfig("Config Sync", "Lock Config", false,
+            //    "[Server Only] The configuration is locked and may not be changed by clients once it has been synced from the server. " +
+            //    "Only valid for server config, will have no effect on clients.");
+            //_configSync.AddLockingConfigEntry(_serverConfigLocked);
 
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
@@ -64,7 +64,7 @@ namespace StationsAreContainers
             }
         }
 
-        private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, string description, bool synchronizedSetting = true)
+        /*private ConfigEntry<T> SyncedConfig<T>(string group, string configName, T value, string description, bool synchronizedSetting = true)
         {
             var configEntry = Config.Bind(group, configName, value, new ConfigDescription(description));
 
@@ -72,7 +72,7 @@ namespace StationsAreContainers
             syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
 
             return configEntry;
-        }
+        }*/
 
         public static StationConfig InitConfigForStation(string locID, string label)
         {

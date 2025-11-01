@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "selten",
   "mod_epicloot_Epic": "Epos",
   "mod_epicloot_Legendary": "Legendär",
-  "mod_epicloot_Mythic": "Mythisch"
+  "mod_epicloot_Mythic": "Mythisch",
+  "mod_epicloot_magic": "Magie",
+  "mod_epicloot_rare": "selten",
+  "mod_epicloot_epic": "Epos",
+  "mod_epicloot_legendary": "Legendär",
+  "mod_epicloot_mythic": "Mythisch"
 }

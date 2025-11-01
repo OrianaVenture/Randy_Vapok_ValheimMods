@@ -9,10 +9,8 @@ using EpicLoot.GatedItemType;
 using EpicLoot.General;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.src.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
-using Jotunn;
 using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -20,9 +18,7 @@ using Jotunn.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,6 +75,8 @@ namespace EpicLoot
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
+        public const string DummyName = "EL_DummyPrefab";
+        public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
 
     public sealed class PieceDef
@@ -91,6 +89,7 @@ namespace EpicLoot
 
     [BepInPlugin(PluginId, DisplayName, Version)]
     [BepInDependency(Jotunn.Main.ModGuid)]
+    [BepInDependency("com.ValheimModding.NewtonsoftJsonDetector")]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
@@ -186,18 +185,11 @@ namespace EpicLoot
             cfg = new ELConfig(Config);
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
-            Jotunn.Logger.LogInfo("Applying config patches");
             FilePatching.LoadAndApplyAllPatches();
-            Jotunn.Logger.LogInfo("Loading abilities");
             InitializeAbilities();
-            Jotunn.Logger.LogInfo("Adding localization");
             AddLocalizations();
-
-            Jotunn.Logger.LogInfo("Loading assets");
             LoadAssets();
-            Jotunn.Logger.LogInfo("Starting enchanting controller");
             EnchantingUIController.Initialize();
-            Jotunn.Logger.LogInfo("Harmony Patching");
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
             LootTableLoaded?.Invoke();
@@ -550,6 +542,14 @@ namespace EpicLoot
                 var customItem = new CustomItem(go, false);
                 ItemManager.Instance.AddItem(customItem);
             }
+
+            // Make a dummy empty game object for later use.
+            GameObject dummyGO = PrefabManager.Instance.CreateEmptyPrefab(EpicAssets.DummyName, true);
+            ItemDrop itemDrop = dummyGO.AddComponent<ItemDrop>();
+            itemDrop.m_itemData.m_shared = new ItemDrop.ItemData.SharedData();
+            itemDrop.m_itemData.m_shared.m_name = "";
+            var dummyItem = new CustomItem(dummyGO, false);
+            ItemManager.Instance.AddItem(dummyItem);
         }
 
         private static void LoadBountySpawner()
@@ -729,10 +729,6 @@ namespace EpicLoot
         /// <returns></returns>
         internal static string ReadEmbeddedResourceFile(string filename)
         {
-            EpicLoot.Log($"Attempting to load resource path: {filename}");
-            foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames()) {
-                //EpicLoot.Log($"resource: {embeddedResouce}");
-            }
             using (var stream = typeof(EpicLoot).Assembly.GetManifestResourceStream(filename))
             {
                 using (var reader = new StreamReader(stream))
@@ -770,10 +766,11 @@ namespace EpicLoot
 
         private static bool IsNotRestrictedItem(ItemDrop.ItemData item)
         {
-            if (item.m_dropPrefab != null && LootRoller.Config.RestrictedItems.Contains(item.m_dropPrefab.name)) {
+            if (item.m_dropPrefab != null && LootRoller.Config.RestrictedItems.Contains(item.m_dropPrefab.name))
+            {
                 return false;
             }
-                
+
             return !LootRoller.Config.RestrictedItems.Contains(item.m_shared.m_name);
         }
 

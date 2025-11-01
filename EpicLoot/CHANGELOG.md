@@ -37,7 +37,6 @@
 * Makes crafting table UI sounds more consistent with other game sounds, and adds a secondary configuration to relatively increase/decrease their volume
 * Improved randomization of item drops by type and tier
 * Sacrifice items now allows multiple items to be selected at once
-* bulkup - Removed the HP bonus cap and changed scaling to be less exponential
 * Re-tuned the algorithm for coinhoarder to require a much larger purse of coins to cause significant damage bonuses
 * Riches can now be configured as to what it drops and will now drop 1 of its entries per roll max instead of potentially all of them.
 * Triple shot can now be configured and has been rebalanced
@@ -60,10 +59,35 @@
     * Secret stash items
 * Small code cleanups
 * Makes tooltips wider and scrollable, supports sets of infinite size
-* Fix for attacker stagger that would stagger non-pvp enabled players, now only staggers attackers that are pvp enabled
 * Adds status effect on-hit chance display data to magic item tooltips
-* Localizations in all 26 languages (still looking for community translation improvements please!)
 * Fix for Trinket visualization not showing up on players (thanks Shudnal!)
+
+## Version 0.11.5 - Call To Arms
+
+* Call To Arms content update!
+  * (if you are using the mega overhaul patches you will NOT get these changes!)
+  * (This is why we encourage using and making small patches, the mod is not finished)
+  * Reclassified Ghost as a Tier 2 mob.
+  * Added Bear (Bjorn) as a Tier 3 mob.
+  * Added Vile (Unbjorn) as a Tier 6 mob.
+  * Added new weapons, armor, and trinkets to appropriate drop tables.
+  * Added Demister to loot tables.
+* Built in Localization for 35 languages! (If you have suggestions for improvements in your language please reach out).
+* New configuration AudioVolumeAdjustment to control audio volume of this mod. (NOT finished! More fixes coming soon).
+* Removed "Crafting Tab Style" configuration since it did nothing.
+* Scrolling UI sensitivity tweaks (NOT finished! More fixes coming soon).
+* Comparison Tooltip jitter fix.
+* Updated links in the welcome popup message.
+* Magic effect fixes:
+  * Fixed the checks for elemental damage on weapons to include all types.
+  * Fixed the check for items that use health on attack (now includes bloodlust enchanted weapons).
+  * Bulk Up algorithm reworked to remove HP bonus cap and smoothed effect value curve.
+  * Quick Draw should now work on crossbows.
+  * Explosive Arrows reworked to improve compatibility with other mods.
+  * Modify Summon Damage and Modify Summon Health now supported.
+  * Coin Hoarder algorithm reworked to require more coins for larger bonuses.
+  * Modify Attack Health bug fix for restoring correct value state after performing an attack.
+  * Stagger no longer applies to players with PVP disabled.
 
 ## Version 0.11.4
 

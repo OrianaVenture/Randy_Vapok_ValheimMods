@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using EpicLoot_UnityLib;
+﻿using EpicLoot_UnityLib;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

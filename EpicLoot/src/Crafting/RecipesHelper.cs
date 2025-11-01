@@ -1,5 +1,8 @@
 ﻿using Common;
+<<<<<<< HEAD
 using EpicLoot.Adventure;
+=======
+>>>>>>> main
 using System;
 
 namespace EpicLoot.Crafting

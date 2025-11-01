@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Редкий",
   "mod_epicloot_Epic": "Эпический",
   "mod_epicloot_Legendary": "Легендарный",
-  "mod_epicloot_Mythic": "Мифический"
+  "mod_epicloot_Mythic": "Мифический",
+  "mod_epicloot_magic": "Волшебство",
+  "mod_epicloot_rare": "Редкий",
+  "mod_epicloot_epic": "Эпический",
+  "mod_epicloot_legendary": "Легендарный",
+  "mod_epicloot_mythic": "Мифический"
 }

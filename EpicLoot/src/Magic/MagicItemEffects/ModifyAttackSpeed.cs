@@ -14,7 +14,7 @@ namespace EpicLoot.MagicItemEffects
             {
                 ModifyWithLowHealth.Apply(player, MagicEffectType.ModifyAttackSpeed, effect =>
                 {
-                    var value = player.GetTotalActiveMagicEffectValue(effect, 0.01f);
+                    float value = player.GetTotalActiveMagicEffectValue(effect, 0.01f);
                     speed *= (1.0d + value);
                 });
             }
@@ -25,7 +25,6 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(Game __instance)
         {
-            // EpicLoot.Log($"Applying ModifyAttackSpeed patch");
             if (appliedAttackSpeed == false)
             {
                 AnimationSpeedManager.Add((character, speed) => ModifyAttackSpeed(character, speed));

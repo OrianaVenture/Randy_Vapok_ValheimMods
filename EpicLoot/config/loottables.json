@@ -207,7 +207,8 @@
         { "Item": "SpearBronze",       "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] },
         { "Item": "BowFineWood",       "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] },
         { "Item": "KnifeChitin",       "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] },
-        { "Item": "SpearChitin",       "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] }
+        { "Item": "SpearChitin",       "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "FistBjornClaw",     "Weight": 1, "Rarity": [ 80, 14, 4, 2, 0 ] }
       ]
     },
     {
@@ -215,7 +216,10 @@
       "Loot": [
         { "Item": "ArmorBronzeLegs",  "Rarity": [ 80, 14, 4, 2, 0 ] },
         { "Item": "ArmorBronzeChest", "Rarity": [ 80, 14, 4, 2, 0 ] },
-        { "Item": "HelmetBronze",     "Rarity": [ 80, 14, 4, 2, 0 ] }
+        { "Item": "HelmetBronze",     "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "HelmetBerserkerHood", "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "ArmorBerserkerChest", "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "ArmorBerserkerLegs",  "Rarity": [ 80, 14, 4, 2, 0 ] }
       ]
     },
     {
@@ -232,13 +236,22 @@
       ]
     },
     {
+      "Name": "Tier2Trinkets",
+      "Loot": [
+        { "Item": "TrinketBronzeHealth",  "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "TrinketBronzeStamina", "Rarity": [ 80, 14, 4, 2, 0 ] },
+        { "Item": "TrinketChitinSwim",    "Rarity": [ 80, 14, 4, 2, 0 ] }
+      ]
+    },
+    {
       "Name": "Tier2Everything",
       "Loot": [
         { "Item": "TrollArmor"   },
         { "Item": "Tier2Weapons" },
         { "Item": "Tier2Armor"   },
         { "Item": "Tier2Shields" },
-        { "Item": "Tier2Tools"   }
+        { "Item": "Tier2Tools"   },
+        { "Item": "Tier2Trinkets" }
       ]
     },
     {
@@ -279,12 +292,20 @@
       ]
     },
     {
+      "Name": "Tier3Trinkets",
+      "Loot": [
+        { "Item": "TrinketIronHealth",  "Weight": 1, "Rarity": [ 38, 50, 8, 3, 1 ] },
+        { "Item": "TrinketIronStamina", "Weight": 1, "Rarity": [ 38, 50, 8, 3, 1 ] }
+      ]
+    },
+    {
       "Name": "Tier3Everything",
       "Loot": [
         { "Item": "Tier3Weapons" },
         { "Item": "Tier3Armor"   },
         { "Item": "Tier3Shields" },
-        { "Item": "Tier3Tools"   }
+        { "Item": "Tier3Tools"   },
+        { "Item": "Tier3Trinkets" }
       ]
     },
     {
@@ -318,11 +339,19 @@
       ]
     },
     {
+      "Name": "Tier4Trinkets",
+      "Loot": [
+        { "Item": "TrinketSilverDamage", "Weight": 5, "Rarity": [ 5, 35, 50, 17, 3 ] },
+        { "Item": "TrinketSilverResist", "Weight": 1, "Rarity": [ 5, 35, 50, 17, 3 ] }
+      ]
+    },
+    {
       "Name": "Tier4Everything",
       "Loot": [
         { "Item": "Tier4Weapons" },
         { "Item": "Tier4Armor"   },
-        { "Item": "Tier4Shields" }
+        { "Item": "Tier4Shields" },
+        { "Item": "Tier4Trinkets" }
       ]
     },
     {
@@ -332,7 +361,8 @@
         { "Item": "AxeBlackMetal",    "Weight": 3, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "KnifeBlackMetal",  "Weight": 3, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "SwordBlackmetal",  "Weight": 3, "Rarity": [ 0, 15, 60, 20, 5 ] },
-        { "Item": "MaceNeedle",       "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] }
+        { "Item": "MaceNeedle",       "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
+        { "Item": "FistBjornUndeadClaw", "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] }
       ]
     },
     {
@@ -341,6 +371,9 @@
         { "Item": "ArmorPaddedGreaves", "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "ArmorPaddedCuirass", "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "HelmetPadded",       "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
+        { "Item": "ArmorBerserkerUndeadLegs",  "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
+        { "Item": "ArmorBerserkerUndeadChest", "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
+        { "Item": "HelmetBerserkerUndead",     "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "CapeLinen",          "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
         { "Item": "CapeLox",            "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] }
       ]
@@ -353,11 +386,19 @@
       ]
     },
     {
+      "Name": "Tier5Trinkets",
+      "Loot": [
+        { "Item": "TrinketBlackDamageHealth", "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] },
+        { "Item": "TrinketBlackStamina",      "Weight": 1, "Rarity": [ 0, 15, 60, 20, 5 ] }
+      ]
+    },
+    {
       "Name": "Tier5Everything",
       "Loot": [
         { "Item": "Tier5Weapons" },
         { "Item": "Tier5Armor"   },
-        { "Item": "Tier5Shields" }
+        { "Item": "Tier5Shields" },
+        { "Item": "Tier5Trinkets" }
       ]
     },
     {
@@ -404,12 +445,27 @@
       ]
     },
     {
+      "Name": "Tier6Utility",
+      "Loot": [
+        { "Item": "Demister", "Weight": 1, "Rarity": [ 0, 10, 50, 30, 10 ] }
+      ]
+    },
+    {
+      "Name": "Tier6Trinkets",
+      "Loot": [
+        { "Item": "TrinketCarapaceEitr",       "Weight": 1, "Rarity": [ 0, 10, 50, 30, 10 ] },
+        { "Item": "TrinketScaleStaminaDamage", "Weight": 1, "Rarity": [ 0, 10, 50, 30, 10 ] }
+      ]
+    },
+    {
       "Name": "Tier6Everything",
       "Loot": [
         { "Item": "Tier6Weapons" },
         { "Item": "Tier6Armor"   },
         { "Item": "Tier6Shields" },
-        { "Item": "Tier6Tools"   }
+        { "Item": "Tier6Tools"   },
+        { "Item": "Tier6Utility" },
+        { "Item": "Tier6Trinkets" }
       ]
     },
     {
@@ -452,11 +508,19 @@
       ]
     },
     {
+      "Name": "Tier7Trinkets",
+      "Loot": [
+        { "Item": "TrinketFlametalEitr",          "Weight": 1, "Rarity": [ 0, 5, 35, 45, 15 ] },
+        { "Item": "TrinketFlametalStaminaHealth", "Weight": 1, "Rarity": [ 0, 5, 35, 45, 15 ] }
+      ]
+    },
+    {
       "Name": "Tier7Everything",
       "Loot": [
         { "Item": "Tier7Weapons" },
         { "Item": "Tier7Armor"   },
-        { "Item": "Tier7Shields" }
+        { "Item": "Tier7Shields" },
+        { "Item": "Tier7Trinkets" }
       ]
     }
   ],
@@ -951,11 +1015,15 @@
       "RefObject": "Tier2Mob"
     },
     {
+      "Object": "Ghost",
+      "RefObject": "Tier2Mob"
+    },
+    {
       "Object": "Troll",
       "RefObject": "Tier3Mob"
     },
     {
-      "Object": "Ghost",
+      "Object": "Bjorn",
       "RefObject": "Tier3Mob"
     },
     {
@@ -1045,6 +1113,10 @@
     {
       "Object": "GoblinShaman",
       "RefObject": "Tier6Mob"
+    },
+    {
+        "Object": "Unbjorn",
+        "RefObject": "Tier6Mob"
     },
     {
       "Object": "Tick",
@@ -1455,6 +1527,14 @@
     },
     {
       "Object": "TreasureChest_meadows",
+      "Drops": [ [0, 78], [1, 20], [2, 2] ],
+      "Loot": [
+        { "Item": "Tier0Everything", "Weight": 4, "Rarity": [ 97, 2, 1, 0, 0] },
+        { "Item": "Tier1Everything", "Weight": 1, "Rarity": [ 97, 2, 1, 0, 0] }
+      ]
+    },
+    {
+      "Object": "TreasureChest_meadows_combat",
       "Drops": [ [0, 78], [1, 20], [2, 2] ],
       "Loot": [
         { "Item": "Tier0Everything", "Weight": 4, "Rarity": [ 97, 2, 1, 0, 0] },

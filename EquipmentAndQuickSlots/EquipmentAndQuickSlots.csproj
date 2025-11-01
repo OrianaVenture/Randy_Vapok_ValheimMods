@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\*.cs" />
+    <Compile Include="src\*\*.cs" />
     <Compile Include="EquipmentAndQuickSlots.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -53,10 +54,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\Libs\AugaAPI.dll">
-      <Link>AugaAPI.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Content Include="CHANGELOG.md" />
     <Content Include="ILRepack.targets">
       <SubType>Designer</SubType>

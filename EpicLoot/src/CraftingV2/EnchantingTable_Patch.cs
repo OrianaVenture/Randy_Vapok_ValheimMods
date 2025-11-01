@@ -1,7 +1,7 @@
-﻿using System;
-using EpicLoot.Config;
+﻿using EpicLoot.Config;
 using EpicLoot_UnityLib;
 using HarmonyLib;
+using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Paths.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net481</TargetFramework>
@@ -30,25 +32,18 @@
 
   <ItemGroup>
     <None Remove="localizations\*" />
+    <Compile Include="src\*.cs" />
+    <Compile Include="src\*\*.cs" />
+    <Compile Include="src\*\*\*.cs" />
+    <Compile Include="EpicLoot.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\epicloot">
       <Link>epicloot</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\abilities.json" />
-    <EmbeddedResource Include="config\adventuredata.json" />
-    <EmbeddedResource Include="config\enchantcosts.json" />
-    <EmbeddedResource Include="config\enchantingupgrades.json" />
-    <EmbeddedResource Include="config\iteminfo.json" />
-    <EmbeddedResource Include="config\itemnames.json" />
-    <EmbeddedResource Include="config\legendaries.json" />
-    <EmbeddedResource Include="config\loottables.json" />
-    <EmbeddedResource Include="config\materialconversions.json" />
-    <EmbeddedResource Include="config\recipes.json" />
-    <EmbeddedResource Include="localizations\*" />
-    <EmbeddedResource Include="config\overhauls\balanced\magiceffects.json" />
-    <EmbeddedResource Include="config\overhauls\minimal\magiceffects.json" />
-    <EmbeddedResource Include="config\overhauls\legendary\magiceffects.json" />
+    <EmbeddedResource Include="config\*.json" />
+    <EmbeddedResource Include="localizations\*.json" />
     <None Include="info.md" />
     <None Include="packages.config" />
     <None Include="thunderstore\manifest.json" />
@@ -63,22 +58,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\Libs\AugaAPI.dll">
-      <Link>AugaAPI.dll</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\ValheimUnity\Assets\ExternalLibraries\EpicLoot-UnityLib.dll">
       <Link>EpicLoot-UnityLib.dll</Link>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Update="UnityEngine.ImageConversionModule">
-      <SpecificVersion>True</SpecificVersion>
-    </Reference>
   </ItemGroup>
 
   <PropertyGroup>

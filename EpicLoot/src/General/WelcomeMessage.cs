@@ -59,7 +59,7 @@ namespace EpicLoot
 
         public void OnPatchNotesClick()
         {
-            Application.OpenURL("https://github.com/OrianaVenture/Randy_Vapok_ValheimMods/blob/main/EpicLoot/CHANGELOG.md");
+            Application.OpenURL("https://thunderstore.io/c/valheim/p/RandyKnapp/EpicLoot/changelog/");
             Close();
         }
 

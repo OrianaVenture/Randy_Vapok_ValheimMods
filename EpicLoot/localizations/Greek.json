@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Σπάνιο",
   "mod_epicloot_Epic": "Επικό",
   "mod_epicloot_Legendary": "Θρυλικό",
-  "mod_epicloot_Mythic": "Μυθικό"
+  "mod_epicloot_Mythic": "Μυθικό",
+  "mod_epicloot_magic": "Μαγεία",
+  "mod_epicloot_rare": "Σπάνιο",
+  "mod_epicloot_epic": "Επικό",
+  "mod_epicloot_legendary": "Θρυλικό",
+  "mod_epicloot_mythic": "Μυθικό"
 }

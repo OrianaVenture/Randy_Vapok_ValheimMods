@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 using System;
+=======
+﻿using EpicLoot_UnityLib;
+>>>>>>> main
 using System.Collections.Generic;
 using System.Linq;
-using EpicLoot_UnityLib;
 using UnityEngine;
 using EpicLoot.CraftingV2;
 

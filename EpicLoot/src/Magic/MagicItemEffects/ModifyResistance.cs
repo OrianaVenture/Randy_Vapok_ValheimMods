@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 ﻿using System.Collections.Generic;
 using HarmonyLib;
+=======
+﻿using HarmonyLib;
+using System;
+using System.Collections.Generic;
+>>>>>>> main
 
 namespace EpicLoot.MagicItemEffects
 {

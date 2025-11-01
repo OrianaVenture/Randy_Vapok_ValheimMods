@@ -1433,5 +1433,10 @@
   "mod_epicloot_Rare": "Retko",
   "mod_epicloot_Epic": "Epik",
   "mod_epicloot_Legendary": "Legendaran",
-  "mod_epicloot_Mythic": "Mitološki"
+  "mod_epicloot_Mythic": "Mitološki",
+  "mod_epicloot_magic": "Magija",
+  "mod_epicloot_rare": "Retko",
+  "mod_epicloot_epic": "Epik",
+  "mod_epicloot_legendary": "Legendaran",
+  "mod_epicloot_mythic": "Mitološki"
 }

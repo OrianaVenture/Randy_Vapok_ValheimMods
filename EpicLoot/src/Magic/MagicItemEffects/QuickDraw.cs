@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿using System;
 using HarmonyLib;
+=======
+﻿using HarmonyLib;
+using System;
+>>>>>>> main
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -25,8 +30,20 @@ namespace EpicLoot.MagicItemEffects
             {
                 if (crossbowReloadSpeed > 0 && __instance.m_shared.m_attack.m_requiresReload || __instance.m_shared.m_secondaryAttack.m_requiresReload)
                 {
+<<<<<<< HEAD
                     if (__instance.m_shared.m_attack.m_requiresReload) { __result = __instance.m_shared.m_attack.m_reloadTime * (1f - crossbowReloadSpeed); }
                     if (__instance.m_shared.m_secondaryAttack.m_requiresReload) { __result = __instance.m_shared.m_secondaryAttack.m_reloadTime * (1f - crossbowReloadSpeed); }
+=======
+                    if (__instance.m_shared.m_attack.m_requiresReload)
+                    {
+                        __result = __instance.m_shared.m_attack.m_reloadTime * (1f - crossbowReloadSpeed);
+                    }
+
+                    if (__instance.m_shared.m_secondaryAttack.m_requiresReload)
+                    {
+                        __result = __instance.m_shared.m_secondaryAttack.m_reloadTime * (1f - crossbowReloadSpeed);
+                    }
+>>>>>>> main
                 }
             }
         }

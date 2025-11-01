@@ -1432,5 +1432,10 @@
   "mod_epicloot_Rare": "Retas",
   "mod_epicloot_Epic": "Epas",
   "mod_epicloot_Legendary": "Legendinis",
-  "mod_epicloot_Mythic": "Mitolinis"
+  "mod_epicloot_Mythic": "Mitolinis",
+  "mod_epicloot_magic": "Stebuklas",
+  "mod_epicloot_rare": "Retas",
+  "mod_epicloot_epic": "Epas",
+  "mod_epicloot_legendary": "Legendinis",
+  "mod_epicloot_mythic": "Mitolinis"
 }

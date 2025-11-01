@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using EpicLoot.Adventure;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
@@ -6,6 +7,12 @@ using EpicLoot.GatedItemType;
 using EpicLoot_UnityLib;
 using Jotunn.Managers;
 using PlayFab.ClientModels;
+=======
+﻿using EpicLoot.Config;
+using EpicLoot.Crafting;
+using EpicLoot.Data;
+using EpicLoot_UnityLib;
+>>>>>>> main
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +31,7 @@ namespace EpicLoot.CraftingV2
     public enum EnchantingTabs : uint
     {
         None = 0,
+<<<<<<< HEAD
         Sacrifice = 1,
         ConvertMaterials = 2,
         Enchant = 3,
@@ -37,6 +45,15 @@ namespace EpicLoot.CraftingV2
     {
         Extract,
         Etch
+=======
+        Sacrifice = 1 << 0,
+        ConvertMaterials = 1 << 1,
+        Enchant = 1 << 2,
+        Augment = 1 << 3,
+        Disenchant = 1 << 4,
+        Helheim = 1 << 5,
+        Upgrade = 1 << 6
+>>>>>>> main
     }
 
     public class EnchantingUIController : MonoBehaviour
@@ -83,6 +100,7 @@ namespace EpicLoot.CraftingV2
             DisenchantUI.GetDisenchantCost = GetDisenchantCost;
             DisenchantUI.DisenchantItem = DisenchantItem;
             FeatureStatus.MakeFeatureUnlockTooltip = MakeFeatureUnlockTooltip;
+<<<<<<< HEAD
             EnchantingTableUIPanelBase.AudioVolumeLevel = GetAudioLevel;
             MultiSelectItemListElement.AudioVolumeLevel = GetAudioLevel;
             PlaySoundOnChecked.AudioVolumeLevel = GetAudioLevel;
@@ -90,6 +108,13 @@ namespace EpicLoot.CraftingV2
         }
 
         private static float GetAudioLevel() {
+=======
+            AugmentChoiceDialog.AudioVolumeLevel = GetAudioLevel;
+        }
+
+        private static float GetAudioLevel()
+        {
+>>>>>>> main
             return AudioMan.GetSFXVolume() * ELConfig.UIAudioVolumeAdjustment.Value;
         }
 
@@ -362,18 +387,19 @@ namespace EpicLoot.CraftingV2
                     reqItemDrop.m_itemData.m_dropPrefab = reqPrefab;
 
                     var requiredAmount = requirement.Amount;
-                    if (runestoneConversionAmount > 0 && conversion.Type == MaterialConversionType.Upgrade && 
+                    if (runestoneConversionAmount > 0 && conversion.Type == MaterialConversionType.Upgrade &&
                         recipe.Product.IsRunestone() && reqItemDrop.m_itemData.IsRunestone())
                     {
                         requiredAmount = Mathf.CeilToInt(runestoneConversionAmount * recipe.Amount);
                     }
-                    else if (materialConversionAmount > 0 && conversion.Type == MaterialConversionType.Upgrade && 
+                    else if (materialConversionAmount > 0 && conversion.Type == MaterialConversionType.Upgrade &&
                         recipe.Product.IsMagicCraftingMaterial() && reqItemDrop.m_itemData.IsMagicCraftingMaterial())
                     {
                         requiredAmount = Mathf.CeilToInt(materialConversionAmount * recipe.Amount);
                     }
 
-                    recipe.Cost.Add(new ConversionRecipeCostUnity {
+                    recipe.Cost.Add(new ConversionRecipeCostUnity
+                    {
                         Item = reqItemDrop.m_itemData.Clone(),
                         Amount = requiredAmount
                     });
@@ -401,8 +427,8 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetEnchantableItems()
         {
             return InventoryManagement.Instance.GetAllItems()
-                .Where( item => !item.IsMagic() && EpicLoot.CanBeMagicItem(item))
-                .Select( item => new InventoryItemListElement() { Item = item })
+                .Where(item => !item.IsMagic() && EpicLoot.CanBeMagicItem(item))
+                .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
         }
 
@@ -447,11 +473,11 @@ namespace EpicLoot.CraftingV2
 
             var tempMagicItem = new MagicItem() { Rarity = rarity };
             var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, tempMagicItem);
-            
+
             foreach (var effectDef in availableEffects)
             {
                 var values = effectDef.GetValuesForRarity(rarity);
-                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ? 
+                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
                     $"{values.MinValue}" : $"({values.MinValue}-{values.MaxValue})" : "";
                 sb.AppendLine($"‣ {string.Format(Localization.instance.Localize(effectDef.DisplayText), valueDisplay)}");
             }
@@ -475,7 +501,7 @@ namespace EpicLoot.CraftingV2
         private static GameObject EnchantItemAndReturnSuccessDialog(ItemDrop.ItemData item, MagicRarityUnity rarity)
         {
             var player = Player.m_localPlayer;
-  
+
             float previousDurabilityPercent = 0;
             if (item.m_shared.m_useDurability)
             {
@@ -933,13 +959,13 @@ namespace EpicLoot.CraftingV2
 
             var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
                 item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : augmentindex);
-            
+
             var sb = new StringBuilder();
             sb.Append($"<color={rarityColor}>");
             foreach (var effectDef in availableEffects)
             {
                 var values = effectDef.GetValuesForRarity(item.GetRarity());
-                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ? 
+                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
                     $"{values.MinValue}" : $"({values.MinValue}-{values.MaxValue})" : "";
                 sb.AppendLine($"‣ {string.Format(Localization.instance.Localize(effectDef.DisplayText), valueDisplay)}");
             }
@@ -973,8 +999,14 @@ namespace EpicLoot.CraftingV2
             var choiceDialog = AugmentHelper.CreateAugmentChoiceDialog(true);
             choiceDialog.transform.SetParent(EnchantingTableUI.instance.transform);
 
+<<<<<<< HEAD
             // Fix the darn audio sources, AGAIN
             foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>()) {
+=======
+            // Fix audio sources
+            foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>())
+            {
+>>>>>>> main
                 audio_source.volume = GetAudioLevel();
             }
 
@@ -1009,7 +1041,7 @@ namespace EpicLoot.CraftingV2
 
             if (magicItem.HasEffect(MagicEffectType.Indestructible))
             {
-                item.m_shared.m_useDurability = 
+                item.m_shared.m_useDurability =
                     item.m_dropPrefab?.GetComponent<ItemDrop>().m_itemData.m_shared.m_useDurability ?? false;
 
                 if (item.m_shared.m_useDurability)
@@ -1051,7 +1083,11 @@ namespace EpicLoot.CraftingV2
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
             return InventoryManagement.Instance.GetAllItems()
+<<<<<<< HEAD
                 .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
+=======
+                .Where(item => !item.m_equipped && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value ||
+>>>>>>> main
                     !boundItems.Contains(item)))
                 .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
                 .Select(item => new InventoryItemListElement() { Item = item })
