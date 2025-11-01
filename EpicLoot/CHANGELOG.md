@@ -1,4 +1,4 @@
-## Version 0.11.5
+## Version 0.11.5 - Call To Arms
 
 * Call To Arms content update!
   * (if you are using the mega overhaul patches you will NOT get these changes!)
@@ -12,7 +12,7 @@
 * New configuration AudioVolumeAdjustment to control audio volume of this mod. (NOT finished! More fixes coming soon).
 * Removed "Crafting Tab Style" configuration since it did nothing.
 * Scrolling UI sensitivity tweaks (NOT finished! More fixes coming soon).
-* Comparision Tooltip jitter fix.
+* Comparison Tooltip jitter fix.
 * Updated links in the welcome popup message.
 * Magic effect fixes:
   * Fixed the checks for elemental damage on weapons to include all types.
