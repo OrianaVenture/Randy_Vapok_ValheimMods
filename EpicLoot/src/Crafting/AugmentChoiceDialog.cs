@@ -1,6 +1,6 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +15,9 @@ namespace EpicLoot.Crafting
         public Image MagicBG;
         public List<Button> EffectChoiceButtons = new List<Button>();
 
+        public delegate float AudioVolumeLevelDelegate();
+        public static AudioVolumeLevelDelegate AudioVolumeLevel;
+
         private AudioSource _audioSource;
         private int _choiceIndex = 0;
 
@@ -27,6 +30,11 @@ namespace EpicLoot.Crafting
                 _audioSource = transform.parent.gameObject.AddComponent<AudioSource>();
                 _audioSource.playOnAwake = false;
             }
+
+            var uiSFX = GameObject.Find("sfx_gui_button");
+            if (uiSFX && _audioSource != null)
+                _audioSource.outputAudioMixerGroup = uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
+            _audioSource.volume = AudioVolumeLevel();
         }
 
         [UsedImplicitly]
@@ -173,7 +181,7 @@ namespace EpicLoot.Crafting
         {
             _audioSource.loop = false;
             _audioSource.Stop();
-            _audioSource.PlayOneShot(EpicLoot.Assets.AugmentItemSFX);
+            _audioSource.PlayOneShot(EpicLoot.Assets.AugmentItemSFX, _audioSource.volume);
             gameObject.SetActive(false);
         }
     }

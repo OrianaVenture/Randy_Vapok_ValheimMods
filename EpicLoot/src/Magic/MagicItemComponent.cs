@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Common;
+﻿using Common;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.LegendarySystem;
@@ -16,6 +7,14 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Managers;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using CodeInstruction = HarmonyLib.CodeInstruction;
@@ -352,7 +351,7 @@ namespace EpicLoot
             return !string.IsNullOrEmpty(itemData.GetSetID());
         }
 
-        public static bool IsLegendarySetItem(this ItemDrop.ItemData itemData)
+        public static bool IsMagicSetItem(this ItemDrop.ItemData itemData)
         {
             return itemData.IsMagic(out var magicItem) && !string.IsNullOrEmpty(magicItem.SetID);
         }
@@ -631,8 +630,9 @@ namespace EpicLoot
             EquippedValues.Remove(player);
         }
 
-        public static float? Get(Player player, string effect, Func<float?> calculate) {
-            if (effect == null) { return 0f; } // default fail out if the requested key is null
+        public static float? Get(Player player, string effect, Func<float?> calculate)
+        {
+            if (effect == null || player == null) { return 0f; } // default fail out if the requested key is null
             var values = EquippedValues.GetOrCreateValue(player);
             if (values.TryGetValue(effect, out float? value))
             {

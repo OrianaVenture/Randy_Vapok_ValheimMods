@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using EpicLoot.Adventure;
+using HarmonyLib;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EpicLoot.Adventure;
-using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -171,11 +171,10 @@ namespace EpicLoot
         public static void AddMagicEffectsExplainPage(TextsDialog textsDialog)
         {
             IOrderedEnumerable<KeyValuePair<string, string>> sortedMagicEffects = MagicItemEffectDefinitions.AllDefinitions
-                .Where(x => !x.Value.Requirements.NoRoll)
-                .Select(x => new KeyValuePair<string, string>(string.Format(
-                    Localization.instance.Localize(x.Value.DisplayText),
-                    "<b><color=yellow>X</color></b>"),
-                    Localization.instance.Localize(x.Value.Description)))
+                .Where(x => !x.Value.Requirements.NoRoll && x.Value.CanBeAugmented)
+                .Select(x => new KeyValuePair<string, string>(string.Format(Localization.instance.Localize(x.Value.DisplayText),
+                "<b><color=yellow>X</color></b>"),
+                Localization.instance.Localize(x.Value.Description)))
                 .OrderBy(x => x.Key);
 
             StringBuilder t = new StringBuilder();

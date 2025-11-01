@@ -11,7 +11,7 @@ namespace EpicLoot.MagicItemEffects
             if (Player.m_localPlayer &&
                 Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float coinHoarderEffectValue))
             {
-                var modifier = 1 + CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
+                var modifier = CoinHoarder.GetCoinHoarderValue(Player.m_localPlayer, coinHoarderEffectValue);
                 if (modifier > 0)
                 {
                     __result.m_blunt *= modifier;
@@ -23,7 +23,7 @@ namespace EpicLoot.MagicItemEffects
                     __result.m_frost *= modifier;
                     __result.m_lightning *= modifier;
                     __result.m_poison *= modifier;
-                    __result.m_spirit *= modifier; 
+                    __result.m_spirit *= modifier;
                 }
             }
 
@@ -49,21 +49,21 @@ namespace EpicLoot.MagicItemEffects
             var player = PlayerExtensions.GetPlayerWithEquippedItem(__instance);
 
             // Add damages first
-            __result.m_blunt        += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_blunt += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddBluntDamage);
-            __result.m_slash        += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_slash += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddSlashingDamage);
-            __result.m_pierce       += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_pierce += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddPiercingDamage);
-            __result.m_fire         += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_fire += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddFireDamage);
-            __result.m_frost        += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_frost += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddFrostDamage);
-            __result.m_lightning    += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_lightning += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddLightningDamage);
-            __result.m_poison       += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_poison += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddPoisonDamage);
-            __result.m_spirit       += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
+            __result.m_spirit += totalDamage * MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(
                 player, __instance, MagicEffectType.AddSpiritDamage);
 
             if (magicItemskillType == Skills.SkillType.Axes)
@@ -125,9 +125,10 @@ namespace EpicLoot.MagicItemEffects
             {
                 if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, effect, out float effectValue, 0.01f))
                 {
-                    damageMod += effectValue;
+                    damageMod = effectValue;
                 }
             });
+
             __result.Modify(1.0f + damageMod);
 
             if (player != null && player.GetSEMan().HaveStatusEffect("BerserkerStatusEffect".GetStableHashCode()))

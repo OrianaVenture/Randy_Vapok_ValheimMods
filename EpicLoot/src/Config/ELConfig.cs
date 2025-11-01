@@ -39,7 +39,6 @@ namespace EpicLoot.Config
         public static ConfigEntry<int> _mythicMaterialIconColor;
         public static ConfigEntry<bool> UseScrollingCraftDescription;
         public static ConfigEntry<bool> TransferMagicItemToCrafts;
-        public static ConfigEntry<CraftingTabStyle> CraftingTabStyle;
         public static ConfigEntry<bool> _loggingEnabled;
         public static ConfigEntry<LogLevel> _logLevel;
         public static ConfigEntry<bool> UseGeneratedMagicItemNames;
@@ -69,6 +68,7 @@ namespace EpicLoot.Config
         public static ConfigEntry<float> _bossCryptKeyDropPlayerRange;
         public static ConfigEntry<BossDropMode> _bossWishboneDropMode;
         public static ConfigEntry<float> _bossWishboneDropPlayerRange;
+        public static ConfigEntry<float> UIAudioVolumeAdjustment;
 
         private static CustomRPC LootTablesRPC;
         private static CustomRPC MagicEffectsRPC;
@@ -192,16 +192,12 @@ namespace EpicLoot.Config
             UseScrollingCraftDescription = Config.Bind("Crafting UI", "Use Scrolling Craft Description", true,
                 "Changes the item description in the crafting panel to scroll instead of scale when it gets too " +
                 "long for the space.");
-            CraftingTabStyle = Config.Bind("Crafting UI", "Crafting Tab Style", Crafting.CraftingTabStyle.HorizontalSquish,
-                "Sets the layout style for crafting tabs, if you've got too many. " +
-                "Horizontal is the vanilla method, but might overlap other mods or run off the screen. " +
-                "HorizontalSquish makes the buttons narrower, works okay with 6 or 7 buttons. " +
-                "Vertical puts the tabs in a column to the left the crafting window. " +
-                "Angled tries to make more room at the top of the crafting panel by angling the tabs, " +
-                "works okay with 6 or 7 tabs.");
             ShowEquippedAndHotbarItemsInSacrificeTab = Config.Bind("Crafting UI",
                 "ShowEquippedAndHotbarItemsInSacrificeTab", false,
                 "If set to false, hides the items that are equipped or on your hotbar in the Sacrifice items list.");
+            UIAudioVolumeAdjustment = Config.Bind("Crafting UI", "AudioVolumeAdjustment", 1.0f,
+                new ConfigDescription("Multiplies the crafting UI sound volume by this percentage [0.0-1.0], 1 = full UI sounds, 0 = no UI sounds.",
+                new AcceptableValueRange<float>(0, 1)));
 
             // Logging
             _loggingEnabled = Config.Bind("Logging", "Logging Enabled", false, "Enable logging");
@@ -346,10 +342,13 @@ namespace EpicLoot.Config
         {
             var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config.recipes.json");
             var result = JsonConvert.DeserializeObject<RecipesConfig>(jsonFile);
+
             if (RecipesHelper.Config == null)
             {
                 RecipesHelper.Initialize(result);
-            } else {
+            }
+            else
+            {
                 RecipesHelper.Initialize(RecipesHelper.Config);
             }
             ItemManager.OnItemsRegistered -= InitializeRecipeOnReady;
@@ -433,7 +432,7 @@ namespace EpicLoot.Config
         public static void StartupProcessModifiedLocalizations()
         {
             string[] files = Directory.GetFiles(LocalizationDir, "*", SearchOption.AllDirectories);
-            EpicLoot.Log($"Processing localization startup file patches: {files}");
+            EpicLoot.Log($"Processing localization startup file patches: {string.Join(",", files)}");
             foreach (var file in files)
             {
                 if (!file.Contains(".json")) {
@@ -555,7 +554,8 @@ namespace EpicLoot.Config
             return default;
         }
 
-        public static ZPackage SendConfig(string zpackage_content) {
+        public static ZPackage SendConfig(string zpackage_content)
+        {
             ZPackage package = new ZPackage();
             package.Write(zpackage_content);
             return package;

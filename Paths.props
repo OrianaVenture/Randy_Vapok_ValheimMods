@@ -24,9 +24,6 @@
     <Reference Include="AdventureBackpacksAPI">
       <HintPath>$(SolutionDir)Libs\AdventureBackpacksAPI.dll</HintPath>
     </Reference>
-    <Reference Include="AnimationSpeedManager">
-      <HintPath>$(SolutionDir)Libs\AnimationSpeedManager.dll</HintPath>
-    </Reference>
     <Reference Include="assembly_guiutils_publicized">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_guiutils_publicized.dll</HintPath>
     </Reference>
@@ -35,9 +32,6 @@
     </Reference>
     <Reference Include="assembly_valheim_publicized">
       <HintPath>$(GamePath)\valheim_Data\Managed\publicized_assemblies\assembly_valheim_publicized.dll</HintPath>
-    </Reference>
-    <Reference Include="AugaAPI">
-      <HintPath>$(SolutionDir)Libs\AugaAPI.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>$(GamePath)\BepInEx\core\BepInEx.dll</HintPath>

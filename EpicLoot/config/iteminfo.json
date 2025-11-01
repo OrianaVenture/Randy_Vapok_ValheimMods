@@ -3,10 +3,10 @@
         {
             "Type": "Swords",
             "Fallback": "Knives",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "SwordWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SwordWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [ "SwordBronze" ],
                 "defeated_bonemass": [ "SwordIron" ],
@@ -19,10 +19,10 @@
         {
             "Type": "Axes",
             "Fallback": "Swords",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "AxeWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "AxeWood" ],
                 "defeated_eikthyr": [ "AxeStone", "AxeFlint" ],
                 "defeated_gdking": [ "AxeBronze" ],
                 "defeated_bonemass": [ "AxeIron" ],
@@ -35,10 +35,10 @@
         {
             "Type": "TwoHandAxes",
             "Fallback": "Sledges",
-            "ItemFallback": "Club",
+            "ItemFallback": "BattleaxeWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "BattleaxeWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [],
                 "defeated_bonemass": [ "Battleaxe" ],
@@ -51,10 +51,10 @@
         {
             "Type": "Knives",
             "Fallback": "Fists",
-            "ItemFallback": "AxeStone",
+            "ItemFallback": "KnifeWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "KnifeWood" ],
                 "defeated_eikthyr": [ "KnifeFlint" ],
                 "defeated_gdking": [ "KnifeCopper" ],
                 "defeated_bonemass": [ "KnifeChitin" ],
@@ -67,10 +67,10 @@
         {
             "Type": "Fists",
             "Fallback": "Clubs",
-            "ItemFallback": "Club",
+            "ItemFallback": "MaceWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "MaceWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [ "FistBjornClaw" ],
                 "defeated_bonemass": [],
@@ -99,10 +99,10 @@
         {
             "Type": "Clubs",
             "Fallback": "Staffs",
-            "ItemFallback": "Club",
+            "ItemFallback": "MaceWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "MaceWood" ],
                 "defeated_eikthyr": [ "Club" ],
                 "defeated_gdking": [ "MaceBronze" ],
                 "defeated_bonemass": [ "MaceIron" ],
@@ -115,10 +115,10 @@
         {
             "Type": "Sledges",
             "Fallback": "Polearms",
-            "ItemFallback": "Club",
+            "ItemFallback": "SledgeWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SledgeWood" ],
                 "defeated_eikthyr": [ "SledgeStagbreaker" ],
                 "defeated_gdking": [],
                 "defeated_bonemass": [ "SledgeIron" ],
@@ -131,10 +131,10 @@
         {
             "Type": "Polearms",
             "Fallback": "Pickaxes",
-            "ItemFallback": "Club",
+            "ItemFallback": "AtgeirWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "AtgeirWood" ],
                 "defeated_eikthyr": [],
                 "defeated_gdking": [ "AtgeirBronze" ],
                 "defeated_bonemass": [ "AtgeirIron" ],
@@ -147,10 +147,10 @@
         {
             "Type": "Spears",
             "Fallback": "TwoHandAxes",
-            "ItemFallback": "Bow",
+            "ItemFallback": "SpearWood",
             "Items": [],
             "ItemsByBoss": {
-                "none": [],
+                "none": [ "SpearWood" ],
                 "defeated_eikthyr": [ "SpearFlint" ],
                 "defeated_gdking": [ "SpearBronze" ],
                 "defeated_bonemass": [ "SpearElderbark", "SpearChitin" ],

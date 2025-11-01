@@ -1,9 +1,9 @@
-﻿using static EpicLoot.Data.CustomZNet;
-using EpicLoot.Adventure;
+﻿using EpicLoot.Adventure;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using System.Collections.Generic;
+using static EpicLoot.Data.CustomZNet;
 
 namespace EpicLoot.Data
 {

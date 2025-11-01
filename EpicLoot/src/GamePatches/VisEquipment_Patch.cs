@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using EpicLoot.LegendarySystem;
+﻿using EpicLoot.LegendarySystem;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -228,10 +228,22 @@ namespace EpicLoot
             }
         }
 
+        [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.DropItem))]
+        [HarmonyPostfix]
+        public static void Humanoid_DropItem(Humanoid __instance, ItemDrop.ItemData item)
+        {
+            RemoveEffect(__instance, item);
+        }
+
         [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.UnequipItem))]
         [HarmonyPrefix]
         public static void Humanoid_UnequipItem_Prefix(Humanoid __instance,
             ItemDrop.ItemData item, bool triggerEquipEffects)
+        {
+            RemoveEffect(__instance, item, triggerEquipEffects);
+        }
+
+        private static void RemoveEffect(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects = true)
         {
             if (item == null || !item.m_equipped || !triggerEquipEffects)
             {

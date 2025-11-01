@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using AdventureBackpacks.API;
-using BepInEx;
+﻿using BepInEx;
 using Common;
 using EpicLoot.Adventure;
 using EpicLoot.Config;
@@ -14,18 +6,23 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
+using EpicLoot.General;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.General;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn.Configs;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using Jotunn.Configs;
 
 namespace EpicLoot
 {
@@ -87,6 +84,7 @@ namespace EpicLoot
 
     [BepInPlugin(PluginId, DisplayName, Version)]
     [BepInDependency(Jotunn.Main.ModGuid)]
+    [BepInDependency("com.ValheimModding.NewtonsoftJsonDetector")]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
@@ -156,7 +154,6 @@ namespace EpicLoot
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
         public static bool HasAuga;
-        public static bool HasAdventureBackpacks;
         public static bool AugaTooltipNoTextBoxes;
 
         public static event Action AbilitiesInitialized;
@@ -182,11 +179,8 @@ namespace EpicLoot
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
 
-            HasAdventureBackpacks = ABAPI.IsLoaded();
-
             LoadPatches();
             InitializeAbilities();
-            PrintInfo();
             AddLocalizations();
 
             LoadAssets();
@@ -296,7 +290,7 @@ namespace EpicLoot
                 Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.GetIcon());
 
                 string localizedSubtitle;
-                if (item.IsLegendarySetItem())
+                if (item.IsMagicSetItem())
                 {
                     localizedSubtitle = $"<color={GetSetItemColor()}>" +
                         $"$mod_epicloot_legendarysetlabel</color>, {itemTypeName}\n";
@@ -681,11 +675,6 @@ namespace EpicLoot
         /// <returns></returns>
         internal static string ReadEmbeddedResourceFile(string filename)
         {
-            //EpicLoot.Log($"Attempting to load resource path: {filename}");
-            //foreach (string embeddedResouce in typeof(EpicLoot).Assembly.GetManifestResourceNames())
-            //{
-            //    EpicLoot.Log($"resource: {embeddedResouce}");
-            //}
             using (var stream = typeof(EpicLoot).Assembly.GetManifestResourceStream(filename))
             {
                 using (var reader = new StreamReader(stream))
@@ -738,7 +727,10 @@ namespace EpicLoot
         private static bool IsNotRestrictedItem(ItemDrop.ItemData item)
         {
             if (item.m_dropPrefab != null && LootRoller.Config.RestrictedItems.Contains(item.m_dropPrefab.name))
+            {
                 return false;
+            }
+
             return !LootRoller.Config.RestrictedItems.Contains(item.m_shared.m_name);
         }
 
@@ -756,301 +748,6 @@ namespace EpicLoot
         public static string GetCharacterCleanName(Character character)
         {
             return character.name.Replace("(Clone)", "").Trim();
-        }
-
-        private void PrintInfo()
-        {
-            const string devOutputPath = @"C:\Users\rknapp\Documents\GitHub\ValheimMods\EpicLoot";
-            if (!Directory.Exists(devOutputPath))
-            {
-                return;
-            }
-
-            var t = new StringBuilder();
-            t.AppendLine($"# EpicLoot Data v{Version}");
-            t.AppendLine();
-            t.AppendLine("*Author: RandyKnapp*");
-            t.AppendLine("*Source: [Github](https://github.com/RandyKnapp/ValheimMods/tree/main/EpicLoot)*");
-            t.AppendLine();
-
-            // Magic item effects per rarity
-            t.AppendLine("# Magic Effect Count Weights Per Rarity");
-            t.AppendLine();
-            t.AppendLine("Each time a **MagicItem** is rolled a number of **MagicItemEffects** are added based on its **Rarity**. The percent chance to roll each number of effects is found on the following table. These values are hardcoded.");
-            t.AppendLine();
-            t.AppendLine("The raw weight value is shown first, followed by the calculated percentage chance in parentheses.");
-            t.AppendLine();
-            t.AppendLine("|Rarity|1|2|3|4|5|6|");
-            t.AppendLine("|--|--|--|--|--|--|--|");
-            t.AppendLine(GetMagicEffectCountTableLine(ItemRarity.Magic));
-            t.AppendLine(GetMagicEffectCountTableLine(ItemRarity.Rare));
-            t.AppendLine(GetMagicEffectCountTableLine(ItemRarity.Epic));
-            t.AppendLine(GetMagicEffectCountTableLine(ItemRarity.Legendary));
-            t.AppendLine(GetMagicEffectCountTableLine(ItemRarity.Mythic));
-            t.AppendLine();
-
-            var rarities = new List<ItemRarity>();
-            foreach (ItemRarity value in Enum.GetValues(typeof(ItemRarity)))
-            {
-                rarities.Add(value);
-            }
-
-            var skillTypes = new List<Skills.SkillType>();
-            foreach (Skills.SkillType value in Enum.GetValues(typeof(Skills.SkillType)))
-            {
-                if (value == Skills.SkillType.None
-                    || value == Skills.SkillType.WoodCutting
-                    || value == Skills.SkillType.Jump
-                    || value == Skills.SkillType.Sneak
-                    || value == Skills.SkillType.Run
-                    || value == Skills.SkillType.Swim
-                    || value == Skills.SkillType.All)
-                {
-                    continue;
-                }
-                skillTypes.Add(value);
-            }
-
-            // Magic item effects
-            t.AppendLine("# MagicItemEffect List");
-            t.AppendLine();
-            t.AppendLine("The following lists all the built-in **MagicItemEffects**. MagicItemEffects are defined in `magiceffects.json` and are parsed and added " +
-                         "to `MagicItemEffectDefinitions` on Awake. EpicLoot uses an string for the types of magic effects. You can add your own new types using your own identifiers.");
-            t.AppendLine();
-            t.AppendLine("Listen to the event `MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions` (which gets called in `EpicLoot.Awake`) to add your own using instances of MagicItemEffectDefinition.");
-            t.AppendLine();
-            t.AppendLine("  * **Display Text:** This text appears in the tooltip for the magic item, with {0:?} replaced with the rolled value for the effect, formatted using the shown C# string format.");
-            t.AppendLine("  * **Requirements:** A set of requirements.");
-            t.AppendLine("    * **Flags:** A set of predefined flags to check certain weapon properties. The list of flags is: `NoRoll, ExclusiveSelf, ItemHasPhysicalDamage, ItemHasElementalDamage, ItemUsesDurability, ItemHasNegativeMovementSpeedModifier, ItemHasBlockPower, ItemHasNoParryPower, ItemHasParryPower, ItemHasArmor, ItemHasBackstabBonus, ItemUsesStaminaOnAttack, ItemUsesEitrOnAttack, ItemUsesHealthOnAttack`");
-            t.AppendLine("    * **ExclusiveEffectTypes:** This effect may not be rolled on an item that has already rolled on of these effects");
-            t.AppendLine($"    * **AllowedItemTypes:** This effect may only be rolled on items of a the types in this list. When this list is empty, this is usually done because this is a special effect type added programmatically  or currently not allowed to roll. Options are: `{string.Join(", ", AllowedMagicItemTypes)}`");
-            t.AppendLine($"    * **ExcludedItemTypes:** This effect may only be rolled on items that are not one of the types on this list.");
-            t.AppendLine($"    * **AllowedRarities:** This effect may only be rolled on an item of one of these rarities. Options are: `{string.Join(", ", rarities)}`");
-            t.AppendLine($"    * **ExcludedRarities:** This effect may only be rolled on an item that is not of one of these rarities.");
-            t.AppendLine($"    * **AllowedSkillTypes:** This effect may only be rolled on an item that uses one of these skill types. Options are: `{string.Join(", ", skillTypes)}`");
-            t.AppendLine($"    * **ExcludedSkillTypes:** This effect may only be rolled on an item that does not use one of these skill types.");
-            t.AppendLine("    * **AllowedItemNames:** This effect may only be rolled on an item with one of these names. Use the unlocalized shared name, i.e.: `$item_sword_iron`");
-            t.AppendLine("    * **ExcludedItemNames:** This effect may only be rolled on an item that does not have one of these names.");
-            t.AppendLine("    * **CustomFlags:** A set of any arbitrary strings for future use");
-            t.AppendLine("  * **Value Per Rarity:** This effect may only be rolled on items of a rarity included in this table. The value is rolled using a linear distribution between Min and Max and divisible by the Increment.");
-            t.AppendLine();
-
-            foreach (var definitionEntry in MagicItemEffectDefinitions.AllDefinitions)
-            {
-                var def = definitionEntry.Value;
-                t.AppendLine($"## {def.Type}");
-                t.AppendLine();
-                t.AppendLine($"> **Display Text:** {Localization.instance.Localize(def.DisplayText)}");
-                t.AppendLine("> ");
-
-                if (def.Prefixes.Count > 0)
-                {
-                    t.AppendLine($"> **Prefixes:** {Localization.instance.Localize(string.Join(", ", def.Prefixes))}");
-                }
-
-                if (def.Suffixes.Count > 0)
-                {
-                    t.AppendLine($"> **Suffixes:** {Localization.instance.Localize(string.Join(", ", def.Suffixes))}");
-                }
-
-                if (def.Prefixes.Count > 0 || def.Suffixes.Count > 0)
-                {
-                    t.AppendLine("> ");
-                }
-
-                var allowedItemTypes = def.GetAllowedItemTypes();
-                t.AppendLine("> **Allowed Item Types:** " + (allowedItemTypes.Count == 0 ? "*None*" : 
-                    string.Join(", ", allowedItemTypes)));
-                t.AppendLine("> ");
-                t.AppendLine("> **Requirements:**");
-                t.Append(def.Requirements);
-
-                if (def.HasRarityValues())
-                {
-                    t.AppendLine("> ");
-                    t.AppendLine("> **Value Per Rarity:**");
-                    t.AppendLine("> ");
-                    t.AppendLine("> |Rarity|Min|Max|Increment|");
-                    t.AppendLine("> |--|--|--|--|");
-
-                    if (def.ValuesPerRarity.Magic != null)
-                    {
-                        var v = def.ValuesPerRarity.Magic;
-                        t.AppendLine($"> |Magic|{v.MinValue}|{v.MaxValue}|{v.Increment}|");
-                    }
-                    if (def.ValuesPerRarity.Rare != null)
-                    {
-                        var v = def.ValuesPerRarity.Rare;
-                        t.AppendLine($"> |Rare|{v.MinValue}|{v.MaxValue}|{v.Increment}|");
-                    }
-                    if (def.ValuesPerRarity.Epic != null)
-                    {
-                        var v = def.ValuesPerRarity.Epic;
-                        t.AppendLine($"> |Epic|{v.MinValue}|{v.MaxValue}|{v.Increment}|");
-                    }
-                    if (def.ValuesPerRarity.Legendary != null)
-                    {
-                        var v = def.ValuesPerRarity.Legendary;
-                        t.AppendLine($"> |Legendary|{v.MinValue}|{v.MaxValue}|{v.Increment}|");
-                    }
-
-                    if (def.ValuesPerRarity.Mythic != null)
-                    {
-                        var v = def.ValuesPerRarity.Legendary;
-                        t.AppendLine($"> |Mythic|{v.MinValue}|{v.MaxValue}|{v.Increment}|");
-                    }
-                }
-                if (!string.IsNullOrEmpty(def.Comment))
-                {
-                    t.AppendLine("> ");
-                    t.AppendLine($"> ***Notes:*** *{def.Comment}*");
-                }
-
-                t.AppendLine();
-            }
-
-            // Item Sets
-            t.AppendLine("# Item Sets");
-            t.AppendLine();
-            t.AppendLine("Sets of loot drop data that can be referenced in the loot tables");
-
-            foreach (var lootTableEntry in LootRoller.ItemSets)
-            {
-                var itemSet = lootTableEntry.Value;
-
-                t.AppendLine($"## {lootTableEntry.Key}");
-                t.AppendLine();
-                WriteLootList(t, 0, itemSet.Loot);
-                t.AppendLine();
-            }
-
-            // Loot tables
-            t.AppendLine("# Loot Tables");
-            t.AppendLine();
-            t.AppendLine("A list of every built-in loot table from the mod. " +
-                "The name of the loot table is the object name followed by a number signifying the level of the object.");
-
-            foreach (var lootTableEntry in LootRoller.LootTables)
-            {
-                var list = lootTableEntry.Value;
-
-                foreach (var lootTable in list)
-                {
-                    t.AppendLine($"## {lootTableEntry.Key}");
-                    t.AppendLine();
-                    WriteLootTableDrops(t, lootTable);
-                    WriteLootTableItems(t, lootTable);
-                    t.AppendLine();
-                }
-            }
-
-            File.WriteAllText(Path.Combine(devOutputPath, "info.md"), t.ToString());
-        }
-
-        private static void WriteLootTableDrops(StringBuilder t, LootTable lootTable)
-        {
-            var highestLevel = lootTable.LeveledLoot != null && lootTable.LeveledLoot.Count > 0 ?
-                lootTable.LeveledLoot.Max(x => x.Level) : 0;
-            var limit = Mathf.Max(3, highestLevel);
-            for (var i = 0; i < limit; i++)
-            {
-                var level = i + 1;
-                var dropTable = LootRoller.GetDropsForLevel(lootTable, level, false);
-                if (dropTable == null || dropTable.Count == 0)
-                {
-                    continue;
-                }
-
-                float total = dropTable.Sum(x => x.Value);
-                if (total > 0)
-                {
-                    t.AppendLine($"> | Drops (lvl {level}) | Weight (Chance) |");
-                    t.AppendLine($"> | -- | -- |");
-                    foreach (var drop in dropTable)
-                    {
-                        var count = drop.Key;
-                        var value = drop.Value;
-                        var percent = (value / total) * 100;
-                        t.AppendLine($"> | {count} | {value} ({percent:0.#}%) |");
-                    }
-                }
-                t.AppendLine();
-            }
-        }
-
-        private static void WriteLootTableItems(StringBuilder t, LootTable lootTable)
-        {
-            var highestLevel = lootTable.LeveledLoot != null && lootTable.LeveledLoot.Count > 0 ?
-                lootTable.LeveledLoot.Max(x => x.Level) : 0;
-            var limit = Mathf.Max(3, highestLevel);
-            for (var i = 0; i < limit; i++)
-            {
-                var level = i + 1;
-                var lootList = LootRoller.GetLootForLevel(lootTable, level, false);
-                if (ArrayUtils.IsNullOrEmpty(lootList))
-                {
-                    continue;
-                }
-
-                WriteLootList(t, level, lootList);
-            }
-        }
-
-        private static void WriteLootList(StringBuilder t, int level, LootDrop[] lootList)
-        {
-            var levelDisplay = level > 0 ? $" (lvl {level})" : "";
-            t.AppendLine($"> | Items{levelDisplay} | Weight (Chance) | Magic | Rare | Epic | Legendary | Mythic |");
-            t.AppendLine("> | -- | -- | -- | -- | -- | -- | -- |");
-
-            float totalLootWeight = lootList.Sum(x => x.Weight);
-            foreach (var lootDrop in lootList)
-            {
-                var percentChance = lootDrop.Weight / totalLootWeight * 100;
-                if (lootDrop.Rarity == null || lootDrop.Rarity.Length == 0)
-                {
-                    t.AppendLine($"> | {lootDrop.Item} | {lootDrop.Weight} ({percentChance:0.#}%) | " +
-                        $"1 (100%) | 0 (0%) | 0 (0%) | 0 (0%) | 0 (0%) |");
-                    continue;
-                }
-
-                float rarityTotal = lootDrop.Rarity.Sum();
-                float[] rarityPercent =
-                {
-                    lootDrop.Rarity[0] / rarityTotal * 100,
-                    lootDrop.Rarity[1] / rarityTotal * 100,
-                    lootDrop.Rarity[2] / rarityTotal * 100,
-                    lootDrop.Rarity[3] / rarityTotal * 100,
-                    lootDrop.Rarity[4] / rarityTotal * 100
-                };
-                t.AppendLine($"> | {lootDrop.Item} | {lootDrop.Weight} ({percentChance:0.#}%) " +
-                             $"| {lootDrop.Rarity[0]} ({rarityPercent[0]:0.#}%) " +
-                             $"| {lootDrop.Rarity[1]} ({rarityPercent[1]:0.#}%) " +
-                             $"| {lootDrop.Rarity[2]:0.#} ({rarityPercent[2]:0.#}%) " +
-                             $"| {lootDrop.Rarity[3]} ({rarityPercent[3]:0.#}%) |" +
-                             $"| {lootDrop.Rarity[4]} ({rarityPercent[4]:0.#}%) |");
-            }
-
-            t.AppendLine();
-        }
-
-        private static string GetMagicEffectCountTableLine(ItemRarity rarity)
-        {
-            var effectCounts = LootRoller.GetEffectCountsPerRarity(rarity, false);
-            float total = effectCounts.Sum(x => x.Value);
-            var result = $"|{rarity}|";
-            for (var i = 1; i <= 7; ++i)
-            {
-                var valueString = " ";
-                var i1 = i;
-                if (effectCounts.TryFind(x => x.Key == i1, out var found))
-                {
-                    var value = found.Value;
-                    var percent = value / total * 100;
-                    valueString = $"{value} ({percent:0.#}%)";
-                }
-                result += $"{valueString}|";
-            }
-            return result;
         }
 
         public static string GetSetItemColor()

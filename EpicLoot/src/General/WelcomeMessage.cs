@@ -48,14 +48,14 @@ namespace EpicLoot
 
         public void OnJoinDiscordClick()
         {
-            Application.OpenURL("https://discord.gg/randyknappmods");
-            SetPlayerHasSeenMessage();
-            Destroy(gameObject);
+            Application.OpenURL("https://discord.gg/ZNhYeavv3C");
+            Close();
         }
 
-        public static void OnPatchNotesClick()
+        public void OnPatchNotesClick()
         {
-            Application.OpenURL("https://github.com/RandyKnapp/ValheimMods/blob/main/EpicLoot/patchnotes.md");
+            Application.OpenURL("https://thunderstore.io/c/valheim/p/RandyKnapp/EpicLoot/changelog/");
+            Close();
         }
 
         public void Close()

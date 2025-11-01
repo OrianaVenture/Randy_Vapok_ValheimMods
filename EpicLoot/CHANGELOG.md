@@ -1,11 +1,29 @@
 ## Version 0.11.5
 
 * Call To Arms content update!
+  * (if you are using the mega overhaul patches you will NOT get these changes!)
+  * (This is why we encourage using and making small patches, the mod is not finished)
   * Reclassified Ghost as a Tier 2 mob.
   * Added Bear (Bjorn) as a Tier 3 mob.
   * Added Vile (Unbjorn) as a Tier 6 mob.
   * Added new weapons, armor, and trinkets to appropriate drop tables.
-* Added Demister to loot tables.
+  * Added Demister to loot tables.
+* Built in Localization for 35 languages! (If you have suggestions for improvements in your language please reach out).
+* New configuration AudioVolumeAdjustment to control audio volume of this mod. (NOT finished! More fixes coming soon).
+* Removed "Crafting Tab Style" configuration since it did nothing.
+* Scrolling UI sensitivity tweaks (NOT finished! More fixes coming soon).
+* Comparision Tooltip jitter fix.
+* Updated links in the welcome popup message.
+* Magic effect fixes:
+  * Fixed the checks for elemental damage on weapons to include all types.
+  * Fixed the check for items that use health on attack (now includes bloodlust enchanted weapons).
+  * Bulk Up algorithm reworked to remove HP bonus cap and smoothed effect value curve.
+  * Quick Draw should now work on crossbows.
+  * Explosive Arrows reworked to improve compatibility with other mods.
+  * Modify Summon Damage and Modify Summon Health now supported.
+  * Coin Hoarder algorithm reworked to require more coins for larger bonuses.
+  * Modify Attack Health bug fix for restoring correct value state after performing an attack.
+  * Stagger no longer applies to players with PVP disabled.
 
 ## Version 0.11.4
 

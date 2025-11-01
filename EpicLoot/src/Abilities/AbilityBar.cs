@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using EpicLoot.Config;
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Common

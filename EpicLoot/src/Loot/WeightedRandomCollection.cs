@@ -2,25 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Common
+namespace EpicLoot
 {
     public class WeightedRandomCollection<T>
     {
-        private readonly Random _random;
         private List<T> _list;
         private Func<T, float> _weightSelector;
         private bool _removeOnSelect;
 
         public float TotalWeight { get; private set; }
 
-        public WeightedRandomCollection(Random random)
+        public WeightedRandomCollection()
         {
-            _random = random;
         }
 
-        public WeightedRandomCollection(Random random, IEnumerable<T> collection, Func<T, float> weightSelector, bool removeOnSelect = false)
+        public WeightedRandomCollection(IEnumerable<T> collection, Func<T, float> weightSelector, bool removeOnSelect = false)
         {
-            _random = random ?? new Random();
             Setup(collection, weightSelector, removeOnSelect);
         }
 
@@ -39,14 +36,14 @@ namespace Common
                 return default(T);
             }
 
-            float itemWeightIndex = (float)_random.NextDouble() * TotalWeight;
+            float itemWeightIndex = UnityEngine.Random.value * TotalWeight;
             float currentWeightIndex = 0;
 
             T result = default(T);
             foreach (var item in from weightedItem in _list select new { Value = weightedItem, Weight = _weightSelector(weightedItem) })
             {
                 currentWeightIndex += item.Weight;
-
+                
                 if (currentWeightIndex >= itemWeightIndex)
                 {
                     result = item.Value;
@@ -69,6 +66,7 @@ namespace Common
             {
                 return null;
             }
+
             var results = new List<T>();
             for (int i = 0; i < numberOfRolls; i++)
             {

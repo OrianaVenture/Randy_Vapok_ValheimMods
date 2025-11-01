@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
+using System.Linq;
 
 namespace EpicLoot.MagicItemEffects
 {

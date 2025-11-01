@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BepInEx;
+﻿using BepInEx;
 using Common;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
@@ -12,6 +8,10 @@ using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -43,14 +43,13 @@ namespace EpicLoot
         {
             Config = lootConfig;
 
-            var random = new System.Random();
-            _weightedDropCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>(random);
-            _weightedLootTable = new WeightedRandomCollection<LootDrop>(random);
-            _weightedEffectTable = new WeightedRandomCollection<MagicItemEffectDefinition>(random);
-            _weightedEffectCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>(random);
-            _weightedRarityTable = new WeightedRandomCollection<KeyValuePair<ItemRarity, float>>(random);
-            _weightedLegendaryTable = new WeightedRandomCollection<LegendaryInfo>(random);
-            _weightedMythicTable = new WeightedRandomCollection<LegendaryInfo>(random);
+            _weightedDropCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>();
+            _weightedLootTable = new WeightedRandomCollection<LootDrop>();
+            _weightedEffectTable = new WeightedRandomCollection<MagicItemEffectDefinition>();
+            _weightedEffectCountTable = new WeightedRandomCollection<KeyValuePair<int, float>>();
+            _weightedRarityTable = new WeightedRandomCollection<KeyValuePair<ItemRarity, float>>();
+            _weightedLegendaryTable = new WeightedRandomCollection<LegendaryInfo>();
+            _weightedMythicTable = new WeightedRandomCollection<LegendaryInfo>();
 
             ItemSets.Clear();
             LootTables.Clear();

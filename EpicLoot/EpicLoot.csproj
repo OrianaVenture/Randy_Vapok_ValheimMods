@@ -50,7 +50,7 @@
       <Link>epicloot</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="config\*.json" />
-    <EmbeddedResource Include="localizations\English.json" />
+    <EmbeddedResource Include="localizations\*.json" />
     <None Include="info.md" />
     <None Include="packages.config" />
     <None Include="thunderstore\manifest.json" />
@@ -65,15 +65,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Libs\AugaAPI.dll">
-      <Link>AugaAPI.dll</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\ValheimUnity\Assets\ExternalLibraries\EpicLoot-UnityLib.dll">
       <Link>EpicLoot-UnityLib.dll</Link>
     </EmbeddedResource>
-    <Content Include="ILRepack.targets">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

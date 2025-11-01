@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using EpicLoot.Adventure.Feature;
+﻿using EpicLoot.Adventure.Feature;
 using EpicLoot.Crafting;
 using EpicLoot_UnityLib;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

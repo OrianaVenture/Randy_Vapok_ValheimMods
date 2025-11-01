@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using EpicLoot_UnityLib;
+﻿using EpicLoot_UnityLib;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

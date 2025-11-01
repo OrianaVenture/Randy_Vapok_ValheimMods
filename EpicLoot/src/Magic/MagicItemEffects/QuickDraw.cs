@@ -1,18 +1,40 @@
-﻿using System;
-using HarmonyLib;
-using JetBrains.Annotations;
+﻿using HarmonyLib;
+using System;
 
 namespace EpicLoot.MagicItemEffects
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.GetSkillFactor))]
-    public class QuickDrawBowSkillIncrease_Player_GetSkillFactor_Patch
+    [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.GetAttackDrawPercentage))]
+    public class QuickDrawBow_Player_GetAttackDrawPercentage_Patch
     {
-        [UsedImplicitly]
-        private static void Postfix(Player __instance, Skills.SkillType skill, ref float __result)
+        private static void Postfix(Player __instance, ref float __result)
         {
-            if (skill == Skills.SkillType.Bows && __instance.GetTotalActiveMagicEffectValue(MagicEffectType.QuickDraw, 0.01f) is float bowDrawTimeReduction)
+            if (__instance.HasActiveMagicEffect(MagicEffectType.QuickDraw, out float bowDrawTimeReduction, 0.01f))
             {
-                __result = Math.Min(1, __result + bowDrawTimeReduction);
+                float reduction = Math.Min(1, __result *= (1 + bowDrawTimeReduction));
+                __result = reduction;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetWeaponLoadingTime))]
+    public class Quickdraw_Player_GetWeaponLoadingTime
+    {
+        private static void Postfix(ItemDrop.ItemData __instance, ref float __result)
+        {
+            if (Player.m_localPlayer != null && Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.QuickDraw, 0.01f) is float crossbowReloadSpeed)
+            {
+                if (crossbowReloadSpeed > 0 && __instance.m_shared.m_attack.m_requiresReload || __instance.m_shared.m_secondaryAttack.m_requiresReload)
+                {
+                    if (__instance.m_shared.m_attack.m_requiresReload)
+                    {
+                        __result = __instance.m_shared.m_attack.m_reloadTime * (1f - crossbowReloadSpeed);
+                    }
+
+                    if (__instance.m_shared.m_secondaryAttack.m_requiresReload)
+                    {
+                        __result = __instance.m_shared.m_secondaryAttack.m_reloadTime * (1f - crossbowReloadSpeed);
+                    }
+                }
             }
         }
     }

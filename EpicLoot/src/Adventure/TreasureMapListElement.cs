@@ -1,5 +1,5 @@
-﻿using System;
-using EpicLoot.Adventure.Feature;
+﻿using EpicLoot.Adventure.Feature;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -30,12 +30,10 @@ namespace EpicLoot.Integrations.HarmonyPatches
                     itemDrop.m_itemData.SaveMagicItem(instanceData.MagicItem);
                 }
 
-
                 itemDrop.Save();
 
-                gameObject.GetComponent<Rigidbody>().velocity = Vector3.up * 4f;
+                gameObject.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 4f;
                 __instance.m_destroyEffects.Create(__instance.m_dropSpawnPoint.position, Quaternion.identity);
-            
             }
 
             __instance.m_nview.GetZDO().Set(index.ToString() + "_item", "");

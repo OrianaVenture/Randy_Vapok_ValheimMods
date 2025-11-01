@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using BepInEx;
-using Common;
+﻿using BepInEx;
 using EpicLoot.Abilities;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
@@ -11,6 +6,10 @@ using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using HarmonyLib;
 using Jotunn.Managers;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = System.Random;
 
@@ -19,8 +18,6 @@ namespace EpicLoot
     [HarmonyPatch(typeof(Terminal), nameof(Terminal.InitTerminal))]
     public static class Terminal_Patch
     {
-        private static readonly Random _random = new Random();
-
         public static void Postfix()
         {
             new Terminal.ConsoleCommand("magicitem", "", (args =>
@@ -329,7 +326,7 @@ namespace EpicLoot
                 if (item == "random")
                 {
                     WeightedRandomCollection<string> weightedRandomTable =
-                        new WeightedRandomCollection<string>(_random, allItemNames, x => 1);
+                        new WeightedRandomCollection<string>(allItemNames, x => 1);
                     item = weightedRandomTable.Roll();
                 }
 

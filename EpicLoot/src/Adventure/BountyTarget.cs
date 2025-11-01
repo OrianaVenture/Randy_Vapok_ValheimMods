@@ -1,6 +1,6 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
+using System;
 using UnityEngine;
 
 namespace EpicLoot.Adventure

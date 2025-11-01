@@ -79,7 +79,7 @@ namespace EpicLoot.Crafting
 
             if (item.IsMagic())
             {
-                _audioSource.PlayOneShot(EpicLoot.GetMagicItemDropSFX(item.GetRarity()));
+                _audioSource.PlayOneShot(EpicLoot.GetMagicItemDropSFX(item.GetRarity()), _audioSource.volume);
             }
         }
 
@@ -127,7 +127,7 @@ namespace EpicLoot.Crafting
             scrollRect.horizontal = false;
             scrollRect.vertical = true;
             scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
-            scrollRect.scrollSensitivity = 30;
+            scrollRect.scrollSensitivity = 100;
             scrollRect.inertia = false;
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
             scrollRect.onValueChanged.RemoveAllListeners();

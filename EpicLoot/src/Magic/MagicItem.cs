@@ -1,8 +1,8 @@
-﻿using System;
+﻿using EpicLoot.LegendarySystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EpicLoot.LegendarySystem;
 using UnityEngine;
 
 namespace EpicLoot
@@ -24,10 +24,6 @@ namespace EpicLoot
         public int Version = 1;
         public string EffectType { get; set; }
         public float EffectValue;
-
-        public MagicItemEffect()
-        {
-        }
 
         public MagicItemEffect(string type, float value = DefaultValue)
         {
@@ -78,7 +74,7 @@ namespace EpicLoot
             tooltip.Append($"</color>");
             
             tooltip.AppendLine($"$mod_epicloot_itemtooltip_rarity: {GetRarityDisplay()}<pos=75%>$mod_epicloot_itemtooltip_effects: <color={color}>{Effects.Count}</color>");
-            
+
             return tooltip.ToString();
         }
 
