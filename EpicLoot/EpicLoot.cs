@@ -26,27 +26,6 @@ using Object = UnityEngine.Object;
 
 namespace EpicLoot
 {
-    public enum LogLevel
-    {
-        Info,
-        Warning,
-        Error
-    }
-
-    public enum BossDropMode
-    {
-        Default,
-        OnePerPlayerOnServer,
-        OnePerPlayerNearBoss
-    }
-
-    public enum GatedBountyMode
-    {
-        Unlimited,
-        BossKillUnlocksCurrentBiomeBounties,
-        BossKillUnlocksNextBiomeBounties
-    }
-
     public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
