@@ -1,19 +1,9 @@
-<<<<<<< HEAD
 ﻿﻿using System;
 using System.Text;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
-using EpicLoot.MagicItemEffects;
-using EpicLoot.src.GamePatches;
-using EpicLoot.src.integrations;
-=======
-﻿using EpicLoot.Crafting;
-using EpicLoot.Data;
->>>>>>> main
 using HarmonyLib;
 using JetBrains.Annotations;
-using System;
-using System.Text;
 using UnityEngine;
 
 namespace EpicLoot
@@ -36,21 +26,12 @@ namespace EpicLoot
                 // Set the comparision tooltip to be shown side-by-side with our original tooltip
                 PatchOnHoverFix.ComparisonTitleString = $"<color=#AAA><i>$mod_epicloot_currentlyequipped:" +
                     $"</i></color>" + otherItem.GetDecoratedName();
-<<<<<<< HEAD
-                PatchOnHoverFix.comparision_tooltip = otherItem.GetTooltip();
-            }
-            else
-            {
-                PatchOnHoverFix.comparision_tooltip = "";
-                PatchOnHoverFix.comparision_added = false;
-=======
                 PatchOnHoverFix.ComparisonTooltipString = otherItem.GetTooltip();
             }
             else
             {
                 PatchOnHoverFix.ComparisonTooltipString = "";
                 PatchOnHoverFix.ComparisonAdded = false;
->>>>>>> main
                 tooltipText = item.GetTooltip();
             }
             tooltip.Set(item.GetDecoratedName(), tooltipText);
@@ -262,16 +243,6 @@ namespace EpicLoot
                     float bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
                     float healthUsageReduction = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
                     if (hasBloodlust) {
-<<<<<<< HEAD
-                        float skillmod_cost = bloodlustStaminaUse - bloodlustStaminaUse * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-                        text.Append($"\n$item_healthuse: <color={bloodlustColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmod_cost})</color>");
-                    } else {
-                        if (item.m_shared.m_attack.m_attackHealth > 0.0) {
-                            float skillmod_cost = item.m_shared.m_attack.m_attackHealth - item.m_shared.m_attack.m_attackHealth * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-                            text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealth * healthUsageReduction} ({skillmod_cost})</color>");
-                        }
-                    }
-=======
                         float skillmodCost = bloodlustStaminaUse - bloodlustStaminaUse * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
                         text.Append($"\n$item_healthuse: <color={bloodlustColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmodCost})</color>");
                     }
@@ -282,21 +253,14 @@ namespace EpicLoot
                             text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealth * healthUsageReduction} ({skillmodCost})</color>");
                         }
                     }
->>>>>>> main
 
                     bool magicAttackHealth = magicItem.HasEffect(MagicEffectType.ModifyAttackHealthUse);
                     string magicAttackHealthColor = magicAttackHealth ? magicColor : "orange";
                     float totalHealthPercentageUse = healthUsageReduction * item.m_shared.m_attack.m_attackHealthPercentage;
                     if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0) {
-<<<<<<< HEAD
-                        float healthcost = totalHealthPercentageUse / 100;
-                        float skillmod_cost = healthcost - healthcost * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-                        text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{healthcost:##.#%} ({skillmod_cost})</color>");
-=======
                         float healthCost = totalHealthPercentageUse / 100;
                         float skillmodCost = healthCost - healthCost * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
                         text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{healthCost:##.#%} ({skillmodCost})</color>");
->>>>>>> main
                     }
                     
                     bool attackDrawStamina = magicItem.HasEffect(MagicEffectType.ModifyDrawStaminaUse);
@@ -520,11 +484,7 @@ namespace EpicLoot
             bool lightningMagic = item.HasEffect(MagicEffectType.AddLightningDamage);
             bool poisonMagic = item.HasEffect(MagicEffectType.AddPoisonDamage);
             bool spiritMagic = item.HasEffect(MagicEffectType.AddSpiritDamage);
-<<<<<<< HEAD
-            bool coinHoarderMagic = CoinHoarder.HasCoinHoarder();
-=======
             bool coinHoarderMagic = Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv);
->>>>>>> main
             bool spellswordMagic = item.HasEffect(MagicEffectType.SpellSword);
             Player.m_localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, skillType);
             string str = String.Empty;

@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace EpicLoot.src.Magic
+namespace EpicLoot.Magic
 {
     static class AutoAddEnchantableItems
     {

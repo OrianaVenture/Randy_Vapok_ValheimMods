@@ -4,7 +4,6 @@ using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
-using EpicLoot.Loot;
 using HarmonyLib;
 using Jotunn.Managers;
 using System;
@@ -177,14 +176,6 @@ namespace EpicLoot
                     }
                 }
             }));
-<<<<<<< HEAD
-=======
-            new Terminal.ConsoleCommand("fixresistances", "", (args =>
-            {
-                Player player = Player.m_localPlayer;
-                FixResistances(player);
-            }));
->>>>>>> main
             new Terminal.ConsoleCommand("lootres", "", (args =>
             {
                 string lootTable = args.Length > 1 ? args[1] : "Greydwarf";
@@ -329,12 +320,8 @@ namespace EpicLoot
                 string item = itemArg;
                 if (item == "random")
                 {
-<<<<<<< HEAD
-                    var weightedRandomTable = new WeightedRandomCollection<string>(allItemNames, x => 1);
-=======
                     WeightedRandomCollection<string> weightedRandomTable =
                         new WeightedRandomCollection<string>(allItemNames, x => 1);
->>>>>>> main
                     item = weightedRandomTable.Roll();
                 }
 
@@ -635,68 +622,5 @@ namespace EpicLoot
                 context.AddString("> (none)");
             }
         }
-<<<<<<< HEAD
-=======
-
-        private static void FixResistances(Player player)
-        {
-            string[] oldResistanceTypes = new[]
-            {
-                MagicEffectType.AddFireResistance,
-                MagicEffectType.AddFrostResistance,
-                MagicEffectType.AddLightningResistance,
-                MagicEffectType.AddPoisonResistance,
-                MagicEffectType.AddSpiritResistance
-            };
-
-            foreach (ItemDrop.ItemData itemData in player.GetInventory().GetAllItems())
-            {
-                if (itemData.IsMagic() && itemData.GetMagicItem().HasAnyEffect(oldResistanceTypes))
-                {
-                    MagicItem magicItem = itemData.GetMagicItem();
-                    List<MagicItemEffect> currentEffects = magicItem.Effects;
-                    for (int index = 0; index < currentEffects.Count; index++)
-                    {
-                        MagicItemEffect effect = currentEffects[index];
-                        if (oldResistanceTypes.Contains(effect.EffectType))
-                        {
-                            ReplaceMagicEffect(itemData, magicItem, effect, index);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void ReplaceMagicEffect(ItemDrop.ItemData itemData, MagicItem magicItem, MagicItemEffect effect, int index)
-        {
-            MagicItemEffectDefinition replacementEffectDef = GetReplacementEffectDef(effect);
-            if (replacementEffectDef == null)
-            {
-                return;
-            }
-
-            MagicItemEffect replacementEffect = LootRoller.RollEffect(replacementEffectDef, magicItem.Rarity);
-            magicItem.Effects[index] = replacementEffect;
-            itemData.SaveMagicItem(magicItem);
-        }
-
-        private static MagicItemEffectDefinition GetReplacementEffectDef(MagicItemEffect effect)
-        {
-            switch (effect.EffectType)
-            {
-                case "AddFireResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddFireResistancePercentage);
-                case "AddFrostResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddFrostResistancePercentage);
-                case "AddLightningResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddLightningResistancePercentage);
-                case "AddPoisonResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddPoisonResistancePercentage);
-                case "AddSpiritResistance":
-                    return MagicItemEffectDefinitions.Get(MagicEffectType.AddElementalResistancePercentage);
-            }
-            return null;
-        }
->>>>>>> main
     }
 }

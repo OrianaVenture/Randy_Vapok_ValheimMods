@@ -1,28 +1,16 @@
-<<<<<<< HEAD
-﻿using EpicLoot.Adventure;
+
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot_UnityLib;
 using Jotunn.Managers;
-using PlayFab.ClientModels;
-=======
-﻿using EpicLoot.Config;
-using EpicLoot.Crafting;
-using EpicLoot.Data;
-using EpicLoot_UnityLib;
->>>>>>> main
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.UIElements;
-using static ItemDrop.ItemData;
 using Random = UnityEngine.Random;
 
 namespace EpicLoot.CraftingV2
@@ -31,7 +19,6 @@ namespace EpicLoot.CraftingV2
     public enum EnchantingTabs : uint
     {
         None = 0,
-<<<<<<< HEAD
         Sacrifice = 1,
         ConvertMaterials = 2,
         Enchant = 3,
@@ -45,15 +32,6 @@ namespace EpicLoot.CraftingV2
     {
         Extract,
         Etch
-=======
-        Sacrifice = 1 << 0,
-        ConvertMaterials = 1 << 1,
-        Enchant = 1 << 2,
-        Augment = 1 << 3,
-        Disenchant = 1 << 4,
-        Helheim = 1 << 5,
-        Upgrade = 1 << 6
->>>>>>> main
     }
 
     public class EnchantingUIController : MonoBehaviour
@@ -100,7 +78,6 @@ namespace EpicLoot.CraftingV2
             DisenchantUI.GetDisenchantCost = GetDisenchantCost;
             DisenchantUI.DisenchantItem = DisenchantItem;
             FeatureStatus.MakeFeatureUnlockTooltip = MakeFeatureUnlockTooltip;
-<<<<<<< HEAD
             EnchantingTableUIPanelBase.AudioVolumeLevel = GetAudioLevel;
             MultiSelectItemListElement.AudioVolumeLevel = GetAudioLevel;
             PlaySoundOnChecked.AudioVolumeLevel = GetAudioLevel;
@@ -108,13 +85,6 @@ namespace EpicLoot.CraftingV2
         }
 
         private static float GetAudioLevel() {
-=======
-            AugmentChoiceDialog.AudioVolumeLevel = GetAudioLevel;
-        }
-
-        private static float GetAudioLevel()
-        {
->>>>>>> main
             return AudioMan.GetSFXVolume() * ELConfig.UIAudioVolumeAdjustment.Value;
         }
 
@@ -999,14 +969,9 @@ namespace EpicLoot.CraftingV2
             var choiceDialog = AugmentHelper.CreateAugmentChoiceDialog(true);
             choiceDialog.transform.SetParent(EnchantingTableUI.instance.transform);
 
-<<<<<<< HEAD
-            // Fix the darn audio sources, AGAIN
-            foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>()) {
-=======
             // Fix audio sources
             foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>())
             {
->>>>>>> main
                 audio_source.volume = GetAudioLevel();
             }
 
@@ -1083,11 +1048,7 @@ namespace EpicLoot.CraftingV2
             var boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
             return InventoryManagement.Instance.GetAllItems()
-<<<<<<< HEAD
                 .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
-=======
-                .Where(item => !item.m_equipped && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value ||
->>>>>>> main
                     !boundItems.Contains(item)))
                 .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
                 .Select(item => new InventoryItemListElement() { Item = item })

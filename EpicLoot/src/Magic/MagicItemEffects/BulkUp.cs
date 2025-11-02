@@ -75,21 +75,6 @@ namespace EpicLoot.MagicItemEffects
                 }
 
                 // Include the bonus from the AddHealthRegen effect
-<<<<<<< HEAD
-                var regenAmount = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.AddHealthRegen);
-                if (regenAmount > 0)
-                {
-                    health_regen_from_food += regenAmount;
-                }
-
-                // The bulkup bonus to health
-                float bulk_health_bonus = ((bulkupValue / 30f) * 0.8f) + 1.5f;
-                health_bonus_from_effect = bulk_health_bonus * health_regen_from_food;
-            }
-            else
-            {
-                health_bonus_from_effect = 0;
-=======
                 float regenAmount = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.AddHealthRegen);
                 if (regenAmount > 0)
                 {
@@ -103,7 +88,6 @@ namespace EpicLoot.MagicItemEffects
             else
             {
                 HealthBonus = 0;
->>>>>>> main
             }
         }
     }

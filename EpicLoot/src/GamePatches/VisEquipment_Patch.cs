@@ -245,11 +245,6 @@ namespace EpicLoot
 
         private static void RemoveEffect(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects = true)
         {
-            RemoveEffect(__instance, item, triggerEquipEffects);
-        }
-
-        private static void RemoveEffect(Humanoid __instance, ItemDrop.ItemData item, bool triggerEquipEffects = true)
-        {
             if (item == null || !item.m_equipped || !triggerEquipEffects)
             {
                 return;
@@ -266,12 +261,8 @@ namespace EpicLoot
                 Transform effect = __instance.transform.Find(equipFx);
                 if (effect == null)
                 {
-<<<<<<< HEAD
-                    EpicLoot.Log($"Unequipped item ({item.m_shared.m_name}) from player that had fx, but could not find fx ({equipFx})!");
-=======
                     EpicLoot.LogError($"Unequipped item ({item.m_shared.m_name}) from player that had fx, " +
                         $"but could not find fx ({equipFx})!");
->>>>>>> main
                     return;
                 }
 

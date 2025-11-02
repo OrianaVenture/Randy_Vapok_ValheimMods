@@ -1,8 +1,6 @@
-<<<<<<< HEAD
+
 using System;
-=======
 ﻿using EpicLoot_UnityLib;
->>>>>>> main
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,7 +17,9 @@ namespace EpicLoot.Crafting
             MagicEffectType.ReduceWeight,
             MagicEffectType.AddChoppingResistancePercentage
         };
+        #nullable enable
         public static event Action? OnSetupEnchantingCosts;
+        #nullable disable
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;

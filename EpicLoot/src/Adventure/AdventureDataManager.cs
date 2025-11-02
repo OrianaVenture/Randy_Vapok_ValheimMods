@@ -1,4 +1,5 @@
 using EpicLoot.Adventure.Feature;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,9 +16,9 @@ namespace EpicLoot.Adventure
         public static TreasureMapsAdventureFeature TreasureMaps;
         public static BountiesAdventureFeature Bounties;
         public static int CheatNumberOfBounties = -1;
-        
+        #nullable enable
         public static event Action? OnSetupAdventureData;
-
+        #nullable disable
         public static void Initialize(AdventureDataConfig config)
         {
             Config = config;

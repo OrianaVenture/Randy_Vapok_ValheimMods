@@ -9,6 +9,7 @@ using EpicLoot.GatedItemType;
 using EpicLoot.General;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
+using EpicLoot.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;

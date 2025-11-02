@@ -46,16 +46,6 @@ namespace EpicLoot
                     break;
                 case ItemDrop.ItemData.ItemType.Trinket: zdo.Set("tr-ell", data);
                     break;
-<<<<<<< HEAD
-
-                case ItemDrop.ItemData.ItemType.Chest: zdo.Set("ch-ell", data); break;
-                case ItemDrop.ItemData.ItemType.Legs: zdo.Set("lg-ell", data); break;
-                case ItemDrop.ItemData.ItemType.Helmet: zdo.Set("hl-ell", data); break;
-                case ItemDrop.ItemData.ItemType.Shoulder: zdo.Set("sh-ell", data); break;
-                case ItemDrop.ItemData.ItemType.Utility: zdo.Set("ut-ell", data); break;
-                case ItemDrop.ItemData.ItemType.Trinket: zdo.Set("tr-ell", data); break;
-=======
->>>>>>> main
             }
         }
 
@@ -182,17 +172,6 @@ namespace EpicLoot
                         humanoid.m_visEquipment.m_currentRightItemHash = -1;
                         humanoid.m_visEquipment.m_currentLeftItemHash = -1;
                         break;
-<<<<<<< HEAD
-
-                    case ItemDrop.ItemData.ItemType.Chest:              humanoid.m_visEquipment.m_currentChestItemHash = -1;    break;
-                    case ItemDrop.ItemData.ItemType.Legs:               humanoid.m_visEquipment.m_currentLegItemHash = -1;      break;
-                    case ItemDrop.ItemData.ItemType.Helmet:             humanoid.m_visEquipment.m_currentHelmetItemHash = -1;   break;
-                    case ItemDrop.ItemData.ItemType.Shoulder:           humanoid.m_visEquipment.m_currentShoulderItemHash = -1; break;
-                    case ItemDrop.ItemData.ItemType.Utility:            humanoid.m_visEquipment.m_currentUtilityItemHash = -1;  break;
-                    case ItemDrop.ItemData.ItemType.Tool:               humanoid.m_visEquipment.m_currentRightItemHash = -1;    break;
-                    case ItemDrop.ItemData.ItemType.Trinket:            humanoid.m_visEquipment.m_currentTrinketItemHash = -1;  break;
-
-=======
                     case ItemDrop.ItemData.ItemType.Chest:
                         humanoid.m_visEquipment.m_currentChestItemHash = -1;
                         break;
@@ -214,7 +193,6 @@ namespace EpicLoot
                     case ItemDrop.ItemData.ItemType.Trinket:
                         humanoid.m_visEquipment.m_currentTrinketItemHash = -1;
                         break;
->>>>>>> main
                     default:
                         break;
                 }

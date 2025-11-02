@@ -7,6 +7,7 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
+using EpicLoot.Magic;
 using EpicLoot.Patching;
 using EpicLoot.src.Magic;
 using EpicLoot_UnityLib;

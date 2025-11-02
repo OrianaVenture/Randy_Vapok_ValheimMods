@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Paths.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -32,11 +31,6 @@
 
   <ItemGroup>
     <None Remove="localizations\*" />
-    <Compile Include="src\*.cs" />
-    <Compile Include="src\*\*.cs" />
-    <Compile Include="src\*\*\*.cs" />
-    <Compile Include="EpicLoot.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\epicloot">
@@ -61,6 +55,10 @@
     <EmbeddedResource Include="..\ValheimUnity\Assets\ExternalLibraries\EpicLoot-UnityLib.dll">
       <Link>EpicLoot-UnityLib.dll</Link>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

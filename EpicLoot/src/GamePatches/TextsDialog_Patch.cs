@@ -170,17 +170,9 @@ namespace EpicLoot
 
         public static void AddMagicEffectsExplainPage(TextsDialog textsDialog)
         {
-<<<<<<< HEAD
-            var sortedMagicEffects = MagicItemEffectDefinitions.AllDefinitions
-                .Where(x => !x.Value.Requirements.NoRoll && x.Value.CanBeAugmented)
-                .Select(x => new KeyValuePair<string, string>(string.Format(Localization.instance.Localize(x.Value.DisplayText), "<b><color=yellow>X</color></b>"), Localization.instance.Localize(x.Value.GetDescriptionTextWithConfig())))
-=======
             IOrderedEnumerable<KeyValuePair<string, string>> sortedMagicEffects = MagicItemEffectDefinitions.AllDefinitions
                 .Where(x => !x.Value.Requirements.NoRoll && x.Value.CanBeAugmented)
-                .Select(x => new KeyValuePair<string, string>(string.Format(Localization.instance.Localize(x.Value.DisplayText),
-                "<b><color=yellow>X</color></b>"),
-                Localization.instance.Localize(x.Value.Description)))
->>>>>>> main
+                .Select(x => new KeyValuePair<string, string>(string.Format(Localization.instance.Localize(x.Value.DisplayText), "<b><color=yellow>X</color></b>"), Localization.instance.Localize(x.Value.GetDescriptionTextWithConfig())))
                 .OrderBy(x => x.Key);
 
             StringBuilder t = new StringBuilder();

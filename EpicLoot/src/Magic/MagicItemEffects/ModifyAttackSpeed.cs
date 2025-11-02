@@ -1,5 +1,4 @@
-﻿using EpicLoot.src.integrations;
-using HarmonyLib;
+﻿using HarmonyLib;
 using JetBrains.Annotations;
 
 namespace EpicLoot.MagicItemEffects

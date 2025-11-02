@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-﻿using System;
-using EpicLoot.src.integrations;
-using HarmonyLib;
-=======
 ﻿using HarmonyLib;
->>>>>>> main
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
