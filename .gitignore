@@ -9,8 +9,10 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
-*/bin/
-*/obj/
+/bin/
+/**/bin/
+/obj/
+/**/obj/
 /packages/
 
 
