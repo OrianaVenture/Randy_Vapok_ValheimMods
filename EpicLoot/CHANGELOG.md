@@ -1,17 +1,18 @@
 ## Version 0.12.0
 
-* Added Unidentified items
-    * Unidentified items are a new item type that can be dropped as normal loot
-    * Unidentified items must be identified at the Enchanting Table before they can be used
-    * Unidentified items can be sacrificed for their tier materials
-* Added Runestone Extraction and Etching features to the Enchanting Table.
-    * Extraction allows you to store a singular enchantment from an item into the Runestone
+* NEW Unidentified items:
+    * Unidentified items are a new item type that can be dropped as normal loot.
+    * Unidentified items must be identified at the Enchanting Table before they can be used.
+    * Unidentified items can be sacrificed for their tier materials.
+* NEW Runestone Extraction and Etching features to the Enchanting Table:
+    * Extraction allows you to store a singular enchantment from an item into the Runestone.
     * Runestone Etching allows you to apply the enchantment from the Runestone onto an item, overwriting an existing enchantment.
+* Added ability to edit the core configuration files without patch files.
 * Added the overhaul configuration system which provides access to directly editable configuration. Three configuration defaults are available as base templates:
     * `Balanced` - The new default for Epic Loot. Enchantments are powerful, but not overpowered.
     * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
     * `Vanilla` - A configuration that is closer to the vanilla experience. Enchantments give you an edge, but are not as powerful.
-* Added the following new enchantments
+* NEW enchantments added:
     * `DartingThoughts` - Converts a portion of max eitr into eitr regen (sal)
     * `AddCrafterskills` - Increases crafting and cooking skills (midnight)
     * `Headhunter` - Increases chance to drop trophies from creatures (midnight)
@@ -25,28 +26,8 @@
     * `Apportation` - Teleports you to your thrown weapons location (Leslie)
     * `Chain Lightning` - Chance to cause chain lighting on hit (Leslie)
     * `OffsetAttack` - Third attack in a combo provides stagger immunity and a damage reduction for you, when timed (Leslie)
-* Weapons, armor and items are automatically added to the drop system. Any mods that add craftable weapons armor will now automatically be droppable (at the correct levels)
-* Core configuration options are available again!
-    * All core configuration values are editable directly, but will revert to internal defaults if they become invalid
-* Augmenting can no longer roll duplicates in one reroll
-* Augment UI now supports unlimited enchantments when selecting an augment
-* Improves Quickdraw comptatibility, fixes quickdraw not working on crossbows
-* Improves Explosive arrows compatability
-* Re-enabled damage modification for summon enchant
-* Re-enabled health modification for summon enchant
-* Makes crafting table UI sounds more consistent with other game sounds, and adds a secondary configuration to relatively increase/decrease their volume
-* Improved randomization of item drops by type and tier
-* Sacrifice items now allows multiple items to be selected at once
-* Re-tuned the algorithm for coinhoarder to require a much larger purse of coins to cause significant damage bonuses
-* Riches can now be configured as to what it drops and will now drop 1 of its entries per roll max instead of potentially all of them.
-* Triple shot can now be configured and has been rebalanced
-* Magic Double shot can now be configured and has been rebalanced
-* Eitrweave buffed significantly
-* Added a cap to elemental and physical resistances (configurable)
-* Some extremely powerful enchantments have been enabled for the Legendary config
-* Optimized woodcutting and mining enchantments
-* Removed Deer as a bounty target, all bounty targets now will try to kill you instead of run away
-* EpicLoot API is now available! (Thanks Rusty!)
+* NEW automatic drop system assignment for weapons, armor and other items. This removes the requirement to add patches for other modded items for them to appear in drop tables.
+* NEW EpicLoot API is now available! (Thanks Rusty!)
     * Easily retrieve enchantments that are active on the player
     * Magic Effects can be added by API
     * Abilities can be added by API
@@ -57,10 +38,23 @@
     * Treasure Maps
     * Bounties
     * Secret stash items
-* Small code cleanups
-* Makes tooltips wider and scrollable, supports sets of infinite size
-* Adds status effect on-hit chance display data to magic item tooltips
-* Fix for Trinket visualization not showing up on players (thanks Shudnal!)
+* Enchanting Table fixes:
+    * Augment UI now has a scroll bar and can display all item enchantments.
+    * Augmenting can no longer roll duplicates in one reroll.
+    * Sacrifice items now allows multiple items to be selected at once.
+* Magic Effect tweaks:
+    * Riches drops can now be configured and only drops one item from this new loot table at a time.
+    * Double and Triple Shot can now be configured and have been rebalanced.
+    * Elemental and Physical Resistances now have a configurable capped amount.
+    * Eitr Weave buffed significantly.
+* New configuration AudioVolumeAdjustment to control audio volume of this mod.
+* Scrolling UI sensitivity tweaks.
+* Improved randomization of item drops by type and tier.
+* Added extended magic effect descriptions to compendium.
+
+## Version 0.11.6
+
+* Removed the NoRoll from Modify Summon Damage and Modify Summon Health. Can now roll these effects.
 
 ## Version 0.11.5 - Call To Arms
 
