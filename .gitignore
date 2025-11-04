@@ -79,10 +79,6 @@ crashlytics-build.properties
 /valheim_Data/BepInEx-out/plugins/EpicLoot/abilities.json
 ValheimUnity/Assets/ExternalLibraries/EpicLoot-UnityLib.dll
 
-# API
-EpicLootAPI/EpicLootAPI/obj/Debug
-EpicLootAPI/EpicLootAPI/obj/Release
-
 # Unity
 ValheimUnity/Assets/ExternalLibraries/*
 ValheimUnity/AssetBundles/*.manifest
@@ -93,5 +89,4 @@ ValheimUnity/UserSettings
 # Manual adds
 Common
 ValheimMods.sln
-EpicLootAPI/EpicLootAPI/bin/
 *.env

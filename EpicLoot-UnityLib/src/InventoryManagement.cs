@@ -146,7 +146,7 @@ public class InventoryManagement
 
             var itemdrop = go.GetComponent<ItemDrop>();
             itemdrop.SetStack(amount);
-            itemdrop.GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
+            itemdrop.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 5f;
 
             SendMessage($"$msg_dropped {itemdrop.m_itemData.m_shared.m_name}",
                 itemdrop.m_itemData.m_stack, itemdrop.m_itemData.GetIcon());
@@ -160,7 +160,7 @@ public class InventoryManagement
         var itemDrop = ItemDrop.DropItem(item, item.m_stack,
             player.transform.position + player.transform.forward + player.transform.up,
             player.transform.rotation);
-        itemDrop.GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
+        itemDrop.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 5f;
 
         SendMessage($"$msg_dropped {itemDrop.m_itemData.m_shared.m_name}",
             itemDrop.m_itemData.m_stack, itemDrop.m_itemData.GetIcon());

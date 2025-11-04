@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace EpicLoot_UnityLib

@@ -90,7 +90,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Legs",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -818,7 +819,8 @@
         "AllowedItemTypes": [
           "Chest",
           "Shoulder",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -903,7 +905,8 @@
         "AllowedItemTypes": [
           "Legs",
           "Tools",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -949,7 +952,8 @@
         "AllowedItemTypes": [
           "Helmet",
           "Staff",
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "ExcludedItemNames": [
           "$item_hammer",
@@ -999,7 +1003,8 @@
       "Description": "$mod_epicloot_me_decreaseforsakencooldown_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Magic",
@@ -1050,7 +1055,8 @@
       "Description": "$mod_epicloot_me_decreasemeadcooldown_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Magic",
@@ -1150,7 +1156,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Helmet",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -1244,6 +1251,7 @@
         "AllowedItemTypes": [
           "Legs",
           "Utility",
+          "Trinket",
           "Tools"
         ]
       },
@@ -1289,7 +1297,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Legs",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -1377,7 +1386,8 @@
       "Description": "$mod_epicloot_me_instantmead_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Rare",
@@ -1402,7 +1412,8 @@
       "Description": "$mod_epicloot_me_automead_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Rare",
@@ -1471,7 +1482,8 @@
       "Description": "$mod_epicloot_me_modifypickuprange_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -2436,6 +2448,7 @@
           "Legs",
           "Shoulder",
           "Utility",
+          "Trinket",
           "Shield",
           "Tool",
           "Torch",
@@ -2782,6 +2795,7 @@
         "AllowedItemTypes": [
           "Legs",
           "Utility",
+          "Trinket",
           "Tools"
         ]
       },
@@ -2827,7 +2841,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Legs",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -2917,6 +2932,7 @@
         "AllowedItemTypes": [
           "Legs",
           "Utility",
+          "Trinket",
           "Tools"
         ]
       },
@@ -3279,7 +3295,8 @@
       "Description": "$mod_epicloot_me_coinhoarder_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Epic",
@@ -3344,7 +3361,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Shoulder",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -3579,7 +3597,8 @@
           "Shield",
           "Legs",
           "Shoulder",
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "ExcludedSkillTypes": [
           "Pickaxes",
@@ -4300,7 +4319,8 @@
           "Chest",
           "Legs",
           "Shoulder",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -4659,7 +4679,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Legs",
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "ExclusiveEffectTypes": [
           "QuickLearner"
@@ -4908,6 +4929,7 @@
           "Helmet",
           "Shoulder",
           "Utility",
+          "Trinket",
           "OneHandedWeapon",
           "TwoHandedWeapon"
         ],
@@ -5125,6 +5147,7 @@
         "AllowedItemTypes": [
           "Helmet",
           "Utility",
+          "Trinket",
           "Tools"
         ]
       },
@@ -5169,7 +5192,8 @@
       "Description": "$mod_epicloot_me_comfortable_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Epic",
@@ -5209,6 +5233,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Utility",
+          "Trinket",
           "Legs"
         ]
       },
@@ -5254,6 +5279,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Utility",
+          "Trinket",
           "Chest"
         ]
       },
@@ -5299,6 +5325,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Utility",
+          "Trinket",
           "Helmet"
         ]
       },
@@ -5344,6 +5371,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Utility",
+          "Trinket",
           "Staff"
         ]
       },
@@ -5389,6 +5417,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Utility",
+          "Trinket",
           "Chest"
         ]
       },
@@ -5482,7 +5511,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Shield",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -5529,7 +5559,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Shield",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -5575,7 +5606,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Shoulder",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -5620,7 +5652,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Legs",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -5668,7 +5701,8 @@
           "TwoHandedWeapon",
           "TwoHandedWeaponLeft",
           "OneHandedWeapon",
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -5713,6 +5747,7 @@
           "Legs",
           "Shoulder",
           "Utility",
+          "Trinket",
           "Tools"
         ]
       },
@@ -5779,7 +5814,8 @@
       "Description": "$mod_epicloot_me_riches_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ]
       },
       "ValuesPerRarity": {
@@ -6003,7 +6039,8 @@
       "Description": "$mod_epicloot_me_luck_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Utility"
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Epic",
@@ -6389,6 +6426,7 @@
         "AllowedItemTypes": [
           "Helmet",
           "Utility",
+          "Trinket",
           "ElementalMagic"
         ],
         "ExcludedSkillTypes": [],

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine.UI;
 
 namespace EpicLoot_UnityLib

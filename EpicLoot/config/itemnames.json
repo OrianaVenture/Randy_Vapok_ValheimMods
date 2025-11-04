@@ -73,7 +73,6 @@
       { "Name": "$mod_epicloot_epic_wrath" },
       { "Name": "$mod_epicloot_epic_yggdrasill" },
       { "Name": "$mod_epicloot_epic_ymir" },
-
       { "Name": "$mod_epicloot_epic_fleet", "MagicEffects": [ "ModifyMovementSpeed" ] },
       { "Name": "$mod_epicloot_epic_swift", "MagicEffects": [ "ModifyMovementSpeed" ] }
     ],

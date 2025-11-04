@@ -1,7 +1,7 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +26,7 @@ namespace EpicLoot_UnityLib
         public int Amount;
         public List<ConversionRecipeCostUnity> Cost;
 
-        public List<string> GetEffectNames() => [];
+        public List<string> GetEffectNames() => new List<string>();
         public string GetEnchantName() => string.Empty;
         public ItemDrop.ItemData GetItem() => Product;
         public string GetDisplayNameSuffix() => Amount > 1 ? $" x{Amount}" : string.Empty;
