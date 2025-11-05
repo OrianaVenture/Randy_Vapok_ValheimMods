@@ -1,7 +1,6 @@
 ﻿using EpicLoot.Data;
 using EpicLoot.LootBeams;
 using HarmonyLib;
-using static ItemDrop;
 
 namespace EpicLoot
 {
