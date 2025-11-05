@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Rzadki",
   "mod_epicloot_epic": "ki",
   "mod_epicloot_legendary": "Legendarny",
-  "mod_epicloot_mythic": "Mityczny"
+  "mod_epicloot_mythic": "Mityczny",
+  "mod_epicloot_me_adrenaline_rush": "Poryw adrenaliny",
+  "mod_epicloot_me_adrenaline_rush_desc": "Zwiększone obrażenia przez czas trwania efektu."
 }

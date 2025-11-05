@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Vzácný",
   "mod_epicloot_epic": "epický",
   "mod_epicloot_legendary": "Legendárny",
-  "mod_epicloot_mythic": "Mystický"
+  "mod_epicloot_mythic": "Mystický",
+  "mod_epicloot_me_adrenaline_rush": "Rush adrenalínu",
+  "mod_epicloot_me_adrenaline_rush_desc": "Zvýšené poškodenie počas trvania účinku."
 }

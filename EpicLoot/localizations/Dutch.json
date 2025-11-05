@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Zeldzaam",
   "mod_epicloot_epic": "Epos",
   "mod_epicloot_legendary": "Legendarisch",
-  "mod_epicloot_mythic": " Mythisch"
+  "mod_epicloot_mythic": " Mythisch",
+  "mod_epicloot_me_adrenaline_rush": "Adrenaline stoot",
+  "mod_epicloot_me_adrenaline_rush_desc": "Verhoogde schade gedurende de duur van het effect."
 }

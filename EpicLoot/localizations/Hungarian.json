@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Ritka",
   "mod_epicloot_epic": "Epikus",
   "mod_epicloot_legendary": "Legendás",
-  "mod_epicloot_mythic": "mitikus"
+  "mod_epicloot_mythic": "mitikus",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalin löket",
+  "mod_epicloot_me_adrenaline_rush_desc": "Növekvő kár az hatás ideje alatt."
 }

@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Retas",
   "mod_epicloot_epic": "Epas",
   "mod_epicloot_legendary": "Legendinis",
-  "mod_epicloot_mythic": "Mitolinis"
+  "mod_epicloot_mythic": "Mitolinis",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalino šuolis",
+  "mod_epicloot_me_adrenaline_rush_desc": "Padidintas žala veikimo trukmei metu.Padidintas žalos kiekis veikimo metu."
 }

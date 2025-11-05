@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "rar",
   "mod_epicloot_epic": "Epopeic",
   "mod_epicloot_legendary": "Legendare",
-  "mod_epicloot_mythic": "Mitic"
+  "mod_epicloot_mythic": "Mitic",
+  "mod_epicloot_me_adrenaline_rush": "Val de adrenalină.",
+  "mod_epicloot_me_adrenaline_rush_desc": "Daune crescute pentru durata efectului."
 }

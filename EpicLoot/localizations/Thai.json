@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "หายาก",
   "mod_epicloot_epic": "มหัศจร",
   "mod_epicloot_legendary": "ตำนาน",
-  "mod_epicloot_mythic": "ส่วนที่เป็นตำนาน"
+  "mod_epicloot_mythic": "ส่วนที่เป็นตำนาน",
+  "mod_epicloot_me_adrenaline_rush": "กระตุ้นอารมณ์",
+  "mod_epicloot_me_adrenaline_rush_desc": "เพิ่มความเสียหายตลอดระยะเวลาของผลขึ้น"
 }

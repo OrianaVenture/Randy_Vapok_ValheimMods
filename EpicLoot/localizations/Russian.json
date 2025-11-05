@@ -1432,5 +1432,12 @@
   "mod_epicloot_rare": "Редк.",
   "mod_epicloot_epic": "Эпическ.",
   "mod_epicloot_legendary": "Легендарн.",
-  "mod_epicloot_mythic": "Мифическ."
+  "mod_epicloot_mythic": "Мифическ.",
+  "mod_epicloot_me_adrenaline_rush": "Буря адреналина",
+  "mod_epicloot_me_adrenaline_rush_desc": "Увеличенный урон на протяжении действия эффекта.",
+  "mod_epicloot_Magic": "Магия",
+  "mod_epicloot_Rare": "Редкий",
+  "mod_epicloot_Epic": "Эпический",
+  "mod_epicloot_Legendary": "Легендарный",
+  "mod_epicloot_Mythic": "Мифический"
 }

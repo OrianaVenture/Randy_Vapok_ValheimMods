@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Raro",
   "mod_epicloot_epic": "Épico",
   "mod_epicloot_legendary": "Legendário",
-  "mod_epicloot_mythic": "Mítico"
+  "mod_epicloot_mythic": "Mítico",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalina pura",
+  "mod_epicloot_me_adrenaline_rush_desc": "Aumento de dano durante a duração do efeito."
 }

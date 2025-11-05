@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Harvinainen",
   "mod_epicloot_epic": "Mahtava",
   "mod_epicloot_legendary": "Legendaarinen",
-  "mod_epicloot_mythic": "Myyttinen"
+  "mod_epicloot_mythic": "Myyttinen",
+  "mod_epicloot_me_adrenaline_rush": "Adrenaliiniryöppy",
+  "mod_epicloot_me_adrenaline_rush_desc": "Lisääntynyt vahinko vaikutuksen keston ajan."
 }

@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Reti",
   "mod_epicloot_epic": "Episki",
   "mod_epicloot_legendary": "Legendāri",
-  "mod_epicloot_mythic": "Mītiski"
+  "mod_epicloot_mythic": "Mītiski",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalīna pieplūdums",
+  "mod_epicloot_me_adrenaline_rush_desc": "Palielināts bojājums efekta ilgumā."
 }

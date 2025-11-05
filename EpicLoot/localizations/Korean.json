@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "드문",
   "mod_epicloot_epic": "에픽",
   "mod_epicloot_legendary": "전설적인",
-  "mod_epicloot_mythic": "신화적인"
+  "mod_epicloot_mythic": "신화적인",
+  "mod_epicloot_me_adrenaline_rush": "아드레날린 러시",
+  "mod_epicloot_me_adrenaline_rush_desc": "효과 기간 동안 피해 증가합니다."
 }

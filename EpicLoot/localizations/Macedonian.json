@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Ретка",
   "mod_epicloot_epic": "Епски",
   "mod_epicloot_legendary": "Легендарно",
-  "mod_epicloot_mythic": "Mitski"
+  "mod_epicloot_mythic": "Mitski",
+  "mod_epicloot_me_adrenaline_rush": "Адреналинско нападение",
+  "mod_epicloot_me_adrenaline_rush_desc": "Поголема штета за времетраење на ефектот."
 }

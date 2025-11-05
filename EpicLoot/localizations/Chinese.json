@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "罕见",
   "mod_epicloot_epic": "史诗级",
   "mod_epicloot_legendary": "传奇",
-  "mod_epicloot_mythic": "神话般的"
+  "mod_epicloot_mythic": "神话般的",
+  "mod_epicloot_me_adrenaline_rush": "肾上腺素飙升",
+  "mod_epicloot_me_adrenaline_rush_desc": "增加伤害持续时间。"
 }

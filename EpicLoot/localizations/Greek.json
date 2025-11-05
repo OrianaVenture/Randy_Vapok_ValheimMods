@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Σπάνιο",
   "mod_epicloot_epic": "Επικό",
   "mod_epicloot_legendary": "Θρυλικό",
-  "mod_epicloot_mythic": "Μυθικό"
+  "mod_epicloot_mythic": "Μυθικό",
+  "mod_epicloot_me_adrenaline_rush": "Προσάρτηση της αδρεναλίνης",
+  "mod_epicloot_me_adrenaline_rush_desc": "Αυξημένη ζημιά για τη διάρκεια του αποτελέσματος."
 }

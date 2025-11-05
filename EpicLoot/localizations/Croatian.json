@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Rijetko",
   "mod_epicloot_epic": "Epohalno",
   "mod_epicloot_legendary": "Legendaran",
-  "mod_epicloot_mythic": "Mitski"
+  "mod_epicloot_mythic": "Mitski",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinski nalet",
+  "mod_epicloot_me_adrenaline_rush_desc": "Povećana šteta tijekom trajanja učinka."
 }

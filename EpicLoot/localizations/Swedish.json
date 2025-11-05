@@ -1437,5 +1437,7 @@
   "mod_epicloot_rare": "Sällsynt",
   "mod_epicloot_epic": "Episk",
   "mod_epicloot_legendary": "Legendarisk",
-  "mod_epicloot_mythic": "Mytisk"
+  "mod_epicloot_mythic": "Mytisk",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinstöt",
+  "mod_epicloot_me_adrenaline_rush_desc": "Ökad skada under effektens varaktighet."
 }
