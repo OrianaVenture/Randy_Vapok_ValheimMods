@@ -390,6 +390,12 @@ namespace EpicLoot
                 text.Append(item.GetSetTooltip());
             }
 
+            // adrenaline stuff
+            if (item.m_shared.m_fullAdrenalineSE != null)
+            {
+                text.Append($"\n$item_fulladrenaline: <color=orange>{item.m_shared.m_fullAdrenalineSE.GetTooltipString()}</color>");
+            }
+
             __result = text.ToString();
 
             return false;

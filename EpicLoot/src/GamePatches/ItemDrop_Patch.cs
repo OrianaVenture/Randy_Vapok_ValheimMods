@@ -1,20 +1,31 @@
-﻿using EpicLoot.LootBeams;
+﻿using EpicLoot.Data;
+using EpicLoot.LootBeams;
 using HarmonyLib;
 
 namespace EpicLoot
 {
-    [HarmonyPatch(typeof(ItemDrop), nameof(ItemDrop.Awake))]
-    public static class ItemDrop_Awake_Patch
+    [HarmonyPatch(typeof(ItemDrop), nameof(ItemDrop.Load))]
+    public static class ItemDrop_Load_Patch
     {
+        // This patch is critical to load the custom data which powers EL magic items
+        // Previously this was accomplished by ensuring that any ways an item could be created would try loading the data
+        // This changes that logic by running a check if the item is magic when it is loaded, it also avoids excessive ZDO saves when no changes are made
         public static void Postfix(ItemDrop __instance)
         {
-            __instance.gameObject.AddComponent<LootBeam>();
+            if (__instance.m_itemData == null) { return; }
 
-            var prefabData = __instance.m_itemData.InitializeCustomData();
-            if (prefabData != null)
+            MagicItemComponent magicItem = __instance.m_itemData.Data().Get<MagicItemComponent>();
+            if (magicItem != null)
             {
-                __instance.m_itemData.m_dropPrefab = prefabData;
+                __instance.m_itemData = magicItem.Item;
+                magicItem.Deserialize();
+                __instance.m_itemData.SaveMagicItem(magicItem.MagicItem);
                 __instance.Save();
+            }
+
+            if (__instance.gameObject.GetComponent<LootBeam>() == null)
+            {
+                __instance.gameObject.AddComponent<LootBeam>();
             }
         }
     }
@@ -28,7 +39,9 @@ namespace EpicLoot
             {
                 var prefabData = itemData.InitializeCustomData();
                 if (prefabData != null)
+                {
                     itemData.m_dropPrefab = prefabData;
+                }
             }
         }
     }

@@ -422,7 +422,7 @@ namespace EpicLoot
             if (prefab != null)
             {
                 var itemDropPrefab = prefab.GetComponent<ItemDrop>();
-                if ((itemData.IsLegacyMagicItem() || EpicLoot.CanBeMagicItem(itemDropPrefab.m_itemData)) && !itemData.IsExtended())
+                if (EpicLoot.CanBeMagicItem(itemDropPrefab.m_itemData) && !itemData.IsExtended())
                 {
                     var instanceData = itemData.Data().Add<MagicItemComponent>();
 
