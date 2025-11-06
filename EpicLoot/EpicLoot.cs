@@ -72,7 +72,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.11.6";
+        public const string Version = "0.11.7";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -132,8 +132,6 @@ namespace EpicLoot
             _instance = this;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            
-            EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
             cfg = new ELConfig(Config);

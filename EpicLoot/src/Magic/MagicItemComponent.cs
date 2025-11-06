@@ -100,10 +100,6 @@ namespace EpicLoot
 
                 MagicItem = magicItem;
             }
-            else
-            {
-                CheckForExtendedItemDataAndConvert();
-            }
             
             FixupValuelessEffects();
             SetMagicItem(MagicItem);
@@ -112,32 +108,16 @@ namespace EpicLoot
         public override void Load()
         {
             if (!string.IsNullOrEmpty(Value))
+            {
                 Deserialize();
+            }
 
-            CheckForExtendedItemDataAndConvert();
             FixupValuelessEffects();
 
             //Check Indestructible on Item
             Indestructible.MakeItemIndestructible(Item);
 
             SetMagicItem(MagicItem);
-        }
-
-        private void CheckForExtendedItemDataAndConvert()
-        {
-            if (!Item.IsLegacyEIDFItem() || !Item.IsLegacyMagicItem() || MagicItem != null)
-            {
-                return;
-            }
-
-            Value = EIDFLegacy.GetMagicItemFromCrafterName(Item);
-
-            if (string.IsNullOrEmpty(Value))
-            {
-                return;
-            }
-
-            Deserialize();
         }
 
         private void FixupValuelessEffects()
