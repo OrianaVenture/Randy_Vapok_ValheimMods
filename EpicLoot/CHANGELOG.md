@@ -1,3 +1,10 @@
+## Version 0.11.7
+
+* Updates for the Russian translation file.
+* Removed extended item data framework support (this has been deprecated for over two years now).
+* Bug fix for item stands not working correctly with magic items.
+* Added missing trinket information in tooltips.
+
 ## Version 0.11.6
 
 * Removed the NoRoll from Modify Summon Damage and Modify Summon Health. Can now roll these effects.
