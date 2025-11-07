@@ -12,7 +12,10 @@ namespace EpicLoot
         // This changes that logic by running a check if the item is magic when it is loaded, it also avoids excessive ZDO saves when no changes are made
         public static void Postfix(ItemDrop __instance)
         {
-            if (__instance.m_itemData == null) { return; }
+            if (__instance.m_itemData == null)
+            {
+                return;
+            }
 
             MagicItemComponent magicItem = __instance.m_itemData.Data().Get<MagicItemComponent>();
             if (magicItem != null)
@@ -23,7 +26,8 @@ namespace EpicLoot
                 __instance.Save();
             }
 
-            if (__instance.gameObject.GetComponent<LootBeam>() == null) {
+            if (__instance.gameObject.GetComponent<LootBeam>() == null)
+            {
                 __instance.gameObject.AddComponent<LootBeam>();
             }
         }
@@ -40,7 +44,7 @@ namespace EpicLoot
                 if (prefabData != null)
                 {
                     itemData.m_dropPrefab = prefabData;
-                }  
+                }
             }
         }
     }

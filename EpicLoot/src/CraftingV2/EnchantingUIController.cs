@@ -19,13 +19,14 @@ namespace EpicLoot.CraftingV2
     public enum EnchantingTabs : uint
     {
         None = 0,
-        Sacrifice = 1,
-        ConvertMaterials = 2,
-        Enchant = 3,
-        Augment = 4,
-        Disenchant = 5,
-        Rune = 6,
-        Upgrade = 999
+        Sacrifice = 1 << 0,
+        ConvertMaterials = 1 << 1,
+        Enchant = 1 << 2,
+        Augment = 1 << 3,
+        Disenchant = 1 << 4,
+        //Helheim = 1 << 5,
+        Upgrade = 1 << 6,
+        Rune = 1 << 7
     }
 
     public enum RuneActions
