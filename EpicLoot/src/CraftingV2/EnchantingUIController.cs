@@ -547,9 +547,13 @@ namespace EpicLoot.CraftingV2
             return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
         }
 
-        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, Heightmap.Biome biome) {
-            EpicLoot.Log($"Getting loot tables for identify style {Localization.instance.Localize(cfg.Localization)} in biome {biome} cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
-            Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(biome, EpicLoot.GetGatedItemTypeMode());
+        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, Heightmap.Biome biome)
+        {
+            EpicLoot.Log($"Getting loot tables for identify style " +
+                $"{Localization.instance.Localize(cfg.Localization)} in biome {biome} " +
+                $"cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
+            Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
+                biome, EpicLoot.GetGatedItemTypeMode());
 
             List<LootTable> lootTables = new List<LootTable>() { };
             foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome]) {
@@ -561,17 +565,19 @@ namespace EpicLoot.CraftingV2
             return lootTables;
         }
 
-        private static List<InventoryItemListElement> LootRollSelectedItems(string filter, List<Tuple<ItemDrop.ItemData, int>> items, float power_modifier)
+        private static List<InventoryItemListElement> LootRollSelectedItems(
+            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float power_modifier)
         {
             var player = Player.m_localPlayer;
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
-            
 
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
-            foreach (var itemstack in items) {
+            foreach (var itemstack in items)
+            {
                 Enum.TryParse<Heightmap.Biome>(itemstack.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
                 List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
-                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, power_modifier);
+                List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(
+                    player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, power_modifier);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
                 totalRolledItems.AddRange(rolledItems);
                 foreach (var item in rolledItems) { InventoryManagement.Instance.GiveItem(item); }
@@ -615,21 +621,26 @@ namespace EpicLoot.CraftingV2
             return result;
         }
 
-        private static Dictionary<string, string> GetIdentifyStyles() {
+        private static Dictionary<string, string> GetIdentifyStyles()
+        {
             return EnchantCostsHelper.GetIdentificationCategories();
         }
 
-        private static List<InventoryItemListElement> GetIdentifyCostForCategory(string filter, List<Tuple<ItemDrop.ItemData, int>> items, float cost_modifier = 1.0f)
+        private static List<InventoryItemListElement> GetIdentifyCostForCategory(
+            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float cost_modifier = 1.0f)
         {
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             var results = new List<InventoryItemListElement>() { };
-            foreach (var entry in category.Costs) {
+            foreach (var entry in category.Costs)
+            {
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
-                if (costGo == null) { 
+                if (costGo == null)
+                {
                     EpicLoot.LogWarning($"Could not find identify cost item {entry.Item} in ObjectDB");
                     continue;
                 }
+
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
                 ItemDrop.ItemData itemData = id.m_itemData;
                 itemData.m_dropPrefab = costGo.gameObject;

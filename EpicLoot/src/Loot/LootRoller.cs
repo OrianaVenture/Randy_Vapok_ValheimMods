@@ -138,7 +138,7 @@ namespace EpicLoot
             }
         }
 
-        public static List<GameObject> RollLootTableAndSpawnObjects(List<LootTable> lootTables, 
+        public static List<GameObject> RollLootTableAndSpawnObjects(List<LootTable> lootTables,
             int level, string objectName, Vector3 dropPoint)
         {
             return RollLootTableInternal(lootTables, level, objectName, dropPoint, true);
@@ -150,7 +150,7 @@ namespace EpicLoot
             return RollLootTableInternal(lootTable, level, objectName, dropPoint, true);
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(List<LootTable> lootTables, 
+        public static List<ItemDrop.ItemData> RollLootTable(List<LootTable> lootTables,
             int level, string objectName, Vector3 dropPoint)
         {
             var results = new List<ItemDrop.ItemData>();
@@ -164,13 +164,13 @@ namespace EpicLoot
             return results;
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(LootTable lootTable, 
+        public static List<ItemDrop.ItemData> RollLootTable(LootTable lootTable,
             int level, string objectName, Vector3 dropPoint)
         {
             return RollLootTable(new List<LootTable> {lootTable}, level, objectName, dropPoint);
         }
 
-        public static List<ItemDrop.ItemData> RollLootTable(string lootTableName, 
+        public static List<ItemDrop.ItemData> RollLootTable(string lootTableName,
             int level, string objectName, Vector3 dropPoint)
         {
             var lootTable = GetLootTable(lootTableName);
@@ -203,22 +203,32 @@ namespace EpicLoot
         public static Dictionary<string,float> GetLootTableChances(Vector3 location, List<LootTable> LootTables) {
             Dictionary<string, float> results = new Dictionary<string, float>();
             EpicLoot.Log($"Checking {LootTables.Count} loot tables");
-            foreach(LootTable lt in LootTables) {
-                foreach(LootDrop ld in lt.Loot) {
+            foreach(LootTable lt in LootTables)
+            {
+                foreach(LootDrop ld in lt.Loot)
+                {
                     EpicLoot.Log($"Checking {ld.Item} is itemset? {ItemSets.ContainsKey(ld.Item)}");
-                    if (ItemSets.ContainsKey(ld.Item)) {
-                        ItemSets[ld.Item].Loot.ToList().ForEach(x => {
-                            if (results.ContainsKey(x.Item)) {
+                    if (ItemSets.ContainsKey(ld.Item))
+                    {
+                        ItemSets[ld.Item].Loot.ToList().ForEach(x =>
+                        {
+                            if (results.ContainsKey(x.Item))
+                            {
                                 results[x.Item] += ld.Weight;
-                            } else {
+                            }
+                            else
+                            {
                                 results.Add(x.Item, ld.Weight);
                             }
                         });
                     }
 
-                    if (results.ContainsKey(ld.Item)) {
+                    if (results.ContainsKey(ld.Item))
+                    {
                         results[ld.Item] += ld.Weight;
-                    } else {
+                    }
+                    else
+                    {
                         results.Add(ld.Item, ld.Weight);
                     }
                 }
@@ -228,42 +238,49 @@ namespace EpicLoot
         }
 
         public static List<ItemDrop.ItemData> RollLootNoTableWithSpecifics(Vector3 location,
-            List<LootTable> LootTables,
+            List<LootTable> lootTables,
             int numResults = 1,
             ItemRarity rarity = ItemRarity.Magic,
-            bool luck_upgrade_rarity =true,
-            int luck_upgrade_rarity_factor = 2,
+            bool luckUpgradesRarity = true,
+            int luckUpgradesRarityFactor = 2,
             float power_level_mod = 1.0f
-            ) {
+            )
+        {
             var luckFactor = GetLuckFactor(location);
 
             List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
             HashSet<string> rolledItems = new HashSet<string>();
             int failures = 0;
-            // This is effectively an estimate, but we will just keep rolling until we get the number of results we want if this is not enough
-            int loot_per_category = numResults / LootTables.Count;
-            if (loot_per_category < 1) { loot_per_category = 1; }
 
-            while (results.Count < numResults) {
-                foreach(LootTable lt in LootTables) {
+            // This is effectively an estimate, but we will just keep rolling until we get the number of results we want if this is not enough
+            int lootPerCategory = numResults / lootTables.Count;
+            if (lootPerCategory < 1)
+            {
+                lootPerCategory = 1;
+            }
+
+            while (results.Count < numResults)
+            {
+                foreach(LootTable lt in lootTables)
+                {
                     ItemRarity itemRollRarity = rarity;
-                    if (luck_upgrade_rarity == true)
+                    if (luckUpgradesRarity == true)
                     {
                         var lootdrop = new LootDrop() { Rarity = [] };
                         // TODO: Expose this as a config?
                         switch (rarity)
                         {
                             case ItemRarity.Magic:
-                                lootdrop.Rarity = [99, luck_upgrade_rarity_factor, 0, 0, 0];
+                                lootdrop.Rarity = [99, luckUpgradesRarityFactor, 0, 0, 0];
                                 break;
                             case ItemRarity.Rare:
-                                lootdrop.Rarity = [0, 98, luck_upgrade_rarity_factor, 0, 0];
+                                lootdrop.Rarity = [0, 98, luckUpgradesRarityFactor, 0, 0];
                                 break;
                             case ItemRarity.Epic:
-                                lootdrop.Rarity = [0, 0, 97, luck_upgrade_rarity_factor, 0];
+                                lootdrop.Rarity = [0, 0, 97, luckUpgradesRarityFactor, 0];
                                 break;
                             case ItemRarity.Legendary:
-                                lootdrop.Rarity = [0, 0, 0, 97, luck_upgrade_rarity_factor];
+                                lootdrop.Rarity = [0, 0, 0, 97, luckUpgradesRarityFactor];
                                 break;
                             case ItemRarity.Mythic:
                                 lootdrop.Rarity = [0, 0, 0, 0, 100];
@@ -278,7 +295,7 @@ namespace EpicLoot
                     }
 
                     _weightedLootTable.Setup(looteqrare.ToArray(), x => x.Weight);
-                    List<LootDrop> selectedDrops = _weightedLootTable.Roll(loot_per_category);
+                    List<LootDrop> selectedDrops = _weightedLootTable.Roll(lootPerCategory);
 
                     EpicLoot.Log($"Available Loot ({lt.Loot.Length}) for table: {lt.Object}");
                     foreach (var lootDrop in lt.Loot) {
@@ -437,49 +454,69 @@ namespace EpicLoot
                 // Check if lootDrop.Item is not an equipment piece- which means its a material or other, so we let it drop instead of replacing it with an unidentified item
 
                 // Set the drop as an unidentified item of the selected rarity
-                if (ELConfig.ItemsUnidentifiedDropRatio.Value > 0) {
+                if (ELConfig.ItemsUnidentifiedDropRatio.Value > 0)
+                {
                     var clampedUnidentifiedRate = Mathf.Clamp(ELConfig.ItemsUnidentifiedDropRatio.Value, 0.0f, 1.0f);
                     var setUnidentified = Random.Range(0.0f, 1.0f) < clampedUnidentifiedRate;
                     EpicLoot.Log($"Checking if item should be unidentified for {lootDrop.Item} ({clampedUnidentifiedRate} {setUnidentified})");
-                    if (setUnidentified) {
+                    
+                    if (setUnidentified)
+                    {
                         // If the item is rolled to be unidentified, we need to check if it is a valid item type, if its not we don't make it unidentified
                         GameObject lootTableDrop = ObjectDB.instance.GetItemPrefab(lootDrop.Item);
                         ItemDrop.ItemData.ItemType id = ItemDrop.ItemData.ItemType.OneHandedWeapon;
-                        if (lootTableDrop != null) {
+
+                        if (lootTableDrop != null)
+                        {
                             id = lootTableDrop.GetComponent<ItemDrop>().m_itemData.m_shared.m_itemType;
                         }
-                        if (EpicLoot.AllowedMagicItemTypes.Contains(id)) {
+
+                        if (EpicLoot.IsAllowedMagicItemType(id))
+                        {
                             var rarity = RollItemRarity(lootDrop, luckFactor);
-                            
+
                             // Determine which biome this item is a part of, and set the drop biome to that tier
                             GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(lootDrop.Item, out var itemDetails);
                             List<Heightmap.Biome> biomes = new List<Heightmap.Biome>();
-                            if (itemDetails != null) {
-                                foreach(string bosskey in itemDetails.RequiredBosses) {
-                                    foreach (BountyBossConfig bossEntry in AdventureDataManager.Config.Bounties.Bosses){
-                                        if (bossEntry.BossDefeatedKey != bosskey) { continue; }
+                            if (itemDetails != null)
+                            {
+                                foreach(string bosskey in itemDetails.RequiredBosses)
+                                {
+                                    foreach (BountyBossConfig bossEntry in AdventureDataManager.Config.Bounties.Bosses)
+                                    {
+                                        if (bossEntry.BossDefeatedKey != bosskey)
+                                        {
+                                            continue;
+                                        }
                                         biomes.Add(bossEntry.Biome);
                                     }
                                 }
                             }
-                            if (biomes.Count <= 0) {
+
+                            if (biomes.Count <= 0)
+                            {
                                 ZoneSystem.instance.GetGroundData(ref dropPoint, out var _, out var biome, out var _, out var _);
                                 biomes.Add(biome);
                             }
 
                             string selectBiome = biomes.First().ToString();
                             GameObject prefab = ObjectDB.instance.GetItemPrefab($"{selectBiome}_{rarity}_Unidentified");
-                            if (prefab == null) {
+                            if (prefab == null)
+                            {
                                 // Warn and drop the normal item instead
-                                EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified but prefab was not found! Dropping {lootDrop.Item} instead.");
-                            } else {
+                                EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified " +
+                                    $"but prefab was not found! Dropping {lootDrop.Item} instead.");
+                            }
+                            else
+                            {
                                 EpicLoot.Log($"Adding {rarity} unidentified item");
                                 Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
                                 ZNetView.m_forceDisableInit = !initializeObject;
                                 GameObject lootdrop = Object.Instantiate(prefab, dropPoint, randomRotation);
                                 // Ensure that the unidentified item has the correct magic item data for the rarity
                                 var mic = lootdrop.GetComponent<ItemDrop>().m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                                mic.SetMagicItem(new MagicItem {
+                                mic.SetMagicItem(new MagicItem
+                                {
                                     Rarity = rarity,
                                     IsUnidentified = true,
                                 });

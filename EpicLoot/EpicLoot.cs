@@ -22,8 +22,6 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.UI;
-using static ItemDrop;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot
