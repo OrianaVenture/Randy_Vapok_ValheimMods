@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System;
+using Common;
 using HarmonyLib;
 using JetBrains.Annotations;
 using System;
@@ -23,6 +24,8 @@ namespace EpicLoot.LegendarySystem
             ID = nameof(GenericLegendaryInfo)
         };
         
+        public static event Action OnSetupLegendaryItemConfig;
+
         public static event Action OnSetupLegendaryItemConfig;
 
         public static void Initialize(LegendaryItemConfig config)
