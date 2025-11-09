@@ -26,27 +26,6 @@ using Object = UnityEngine.Object;
 
 namespace EpicLoot
 {
-    public enum LogLevel
-    {
-        Info,
-        Warning,
-        Error
-    }
-
-    public enum BossDropMode
-    {
-        Default,
-        OnePerPlayerOnServer,
-        OnePerPlayerNearBoss
-    }
-
-    public enum GatedBountyMode
-    {
-        Unlimited,
-        BossKillUnlocksCurrentBiomeBounties,
-        BossKillUnlocksNextBiomeBounties
-    }
-
     public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
@@ -93,27 +72,10 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.11.6";
+        public const string Version = "0.11.7";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
-
-        public static readonly List<ItemDrop.ItemData.ItemType> AllowedMagicItemTypes = new List<ItemDrop.ItemData.ItemType>
-        {
-            ItemDrop.ItemData.ItemType.Helmet,
-            ItemDrop.ItemData.ItemType.Chest,
-            ItemDrop.ItemData.ItemType.Legs,
-            ItemDrop.ItemData.ItemType.Shoulder,
-            ItemDrop.ItemData.ItemType.Utility,
-            ItemDrop.ItemData.ItemType.Bow,
-            ItemDrop.ItemData.ItemType.OneHandedWeapon,
-            ItemDrop.ItemData.ItemType.TwoHandedWeapon,
-            ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft,
-            ItemDrop.ItemData.ItemType.Shield,
-            ItemDrop.ItemData.ItemType.Tool,
-            ItemDrop.ItemData.ItemType.Torch,
-            ItemDrop.ItemData.ItemType.Trinket
-        };
 
         public static readonly Dictionary<string, string> MagicItemColors = new Dictionary<string, string>()
         {
@@ -170,8 +132,6 @@ namespace EpicLoot
             _instance = this;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            
-            EIDFLegacy.CheckForExtendedItemFrameworkLoaded(_instance);
 
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
             cfg = new ELConfig(Config);
@@ -698,10 +658,37 @@ namespace EpicLoot
             return resourcenames;
         }
 
+        public static bool IsAllowedMagicItemType(ItemDrop.ItemData.ItemType itemType)
+        {
+            switch (itemType)
+            {
+                case ItemDrop.ItemData.ItemType.Helmet:
+                case ItemDrop.ItemData.ItemType.Chest:
+                case ItemDrop.ItemData.ItemType.Legs:
+                case ItemDrop.ItemData.ItemType.Shoulder:
+                case ItemDrop.ItemData.ItemType.Utility:
+                case ItemDrop.ItemData.ItemType.Bow:
+                case ItemDrop.ItemData.ItemType.OneHandedWeapon:
+                case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
+                case ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft:
+                case ItemDrop.ItemData.ItemType.Shield:
+                case ItemDrop.ItemData.ItemType.Tool:
+                case ItemDrop.ItemData.ItemType.Torch:
+                case ItemDrop.ItemData.ItemType.Trinket:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public static bool CanBeMagicItem(ItemDrop.ItemData item)
         {
-            return item != null && IsPlayerItem(item) && Nonstackable(item) && 
-                IsNotRestrictedItem(item) && AllowedMagicItemTypes.Contains(item.m_shared.m_itemType);
+            return item != null
+                && IsPlayerItem(item)
+                && Nonstackable(item)
+                && IsNotRestrictedItem(item)
+                && IsAllowedMagicItemType(item.m_shared.m_itemType);
         }
 
         public static Sprite GetMagicItemBgSprite()

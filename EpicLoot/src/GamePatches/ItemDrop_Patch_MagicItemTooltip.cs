@@ -89,7 +89,7 @@ namespace EpicLoot
             ItemDrop.ItemData.AddHandedTip(item, text);
             if (item.m_crafterID != 0L)
             {
-                text.AppendFormat("\n$item_crafter: <color=orange>{0}</color>", item.GetCrafterName());
+                text.AppendFormat("\n$item_crafter: <color=orange>{0}</color>", item.m_crafterName);
             }
 
             if (!item.m_shared.m_teleportable)
@@ -390,6 +390,12 @@ namespace EpicLoot
                 text.Append(item.GetSetTooltip());
             }
 
+            // adrenaline stuff
+            if (item.m_shared.m_fullAdrenalineSE != null)
+            {
+                text.Append($"\n$item_fulladrenaline: <color=orange>{item.m_shared.m_fullAdrenalineSE.GetTooltipString()}</color>");
+            }
+
             __result = text.ToString();
 
             return false;
@@ -401,8 +407,6 @@ namespace EpicLoot
         {
             if (item == null)
                 return;
-
-            __result = EIDFLegacy.FormatCrafterName(__result);
 
             if (item.IsMagicCraftingMaterial() || item.IsRunestone())
             {
@@ -699,10 +703,6 @@ namespace EpicLoot
                             value = $"<color={magicColor}>{value}</color>";
                         }
                         break;
-
-                    case "$item_crafter":
-                        value = EIDFLegacy.GetCrafterName(value);
-                        break;
                 }
 
                 if (label.StartsWith("$item_movement_modifier") &&
@@ -741,13 +741,6 @@ namespace EpicLoot
                     itemEitrRegenModDisplay = $"<color={magicItem.GetColorString()}>{itemEitrRegenModDisplay}</color>";
                 label = $"$item_eitrregen_modifier: {itemEitrRegenModDisplay} " +
                     $"($item_total: <color={magicItem.GetColorString()}>{totalEitrRegenModifier:+0;-0}%</color>)";
-            }
-
-            switch (label)
-            {
-                case "$item_crafter":
-                    value = EIDFLegacy.GetCrafterName(value);
-                    break;
             }
 
             return new Tuple<string, string>(label, value);

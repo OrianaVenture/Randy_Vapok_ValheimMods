@@ -100,10 +100,6 @@ namespace EpicLoot
 
                 MagicItem = magicItem;
             }
-            else
-            {
-                CheckForExtendedItemDataAndConvert();
-            }
             
             FixupValuelessEffects();
             SetMagicItem(MagicItem);
@@ -112,32 +108,16 @@ namespace EpicLoot
         public override void Load()
         {
             if (!string.IsNullOrEmpty(Value))
+            {
                 Deserialize();
+            }
 
-            CheckForExtendedItemDataAndConvert();
             FixupValuelessEffects();
 
             //Check Indestructible on Item
             Indestructible.MakeItemIndestructible(Item);
 
             SetMagicItem(MagicItem);
-        }
-
-        private void CheckForExtendedItemDataAndConvert()
-        {
-            if (!Item.IsLegacyEIDFItem() || !Item.IsLegacyMagicItem() || MagicItem != null)
-            {
-                return;
-            }
-
-            Value = EIDFLegacy.GetMagicItemFromCrafterName(Item);
-
-            if (string.IsNullOrEmpty(Value))
-            {
-                return;
-            }
-
-            Deserialize();
         }
 
         private void FixupValuelessEffects()
@@ -422,7 +402,7 @@ namespace EpicLoot
             if (prefab != null)
             {
                 var itemDropPrefab = prefab.GetComponent<ItemDrop>();
-                if ((itemData.IsLegacyMagicItem() || EpicLoot.CanBeMagicItem(itemDropPrefab.m_itemData)) && !itemData.IsExtended())
+                if (EpicLoot.CanBeMagicItem(itemDropPrefab.m_itemData) && !itemData.IsExtended())
                 {
                     var instanceData = itemData.Data().Add<MagicItemComponent>();
 
