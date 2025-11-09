@@ -22,7 +22,7 @@ namespace EpicLoot.CraftingV2
         Enchant = 1 << 2,
         Augment = 1 << 3,
         Disenchant = 1 << 4,
-        Helheim = 1 << 5,
+        //Helheim = 1 << 5,
         Upgrade = 1 << 6
     }
 
