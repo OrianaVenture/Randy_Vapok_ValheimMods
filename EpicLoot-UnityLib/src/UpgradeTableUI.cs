@@ -84,6 +84,7 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
+            Debug.LogError("EpicLoot Rusty Branch, UpgradeTable UI Refresh");
             if (EnchantingTableUI.instance.SourceTable == null)
             {
                 return;

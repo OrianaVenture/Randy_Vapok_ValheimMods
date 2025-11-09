@@ -167,6 +167,7 @@ namespace EpicLoot
         [UsedImplicitly]
         void Awake()
         {
+            Debug.LogError("EPICLOOT: RUSTY BETA BRANCH");
             _instance = this;
 
             Assembly assembly = Assembly.GetExecutingAssembly();

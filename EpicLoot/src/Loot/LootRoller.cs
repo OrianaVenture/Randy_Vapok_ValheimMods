@@ -979,7 +979,7 @@ namespace EpicLoot
             lootDrop = ResolveLootDrop(lootDrop);
             if (lootDrop.Rarity == null)
             {
-                lootDrop.Rarity = [100, 0, 0, 0, 0];
+                lootDrop.Rarity = new float[] { 100, 0, 0, 0, 0 };
                 EpicLoot.LogWarning($"No rarity table was found for {loot_info.Value[0]} using default: [100, 0, 0, 0, 0]");
             }
             var rarityBase = GetRarityWeights(lootDrop.Rarity, 0);
