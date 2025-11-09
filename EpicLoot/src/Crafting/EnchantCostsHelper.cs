@@ -1,4 +1,5 @@
-﻿using EpicLoot_UnityLib;
+﻿using System;
+using EpicLoot_UnityLib;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,10 +20,12 @@ namespace EpicLoot.Crafting
             MagicEffectType.AddLightningResistance,
             MagicEffectType.AddChoppingResistancePercentage
         };
+        public static event Action? OnSetupEnchantingCosts;
 
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;
+            OnSetupEnchantingCosts?.Invoke();
         }
 
         public static List<ItemAmountConfig> GetSacrificeProducts(ItemDrop.ItemData item)
