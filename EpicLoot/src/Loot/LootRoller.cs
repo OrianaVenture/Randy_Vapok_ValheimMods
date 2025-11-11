@@ -231,11 +231,11 @@ namespace EpicLoot
             List<LootTable> LootTables,
             int numResults = 1,
             ItemRarity rarity = ItemRarity.Magic,
-            bool luck_upgrade_rarity =true,
+            bool luck_upgrade_rarity = true,
             int luck_upgrade_rarity_factor = 2,
             float power_level_mod = 1.0f
             ) {
-            var luckFactor = GetLuckFactor(location);
+            float luckFactor = GetLuckFactor(location);
 
             List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
             HashSet<string> rolledItems = new HashSet<string>();
@@ -249,21 +249,21 @@ namespace EpicLoot
                     ItemRarity itemRollRarity = rarity;
                     if (luck_upgrade_rarity == true)
                     {
-                        var lootdrop = new LootDrop() { Rarity = [] };
+                        LootDrop lootdrop = new() { Rarity = [] };
                         // TODO: Expose this as a config?
                         switch (rarity)
                         {
                             case ItemRarity.Magic:
-                                lootdrop.Rarity = [99, luck_upgrade_rarity_factor, 0, 0, 0];
+                                lootdrop.Rarity = [100 - luck_upgrade_rarity_factor, luck_upgrade_rarity_factor, 0, 0, 0];
                                 break;
                             case ItemRarity.Rare:
-                                lootdrop.Rarity = [0, 98, luck_upgrade_rarity_factor, 0, 0];
+                                lootdrop.Rarity = [0, 100 - luck_upgrade_rarity_factor, luck_upgrade_rarity_factor, 0, 0];
                                 break;
                             case ItemRarity.Epic:
-                                lootdrop.Rarity = [0, 0, 97, luck_upgrade_rarity_factor, 0];
+                                lootdrop.Rarity = [0, 0, 100 - luck_upgrade_rarity_factor, luck_upgrade_rarity_factor, 0];
                                 break;
                             case ItemRarity.Legendary:
-                                lootdrop.Rarity = [0, 0, 0, 97, luck_upgrade_rarity_factor];
+                                lootdrop.Rarity = [0, 0, 0, 100 - luck_upgrade_rarity_factor, luck_upgrade_rarity_factor];
                                 break;
                             case ItemRarity.Mythic:
                                 lootdrop.Rarity = [0, 0, 0, 0, 100];
@@ -281,16 +281,16 @@ namespace EpicLoot
                     List<LootDrop> selectedDrops = _weightedLootTable.Roll(loot_per_category);
 
                     EpicLoot.Log($"Available Loot ({lt.Loot.Length}) for table: {lt.Object}");
-                    foreach (var lootDrop in lt.Loot) {
-                        var itemName = lootDrop?.Item ?? "Invalid/Null";
-                        var weight = lootDrop?.Weight ?? -1;
+                    foreach (LootDrop lootDrop in lt.Loot) {
+                        string itemName = lootDrop?.Item ?? "Invalid/Null";
+                        float weight = lootDrop?.Weight ?? -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarity} - Weight: {weight}");
                     }
 
                     EpicLoot.Log($"Selected Drops from: {lt.Object} - {selectedDrops.Count}");
-                    foreach (var lootDrop in selectedDrops) {
-                        var itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
-                        var rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
+                    foreach (LootDrop lootDrop in selectedDrops) {
+                        string itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
+                        int rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
 
                         if (itemName == "Invalid Item Name") {
@@ -298,7 +298,7 @@ namespace EpicLoot
                             continue;
                         }
 
-                        var gatedItemName = (CheatDisableGating) ?
+                        string gatedItemName = (CheatDisableGating) ?
                             GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, GatedItemTypeMode.Unlimited) :
                             GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, EpicLoot.GetGatedItemTypeMode());
 
@@ -437,7 +437,7 @@ namespace EpicLoot
                 // Check if lootDrop.Item is not an equipment piece- which means its a material or other, so we let it drop instead of replacing it with an unidentified item
 
                 // Set the drop as an unidentified item of the selected rarity
-                if (ELConfig.ItemsUnidentifiedDropRatio.Value > 0) {
+                if (!cheatsActive && ELConfig.ItemsUnidentifiedDropRatio.Value > 0) {
                     var clampedUnidentifiedRate = Mathf.Clamp(ELConfig.ItemsUnidentifiedDropRatio.Value, 0.0f, 1.0f);
                     var setUnidentified = Random.Range(0.0f, 1.0f) < clampedUnidentifiedRate;
                     EpicLoot.Log($"Checking if item should be unidentified for {lootDrop.Item} ({clampedUnidentifiedRate} {setUnidentified})");

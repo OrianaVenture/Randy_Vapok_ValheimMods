@@ -623,6 +623,12 @@ namespace EpicLoot.CraftingV2
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             var results = new List<InventoryItemListElement>() { };
+            int total_stack_size = 0;
+            foreach(Tuple<ItemDrop.ItemData, int> it in items)
+            {
+                total_stack_size += it.Item2;
+            }
+
             foreach (var entry in category.Costs) {
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
                 if (costGo == null) { 
@@ -632,15 +638,15 @@ namespace EpicLoot.CraftingV2
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
                 ItemDrop.ItemData itemData = id.m_itemData;
                 itemData.m_dropPrefab = costGo.gameObject;
-                var cost = entry.Amount;
+                int cost = entry.Amount;
+                cost *= total_stack_size;
                 if (cost_modifier != float.NaN) {
-                    cost = Mathf.RoundToInt(entry.Amount * cost_modifier);
+                    cost = Mathf.RoundToInt(cost * cost_modifier);
                 }
-                EpicLoot.Log($"Cost settings: E:{entry.Amount} modifier:{cost_modifier} result:{cost}");
-                itemData.m_stack = cost;
-                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
+                EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{total_stack_size} x modifier:{cost_modifier} = result:{cost}");
+                itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
+                if (itemData.m_stack <= 0) { continue; } // skip costs that are zero
                 results.Add(new InventoryItemListElement() { Item = itemData });
-                // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
             }
             return results;
         }
