@@ -255,8 +255,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.69854075, g: 0.4666667, b: 1, a: 0.5019608}
-      maxColor: {r: 0.7305952, g: 0.4666667, b: 1, a: 1}
+      minColor: {r: 1, g: 0.4666667, b: 0.852211, a: 0.5019608}
+      maxColor: {r: 1, g: 0.4666667, b: 0.995237, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5107,7 +5107,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.4669024, g: 0.24870951, b: 0.764151, a: 0.7176471}
+      maxColor: {r: 0.7647059, g: 0.24705881, b: 0.75066924, a: 0.7176471}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -9737,7 +9737,7 @@ PrefabInstance:
     - target: {fileID: 6585589531590257382, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_Name
-      value: MushroomJam
+      value: AshlandsJam
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257383, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
@@ -9797,17 +9797,17 @@ PrefabInstance:
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_itemData.m_shared.m_food
-      value: 40
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_itemData.m_shared.m_name
-      value: $rkjam_mushroom_jam_name
+      value: $rkjam_ashlands_jam_name
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_itemData.m_shared.m_foodEitr
-      value: 30
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
@@ -9817,7 +9817,7 @@ PrefabInstance:
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_itemData.m_shared.m_description
-      value: $rkjam_mushroom_jam_description
+      value: $rkjam_ashlands_jam_description
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
@@ -9837,7 +9837,7 @@ PrefabInstance:
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_itemData.m_shared.m_foodStamina
-      value: 50
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 6585589531590257385, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
@@ -9848,23 +9848,23 @@ PrefabInstance:
         type: 3}
       propertyPath: m_itemData.m_shared.m_icons.Array.data[0]
       value: 
-      objectReference: {fileID: 21300000, guid: 173ff8b4b85198d47b897d6cb2129e9b,
+      objectReference: {fileID: 21300000, guid: eed737bcf63c77d438122b3035464272,
         type: 3}
     - target: {fileID: 7799080847930345290, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_icon
       value: 
-      objectReference: {fileID: 21300000, guid: 173ff8b4b85198d47b897d6cb2129e9b,
+      objectReference: {fileID: 21300000, guid: eed737bcf63c77d438122b3035464272,
         type: 3}
     - target: {fileID: 7799080847930345290, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_name
-      value: $rkjam_mushroom_jam_name
+      value: $rkjam_ashlands_jam_name
       objectReference: {fileID: 0}
     - target: {fileID: 7799080847930345290, guid: 5aaf2636940aee346b4f966b92c03038,
         type: 3}
       propertyPath: m_description
-      value: $rkjam_mushroom_jam_description
+      value: $rkjam_ashlands_jam_description
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
