@@ -1843,37 +1843,14 @@
     "Utility": {
       "localization": "$mod_epicloot_identify_accessory",
       "BiomeLootLists": {
-        "none": [
-          "ModUtility"
-        ],
-        "Meadows": [
-          "Tier1Tools",
-          "ModUtility"
-        ],
-        "BlackForest": [
-          "Tier2Tools",
-          "ModUtility"
-        ],
-        "Swamp": [
-          "Tier3Tools",
-          "ModUtility"
-        ],
-        "Mountain": [
-          "Tier3Tools",
-          "ModUtility"
-        ],
-        "Plains": [
-          "Tier3Tools",
-          "ModUtility"
-        ],
-        "Mistlands": [
-          "Tier6Tools",
-          "ModUtility"
-        ],
-        "AshLands": [
-          "Tier6Tools",
-          "ModUtility"
-        ]
+        "None": [ "ModUtility" ],
+        "Meadows": [ "Tier1Tools", "ModUtility" ],
+        "BlackForest": [ "Tier2Tools", "ModUtility", "Tier2Trinkets" ],
+        "Swamp": [ "Tier3Tools", "ModUtility", "Tier3Trinkets" ],
+        "Mountain": [ "Tier3Tools", "ModUtility", "Tier4Trinkets" ],
+        "Plains": [ "Tier3Tools", "ModUtility", "Tier5Trinkets" ],
+        "Mistlands": [ "Tier6Tools", "ModUtility", "Tier6Trinkets" ],
+        "AshLands": [ "Tier6Tools", "ModUtility", "Tier7Trinkets" ]
       },
       "Costs": [
         {
