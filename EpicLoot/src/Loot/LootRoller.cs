@@ -243,8 +243,7 @@ namespace EpicLoot
             ItemRarity rarity = ItemRarity.Magic,
             bool luckUpgradesRarity = true,
             int luckUpgradesRarityFactor = 2,
-            float powerLevelMod = 1.0f
-            )
+            float powerLevelMod = 1.0f)
         {
             var luckFactor = GetLuckFactor(location);
 
@@ -290,7 +289,8 @@ namespace EpicLoot
                     }
 
                     List<LootDrop> looteqrare = new List<LootDrop>();
-                    foreach(LootDrop ld in lt.Loot) {
+                    foreach(LootDrop ld in lt.Loot)
+                    {
                         looteqrare.Add(new LootDrop() { Item = ld.Item, Weight = ld.Weight, Rarity = [1] });
                     }
 
@@ -298,14 +298,16 @@ namespace EpicLoot
                     List<LootDrop> selectedDrops = _weightedLootTable.Roll(lootPerCategory);
 
                     EpicLoot.Log($"Available Loot ({lt.Loot.Length}) for table: {lt.Object}");
-                    foreach (LootDrop lootDrop in lt.Loot) {
+                    foreach (LootDrop lootDrop in lt.Loot)
+                    {
                         string itemName = lootDrop?.Item ?? "Invalid/Null";
                         float weight = lootDrop?.Weight ?? -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarity} - Weight: {weight}");
                     }
 
                     EpicLoot.Log($"Selected Drops from: {lt.Object} - {selectedDrops.Count}");
-                    foreach (LootDrop lootDrop in selectedDrops) {
+                    foreach (LootDrop lootDrop in selectedDrops)
+                    {
                         string itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
                         int rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
@@ -319,8 +321,9 @@ namespace EpicLoot
                             GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, GatedItemTypeMode.Unlimited) :
                             GatedItemTypeHelper.GetGatedItemNameFromItemOrType(lootDrop.Item, EpicLoot.GetGatedItemTypeMode());
 
-                        GameObject prefab = PrefabManager.Instance.GetPrefab(gatedItemName); // Ensure the prefab is loaded
-                        if (prefab == null) {
+                        GameObject prefab = PrefabManager.Instance.GetPrefab(gatedItemName);
+                        if (prefab == null)
+                        {
                             failures += 1;
                             continue;
                         }
@@ -329,21 +332,26 @@ namespace EpicLoot
                         ZNetView.m_forceDisableInit = true;
                         GameObject droppedItem = Object.Instantiate(selectedPrefab, location, new Quaternion(0, 0, 0, 0));
                         ZNetView.m_forceDisableInit = false;
-                        if (droppedItem == null) {
+                        if (droppedItem == null)
+                        {
                             failures += 1;
                             continue;
                         }
+
                         droppedItem.SetActive(false); // Don't make the object a real thing in the world yet
                         ItemDrop itemDrop = droppedItem.GetComponent<ItemDrop>();
-                        if (itemDrop == null) {
+                        if (itemDrop == null)
+                        {
                             failures += 1;
                             ZNetScene.instance.Destroy(droppedItem);
                             continue;
                         }
-                        var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                        var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor, power_level_mod);
 
-                        if (CheatForceMagicEffect) {
+                        var magicItemComponent = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                        var magicItem = RollMagicItem(itemRollRarity, itemDrop.m_itemData, luckFactor, powerLevelMod);
+
+                        if (CheatForceMagicEffect)
+                        {
                             AddDebugMagicEffects(magicItem);
                         }
 
