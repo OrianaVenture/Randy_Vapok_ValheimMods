@@ -22,9 +22,11 @@ namespace EpicLoot.Magic
         private static readonly List<string> MistlandsResources = new List<string> { "YggdrasilWood", "BlackMarble", "Eitr", "BlackCore", "Mandible", "Carapace", "ScaleHide", "YagluthDrop" };
         private static readonly List<string> PlainsResources = new List<string> { "Needle", "BlackMetal", "LinenThread", "UndeadBjornRibcage", "TrophyBjornUndead" };
         private static readonly List<string> MountainResources = new List<string> { "Silver", "Obsidian", "WolfHairBundle", "WolfClaw", "WolfFang" };
-        private static readonly List<string> SwampResources = new List<string> { "Iron", "Chain", "ElderBark", "Guck" };
+        private static readonly List<string> SwampResources = new List<string> { "Iron", "Chain", "ElderBark", "Guck", "Chitin", "SerpentScale" };
         private static readonly List<string> BlackForestResources = new List<string> { "Copper", "Tin", "Bronze", "RoundLog", "FineWood", "TrollHide", "BjornHide", "BjornPaw" };
         private static readonly List<string> MeadowsResources = new List<string> { "Wood", "Stone", "Flint", "LeatherScraps", "DeerHide" };
+
+        private static readonly List<string> UncraftableItemsAllowed = new List<string> { "THSwordWood", "SpearWood", "BattleaxeWood", "KnifeWood", "MaceWood", "AtgeirWood", "AxeWood", "SledgeWood" };
 
         private static readonly Dictionary<string, string> tierToBossKey = new Dictionary<string, string>() {
             { "Tier0", "none" },
@@ -101,19 +103,27 @@ namespace EpicLoot.Magic
                         }
                     }
                 }
-                if (itemfound) { continue; }
+                if (itemfound) {
+                    //EpicLoot.Log("Item found.");
+                    continue;
+                }
+
+                string key = DetermineBossLevelForItem(item.m_itemData);
+
+                if (UncraftableItemsAllowed.Contains(itemName))
+                {
+                    foundbyCategory[itemType].ItemsByBoss[key].Add(itemName);
+                    continue;
+                }
 
                 // Item already exists in the config | Or we are not auto-adding items
                 //if (itemfound || ELConfig.AutoAddEquipment.Value == false) { continue; }
-
-                string key = DetermineBossLevelForItem(item.m_itemData);
                 if ((ELConfig.OnlyAddEquipmentWithRecipes.Value == true && key == "none") || (key == "none" && itemType == "none") || itemType == "Unkown" || IgnoredItems.Contains(itemName)) {
                     EpicLoot.Log($"skipping name:{itemName} type:{itemType} techlevel:{key}");
                     continue;
                 }
 
                 EpicLoot.Log($"{itemType} {key} add {itemName}");
-
                 foundbyCategory[itemType].ItemsByBoss[key].Add(itemName);
             }
 
@@ -245,11 +255,11 @@ namespace EpicLoot.Magic
                         validItems.AddRange(iteme.Value);
                     }
                 }
-
-                List<string> allItemNames = allItems.Where(i => i.m_itemData != null &&
-                i.m_itemData.m_dropPrefab != null).Select(x => x.m_itemData.m_dropPrefab.name).ToList();
-
-                EpicLoot.Log($"Starting loottable Validation. Valid items to use {allItemNames.Count}");
+                List<string> magicMats = allItems.Where(i => i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()).Select(x => x.m_itemData.m_dropPrefab.name).ToList();
+                //EpicLoot.Log($"Starting loottable Validation. Valid items to use {validItems.Count} from {allItems.Count}");
+                //EpicLoot.Log($"Found Item Names: {string.Join(",", validItems)}");
+                //EpicLoot.Log($"Found Item sets: {string.Join(",", metaItemSetNames)}");
+                //EpicLoot.Log($"Found Magic mats: {string.Join(",", magicMats)}");
 
                 foreach (LootItemSet lis in LootRoller.Config.ItemSets) {
                     List<LootDrop> entries = new List<LootDrop>();
@@ -257,14 +267,15 @@ namespace EpicLoot.Magic
                     // Validate existing entries in the lootset
                     EpicLoot.Log($"Checking LootSet entry: {lis.Name}");
                     foreach (var loot in lis.Loot) {
-                        //EpicLoot.Log($"Validating: {loot.Item}");
-                        if (allItemNames.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item)) {
+                        if (validItems.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item) || magicMats.Contains(loot.Item)) {
                             entries.Add(loot);
                             addedItems.Add(loot.Item);
+                            continue;
                         }
+                        EpicLoot.Log($"{loot.Item} is not a found item and will be removed from the loot tables.");
                     }
 
-                    EpicLoot.Log($"Checking Item Tier and Loottype.");
+                    //EpicLoot.Log($"Checking Item Tier and Loottype.");
                     if (DetermineTierAndType(lis.Name, out string tier, out string loottype)) {
                         if (!tierToBossKey.ContainsKey(tier)) {
                             EpicLoot.Log($"tierToBoss does not contain {tier}");
@@ -273,7 +284,7 @@ namespace EpicLoot.Magic
                         string bosskey = tierToBossKey[tier];
                         foreach (ItemTypeInfo itemType in newConfig) {
                             if (!setsToCategories.ContainsKey(loottype) || !setsToCategories[loottype].Contains(itemType.Type)) { continue; }
-                            EpicLoot.Log($"Checking for ItemType entry: {itemType.Type}");
+                            //EpicLoot.Log($"Checking for ItemType entry: {itemType.Type}");
                             foreach (var gateditem in itemType.ItemsByBoss[bosskey]) {
                                 // EpicLoot.Log($"Checking if the item was already added: {gateditem}");
                                 if (addedItems.Contains(gateditem)) { continue; }
@@ -305,7 +316,7 @@ namespace EpicLoot.Magic
                         foreach (var lloot in lt.LeveledLoot) {
                             List<LootDrop> updatedLootTableLL = new List<LootDrop>();
                             foreach(var ld in lloot.Loot) {
-                                if (allItemNames.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item)) {
+                                if (validItems.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item)) {
                                     updatedLootTableLL.Add(ld);
                                 }
                             }
@@ -395,7 +406,7 @@ namespace EpicLoot.Magic
 
             tier = name.Substring(0, 5);
             type = name.Substring(5);
-            EpicLoot.Log($"{name} = Tier={tier} Type={type}");
+            //EpicLoot.Log($"{name} = Tier={tier} Type={type}");
             // Maybe we want to ensure the everything groups are properly setup? How much loot table validation should we do?
             if (type == "Tier" || type == "Everything") { return false; }
             return true;

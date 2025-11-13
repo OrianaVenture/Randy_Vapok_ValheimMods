@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
@@ -38,9 +39,14 @@ namespace EpicLoot.MagicItemEffects
                 return lowHealthThreshold; 
             }
             
-            if (player.HasActiveMagicEffect(MagicEffectType.ModifyLowHealth, out float effectValue, 0.01f))
+            if (player.HasActiveMagicEffect(MagicEffectType.ModifyLowHealth, out float effectValue))
             {
                 lowHealthThreshold += effectValue;
+                Dictionary<string, float> lowhealthcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
+                if (lowhealthcfg != null && lowhealthcfg.ContainsKey("Max") && lowhealthcfg["Max"] < lowHealthThreshold)
+                {
+                    lowHealthThreshold = lowhealthcfg["Max"];
+                }
             }
             
             return lowHealthThreshold;

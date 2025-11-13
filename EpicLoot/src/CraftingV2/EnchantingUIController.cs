@@ -627,11 +627,18 @@ namespace EpicLoot.CraftingV2
         }
 
         private static List<InventoryItemListElement> GetIdentifyCostForCategory(
-            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float cost_modifier = 1.0f)
+            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float costModifier = 1.0f)
         {
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             var results = new List<InventoryItemListElement>() { };
+            int totalStackSize = 0;
+
+            foreach(Tuple<ItemDrop.ItemData, int> it in items)
+            {
+                totalStackSize += it.Item2;
+            }
+
             foreach (var entry in category.Costs)
             {
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
@@ -644,15 +651,17 @@ namespace EpicLoot.CraftingV2
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
                 ItemDrop.ItemData itemData = id.m_itemData;
                 itemData.m_dropPrefab = costGo.gameObject;
-                var cost = entry.Amount;
-                if (cost_modifier != float.NaN) {
-                    cost = Mathf.RoundToInt(entry.Amount * cost_modifier);
+                int cost = entry.Amount;
+                cost *= totalStackSize;
+                if (costModifier != float.NaN)
+                {
+                    cost = Mathf.RoundToInt(cost * costModifier);
                 }
-                EpicLoot.Log($"Cost settings: E:{entry.Amount} modifier:{cost_modifier} result:{cost}");
-                itemData.m_stack = cost;
-                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
+                
+                EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{totalStackSize} x modifier:{costModifier} = result:{cost}");
+                itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
+                if (itemData.m_stack <= 0) { continue; } // skip costs that are zero
                 results.Add(new InventoryItemListElement() { Item = itemData });
-                // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
             }
             return results;
         }

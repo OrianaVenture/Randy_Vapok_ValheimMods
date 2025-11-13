@@ -1154,6 +1154,9 @@
           "Trinket"
         ]
       },
+      "Config": {
+        "Max": 1
+      },
       "ValuesPerRarity": {
         "Magic": {
           "MinValue": 5,

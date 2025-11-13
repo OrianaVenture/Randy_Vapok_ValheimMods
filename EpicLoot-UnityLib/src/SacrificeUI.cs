@@ -62,10 +62,11 @@ namespace EpicLoot_UnityLib
                 IdentifyStyle.options.Add(new Dropdown.OptionData(Localization.instance.Localize(entry.Value)));
             }
 
-            // Trigger cost update when the identify style changes
-            //IdentifyStyle.onValueChanged.AddListener((value) => {
-            //    OnSelectedItemsChanged();
-            //});
+            //Trigger cost update when the identify style changes
+            IdentifyStyle.onValueChanged.AddListener((value) =>
+            {
+                OnSelectedItemsChanged();
+            });
         }
 
         [UsedImplicitly]
