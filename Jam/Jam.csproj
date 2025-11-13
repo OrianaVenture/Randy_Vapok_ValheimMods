@@ -14,7 +14,7 @@
     <LangVersion>10.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,13 +43,14 @@
     <EmbeddedResource Include="..\ValheimUnity\AssetBundles\jamassets">
       <Link>jamassets</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="Localization\English.json" />
     <None Include="thunderstore\manifest.json" />
     <None Include="packages.config" />
     <None Include="README.md" />
-    <None Include="config\recipes.json" />
   </ItemGroup>
   <Import Project="..\Common\Common.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /><Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
     </PropertyGroup>
