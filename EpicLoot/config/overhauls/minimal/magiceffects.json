@@ -5,6 +5,7 @@
       "DisplayText": "$mod_epicloot_me_dvergercirclet_display",
       "CanBeAugmented": false,
       "CanBeDisenchanted": false,
+      "CanBeRunified": false,
       "Requirements": {
         "NoRoll": true
       },
@@ -15,6 +16,7 @@
       "DisplayText": "$mod_epicloot_me_megingjord_display",
       "CanBeAugmented": false,
       "CanBeDisenchanted": false,
+      "CanBeRunified": false,
       "Requirements": {
         "NoRoll": true
       },
@@ -25,6 +27,7 @@
       "DisplayText": "$mod_epicloot_me_wishbone_display",
       "CanBeAugmented": false,
       "CanBeDisenchanted": false,
+      "CanBeRunified": false,
       "Requirements": {
         "NoRoll": true
       },
@@ -35,6 +38,7 @@
       "DisplayText": "$mod_epicloot_me_andvaranaut_display",
       "CanBeAugmented": false,
       "CanBeDisenchanted": false,
+      "CanBeRunified": false,
       "Requirements": {
         "NoRoll": true
       },

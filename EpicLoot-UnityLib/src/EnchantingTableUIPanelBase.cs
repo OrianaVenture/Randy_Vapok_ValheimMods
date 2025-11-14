@@ -53,22 +53,34 @@ namespace EpicLoot_UnityLib
                 _defaultButtonLabelText = _useTMP ? _tmpButtonLabel.text : _buttonLabel.text;
             }
 
-            var uiSFX = GameObject.Find("sfx_gui_button");
+            GameObject uiSFX = GameObject.Find("sfx_gui_button");
             if (uiSFX && Audio != null)
+            {
                 Audio.outputAudioMixerGroup = uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
                 Audio.volume = AudioVolumeLevel();
-                foreach (var audio_source in this.GetComponentsInChildren<AudioSource>()) {
-                    audio_source.volume = AudioVolumeLevel();
-                }
+            }
+
+            foreach (AudioSource audioSource in this.GetComponentsInChildren<AudioSource>())
+            {
+                audioSource.volume = AudioVolumeLevel();
+            }
         }
 
         protected virtual void OnMainButtonClicked()
         {
-            if (MainActionSFX != null) { Audio.PlayOneShot(MainActionSFX, Audio.volume); }
+            if (MainActionSFX != null)
+            {
+                Audio.PlayOneShot(MainActionSFX, Audio.volume);
+            }
+
             if (_inProgress)
+            {
                 Cancel();
+            }
             else
+            {
                 StartProgress();
+            }
         }
 
         public virtual void DeselectAll()
@@ -78,14 +90,20 @@ namespace EpicLoot_UnityLib
         public virtual void Update()
         {
             if (ProgressBar != null)
+            {
                 ProgressBar.gameObject.SetActive(_inProgress);
+            }
             if (LevelDisplay != null)
+            {
                 LevelDisplay.gameObject.SetActive(!_inProgress);
+            }
 
             if (_inProgress)
             {
                 if (ProgressBar != null)
+                {
                     ProgressBar.SetValue(CountdownTime - _countdown);
+                }
 
                 _countdown -= Time.deltaTime;
                 if (_countdown < 0)
@@ -107,9 +125,11 @@ namespace EpicLoot_UnityLib
 
         private void PlayCompleteSFX()
         {
-            var clip = GetCompleteAudioClip();
+            AudioClip clip = GetCompleteAudioClip();
             if (Audio != null && clip != null)
+            {
                 Audio.PlayOneShot(clip, Audio.volume);
+            }
         }
 
         protected virtual AudioClip GetCompleteAudioClip()
@@ -120,14 +140,21 @@ namespace EpicLoot_UnityLib
         public virtual void StartProgress()
         {
             if (_useTMP)
+            {
                 _tmpButtonLabel.text = Localization.instance.Localize("$menu_cancel");
+            }
             else
+            {
                 _buttonLabel.text = Localization.instance.Localize("$menu_cancel");
+            }
+
             _inProgress = true;
             _countdown = CountdownTime;
 
             if (ProgressBar != null)
+            {
                 ProgressBar.SetMaxValue(CountdownTime);
+            }
 
             if (Audio != null)
             {
@@ -147,9 +174,13 @@ namespace EpicLoot_UnityLib
         public virtual void Cancel()
         {
             if (_useTMP)
+            {
                 _tmpButtonLabel.text = Localization.instance.Localize(_defaultButtonLabelText);
+            }
             else
+            {
                 _buttonLabel.text = Localization.instance.Localize(_defaultButtonLabelText);
+            }
 
             _inProgress = false;
             _countdown = 0;
@@ -166,8 +197,8 @@ namespace EpicLoot_UnityLib
         public virtual void Lock()
         {
             _locked = true;
-            var lists = GetComponentsInChildren<MultiSelectItemList>();
-            foreach (var list in lists)
+            MultiSelectItemList[] lists = GetComponentsInChildren<MultiSelectItemList>();
+            foreach (MultiSelectItemList list in lists)
             {
                 list.Lock();
             }
@@ -178,8 +209,8 @@ namespace EpicLoot_UnityLib
         public virtual void Unlock()
         {
             _locked = false;
-            var lists = GetComponentsInChildren<MultiSelectItemList>();
-            foreach (var list in lists)
+            MultiSelectItemList[] lists = GetComponentsInChildren<MultiSelectItemList>();
+            foreach (MultiSelectItemList list in lists)
             {
                 list.Unlock();
             }
@@ -194,9 +225,9 @@ namespace EpicLoot_UnityLib
                 return true;
             }
 
-            foreach (var element in cost)
+            foreach (InventoryItemListElement element in cost)
             {
-                var item = element.GetItem();
+                ItemDrop.ItemData item = element.GetItem();
 
                 if (!InventoryManagement.Instance.HasItem(item))
                 {
@@ -209,9 +240,9 @@ namespace EpicLoot_UnityLib
 
         protected static void GiveItemsToPlayer(List<InventoryItemListElement> sacrificeProducts)
         {
-            foreach (var sacrificeProduct in sacrificeProducts)
+            foreach (InventoryItemListElement sacrificeProduct in sacrificeProducts)
             {
-                var item = sacrificeProduct.GetItem();
+                ItemDrop.ItemData item = sacrificeProduct.GetItem();
                 InventoryManagement.Instance.GiveItem(item);
             }
         }

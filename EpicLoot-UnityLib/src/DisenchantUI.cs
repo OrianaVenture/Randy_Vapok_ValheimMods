@@ -22,7 +22,7 @@ namespace EpicLoot_UnityLib
         [UsedImplicitly]
         public void OnEnable()
         {
-            var items = GetDisenchantItems();
+            List<InventoryItemListElement> items = GetDisenchantItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
         }
@@ -31,21 +31,25 @@ namespace EpicLoot_UnityLib
         {
             Cancel();
 
-            var selectedItem = AvailableItems.GetSingleSelectedItem<IListElement>();
+            System.Tuple<IListElement, int> selectedItem = AvailableItems.GetSingleSelectedItem<IListElement>();
             if (selectedItem?.Item1.GetItem() == null)
+            {
                 return;
+            }
 
-            var item = selectedItem.Item1.GetItem();
-            var cost = GetDisenchantCost(item);
+            ItemDrop.ItemData item = selectedItem.Item1.GetItem();
+            List<InventoryItemListElement> cost = GetDisenchantCost(item);
             if (!LocalPlayerCanAffordCost(cost))
+            {
                 return;
+            }
 
-            foreach (var costElement in cost)
+            foreach (InventoryItemListElement costElement in cost)
             {
                 InventoryManagement.Instance.RemoveItem(costElement.GetItem());
             }
 
-            var bonusItems = DisenchantItem(item);
+            List<InventoryItemListElement> bonusItems = DisenchantItem(item);
 
             if (bonusItems.Count > 0)
             {
@@ -60,7 +64,7 @@ namespace EpicLoot_UnityLib
 
         public void RefreshAvailableItems()
         {
-            var items = GetDisenchantItems();
+            List<InventoryItemListElement> items = GetDisenchantItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
             OnSelectedItemsChanged();
@@ -68,24 +72,24 @@ namespace EpicLoot_UnityLib
 
         protected override void OnSelectedItemsChanged()
         {
-            var selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            System.Tuple<InventoryItemListElement, int> selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
 
             if (selectedItem != null)
             {
                 CostLabel.enabled = true;
-                var cost = GetDisenchantCost(selectedItem.Item1.GetItem());
+                List<InventoryItemListElement> cost = GetDisenchantCost(selectedItem.Item1.GetItem());
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
 
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Disenchant);
-                var costReduction = float.IsNaN(featureValues.Item2) ? 0 : (int)featureValues.Item2;
+                System.Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Disenchant);
+                int costReduction = float.IsNaN(featureValues.Item2) ? 0 : (int)featureValues.Item2;
 
                 if (costReduction > 0 && cost.Count > 0)
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_disenchantcost <color=#EAA800>($mod_epicloot_disenchantcostreduction)</color>", costReduction.ToString());
                 else
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_disenchantcost");
 
-                var canAfford = LocalPlayerCanAffordCost(cost);
-                var featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Disenchant);
+                bool canAfford = LocalPlayerCanAffordCost(cost);
+                bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Disenchant);
                 MainButton.interactable = featureUnlocked && canAfford;
             }
             else

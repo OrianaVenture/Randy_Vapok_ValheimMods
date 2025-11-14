@@ -27,7 +27,7 @@ namespace EpicLoot_UnityLib
 
         public void Awake()
         {
-            foreach (var graphic in Graphics)
+            foreach (Graphic graphic in Graphics)
             {
                 _defaultColors.Add(graphic, graphic.color);
             }
@@ -45,8 +45,8 @@ namespace EpicLoot_UnityLib
         {
             if (Rarity > MagicRarityUnity.None && GetRarityColor != null)
             {
-                var color = GetRarityColor(Rarity);
-                foreach (var graphic in Graphics)
+                Color color = GetRarityColor(Rarity);
+                foreach (Graphic graphic in Graphics)
                 {
                     graphic.color = color;
                 }
@@ -55,7 +55,7 @@ namespace EpicLoot_UnityLib
             }
             else
             {
-                foreach (var graphic in Graphics)
+                foreach (Graphic graphic in Graphics)
                 {
                     graphic.color = _defaultColors[graphic];
                 }
@@ -65,20 +65,20 @@ namespace EpicLoot_UnityLib
         // Copy of BeamColorSetter in EpicLoot
         public void SetColor(Color mid)
         {
-            var allBeams = GetComponentsInChildren<LineRenderer>();
-            var allParticles = GetComponentsInChildren<ParticleSystem>();
+            LineRenderer[] allBeams = GetComponentsInChildren<LineRenderer>();
+            ParticleSystem[] allParticles = GetComponentsInChildren<ParticleSystem>();
 
-            foreach (var lineRenderer in allBeams)
+            foreach (LineRenderer lineRenderer in allBeams)
             {
-                foreach (var mat in lineRenderer.sharedMaterials)
+                foreach (Material mat in lineRenderer.sharedMaterials)
                 {
                     mat.SetColor("_TintColor", SwapColorKeepLuminosity(mid, mat.GetColor("_TintColor")));
                 }
             }
 
-            foreach (var particleSystem in allParticles)
+            foreach (ParticleSystem particleSystem in allParticles)
             {
-                var main = particleSystem.main;
+                ParticleSystem.MainModule main = particleSystem.main;
                 switch (main.startColor.mode)
                 {
                     case ParticleSystemGradientMode.Color:

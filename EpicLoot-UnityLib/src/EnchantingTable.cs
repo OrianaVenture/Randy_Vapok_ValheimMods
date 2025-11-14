@@ -28,7 +28,9 @@ namespace EpicLoot_UnityLib
         public bool Interact(Humanoid user, bool repeat, bool alt)
         {
             if (repeat || user != Player.m_localPlayer || !InUseDistance(user))
+            {
                 return false;
+            }
 
             EnchantingTableUI.Show(this);
             _interactingPlayer = Player.m_localPlayer;
@@ -58,7 +60,7 @@ namespace EpicLoot_UnityLib
 
         public void RequestTableUpgrade(EnchantingFeature feature, int toLevel, Action<bool> responseCallback)
         {
-            var tableZDO = _nview.GetZDO().m_uid;
+            ZDOID tableZDO = _nview.GetZDO().m_uid;
             _upgradeRequests.Add(new EnchantingFeatureUpgradeRequest()
             {
                 TableZDO = tableZDO,
@@ -66,23 +68,30 @@ namespace EpicLoot_UnityLib
                 ToLevel = toLevel,
                 ResponseCallback = responseCallback
             });
+
             _nview.InvokeRPC("el.TableUpgradeRequest",tableZDO, (int)feature, toLevel);
         }
 
         private void RPC_TableUpgradeRequest(long sender, ZDOID tableZDO, int featureI, int toLevel)
         {
             if (!_nview.IsOwner())
+            {
                 return;
+            }
 
-            var instance = ZNetScene.instance.FindInstance(tableZDO);
+            GameObject instance = ZNetScene.instance.FindInstance(tableZDO);
             if (instance == null)
+            {
                 return;
+            }
 
-            var table = instance.GetComponent<EnchantingTable>();
+            EnchantingTable table = instance.GetComponent<EnchantingTable>();
             if (table == null)
+            {
                 return;
+            }
 
-            var feature = (EnchantingFeature)featureI;
+            EnchantingFeature feature = (EnchantingFeature)featureI;
             if (table.IsFeatureAvailable(feature) && toLevel == table.GetFeatureLevel(feature) + 1)
             {
                 table.SetFeatureLevel(feature, toLevel);
@@ -101,9 +110,9 @@ namespace EpicLoot_UnityLib
             //Only sent to Sender of Request.
             //Performs checks,
             //Calls OnTableUpgradeResponse
-            var feature = (EnchantingFeature)featureI;
-            var listCopy = _upgradeRequests.ToList();
-            foreach (var request in listCopy)
+            EnchantingFeature feature = (EnchantingFeature)featureI;
+            List<EnchantingFeatureUpgradeRequest> listCopy = _upgradeRequests.ToList();
+            foreach (EnchantingFeatureUpgradeRequest request in listCopy)
             {
                 if (request.TableZDO == tableZDO && request.Feature == feature && request.ToLevel == toLevel)
                 {
@@ -175,17 +184,19 @@ namespace EpicLoot_UnityLib
             const int uninitializedSentinel = -888;
             foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
             {
-                var featureName = feature.ToString();
+                string featureName = feature.ToString();
                 if (_nview.GetZDO().GetInt(FormatFeatureName(featureName), uninitializedSentinel) == uninitializedSentinel)
-                    _nview.GetZDO().Set(FormatFeatureName(featureName), GetDefaultFeatureLevel(feature)+1);
-                //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
-                //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
+                {
+                    //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
+                    //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
+                    _nview.GetZDO().Set(FormatFeatureName(featureName), GetDefaultFeatureLevel(feature) + 1);
+                }
             }
         }
 
         private static int GetDefaultFeatureLevel(EnchantingFeature feature)
         {
-            if (!UpgradesActive(feature, out var featureActive))
+            if (!UpgradesActive(feature, out bool featureActive))
             {
                 return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
@@ -195,7 +206,7 @@ namespace EpicLoot_UnityLib
                 return FeatureUnavailableSentinel;
             }
 
-            return EnchantingTableUpgrades.Config.DefaultFeatureLevels.TryGetValue(feature, out var level) ?
+            return EnchantingTableUpgrades.Config.DefaultFeatureLevels.TryGetValue(feature, out int level) ?
                 level : FeatureUnavailableSentinel;
         }
 
@@ -214,7 +225,7 @@ namespace EpicLoot_UnityLib
                 return FeatureUnavailableSentinel;
             }
 
-            if (!UpgradesActive(feature, out var featureActive))
+            if (!UpgradesActive(feature, out bool featureActive))
             {
                 return featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
@@ -224,33 +235,34 @@ namespace EpicLoot_UnityLib
                 return FeatureUnavailableSentinel;
             }
 
-            var featureName = feature.ToString();
-            var level = _nview.GetZDO().GetInt(FormatFeatureName(featureName), FeatureUnavailableSentinel);
+            string featureName = feature.ToString();
+            int level = _nview.GetZDO().GetInt(FormatFeatureName(featureName), FeatureUnavailableSentinel);
             //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
             //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
-            //var returncode = level == FeatureUnavailableSentinel ? FeatureUnavailableSentinel : level - 1;
             return level == FeatureUnavailableSentinel ? FeatureUnavailableSentinel : level - 1;
         }
 
         public void SetFeatureLevel(EnchantingFeature feature, int level)
         {
             if (_nview == null)
+            {
                 return;
+            }
 
-            if (!UpgradesActive(feature, out var featureActive))
+            if (!UpgradesActive(feature, out bool featureActive))
             {
                 level = featureActive ? FeatureLevelOne : FeatureUnavailableSentinel;
             }
             else
             {
                 if (level > (EnchantingTableUpgrades.Config.MaximumFeatureLevels.TryGetValue(
-                    feature, out var maxLevel) ? maxLevel : 1))
+                    feature, out int maxLevel) ? maxLevel : 1))
                 {
                     return;
                 }
             }
 
-            var featureName = feature.ToString();
+            string featureName = feature.ToString();
             _nview.GetZDO().Set(FormatFeatureName(featureName), level+1);
             OnFeatureLevelChanged?.Invoke(feature, level);
             OnAnyFeatureLevelChanged?.Invoke();
@@ -295,7 +307,7 @@ namespace EpicLoot_UnityLib
                     $"tried to get enchanting feature unlock cost for a feature that is locked or unavailable! ({feature})");
             }
 
-            var currentLevel = GetFeatureLevel(feature);
+            int currentLevel = GetFeatureLevel(feature);
             return EnchantingTableUpgrades.GetUpgradeCost(feature, currentLevel + 1);
         }
 
@@ -311,7 +323,7 @@ namespace EpicLoot_UnityLib
                 return new Tuple<float, float>(float.NaN, float.NaN);
             }
 
-            var values = feature switch
+            List<float[]> values = feature switch
             {
                 EnchantingFeature.Sacrifice => EnchantingTableUpgrades.Config.UpgradeValues.Sacrifice,
                 EnchantingFeature.ConvertMaterials => EnchantingTableUpgrades.Config.UpgradeValues.ConvertMaterials,
@@ -327,7 +339,7 @@ namespace EpicLoot_UnityLib
                 return new Tuple<float, float>(float.NaN, float.NaN);
             }
 
-            var levelValues = values[level];
+            float[] levelValues = values[level];
             if (levelValues.Length == 1)
             {
                 return new Tuple<float, float>(levelValues[0], float.NaN);

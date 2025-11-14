@@ -40,12 +40,11 @@ namespace EpicLoot_UnityLib
         {
             Localization.instance.Localize(transform);
 
-            var uiSFX = GameObject.Find("sfx_gui_button");
+            GameObject uiSFX = GameObject.Find("sfx_gui_button");
             if (uiSFX)
             {
                 Audio.outputAudioMixerGroup =
                     uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
-                //Audio.volume = uiSFX.GetComponent<AudioSource>().volume;
                 Audio.volume = AudioVolumeLevel();
             }
 
@@ -61,33 +60,39 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            var inGameGui = StoreGui.instance.transform.parent;
-            var siblingIndex = StoreGui.instance.transform.GetSiblingIndex() + 1;
+            Transform inGameGui = StoreGui.instance.transform.parent;
+            int siblingIndex = StoreGui.instance.transform.GetSiblingIndex() + 1;
 
             // Call to arms compatibility: increase scroll sensitivity
-            foreach (var scrollRect in source.EnchantingUIPrefab.GetComponentsInChildren<ScrollRect>(true)) {
+            foreach (ScrollRect scrollRect in source.EnchantingUIPrefab.GetComponentsInChildren<ScrollRect>(true))
+            {
                 scrollRect.scrollSensitivity = 800f;
             }
 
-            var enchantingUI = Instantiate(source.EnchantingUIPrefab, inGameGui);
+            GameObject enchantingUI = Instantiate(source.EnchantingUIPrefab, inGameGui);
             enchantingUI.transform.SetSiblingIndex(siblingIndex);
 
-
-
             // TODO: Reduce duplicate code, mock this inside unity in the future
-            var existingBackground = StoreGui.instance.m_rootPanel.transform.Find("border (1)");
-            var panel = enchantingUI.transform.Find("Panel");
+            Transform existingBackground = StoreGui.instance.m_rootPanel.transform.Find("border (1)");
+            Transform panel = enchantingUI.transform.Find("Panel");
             if (existingBackground != null & panel != null)
             {
-                var image = existingBackground.GetComponent<Image>();
+                Image image = existingBackground.GetComponent<Image>();
                 panel.GetComponent<Image>().material = image.material;
             }
         }
 
-        private void SetupTabs() {
-            foreach(var tab in TabHandler.m_tabs) {
+        private void SetupTabs()
+        {
+            foreach(TabHandler.Tab tab in TabHandler.m_tabs)
+            {
                 tab.m_onClick.AddListener(PlayTabSelectSFX);
-                tab.m_button.gameObject.GetComponent<FeatureStatus>().Refresh();
+
+                FeatureStatus fs = tab.m_button.gameObject.GetComponent<FeatureStatus>();
+                if (fs != null)
+                {
+                    fs.Refresh();
+                }
             }
 
             TabActivation(this);
@@ -111,7 +116,7 @@ namespace EpicLoot_UnityLib
             instance.Scrim.SetActive(true);
             instance.SourceTable.Refresh();
 
-            foreach (var panel in instance.Panels)
+            foreach (EnchantingTableUIPanelBase panel in instance.Panels)
             {
                 panel.DeselectAll();
             }
@@ -142,8 +147,8 @@ namespace EpicLoot_UnityLib
                 return false;
             }
 
-            var textFields = instance.Root.GetComponentsInChildren<InputField>(false);
-            foreach (var inputField in textFields)
+            InputField[] textFields = instance.Root.GetComponentsInChildren<InputField>(false);
+            foreach (InputField inputField in textFields)
             {
                 if (inputField.isFocused)
                 {
@@ -169,7 +174,7 @@ namespace EpicLoot_UnityLib
 
             _hiddenFrames = 0;
 
-            var disallowClose = (Chat.instance != null && Chat.instance.HasFocus()) ||
+            bool disallowClose = (Chat.instance != null && Chat.instance.HasFocus()) ||
                 Console.IsVisible() || Menu.IsVisible() || (TextViewer.instance != null &&
                 TextViewer.instance.IsVisible()) || Player.m_localPlayer.InCutscene();
 
@@ -178,7 +183,7 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            var gotCloseInput = ZInput.GetButtonDown("JoyButtonB") ||
+            bool gotCloseInput = ZInput.GetButtonDown("JoyButtonB") ||
                 ZInput.GetKeyDown(KeyCode.Escape) || ZInput.GetKeyDown(KeyCode.Tab);
 
             if (gotCloseInput)
@@ -186,8 +191,8 @@ namespace EpicLoot_UnityLib
                 ZInput.ResetButtonStatus("JoyButtonB");
                 ZInput.ResetButtonStatus("JoyJump");
 
-                var panelCapturedInput = false;
-                foreach (var panel in Panels)
+                bool panelCapturedInput = false;
+                foreach (EnchantingTableUIPanelBase panel in Panels)
                 {
                     if (panel.isActiveAndEnabled && panel.CanCancel())
                     {

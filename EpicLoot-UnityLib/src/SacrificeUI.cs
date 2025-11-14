@@ -10,7 +10,8 @@ namespace EpicLoot_UnityLib
 {
     public class SacrificeUI : EnchantingTableUIPanelBase
     {
-        enum SacrificeMode {
+        enum SacrificeMode
+        {
             Sacrifice,
             Identify
         }
@@ -28,11 +29,15 @@ namespace EpicLoot_UnityLib
         public Text Explainer;
 
         public delegate List<InventoryItemListElement> GetSacrificeItemsDelegate();
-        public delegate List<InventoryItemListElement> GetSacrificeProductsDelegate(List<Tuple<ItemDrop.ItemData, int>> items);
-        public delegate List<InventoryItemListElement> GetIdentifyCostDelegate(string filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float cost_modifier);
+        public delegate List<InventoryItemListElement> GetSacrificeProductsDelegate(
+            List<Tuple<ItemDrop.ItemData, int>> items);
+        public delegate List<InventoryItemListElement> GetIdentifyCostDelegate(
+            string filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float cost_modifier);
         public delegate List<InventoryItemListElement> GetIdentifyItemsDelegate();
-        public delegate List<InventoryItemListElement> GetRandomFilteredLootRollDelegate(string filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float power_modifier);
-        public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(string filterType, List<ItemDrop.ItemData> items_selected);
+        public delegate List<InventoryItemListElement> GetRandomFilteredLootRollDelegate(
+            string filterType, List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems, float power_modifier);
+        public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(
+            string filterType, List<ItemDrop.ItemData> items_selected);
         public delegate Dictionary<string, string> GetIdentifyStylesDelegate();
 
         public static GetSacrificeItemsDelegate GetSacrificeItems;
@@ -52,17 +57,19 @@ namespace EpicLoot_UnityLib
             SacrificeToggle.onValueChanged.AddListener((isOn) => {
                 SacrificeModeSelected(isOn);
             });
+
             IdentifyToggle.onValueChanged.AddListener((isOn) => {
                 IdentifyModeSelected(isOn);
             });
 
             // Build the identify style dropdown options based on the configured styles
             IdentifyStyle.ClearOptions();
-            foreach (var entry in GetIdentifyStyles()) {
+            foreach (KeyValuePair<string, string> entry in GetIdentifyStyles())
+            {
                 IdentifyStyle.options.Add(new Dropdown.OptionData(Localization.instance.Localize(entry.Value)));
             }
 
-            //Trigger cost update when the identify style changes
+            // Trigger cost update when the identify style changes
             IdentifyStyle.onValueChanged.AddListener((value) =>
             {
                 OnSelectedItemsChanged();
@@ -72,12 +79,11 @@ namespace EpicLoot_UnityLib
         [UsedImplicitly]
         public void OnEnable()
         {
-            var items = GetSacrificeItems();
+            List<InventoryItemListElement> items = GetSacrificeItems();
             _sacrificeMode = SacrificeMode.Sacrifice;
             IdentifyStylePanel.SetActive(false);
             IdentifyToggle.isOn = false;
             SacrificeToggle.isOn = true;
-            //SacrificeModeSelected(true);
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
         }
@@ -92,34 +98,38 @@ namespace EpicLoot_UnityLib
             {
                 SacrificeItems();
             }
+
             Unlock();
         }
 
         private void IdentifyItems()
         {
-            var selectedItems = AvailableItems.GetSelectedItems<IListElement>();
-            var unidentifiedItems = selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
+            List<Tuple<IListElement, int>> selectedItems = AvailableItems.GetSelectedItems<IListElement>();
+            List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems = selectedItems
+                .Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
             string filterType = IdentifyStyle.options[IdentifyStyle.value].text;
-            var player = Player.m_localPlayer;
-            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
-            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
-            float power_modifier = featureValues.Item2 == float.NaN ? 1.0f : (featureValues.Item2 / 100f) + 1f;
-            var cost = GetIdentifyCost(filterType, unidentifiedItems, cost_reduction);
+            Tuple<float, float> featureValues =
+                EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
+            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ?
+                1.0f : 1f - (featureValues.Item1 / 100f);
+            float power_modifier = featureValues.Item2 == float.NaN ?
+                1.0f : (featureValues.Item2 / 100f) + 1f;
+            List<InventoryItemListElement> cost = GetIdentifyCost(filterType, unidentifiedItems, cost_reduction);
 
-
-
-            if (!LocalPlayerCanAffordCost(cost)) {
+            if (!LocalPlayerCanAffordCost(cost))
+            {
                 return;
             }
 
-            if (!player.NoCostCheat()) {
-                foreach (var costElement in cost)
+            if (!Player.m_localPlayer.NoCostCheat())
+            {
+                foreach (InventoryItemListElement costElement in cost)
                 {
                     InventoryManagement.Instance.RemoveItem(costElement.GetItem());
                 }
             }
 
-            var identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems, power_modifier);
+            List<InventoryItemListElement> identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems, power_modifier);
 
             Cancel();
             RefreshAvailableItems();
@@ -128,26 +138,28 @@ namespace EpicLoot_UnityLib
 
         private void SacrificeItems()
         {
-            var selectedItems = AvailableItems.GetSelectedItems<IListElement>();
-            var sacrificeProducts = GetSacrificeProducts(selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList());
+            List<Tuple<IListElement, int>> selectedItems = AvailableItems.GetSelectedItems<IListElement>();
+            List<InventoryItemListElement> sacrificeProducts = GetSacrificeProducts(selectedItems
+                .Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList());
 
             Cancel();
 
-            var chanceToDoubleEntry = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
-            var chanceToDouble = float.IsNaN(chanceToDoubleEntry.Item1) ? 0.0f : chanceToDoubleEntry.Item1 / 100.0f;
+            Tuple<float, float> chanceToDoubleEntry =
+                EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
+            float chanceToDouble = float.IsNaN(chanceToDoubleEntry.Item1) ? 0.0f : chanceToDoubleEntry.Item1 / 100.0f;
 
             if (Random.Range(0.0f, 1.0f) < chanceToDouble)
             {
                 EnchantingTableUI.instance.PlayEnchantBonusSFX();
                 BonusPanel.Show();
 
-                foreach (var sacrificeProduct in sacrificeProducts)
+                foreach (InventoryItemListElement sacrificeProduct in sacrificeProducts)
                 {
                     sacrificeProduct.Item.m_stack *= 2;
                 }
             }
 
-            foreach (var selectedItem in selectedItems)
+            foreach (Tuple<IListElement, int> selectedItem in selectedItems)
             {
                 InventoryManagement.Instance.RemoveExactItem(selectedItem.Item1.GetItem(), selectedItem.Item2);
             }
@@ -158,10 +170,15 @@ namespace EpicLoot_UnityLib
             AvailableItems.GiveFocus(true, 0);
         }
 
-        private void SacrificeModeSelected(bool isOn) {
-            if (!isOn) { return; }
+        private void SacrificeModeSelected(bool isOn)
+        {
+            if (!isOn)
+            {
+                return;
+            }
+
             _sacrificeMode = SacrificeMode.Sacrifice;
-            var items = GetSacrificeItems();
+            List<InventoryItemListElement> items = GetSacrificeItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
             Warning.text = Localization.instance.Localize("$mod_epicloot_sacrifice_warning");
@@ -173,10 +190,15 @@ namespace EpicLoot_UnityLib
             CostList.gameObject.SetActive(false);
         }
 
-        private void IdentifyModeSelected(bool isOn) {
-            if (!isOn) { return; }
+        private void IdentifyModeSelected(bool isOn)
+        {
+            if (!isOn)
+            {
+                return;
+            }
+
             _sacrificeMode = SacrificeMode.Identify;
-            var items = GetIdentifyItems();
+            List<InventoryItemListElement> items = GetIdentifyItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
             OnSelectedItemsChanged();
@@ -184,64 +206,86 @@ namespace EpicLoot_UnityLib
             Warning.color = new Color(1f, 0.631f, 0.235f);
             Explainer.text = Localization.instance.Localize("$mod_epicloot_identify_productsexplainer");
             MainButton.GetComponentInChildren<Text>().text = Localization.instance.Localize("$mod_epicloot_identify");
-            //IdentifyStyle.gameObject.SetActive(true);
             IdentifyStylePanel.SetActive(true);
             CostList.gameObject.SetActive(true);
         }
 
-        private void RefreshAvailableItems() {
-            if (_sacrificeMode == SacrificeMode.Identify) {
-                var items = GetIdentifyItems();
-                AvailableItems.SetItems(items.Cast<IListElement>().ToList());
-            } else if (_sacrificeMode == SacrificeMode.Sacrifice) {
-                var items = GetSacrificeItems();
+        private void RefreshAvailableItems()
+        {
+            if (_sacrificeMode == SacrificeMode.Identify)
+            {
+                List<InventoryItemListElement> items = GetIdentifyItems();
                 AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             }
+            else if (_sacrificeMode == SacrificeMode.Sacrifice)
+            {
+                List<InventoryItemListElement> items = GetSacrificeItems();
+                AvailableItems.SetItems(items.Cast<IListElement>().ToList());
+            }
+
             AvailableItems.DeselectAll();
             OnSelectedItemsChanged();
         }
 
         protected override void OnSelectedItemsChanged()
         {
-            var selectedItems = AvailableItems.GetSelectedItems<IListElement>();
-            if (_sacrificeMode == SacrificeMode.Sacrifice) {
-                var sacrificeProducts = GetSacrificeProducts(selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList());
+            List<Tuple<IListElement, int>> selectedItems = AvailableItems.GetSelectedItems<IListElement>();
+            bool canAfford = true;
+
+            if (_sacrificeMode == SacrificeMode.Sacrifice)
+            {
+                List<InventoryItemListElement> sacrificeProducts = GetSacrificeProducts(selectedItems.Select(
+                    x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList());
                 SacrificeProducts.SetItems(sacrificeProducts.Cast<IListElement>().ToList());
             }
-            bool canAfford = true;
-            if (_sacrificeMode == SacrificeMode.Identify) {
+            else if (_sacrificeMode == SacrificeMode.Identify)
+            {
                 string identifyFilter = IdentifyStyle.options[IdentifyStyle.value].text;
-                var potentialIdentifyItems = GetPotentialIdentifications(identifyFilter, selectedItems.Select(x => x.Item1.GetItem()).ToList());
+                List<InventoryItemListElement> potentialIdentifyItems =
+                    GetPotentialIdentifications(identifyFilter, selectedItems.Select(x => x.Item1.GetItem()).ToList());
                 SacrificeProducts.SetItems(potentialIdentifyItems.Cast<IListElement>().ToList());
-                var unidentifiedItems = selectedItems.Select(x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
-                float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ? 1.0f : 1f - (featureValues.Item1 / 100f);
-                var cost = GetIdentifyCost(identifyFilter, unidentifiedItems, cost_reduction);
+                List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems = selectedItems.Select(
+                    x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
+                Tuple<float, float> featureValues =
+                    EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
+                float costReduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ?
+                    1.0f : 1f - (featureValues.Item1 / 100f);
+                List<InventoryItemListElement> cost = GetIdentifyCost(identifyFilter, unidentifiedItems, costReduction);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
                 canAfford = LocalPlayerCanAffordIdentifyCost(cost);
-                if (potentialIdentifyItems.Count() == 0) { canAfford = false; }
+
+                if (potentialIdentifyItems.Count() == 0)
+                {
+                    canAfford = false;
+                }
             }
 
-            var featureUnlocked = EnchantingTableUI.instance != null && EnchantingTableUI.instance.SourceTable != null && EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Sacrifice);
+            bool featureUnlocked = EnchantingTableUI.instance != null &&
+                EnchantingTableUI.instance.SourceTable != null &&
+                EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Sacrifice);
             MainButton.interactable = featureUnlocked && selectedItems.Count > 0 && canAfford;
         }
 
         public bool LocalPlayerCanAffordIdentifyCost(List<InventoryItemListElement> cost)
         {
             if (cost == null || cost.Count == 0)
-                return true;
-            var player = Player.m_localPlayer;
-            if (player == null)
-                return false;
-
-            if (Player.m_localPlayer.NoCostCheat()){
-                Debug.Log($"Identify nocost mode success.");
+            {
                 return true;
             }
 
-            foreach (var element in cost)
+            if (Player.m_localPlayer == null)
             {
-                var item = element.GetItem();
+                return false;
+            }
+
+            if (Player.m_localPlayer.NoCostCheat())
+            {
+                return true;
+            }
+
+            foreach (InventoryItemListElement element in cost)
+            {
+                ItemDrop.ItemData item = element.GetItem();
                 if (!InventoryManagement.Instance.HasItem(item))
                 {
                     Debug.Log($"Identify Cost failed, user does not have item {item.m_shared.m_name}.");
@@ -252,21 +296,28 @@ namespace EpicLoot_UnityLib
             return true;
         }
 
-        public override void Cancel() {
-            if (_sacrificeMode == SacrificeMode.Sacrifice) {
+        public override void Cancel()
+        {
+            if (_sacrificeMode == SacrificeMode.Sacrifice)
+            {
                 if (_useTMP)
+                {
                     _tmpButtonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
+                }
                 else
+                {
                     _buttonLabel.text = Localization.instance.Localize("$mod_epicloot_sacrifice");
+                }
             }
-            if (SacrificeMode.Identify == _sacrificeMode) {
-                if (_buttonLabel != null) {
+            if (SacrificeMode.Identify == _sacrificeMode)
+            {
+                if (_buttonLabel != null)
+                {
                     _buttonLabel.text = Localization.instance.Localize("$mod_epicloot_identify");
                 }
             }
 
             Unlock();
-            // base.Cancel();
         }
         
         public override void DeselectAll()

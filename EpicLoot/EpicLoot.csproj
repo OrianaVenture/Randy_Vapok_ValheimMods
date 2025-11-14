@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Paths.props" />
-  <Import Project="..\BuildTasks.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net481</TargetFramework>
@@ -64,23 +63,11 @@
     <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <SolutionUnity>$(SolutionDir)ValheimUnity\</SolutionUnity>
-  </PropertyGroup>
-
-  <Target Name="JotunnPostBuildTask" AfterTargets="Build">
-    <CallTarget Targets="CopyAssembliesToUnity" Condition="Exists('$(SolutionUnity)')" />
-  </Target>
-
   <Target Name="CopyToModManagers" AfterTargets="Build">
     <Message Text="Copying to mod managers" Importance="high" />
     <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\com.kesomannen.gale\valheim\profiles\Modtest\BepInEx\plugins\" />
     <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\r2modmanPlus-local\Valheim\profiles\Modtest\BepInEx\plugins\" />
     <Copy SourceFiles="$(TargetDir)\$(TargetFileName)" DestinationFolder="$(AppData)\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Modtesting\BepInEx\plugins\" />
-  </Target>
-
-  <Target Name="JotunnPostBuildTaskWin" AfterTargets="Build" Condition=" '$(OS)' == 'Windows_NT' ">
-    <!-- <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;$(SolutionDir)publish.ps1&quot; -Target &quot;$(ConfigurationName)&quot; -TargetPath &quot;$(TargetDir.TrimEnd('\'))&quot; -TargetAssembly &quot;$(TargetFileName)&quot; -ValheimPath &quot;$(VALHEIM_INSTALL.TrimEnd('\'))&quot; -DeployPath &quot;$(MOD_DEPLOYPATH.TrimEnd('\'))&quot; -ProjectPath &quot;$(ProjectDir.TrimEnd('\'))&quot; " /> -->
   </Target>
 
   <Import Project="..\Common\Common.projitems" Label="Shared" />

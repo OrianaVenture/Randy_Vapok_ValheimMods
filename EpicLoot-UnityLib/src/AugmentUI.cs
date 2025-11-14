@@ -57,21 +57,22 @@ namespace EpicLoot_UnityLib
 
             if (AvailableEffectsHeader != null)
             {
-                var augmentChoices = 2;
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
+                int augmentChoices = 2;
+                Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
                 if (!float.IsNaN(featureValues.Item1))
                 {
                     augmentChoices = (int)featureValues.Item1;
                 }
 
-                var colorPre = augmentChoices > 2 ? "<color=#EAA800>" : "";
-                var colorPost = augmentChoices > 2 ? "</color>" : "";
-                AvailableEffectsHeader.text = Localization.instance.Localize($"$mod_epicloot_augment_availableeffects {colorPre}($mod_epicloot_augment_choices){colorPost}", augmentChoices.ToString());
+                string colorPre = augmentChoices > 2 ? "<color=#EAA800>" : "";
+                string colorPost = augmentChoices > 2 ? "</color>" : "";
+                AvailableEffectsHeader.text = Localization.instance.Localize(
+                    $"$mod_epicloot_augment_availableeffects {colorPre}($mod_epicloot_augment_choices){colorPost}", augmentChoices.ToString());
             }
 
             OnAugmentIndexChanged();
 
-            var items = GetAugmentableItems();
+            List<InventoryItemListElement> items = GetAugmentableItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             DeselectAll();
         }
@@ -84,15 +85,15 @@ namespace EpicLoot_UnityLib
             {
                 if (ZInput.GetButtonDown("JoyButtonY"))
                 {
-                    var activeAugmentCount = _AugmentSelectors.Count();
-                    var nextAugmentIndex = (_augmentIndex + 1) % activeAugmentCount;
+                    int activeAugmentCount = _AugmentSelectors.Count();
+                    int nextAugmentIndex = (_augmentIndex + 1) % activeAugmentCount;
                     _AugmentSelectors[nextAugmentIndex].isOn = true;
                     ZInput.ResetButtonStatus("JoyButtonY");
                 }
 
                 if (AvailableEffectsScrollbar != null)
                 {
-                    var rightStickAxis = ZInput.GetJoyRightStickY();
+                    float rightStickAxis = ZInput.GetJoyRightStickY();
                     if (Mathf.Abs(rightStickAxis) > 0.5f)
                     {
                         AvailableEffectsScrollbar.value = Mathf.Clamp01(AvailableEffectsScrollbar.value + rightStickAxis * -0.1f);
@@ -132,7 +133,7 @@ namespace EpicLoot_UnityLib
 
         public void OnAugmentIndexChanged()
         {
-            var selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            Tuple<InventoryItemListElement, int> selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             if (selectedItem?.Item1.GetItem() == null)
             {
                 MainButton.interactable = false;
@@ -152,18 +153,18 @@ namespace EpicLoot_UnityLib
             }
             else
             {
-                var item = selectedItem.Item1.GetItem();
-                var info = GetAvailableEffects(item, _augmentIndex);
+                ItemDrop.ItemData item = selectedItem.Item1.GetItem();
+                string info = GetAvailableEffects(item, _augmentIndex);
 
                 AvailableEffectsText.text = info;
                 ScrollEnchantInfoToTop();
 
                 CostLabel.enabled = true;
-                var cost = GetAugmentCost(item, _augmentIndex);
+                List<InventoryItemListElement> cost = GetAugmentCost(item, _augmentIndex);
                 CostList.SetItems(cost.Cast<IListElement>().ToList());
 
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
-                var reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
+                Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
+                float reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
                 if (reenchantCostReduction > 0)
                 {
                     CostLabel.text = Localization.instance.Localize($"$mod_epicloot_augmentcost " +
@@ -174,8 +175,8 @@ namespace EpicLoot_UnityLib
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_augmentcost");
                 }
 
-                var canAfford = LocalPlayerCanAffordCost(cost);
-                var featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Augment);
+                bool canAfford = LocalPlayerCanAffordCost(cost);
+                bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Augment);
                 MainButton.interactable = featureUnlocked && canAfford && _augmentIndex >= 0;
             }
         }
@@ -187,17 +188,17 @@ namespace EpicLoot_UnityLib
 
         protected override void DoMainAction()
         {
-            var selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            Tuple<InventoryItemListElement, int> selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             if (selectedItem?.Item1.GetItem() == null)
             {
                 Cancel();
                 return;
             }
 
-            var item = selectedItem.Item1.GetItem();
-            var cost = GetAugmentCost(item, _augmentIndex);
+            ItemDrop.ItemData item = selectedItem.Item1.GetItem();
+            List<InventoryItemListElement> cost = GetAugmentCost(item, _augmentIndex);
 
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
             if (!player.NoCostCheat())
             {
                 if (!LocalPlayerCanAffordCost(cost))
@@ -206,7 +207,7 @@ namespace EpicLoot_UnityLib
                     return;
                 }
 
-                foreach (var costElement in cost)
+                foreach (InventoryItemListElement costElement in cost)
                 {
                     InventoryManagement.Instance.RemoveItem(costElement.GetItem());
                 }
@@ -219,9 +220,9 @@ namespace EpicLoot_UnityLib
 
             _choiceDialog = AugmentItem(item, _augmentIndex);
 
-            foreach (var audio_source in _choiceDialog.GetComponentsInChildren<AudioSource>())
+            foreach (AudioSource audioSource in _choiceDialog.GetComponentsInChildren<AudioSource>())
             {
-                audio_source.volume = AudioVolumeLevel();
+                audioSource.volume = AudioVolumeLevel();
             }
 
             Lock();
@@ -229,8 +230,8 @@ namespace EpicLoot_UnityLib
 
         protected override void OnSelectedItemsChanged()
         {
-            var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
-            var item = entry?.Item1.GetItem();
+            Tuple<InventoryItemListElement, int> entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            ItemDrop.ItemData item = entry?.Item1.GetItem();
 
             RefreshAugmentSelectors();
 
@@ -245,7 +246,7 @@ namespace EpicLoot_UnityLib
 
         private void RefreshAugmentSelectors()
         {
-            var entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            Tuple<InventoryItemListElement, int> entry = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             if (EnchantList.childCount > 0)
             {
                 foreach (Transform child in EnchantList)
@@ -253,24 +254,27 @@ namespace EpicLoot_UnityLib
                     Destroy(child.gameObject);
                 }
             }
+
             _AugmentSelectors.Clear();
             if (entry == null || entry.Item1 == null)
             {
                 return;
             }
-            var item = entry?.Item1.GetItem();
-            var augmentableEffects = GetAugmentableEffects(item, false);
+
+            ItemDrop.ItemData item = entry?.Item1.GetItem();
+            List<Tuple<string, bool>> augmentableEffects = GetAugmentableEffects(item, false);
 
             int enchantIndex = 0;
-            foreach (var effect in augmentableEffects)
+            foreach (Tuple<string, bool> effect in augmentableEffects)
             {
-                var enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
-                var enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
-                var enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
-                foreach (var audio_source in enchantmentListElement.GetComponentsInChildren<AudioSource>())
+                GameObject enchantmentListElement = Instantiate(EnchantmentListPrefab, EnchantList);
+                Text enchantmentElement = enchantmentListElement.GetComponentInChildren<Text>();
+                Toggle enchantmentbutton = enchantmentListElement.GetComponent<Toggle>();
+                foreach (AudioSource audioSource in enchantmentListElement.GetComponentsInChildren<AudioSource>())
                 {
-                    audio_source.volume = AudioVolumeLevel();
+                    audioSource.volume = AudioVolumeLevel();
                 }
+
                 _AugmentSelectors.Add(enchantmentbutton);
                 enchantmentbutton.onValueChanged.AddListener((isOn) =>
                 {
@@ -279,10 +283,12 @@ namespace EpicLoot_UnityLib
                         SelectAugmentIndex(_AugmentSelectors.IndexOf(enchantmentbutton));
                     }
                 });
+
                 if (enchantmentElement != null)
                 {
                     enchantmentElement.text = effect.Item1;
                 }
+
                 if (effect.Item2 == false)
                 {
                     enchantmentbutton.interactable = false;
@@ -307,7 +313,7 @@ namespace EpicLoot_UnityLib
         public override void Lock()
         {
             base.Lock();
-            foreach (var selector in _AugmentSelectors)
+            foreach (Toggle selector in _AugmentSelectors)
             {
                 selector.interactable = false;
             }
@@ -316,7 +322,7 @@ namespace EpicLoot_UnityLib
         public override void Unlock()
         {
             base.Unlock();
-            foreach (var selector in _AugmentSelectors)
+            foreach (Toggle selector in _AugmentSelectors)
             {
                 selector.interactable = true;
             }

@@ -34,7 +34,7 @@ namespace EpicLoot_UnityLib
         public int GetMax()
         {
             int min = int.MaxValue;
-            foreach (var cost in Cost)
+            foreach (ConversionRecipeCostUnity cost in Cost)
             {
                 int count = InventoryManagement.Instance.CountItem(cost.Item);
                 int canMake = Mathf.FloorToInt(count / (float)cost.Amount);
@@ -74,13 +74,15 @@ namespace EpicLoot_UnityLib
                 _toggleGroup.EnsureValidState();
             }
 
-            for (var index = 0; index < ModeButtons.Count; index++)
+            for (int index = 0; index < ModeButtons.Count; index++)
             {
-                var modeButton = ModeButtons[index];
+                Toggle modeButton = ModeButtons[index];
                 modeButton.onValueChanged.AddListener((isOn) =>
                 {
                     if (isOn)
+                    {
                         RefreshMode();
+                    }
                 });
             }
         }
@@ -90,7 +92,7 @@ namespace EpicLoot_UnityLib
         {
             _mode = 0;
             RefreshMode();
-            var items = GetConversionRecipes((int)_mode);
+            List<ConversionRecipeUnity> items = GetConversionRecipes((int)_mode);
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
         }
 
@@ -102,7 +104,7 @@ namespace EpicLoot_UnityLib
             {
                 if (ZInput.GetButtonDown("JoyButtonY"))
                 {
-                    var nextModeIndex = ((int)_mode + 1) % ModeButtons.Count;
+                    int nextModeIndex = ((int)_mode + 1) % ModeButtons.Count;
                     ModeButtons[nextModeIndex].isOn = true;
                     ZInput.ResetButtonStatus("JoyButtonY");
                 }
@@ -111,10 +113,10 @@ namespace EpicLoot_UnityLib
 
         public void RefreshMode()
         {
-            var prevMode = _mode;
-            for (var index = 0; index < ModeButtons.Count; index++)
+            MaterialConversionMode prevMode = _mode;
+            for (int index = 0; index < ModeButtons.Count; index++)
             {
-                var button = ModeButtons[index];
+                Toggle button = ModeButtons[index];
                 if (button.isOn)
                 {
                     _mode = (MaterialConversionMode)index;
@@ -122,7 +124,9 @@ namespace EpicLoot_UnityLib
             }
 
             if (prevMode != _mode)
+            {
                 OnModeChanged();
+            }
         }
 
         public void OnModeChanged()
@@ -166,18 +170,18 @@ namespace EpicLoot_UnityLib
 
         protected override void DoMainAction()
         {
-            var selectedRecipes = AvailableItems.GetSelectedItems<ConversionRecipeUnity>();
-            var allProducts = GetConversionProducts(selectedRecipes);
-            var cost = GetConversionCost(selectedRecipes);
+            List<Tuple<ConversionRecipeUnity, int>> selectedRecipes = AvailableItems.GetSelectedItems<ConversionRecipeUnity>();
+            List<InventoryItemListElement> allProducts = GetConversionProducts(selectedRecipes);
+            List<InventoryItemListElement> cost = GetConversionCost(selectedRecipes);
 
             Cancel();
 
-            foreach (var costElement in cost)
+            foreach (InventoryItemListElement costElement in cost)
             {
                 InventoryManagement.Instance.RemoveItem(costElement.GetItem());
             }
 
-            foreach (var productElement in allProducts)
+            foreach (InventoryItemListElement productElement in allProducts)
             {
                 InventoryManagement.Instance.GiveItem(productElement.GetItem());
             }
@@ -188,14 +192,14 @@ namespace EpicLoot_UnityLib
 
         public static List<InventoryItemListElement> GetConversionProducts(List<Tuple<ConversionRecipeUnity, int>> selectedRecipes)
         {
-            var products = new Dictionary<string, ItemDrop.ItemData>();
+            Dictionary<string, ItemDrop.ItemData> products = new Dictionary<string, ItemDrop.ItemData>();
 
-            foreach (var entry in selectedRecipes)
+            foreach (Tuple<ConversionRecipeUnity, int> entry in selectedRecipes)
             {
-                var recipe = entry.Item1;
-                var multiple = entry.Item2;
+                ConversionRecipeUnity recipe = entry.Item1;
+                int multiple = entry.Item2;
 
-                if (products.TryGetValue(recipe.Product.m_shared.m_name, out var item))
+                if (products.TryGetValue(recipe.Product.m_shared.m_name, out ItemDrop.ItemData item))
                 {
                     item.m_stack += recipe.Amount * multiple;
                 }
@@ -212,16 +216,16 @@ namespace EpicLoot_UnityLib
 
         public static List<InventoryItemListElement> GetConversionCost(List<Tuple<ConversionRecipeUnity, int>> selectedRecipes)
         {
-            var costs = new Dictionary<string, ItemDrop.ItemData>();
+            Dictionary<string, ItemDrop.ItemData> costs = new Dictionary<string, ItemDrop.ItemData>();
 
-            foreach (var entry in selectedRecipes)
+            foreach (Tuple<ConversionRecipeUnity, int> entry in selectedRecipes)
             {
-                var recipe = entry.Item1;
-                var multiple = entry.Item2;
+                ConversionRecipeUnity recipe = entry.Item1;
+                int multiple = entry.Item2;
 
-                foreach (var recipeCost in recipe.Cost)
+                foreach (ConversionRecipeCostUnity recipeCost in recipe.Cost)
                 {
-                    if (costs.TryGetValue(recipeCost.Item.m_shared.m_name, out var item))
+                    if (costs.TryGetValue(recipeCost.Item.m_shared.m_name, out ItemDrop.ItemData item))
                     {
                         item.m_stack += recipeCost.Amount * multiple;
                     }
@@ -234,12 +238,13 @@ namespace EpicLoot_UnityLib
                 }
             }
 
-            return costs.Values.OrderBy(x => Localization.instance.Localize(x.m_shared.m_name)).Select(x => new InventoryItemListElement() { Item = x }).ToList();
+            return costs.Values.OrderBy(x => Localization.instance.Localize(x.m_shared.m_name))
+                .Select(x => new InventoryItemListElement() { Item = x }).ToList();
         }
 
         public void RefreshAvailableItems()
         {
-            var items = GetConversionRecipes((int)_mode);
+            List<ConversionRecipeUnity> items = GetConversionRecipes((int)_mode);
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
             OnSelectedItemsChanged();
@@ -247,31 +252,42 @@ namespace EpicLoot_UnityLib
 
         protected override void OnSelectedItemsChanged()
         {
-            var selectedRecipes = AvailableItems.GetSelectedItems<ConversionRecipeUnity>();
-            var allProducts = GetConversionProducts(selectedRecipes);
+            List<Tuple<ConversionRecipeUnity, int>> selectedRecipes = AvailableItems.GetSelectedItems<ConversionRecipeUnity>();
+            List<InventoryItemListElement> allProducts = GetConversionProducts(selectedRecipes);
             Products.SetItems(allProducts.Cast<IListElement>().ToList());
 
-            var cost = GetConversionCost(selectedRecipes);
+            List<InventoryItemListElement> cost = GetConversionCost(selectedRecipes);
             CostList.SetItems(cost.Cast<IListElement>().ToList());
 
-            var baseFeatureValues = EnchantingTableUI.instance.SourceTable.GetFeatureValue(EnchantingFeature.ConvertMaterials, 0);
-            var currentFeatureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.ConvertMaterials);
-            var isBonusCost = false;
+            Tuple<float, float> baseFeatureValues = EnchantingTableUI.instance.SourceTable.GetFeatureValue(EnchantingFeature.ConvertMaterials, 0);
+            Tuple<float, float> currentFeatureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.ConvertMaterials);
+            bool isBonusCost = false;
             if (_mode == MaterialConversionMode.Upgrade)
             {
-                if (currentFeatureValues.Item1 < baseFeatureValues.Item1 && allProducts.Any(x => x.Item.m_shared.m_ammoType.EndsWith("MagicCraftingMaterial")))
+                if (currentFeatureValues.Item1 < baseFeatureValues.Item1 &&
+                    allProducts.Any(x => x.Item.m_shared.m_ammoType.EndsWith("MagicCraftingMaterial")))
+                {
                     isBonusCost = true;
-                if (currentFeatureValues.Item2 < baseFeatureValues.Item2 && allProducts.Any(x => x.Item.m_shared.m_ammoType.EndsWith("Runestone")))
+                }
+
+                if (currentFeatureValues.Item2 < baseFeatureValues.Item2 &&
+                    allProducts.Any(x => x.Item.m_shared.m_ammoType.EndsWith("Runestone")))
+                {
                     isBonusCost = true;
+                }
 
                 if (isBonusCost && cost.Count > 0)
+                {
                     CostLabel.text = Localization.instance.Localize("<color=#EAA800>($mod_epicloot_bonus)</color> $mod_epicloot_upgradecost");
+                }
                 else
+                {
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_upgradecost");
+                }
             }
 
-            var canAfford = LocalPlayerCanAffordCost(cost);
-            var featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.ConvertMaterials);
+            bool canAfford = LocalPlayerCanAffordCost(cost);
+            bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.ConvertMaterials);
             MainButton.interactable = featureUnlocked && canAfford && selectedRecipes.Count > 0;
         }
         

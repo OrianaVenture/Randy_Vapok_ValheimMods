@@ -60,15 +60,17 @@ namespace EpicLoot_UnityLib
 
         public void Awake()
         {
-            var scrollRect = GetComponentInChildren<ScrollRect>();
+            ScrollRect scrollRect = GetComponentInChildren<ScrollRect>();
             _scrollRectEnsureVisible = scrollRect != null ? scrollRect.GetComponent<ScrollRectEnsureVisible>() : null;
 
             if (SelectAllToggle != null)
+            {
                 SelectAllToggle.onValueChanged.AddListener(OnSelectAllToggled);
+            }
             
             if (SortByDropdown != null)
             {
-                foreach (var optionData in SortByDropdown.options)
+                foreach (Dropdown.OptionData optionData in SortByDropdown.options)
                 {
                     optionData.text = Localization.instance.Localize(optionData.text);
                 }
@@ -87,21 +89,25 @@ namespace EpicLoot_UnityLib
         public void Update()
         {
             if (_locked || !HasGamepadFocus() || !ZInput.IsGamepadActive() || ListContainer == null)
+            {
                 return;
+            }
 
-            var elementCount = ListContainer.childCount;
-            var focusedElement = GetFocusedElement();
+            int elementCount = ListContainer.childCount;
+            MultiSelectItemListElement focusedElement = GetFocusedElement();
             if (focusedElement == null)
+            {
                 return;
+            }
 
-            var focusedElementIndex = focusedElement.transform.GetSiblingIndex();
-            var grid = ListContainer.GetComponent<GridLayoutGroup>();
+            int focusedElementIndex = focusedElement.transform.GetSiblingIndex();
+            GridLayoutGroup grid = ListContainer.GetComponent<GridLayoutGroup>();
             if (ListContainer.GetComponent<VerticalLayoutGroup>() != null)
             {
                 if (focusedElementIndex > 0 && ZInput.GetButtonDown("JoyLStickUp"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex - 1);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex - 1);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickUp");
@@ -109,7 +115,7 @@ namespace EpicLoot_UnityLib
                 else if (focusedElementIndex < elementCount - 1 && ZInput.GetButtonDown("JoyLStickDown"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex + 1);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex + 1);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickDown");
@@ -125,36 +131,41 @@ namespace EpicLoot_UnityLib
             }
             else if (grid != null)
             {
-                var columnCount = grid.constraintCount;
+                int columnCount = grid.constraintCount;
 
-                if (focusedElementIndex >= columnCount && ZInput.GetButtonDown("JoyLStickUp"))
+                if (focusedElementIndex >= columnCount &&
+                    ZInput.GetButtonDown("JoyLStickUp"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex - columnCount);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex - columnCount);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickUp");
                 }
-                else if (focusedElementIndex < elementCount - columnCount && ZInput.GetButtonDown("JoyLStickDown"))
+                else if (focusedElementIndex < elementCount - columnCount &&
+                    ZInput.GetButtonDown("JoyLStickDown"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex + columnCount);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex + columnCount);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickDown");
                 }
-                else if ((focusedElementIndex % columnCount) > 0 && ZInput.GetButtonDown("JoyLStickLeft"))
+                else if ((focusedElementIndex % columnCount) > 0 &&
+                    ZInput.GetButtonDown("JoyLStickLeft"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex - 1);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex - 1);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickLeft");
                 }
-                else if ((focusedElementIndex % columnCount) < columnCount - 1 && focusedElementIndex < elementCount - 1 && ZInput.GetButtonDown("JoyLStickRight"))
+                else if ((focusedElementIndex % columnCount) < columnCount - 1 &&
+                    focusedElementIndex < elementCount - 1 &&
+                    ZInput.GetButtonDown("JoyLStickRight"))
                 {
                     focusedElement.GiveFocus(false);
-                    var newElement = GetElement(focusedElementIndex + 1);
+                    MultiSelectItemListElement newElement = GetElement(focusedElementIndex + 1);
                     newElement.GiveFocus(true);
                     CenterOnItem(newElement);
                     ZInput.ResetButtonStatus("JoyLStickRight");
@@ -174,8 +185,8 @@ namespace EpicLoot_UnityLib
             {
                 if (ZInput.GetButtonDown("JoyRStick"))
                 {
-                    var currentSortMode = SortByDropdown.value;
-                    var sortModeCount = SortByDropdown.options.Count;
+                    int currentSortMode = SortByDropdown.value;
+                    int sortModeCount = SortByDropdown.options.Count;
                     currentSortMode = ((currentSortMode + 1) % sortModeCount);
                     SortByDropdown.value = currentSortMode;
                     ZInput.ResetButtonStatus("JoyRStick");
@@ -186,7 +197,9 @@ namespace EpicLoot_UnityLib
         private void CenterOnItem(MultiSelectItemListElement element)
         {
             if (_scrollRectEnsureVisible != null)
+            {
                 _scrollRectEnsureVisible.CenterOnItem((RectTransform)element.transform);
+            }
         }
 
         private void OnFilterChanged(string _)
@@ -210,23 +223,25 @@ namespace EpicLoot_UnityLib
             if (!Filterable || FilterByText == null)
                 return;
 
-            var filterText = FilterByText.text;
-            var filterIsEmpty = string.IsNullOrEmpty(filterText) || string.IsNullOrWhiteSpace(filterText);
+            string filterText = FilterByText.text;
+            bool filterIsEmpty = string.IsNullOrEmpty(filterText) || string.IsNullOrWhiteSpace(filterText);
 
-            var filterParts = filterIsEmpty ? Array.Empty<string>() : filterText.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
+            string[] filterParts = filterIsEmpty ? Array.Empty<string>() :
+                filterText.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
+            int elementCount = ListContainer.childCount;
+
+            for (int i = 0; i < elementCount; ++i)
             {
-                var childToCache = ListContainer.GetChild(i);
-                var element = childToCache.GetComponent<MultiSelectItemListElement>();
+                Transform childToCache = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
 
                 // Strip rich text tags from item name
-                var itemName = element.ItemName.text;
-                var richTextRegex = new Regex(@"<[^>]*>");
+                string itemName = element.ItemName.text;
+                Regex richTextRegex = new Regex(@"<[^>]*>");
                 itemName = richTextRegex.Replace(itemName, string.Empty);
 
-                var nameMatches = filterIsEmpty;
-                foreach (var part in filterParts)
+                bool nameMatches = filterIsEmpty;
+                foreach (string part in filterParts)
                 {
                     if (itemName.IndexOf(part, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
@@ -249,14 +264,16 @@ namespace EpicLoot_UnityLib
                     return;
                 }
 
-                var allAreSelected = true;
-                var elementCount = ListContainer.childCount;
-                for (var i = 0; i < elementCount; ++i)
+                bool allAreSelected = true;
+                int elementCount = ListContainer.childCount;
+                for (int i = 0; i < elementCount; ++i)
                 {
-                    var childToCache = ListContainer.GetChild(i);
-                    var element = childToCache.GetComponent<MultiSelectItemListElement>();
+                    Transform childToCache = ListContainer.GetChild(i);
+                    MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
                     if (!element.IsMaxSelected())
+                    {
                         allAreSelected = false;
+                    }
                 }
 
                 SelectAllToggle.SetIsOnWithoutNotify(allAreSelected);
@@ -266,35 +283,47 @@ namespace EpicLoot_UnityLib
         private void OnSelectAllToggled(bool _ = true)
         {
             if (SelectAllToggle == null)
+            {
                 return;
+            }
 
             if (SelectAllToggle.isOn)
+            {
                 ForeachElement((_, x) => x.SelectMaxQuantity(true));
+            }
             else
+            {
                 ForeachElement((_, x) => x.Deselect(true));
+            }
+
             RefreshSelectAllToggle();
         }
 
         private void OnSortModeChanged(int sortModeValue)
         {
             if (!Sortable || SortByDropdown == null)
-                return;
-
-            var previousSelectionAmounts = GetCurrentSelectionAmounts();
-
-            var items = previousSelectionAmounts.Keys.ToList();
-            var sortMode = (SortMode)SortByDropdown.value;
-            var sortedItems = SortItems(sortMode, items);
-
-            for (var i = 0; i < sortedItems.Count; ++i)
             {
-                var childToSet = ListContainer.GetChild(i);
-                var itemToSet = sortedItems[i];
-                var element = childToSet.GetComponent<MultiSelectItemListElement>();
+                return;
+            }
+
+            Dictionary<IListElement, int> previousSelectionAmounts = GetCurrentSelectionAmounts();
+
+            List<IListElement> items = previousSelectionAmounts.Keys.ToList();
+            SortMode sortMode = (SortMode)SortByDropdown.value;
+            List<IListElement> sortedItems = SortItems(sortMode, items);
+
+            for (int i = 0; i < sortedItems.Count; ++i)
+            {
+                Transform childToSet = ListContainer.GetChild(i);
+                IListElement itemToSet = sortedItems[i];
+                MultiSelectItemListElement element = childToSet.GetComponent<MultiSelectItemListElement>();
                 element.SuppressEvents = true;
                 element.SetItem(itemToSet);
-                if (previousSelectionAmounts.TryGetValue(itemToSet, out var previousQuantity))
+                if (previousSelectionAmounts.TryGetValue(itemToSet, out int previousQuantity))
+                {
                     element.SelectQuantity(previousQuantity, true);
+                }
+
                 element.SuppressEvents = false;
             }
 
@@ -303,14 +332,16 @@ namespace EpicLoot_UnityLib
 
         public Dictionary<IListElement, int> GetCurrentSelectionAmounts()
         {
-            var selectionAmounts = new Dictionary<IListElement, int>();
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
+            Dictionary<IListElement, int> selectionAmounts = new Dictionary<IListElement, int>();
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
             {
-                var childToCache = ListContainer.GetChild(i);
-                var element = childToCache.GetComponent<MultiSelectItemListElement>();
+                Transform childToCache = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
                 if (element != null && element.GetItem() != null)
+                {
                     selectionAmounts.Add(element.GetListElement(), element.GetSelectedQuantity());
+                }
             }
 
             return selectionAmounts;
@@ -318,22 +349,22 @@ namespace EpicLoot_UnityLib
 
         private void MakeEnoughElements(int itemCount)
         {
-            var elementCount = ListContainer.childCount;
+            int elementCount = ListContainer.childCount;
             if (elementCount > itemCount)
             {
-                for (var i = elementCount - 1; i >= itemCount; --i)
+                for (int i = elementCount - 1; i >= itemCount; --i)
                 {
-                    var childToDestroy = ListContainer.GetChild(i);
-                    var element = childToDestroy.GetComponent<MultiSelectItemListElement>();
+                    Transform childToDestroy = ListContainer.GetChild(i);
+                    MultiSelectItemListElement element = childToDestroy.GetComponent<MultiSelectItemListElement>();
                     element.OnSelectionChanged -= OnElementSelectionChanged;
                     DestroyImmediate(childToDestroy.gameObject);
                 }
             }
             else if (elementCount < itemCount)
             {
-                for (var i = elementCount; i < itemCount; ++i)
+                for (int i = elementCount; i < itemCount; ++i)
                 {
-                    var newElement = Instantiate(ElementPrefab, ListContainer);
+                    MultiSelectItemListElement newElement = Instantiate(ElementPrefab, ListContainer);
                     newElement.SuppressEvents = true;
                     newElement.OnSelectionChanged += OnElementSelectionChanged;
                 }
@@ -342,34 +373,39 @@ namespace EpicLoot_UnityLib
 
         public void SetItems(List<IListElement> items)
         {
-            var itemCount = items.Count;
+            int itemCount = items.Count;
 
-            var previousSelectionAmounts = GetCurrentSelectionAmounts();
-            var focusedElement = GetFocusedElement();
+            Dictionary<IListElement, int> previousSelectionAmounts = GetCurrentSelectionAmounts();
+            MultiSelectItemListElement focusedElement = GetFocusedElement();
 
             MakeEnoughElements(itemCount);
 
-            var sortedItems = items;
+            List<IListElement> sortedItems = items;
             if (Sortable && SortByDropdown != null)
             {
-                var sortMode = (SortMode)SortByDropdown.value;
+                SortMode sortMode = (SortMode)SortByDropdown.value;
                 sortedItems = SortItems(sortMode, items);
             }
 
-            var didFocus = false;
-            for (var i = 0; i < itemCount; ++i)
+            bool didFocus = false;
+            for (int i = 0; i < itemCount; ++i)
             {
-                var childToSet = ListContainer.GetChild(i);
-                var itemToSet = sortedItems[i];
-                var element = childToSet.GetComponent<MultiSelectItemListElement>();
+                Transform childToSet = ListContainer.GetChild(i);
+                IListElement itemToSet = sortedItems[i];
+                MultiSelectItemListElement element = childToSet.GetComponent<MultiSelectItemListElement>();
                 element.UseEnchantAsName = UseEnchantAsName;
                 element.SuppressEvents = true;
                 element.SetItem(itemToSet);
-                if (previousSelectionAmounts.TryGetValue(itemToSet, out var previousQuantity))
+
+                if (previousSelectionAmounts.TryGetValue(itemToSet, out int previousQuantity))
+                {
                     element.SelectQuantity(previousQuantity, true);
+                }
+
                 element.SuppressEvents = false;
-                var shouldFocus = HasGamepadFocus() && ((focusedElement == null && i == 0) || element == focusedElement);
+                bool shouldFocus = HasGamepadFocus() && ((focusedElement == null && i == 0) || element == focusedElement);
                 element.GiveFocus(shouldFocus);
+
                 if (shouldFocus)
                 {
                     didFocus = true;
@@ -415,18 +451,23 @@ namespace EpicLoot_UnityLib
             {
                 case SortMode.Rarity:
                     if (SortByRarity != null)
+                    {
                         return SortByRarity(items);
+                    }
                     break;
-
                 case SortMode.Name:
                     if (SortByName != null)
+                    {
                         return SortByName(items);
+                    }
                     else
-                        return items.OrderBy(x => Localization.instance.Localize(x.GetItem().m_shared.m_name)).ThenByDescending(x => x.GetItem().m_stack).ToList();
-
-                case SortMode.Quantity: 
-                    return items.OrderByDescending(x => x.GetItem().m_stack).ThenBy(x => Localization.instance.Localize(x.GetItem().m_shared.m_name)).ToList();
-
+                    {
+                        return items.OrderBy(x => Localization.instance.Localize(
+                            x.GetItem().m_shared.m_name)).ThenByDescending(x => x.GetItem().m_stack).ToList();
+                    }
+                case SortMode.Quantity:
+                    return items.OrderByDescending(x => x.GetItem().m_stack)
+                        .ThenBy(x => Localization.instance.Localize(x.GetItem().m_shared.m_name)).ToList();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
@@ -436,15 +477,17 @@ namespace EpicLoot_UnityLib
 
         public List<Tuple<T, int>> GetSelectedItems<T>()
         {
-            var result = new List<Tuple<T, int>>();
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
+            List<Tuple<T, int>> result = new List<Tuple<T, int>>();
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
             {
-                var childToCache = ListContainer.GetChild(i);
-                var element = childToCache.GetComponent<MultiSelectItemListElement>();
-                var quantity = element.GetSelectedQuantity();
+                Transform childToCache = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
+                int quantity = element.GetSelectedQuantity();
                 if (quantity > 0)
+                {
                     result.Add(new Tuple<T, int>((T)element.GetListElement(), quantity));
+                }
             }
 
             return result;
@@ -452,14 +495,16 @@ namespace EpicLoot_UnityLib
 
         public Tuple<T, int> GetSingleSelectedItem<T>()
         {
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
             {
-                var childToCache = ListContainer.GetChild(i);
-                var element = childToCache.GetComponent<MultiSelectItemListElement>();
-                var quantity = element.GetSelectedQuantity();
+                Transform childToCache = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
+                int quantity = element.GetSelectedQuantity();
                 if (quantity > 0)
+                {
                     return new Tuple<T, int>((T)element.GetListElement(), quantity);
+                }
             }
 
             return null;
@@ -467,14 +512,16 @@ namespace EpicLoot_UnityLib
 
         public int GetFirstSelectedIndex()
         {
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
             {
-                var childToCache = ListContainer.GetChild(i);
-                var element = childToCache.GetComponent<MultiSelectItemListElement>();
-                var quantity = element.GetSelectedQuantity();
+                Transform childToCache = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToCache.GetComponent<MultiSelectItemListElement>();
+                int quantity = element.GetSelectedQuantity();
                 if (quantity > 0)
+                {
                     return i;
+                }
             }
 
             return -1;
@@ -506,21 +553,25 @@ namespace EpicLoot_UnityLib
 
         private MultiSelectItemListElement GetElement(int index)
         {
-            var child = ListContainer.GetChild(index);
+            Transform child = ListContainer.GetChild(index);
             return child == null ? null : child.GetComponent<MultiSelectItemListElement>();
         }
 
         public void ForeachElement(Action<int, MultiSelectItemListElement> func)
         {
             if (ListContainer == null)
-                return;
-
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
             {
-                var element = GetElement(i);
+                return;
+            }
+
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
+            {
+                MultiSelectItemListElement element = GetElement(i);
                 if (element != null)
+                {
                     func(i, element);
+                }
             }
         }
 
@@ -545,13 +596,15 @@ namespace EpicLoot_UnityLib
             {
                 _hasGamepadFocus = focused;
 
-                var focusIndex = focused ? Mathf.Clamp(tryFocusIndex, 0, ListContainer.childCount - 1) : -1;
+                int focusIndex = focused ? Mathf.Clamp(tryFocusIndex, 0, ListContainer.childCount - 1) : -1;
                 ForeachElement((i, e) =>
                 {
-                    var shouldFocus = i == focusIndex;
+                    bool shouldFocus = i == focusIndex;
                     e.GiveFocus(shouldFocus);
                     if (shouldFocus)
+                    {
                         CenterOnItem(e);
+                    }
                 });
             }
         }
@@ -564,18 +617,24 @@ namespace EpicLoot_UnityLib
         public MultiSelectItemListElement GetFocusedElement()
         {
             if (ListContainer == null || !ZInput.IsGamepadActive())
-                return null;
-
-            var elementCount = ListContainer.childCount;
-            for (var i = 0; i < elementCount; ++i)
             {
-                var child = ListContainer.GetChild(i);
-                if (child == null)
-                    continue;
+                return null;
+            }
 
-                var element = child.GetComponent<MultiSelectItemListElement>();
+            int elementCount = ListContainer.childCount;
+            for (int i = 0; i < elementCount; ++i)
+            {
+                Transform child = ListContainer.GetChild(i);
+                if (child == null)
+                {
+                    continue;
+                }
+
+                MultiSelectItemListElement element = child.GetComponent<MultiSelectItemListElement>();
                 if (element != null && element.HasGamepadFocus())
+                {
                     return element;
+                }
             }
 
             return null;
@@ -584,15 +643,19 @@ namespace EpicLoot_UnityLib
         public int GetItemCount()
         {
             if (ListContainer == null)
-                return 0;
-
-            var elementCount = ListContainer.childCount;
-            var activeChildCount = 0;
-            for (var i = 0; i < elementCount; ++i)
             {
-                var child = ListContainer.GetChild(i);
+                return 0;
+            }
+
+            int elementCount = ListContainer.childCount;
+            int activeChildCount = 0;
+            for (int i = 0; i < elementCount; ++i)
+            {
+                Transform child = ListContainer.GetChild(i);
                 if (child != null && child.gameObject.activeSelf)
+                {
                     activeChildCount++;
+                }
             }
 
             return activeChildCount;
@@ -605,12 +668,13 @@ namespace EpicLoot_UnityLib
 
         public void InitWithExistingItems()
         {
-            for (var i = 0; i < ListContainer.childCount; ++i)
+            for (int i = 0; i < ListContainer.childCount; ++i)
             {
-                var childToSet = ListContainer.GetChild(i);
-                var element = childToSet.GetComponent<MultiSelectItemListElement>();
+                Transform childToSet = ListContainer.GetChild(i);
+                MultiSelectItemListElement element = childToSet.GetComponent<MultiSelectItemListElement>();
                 element.OnSelectionChanged += OnElementSelectionChanged;
             }
+
             DeselectAll();
 
             OnItemsChanged?.Invoke();

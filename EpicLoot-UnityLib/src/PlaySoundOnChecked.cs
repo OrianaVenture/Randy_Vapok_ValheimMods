@@ -28,8 +28,10 @@ namespace EpicLoot_UnityLib
         private void OnToggleChanged(bool _)
         {
             if (Audio != null && SFX != null && _toggle.isOn)
+            {
                 Audio.volume = AudioVolumeLevel();
                 Audio.PlayOneShot(SFX, Audio.volume);
+            }
         }
     }
 }

@@ -58,7 +58,8 @@ namespace EpicLoot.CraftingV2
             EnchantUI.GetEnchantInfo = GetEnchantInfo;
             EnchantUI.GetEnchantCost = GetEnchantCost;
             EnchantUI.EnchantItem = EnchantItemAndReturnSuccessDialog;
-            RuneUI.GetRuneModifyableItems = GetRuneModifyableItems;
+            RuneUI.GetRuneExtractItems = GetRuneExtractItems;
+            RuneUI.GetRuneEtchItems = GetRuneEtchItems;
             RuneUI.GetApplyableRunes = GetApplyableRunesforItem;
             RuneUI.ExtractItemsDestroyed = GetRuneDestructionEnabled;
             RuneUI.GetRuneExtractCost = GetRuneExtractCost;
@@ -91,7 +92,7 @@ namespace EpicLoot.CraftingV2
 
         private static bool UpgradesActive(EnchantingFeature feature, out bool featureActive)
         {
-            var tabEnum = EnchantingTabs.None;
+            EnchantingTabs tabEnum = EnchantingTabs.None;
 
             switch (feature)
             {
@@ -116,19 +117,21 @@ namespace EpicLoot.CraftingV2
             }
 
             featureActive = (tabEnum & ELConfig.EnchantingTableActivatedTabs.Value) != 0;
-            // EpicLoot.Log($"Checking {feature} is active? {featureActive}");
             return ELConfig.EnchantingTableUpgradesActive.Value;
         }
 
         private static void TabActivation(EnchantingTableUI ui)
         {
             if (ui == null || ui.TabHandler == null)
+            {
                 return;
+            }
 
-            for (int i = 0; i < ui.TabHandler.transform.childCount; i++) {
-                var tabGo = ui.TabHandler.transform.GetChild(i).gameObject;
+            for (int i = 0; i < ui.TabHandler.transform.childCount; i++)
+            {
+                GameObject tabGo = ui.TabHandler.transform.GetChild(i).gameObject;
                 Enum.TryParse(tabGo.name, out EnchantingTabs selectTab);
-                // EpicLoot.Log($"Tab Activating {tabGo.name} tab: {selectTab} is active {(ELConfig.EnchantingTableActivatedTabs.Value & selectTab) != 0}");
+
                 switch (selectTab)
                 {
                     case EnchantingTabs.Upgrade:
@@ -149,8 +152,10 @@ namespace EpicLoot.CraftingV2
             if (EpicLoot.HasAuga)
             {
                 //Auga.API.Tooltip_MakeSimpleTooltip(obj);
-            } else {
-                var uiTooltip = obj.GetComponent<UITooltip>();
+            }
+            else
+            {
+                UITooltip uiTooltip = obj.GetComponent<UITooltip>();
                 uiTooltip.m_tooltipPrefab = InventoryGui.instance.m_playerGrid.m_elementPrefab
                     .GetComponent<UITooltip>().m_tooltipPrefab;
             }
@@ -170,7 +175,7 @@ namespace EpicLoot.CraftingV2
 
             if (element.MagicBG != null)
             {
-                var useMagicBG = item.UseMagicBackground();
+                bool useMagicBG = item.UseMagicBackground();
                 element.MagicBG.enabled = useMagicBG;
 
                 if (useMagicBG)
@@ -202,7 +207,7 @@ namespace EpicLoot.CraftingV2
 
         private static List<IListElement> SortByName(List<IListElement> items)
         {
-            var richTextRegex = new Regex(@"<[^>]*>");
+            Regex richTextRegex = new Regex(@"<[^>]*>");
             return items.OrderBy(x => richTextRegex.Replace(Localization.instance.Localize(
                 x.GetItem().GetDecoratedName()), string.Empty))
                 .ThenByDescending(x => x.GetItem().m_stack)
@@ -211,16 +216,16 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetSacrificeItems()
         {
-            var player = Player.m_localPlayer;
-            var result = new List<InventoryItemListElement>();
+            Player player = Player.m_localPlayer;
+            List<InventoryItemListElement> result = new List<InventoryItemListElement>();
 
-            var inventory = player.GetInventory();
-            var boundItems = new List<ItemDrop.ItemData>();
+            Inventory inventory = player.GetInventory();
+            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
-            var items = InventoryManagement.Instance.GetAllItems();
+            List<ItemDrop.ItemData> items = InventoryManagement.Instance.GetAllItems();
             if (items != null)
             {
-                foreach (var item in items)
+                foreach (ItemDrop.ItemData item in items)
                 {
                     if (!ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
                         (item != null && item.m_equipped || boundItems.Contains(item)))
@@ -228,7 +233,7 @@ namespace EpicLoot.CraftingV2
                         continue;
                     }
 
-                    var products = EnchantCostsHelper.GetSacrificeProducts(item);
+                    List<ItemAmountConfig> products = EnchantCostsHelper.GetSacrificeProducts(item);
                     if (products != null)
                     {
                         result.Add(new InventoryItemListElement() { Item = item });
@@ -247,14 +252,14 @@ namespace EpicLoot.CraftingV2
                 return;
             }
 
-            var prefab = ObjectDB.instance.GetItemPrefab(itemID);
+            GameObject prefab = ObjectDB.instance.GetItemPrefab(itemID);
             if (prefab == null)
             {
                 EpicLoot.LogWarning($"Tried to add unknown item ({itemID}) to sacrifice product");
                 return;
             }
 
-            var itemDrop = prefab.GetComponent<ItemDrop>();
+            ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
             if (itemDrop == null)
             {
                 EpicLoot.LogWarning($"Tried to add object with no ItemDrop ({itemID}) to sacrifice product");
@@ -271,25 +276,32 @@ namespace EpicLoot.CraftingV2
                 itemData = itemDrop.m_itemData.Clone();
                 itemData.m_dropPrefab = prefab;
                 itemData.m_stack = amount;
+                // Add MagicItemComponent or products will not stack until reloaded.
+                MagicItemComponent magicItem = itemData.Data().GetOrCreate<MagicItemComponent>();
+                itemData.SaveMagicItem(magicItem.MagicItem);
                 productSet.Add(itemID, itemData);
             }
         }
 
         private static List<InventoryItemListElement> GetSacrificeProducts(List<Tuple<ItemDrop.ItemData, int>> items)
         {
-            var productsSet = new Dictionary<string, ItemDrop.ItemData>();
-            foreach (var entry in items)
+            Dictionary<string, ItemDrop.ItemData> productsSet = new Dictionary<string, ItemDrop.ItemData>();
+            foreach (Tuple<ItemDrop.ItemData, int> entry in items)
             {
-                var item = entry.Item1;
-                var amount = entry.Item2;
+                ItemDrop.ItemData item = entry.Item1;
+                int amount = entry.Item2;
                 if (amount <= 0)
+                {
                     continue;
+                }
 
-                var products = EnchantCostsHelper.GetSacrificeProducts(item);
+                List<ItemAmountConfig> products = EnchantCostsHelper.GetSacrificeProducts(item);
                 if (products == null)
+                {
                     continue;
+                }
 
-                foreach (var itemAmountConfig in products)
+                foreach (ItemAmountConfig itemAmountConfig in products)
                 {
                     AddItemToProductSet(productsSet, itemAmountConfig.Item, itemAmountConfig.Amount * amount);
                 }
@@ -303,26 +315,26 @@ namespace EpicLoot.CraftingV2
 
         private static List<ConversionRecipeUnity> GetConversionRecipes(int mode)
         {
-            var conversionType = (MaterialConversionType)mode;
-            var conversions = MaterialConversions.Conversions.GetValues(conversionType, true);
+            MaterialConversionType conversionType = (MaterialConversionType)mode;
+            List<MaterialConversion> conversions = MaterialConversions.Conversions.GetValues(conversionType, true);
 
-            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(
+            Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(
                 EnchantingFeature.ConvertMaterials);
-            var materialConversionAmount = float.IsNaN(featureValues.Item1) ? -1 : featureValues.Item1;
-            var runestoneConversionAmount = float.IsNaN(featureValues.Item2) ? -1 : featureValues.Item2;
+            float materialConversionAmount = float.IsNaN(featureValues.Item1) ? -1 : featureValues.Item1;
+            float runestoneConversionAmount = float.IsNaN(featureValues.Item2) ? -1 : featureValues.Item2;
 
-            var result = new List<ConversionRecipeUnity>();
+            List<ConversionRecipeUnity> result = new List<ConversionRecipeUnity>();
 
-            foreach (var conversion in conversions)
+            foreach (MaterialConversion conversion in conversions)
             {
-                var prefab = ObjectDB.instance.GetItemPrefab(conversion.Product);
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(conversion.Product);
                 if (prefab == null)
                 {
                     EpicLoot.LogWarning($"Could not find conversion product ({conversion.Product})!");
                     continue;
                 }
 
-                var itemDrop = prefab.GetComponent<ItemDrop>();
+                ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
                 if (itemDrop == null)
                 {
                     EpicLoot.LogWarning($"Conversion product ({conversion.Product}) is not an ItemDrop!");
@@ -331,24 +343,24 @@ namespace EpicLoot.CraftingV2
 
                 itemDrop.m_itemData.m_dropPrefab = prefab;
 
-                var recipe = new ConversionRecipeUnity()
+                ConversionRecipeUnity recipe = new ConversionRecipeUnity()
                 {
                     Product = itemDrop.m_itemData.Clone(),
                     Amount = conversion.Amount,
                     Cost = new List<ConversionRecipeCostUnity>()
                 };
 
-                var hasSomeItems = false;
-                foreach (var requirement in conversion.Resources)
+                bool hasSomeItems = false;
+                foreach (MaterialConversionRequirement requirement in conversion.Resources)
                 {
-                    var reqPrefab = ObjectDB.instance.GetItemPrefab(requirement.Item);
+                    GameObject reqPrefab = ObjectDB.instance.GetItemPrefab(requirement.Item);
                     if (reqPrefab == null)
                     {
                         EpicLoot.LogWarning($"Could not find conversion requirement ({requirement.Item})!");
                         continue;
                     }
 
-                    var reqItemDrop = reqPrefab.GetComponent<ItemDrop>();
+                    ItemDrop reqItemDrop = reqPrefab.GetComponent<ItemDrop>();
                     if (reqItemDrop == null)
                     {
                         EpicLoot.LogWarning($"Conversion requirement ({requirement.Item}) is not an ItemDrop!");
@@ -357,7 +369,7 @@ namespace EpicLoot.CraftingV2
 
                     reqItemDrop.m_itemData.m_dropPrefab = reqPrefab;
 
-                    var requiredAmount = requirement.Amount;
+                    int requiredAmount = requirement.Amount;
                     if (runestoneConversionAmount > 0 && conversion.Type == MaterialConversionType.Upgrade &&
                         recipe.Product.IsRunestone() && reqItemDrop.m_itemData.IsRunestone())
                     {
@@ -405,27 +417,27 @@ namespace EpicLoot.CraftingV2
 
         private static string GetEnchantInfo(ItemDrop.ItemData item, MagicRarityUnity _rarity)
         {
-            var rarity = (ItemRarity)_rarity;
-            var sb = new StringBuilder();
-            var rarityColor = EpicLoot.GetRarityColor(rarity);
-            var rarityDisplay = EpicLoot.GetRarityDisplayName(rarity);
+            ItemRarity rarity = (ItemRarity)_rarity;
+            StringBuilder sb = new StringBuilder();
+            string rarityColor = EpicLoot.GetRarityColor(rarity);
+            string rarityDisplay = EpicLoot.GetRarityDisplayName(rarity);
             sb.AppendLine($"{item.m_shared.m_name} \u2794 <color={rarityColor}>{rarityDisplay}</color> " +
                 $"{item.GetDecoratedName(rarityColor)}");
             sb.AppendLine($"<color={rarityColor}>");
 
-            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Enchant);
-            var highValueBonus = float.IsNaN(featureValues.Item1) ? 0 : featureValues.Item1;
-            var midValueBonus = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
+            Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Enchant);
+            float highValueBonus = float.IsNaN(featureValues.Item1) ? 0 : featureValues.Item1;
+            float midValueBonus = float.IsNaN(featureValues.Item2) ? 0 : featureValues.Item2;
 
-            var effectCountWeights = LootRoller.GetEffectCountsPerRarity(rarity, true);
+            List<KeyValuePair<int, float>> effectCountWeights = LootRoller.GetEffectCountsPerRarity(rarity, true);
             float totalWeight = effectCountWeights.Sum(x => x.Value);
-            for (var index = 0; index < effectCountWeights.Count; index++)
+            for (int index = 0; index < effectCountWeights.Count; index++)
             {
-                var effectCountEntry = effectCountWeights[index];
-                var count = effectCountEntry.Key;
-                var weight = effectCountEntry.Value;
-                var percent = (int)(weight / totalWeight * 100.0f);
-                var label = count == 1 ? $"{count} $mod_epicloot_enchant_effect" : $"{count} $mod_epicloot_enchant_effects";
+                KeyValuePair<int, float> effectCountEntry = effectCountWeights[index];
+                int count = effectCountEntry.Key;
+                float weight = effectCountEntry.Value;
+                int percent = (int)(weight / totalWeight * 100.0f);
+                string label = count == 1 ? $"{count} $mod_epicloot_enchant_effect" : $"{count} $mod_epicloot_enchant_effects";
 
                 if (index == effectCountWeights.Count - 1 && highValueBonus > 0)
                     sb.AppendLine($"‣ {label} {percent}% <color=#EAA800>(+{highValueBonus}% $mod_epicloot_bonus)</color>");
@@ -442,13 +454,13 @@ namespace EpicLoot.CraftingV2
             sb.AppendLine(Localization.instance.Localize("$mod_epicloot_augment_availableeffects"));
             sb.AppendLine($"<color={rarityColor}>");
 
-            var tempMagicItem = new MagicItem() { Rarity = rarity };
-            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, tempMagicItem);
+            MagicItem tempMagicItem = new MagicItem() { Rarity = rarity };
+            List<MagicItemEffectDefinition> availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(item, tempMagicItem);
 
-            foreach (var effectDef in availableEffects)
+            foreach (MagicItemEffectDefinition effectDef in availableEffects)
             {
-                var values = effectDef.GetValuesForRarity(rarity);
-                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
+                MagicItemEffectDefinition.ValueDef values = effectDef.GetValuesForRarity(rarity);
+                string valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
                     $"{values.MinValue}" : $"({values.MinValue}-{values.MaxValue})" : "";
                 sb.AppendLine($"‣ {string.Format(Localization.instance.Localize(effectDef.DisplayText), valueDisplay)}");
             }
@@ -462,7 +474,7 @@ namespace EpicLoot.CraftingV2
         {
             return EnchantHelper.GetEnchantCosts(item, (ItemRarity)_rarity).Select(entry =>
             {
-                var itemData = entry.Key.m_itemData.Clone();
+                ItemDrop.ItemData itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
                 itemData.m_stack = entry.Value;
                 return new InventoryItemListElement() { Item = itemData };
@@ -471,7 +483,7 @@ namespace EpicLoot.CraftingV2
 
         private static GameObject EnchantItemAndReturnSuccessDialog(ItemDrop.ItemData item, MagicRarityUnity rarity)
         {
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
 
             float previousDurabilityPercent = 0;
             if (item.m_shared.m_useDurability)
@@ -479,10 +491,10 @@ namespace EpicLoot.CraftingV2
                 previousDurabilityPercent = item.m_durability / item.GetMaxDurability();
             }
 
-            var luckFactor = player.GetTotalActiveMagicEffectValue(MagicEffectType.Luck, 0.01f);
-            var magicItem = LootRoller.RollMagicItem((ItemRarity)rarity, item, luckFactor);
+            float luckFactor = player.GetTotalActiveMagicEffectValue(MagicEffectType.Luck, 0.01f);
+            MagicItem magicItem = LootRoller.RollMagicItem((ItemRarity)rarity, item, luckFactor);
 
-            var magicItemComponent = item.Data().GetOrCreate<MagicItemComponent>();
+            MagicItemComponent magicItemComponent = item.Data().GetOrCreate<MagicItemComponent>();
             magicItemComponent.SetMagicItem(magicItem);
 
             EquipmentEffectCache.Reset(player);
@@ -510,7 +522,7 @@ namespace EpicLoot.CraftingV2
 
             successDialog.Show(item.Extended());
 
-            var rt = (RectTransform)successDialog.transform;
+            RectTransform rt = (RectTransform)successDialog.transform;
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.anchorMin = new Vector2(0.5f, 0.5f);
@@ -518,10 +530,10 @@ namespace EpicLoot.CraftingV2
 
             if (!EpicLoot.HasAuga)
             {
-                var frame = successDialog.transform.Find("Frame");
+                Transform frame = successDialog.transform.Find("Frame");
                 if (frame != null)
                 {
-                    var frameRT = (RectTransform)frame;
+                    RectTransform frameRT = (RectTransform)frame;
                     frameRT.pivot = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMax = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMin = new Vector2(0.5f, 0.5f);
@@ -539,8 +551,10 @@ namespace EpicLoot.CraftingV2
 
         private static IdentifyTypeConfig SelectLootIdentifyDetails(string filter)
         {
-            foreach (var identifyStyle in EnchantCostsHelper.Config.IdentifyTypes) {
-                if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter) {
+            foreach (KeyValuePair<string, IdentifyTypeConfig> identifyStyle in EnchantCostsHelper.Config.IdentifyTypes)
+            {
+                if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter)
+                {
                     return identifyStyle.Value;
                 }
             }
@@ -561,26 +575,31 @@ namespace EpicLoot.CraftingV2
                 List<LootTable> lootTable = LootRoller.GetFullyResolvedLootTable(lootSetName);
                 if (lootTable != null) { lootTables.AddRange(lootTable); }
             }
+
             EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.Localization)} {lootTables.Count}");
             return lootTables;
         }
 
         private static List<InventoryItemListElement> LootRollSelectedItems(
-            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float power_modifier)
+            string filter, List<Tuple<ItemDrop.ItemData, int>> items, float powerModifier)
         {
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
 
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
-            foreach (var itemstack in items)
+            foreach (Tuple<ItemDrop.ItemData, int> itemstack in items)
             {
                 Enum.TryParse<Heightmap.Biome>(itemstack.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
                 List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
                 List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(
-                    player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, power_modifier);
+                    player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, powerModifier);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
                 totalRolledItems.AddRange(rolledItems);
-                foreach (var item in rolledItems) { InventoryManagement.Instance.GiveItem(item); }
+
+                foreach (ItemDrop.ItemData item in rolledItems)
+                {
+                    InventoryManagement.Instance.GiveItem(item);
+                }
             }
             
             EquipmentEffectCache.Reset(player);
@@ -589,32 +608,50 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(string filter, List<ItemDrop.ItemData> items_selected)
         {
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             List<string> resultItemNames = new List<string>();
 
             List<Heightmap.Biome> biomesCovered = new List<Heightmap.Biome> { };
-            foreach (var item in items_selected) {
-                if (item == null || item.m_dropPrefab == null) { continue; }
+
+            foreach (ItemDrop.ItemData item in items_selected)
+            {
+                if (item == null || item.m_dropPrefab == null)
+                {
+                    continue;
+                }
                 
                 Enum.TryParse<Heightmap.Biome>(item.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
-                if (biomesCovered.Contains(biome)) { continue; }
+                if (biomesCovered.Contains(biome))
+                {
+                    continue;
+                }
+
                 List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
                 biomesCovered.Add(biome);
                 Dictionary<string, float> itemChances = LootRoller.GetLootTableChances(player.transform.position, selectedLootTables);
-                foreach (var entry in itemChances) {
-                    if (!resultItemNames.Contains(entry.Key)) {
+                foreach (KeyValuePair<string, float> entry in itemChances)
+                {
+                    if (!resultItemNames.Contains(entry.Key))
+                    {
                         resultItemNames.Add(entry.Key);
                     }
                 }
             }
-            var result = new List<InventoryItemListElement>();
 
-            foreach (var item in resultItemNames) {
+            List<InventoryItemListElement> result = new List<InventoryItemListElement>();
+
+            foreach (string item in resultItemNames)
+            {
                 ObjectDB.instance.TryGetItemPrefab(item, out GameObject founditem);
-                if (founditem == null) { continue; }
-                result.Add(new InventoryItemListElement() {
-                    Item = founditem.GetComponent<ItemDrop>().m_itemData,
+                if (founditem == null)
+                {
+                    continue;
+                }
+
+                result.Add(new InventoryItemListElement()
+                {
+                    Item = founditem.GetComponent<ItemDrop>().m_itemData
                 });
             }
 
@@ -631,7 +668,7 @@ namespace EpicLoot.CraftingV2
         {
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
-            var results = new List<InventoryItemListElement>() { };
+            List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
 
             foreach(Tuple<ItemDrop.ItemData, int> it in items)
@@ -639,7 +676,7 @@ namespace EpicLoot.CraftingV2
                 totalStackSize += it.Item2;
             }
 
-            foreach (var entry in category.Costs)
+            foreach (ItemAmountConfig entry in category.Costs)
             {
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
                 if (costGo == null)
@@ -688,20 +725,31 @@ namespace EpicLoot.CraftingV2
             return (MagicRarityUnity)rarity;
         }
 
-        private static List<InventoryItemListElement> GetRuneModifyableItems()
+        private static List<InventoryItemListElement> GetRuneExtractItems()
         {
-            var player = Player.m_localPlayer;
-            var result = new List<InventoryItemListElement>();
+            return GetRuneModifyableItems(false);
+        }
 
-            var inventory = player.GetInventory();
-            var boundItems = new List<ItemDrop.ItemData>();
+        private static List<InventoryItemListElement> GetRuneEtchItems()
+        {
+            return GetRuneModifyableItems(true);
+        }
+
+        private static List<InventoryItemListElement> GetRuneModifyableItems(bool allowBound)
+        {
+            Player player = Player.m_localPlayer;
+            List<InventoryItemListElement> result = new List<InventoryItemListElement>();
+
+            Inventory inventory = player.GetInventory();
+            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
-            var items = InventoryManagement.Instance.GetAllItems();
+            List<ItemDrop.ItemData> items = InventoryManagement.Instance.GetAllItems();
+
             if (items != null)
             {
-                foreach (var item in items)
+                foreach (ItemDrop.ItemData item in items)
                 {
-                    if (!ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
+                    if (!allowBound && !ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value &&
                         (item != null && item.m_equipped || boundItems.Contains(item)))
                     {
                         continue;
@@ -717,35 +765,41 @@ namespace EpicLoot.CraftingV2
             return result;
         }
 
-        private static List<InventoryItemListElement> GetApplyableRunesforItem(ItemDrop.ItemData item, string selected_effect)
+        private static List<InventoryItemListElement> GetApplyableRunesforItem(ItemDrop.ItemData item, string selectedEffect)
         {
-            var magicitem = item.GetMagicItem();
-            var rarity = magicitem.Rarity;
-            var selected_enchant = magicitem.GetEffects(selected_effect);
-            int selected_enchant_index = magicitem.Effects.FindIndex(x => x.EffectType == selected_effect);
+            MagicItem magicItem = item.GetMagicItem();
+            ItemRarity rarity = magicItem.Rarity;
+            List<MagicItemEffect> selectedEnchant = magicItem.GetEffects(selectedEffect);
+            int selectedEnchantIndex = magicItem.Effects.FindIndex(x => x.EffectType == selectedEffect);
 
             // Determine if the effect has values
-            EpicLoot.Log($"ME effects: {string.Join(",",magicitem.Effects.Select(e => e.EffectType).ToList())}, selected effect filter {selected_effect}");
+            EpicLoot.Log($"ME effects: {string.Join(",", magicItem.Effects.Select(e => e.EffectType).ToList())}, " +
+                $"selected effect filter {selectedEffect}");
 
             // Guard clause against not having any target effects selected
-            if (selected_enchant.Count == 0) { return new List<InventoryItemListElement>() { }; }
-
-            var valuelessEffect = false;
-            if (magicitem.Effects.Count > 0 && selected_effect != "")
+            if (selectedEnchant.Count == 0)
             {
-                var currentEffectDef = MagicItemEffectDefinitions.Get(selected_enchant.First().EffectType);
+                return new List<InventoryItemListElement>() { };
+            }
+
+            bool valuelessEffect = false;
+            if (magicItem.Effects.Count > 0 && selectedEffect != "")
+            {
+                MagicItemEffectDefinition currentEffectDef = MagicItemEffectDefinitions.Get(selectedEnchant.First().EffectType);
                 valuelessEffect = currentEffectDef.GetValuesForRarity(rarity) == null;
             }
 
-            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
-                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : selected_enchant_index, checkruneroll: true);
-            var availableEffectNames = availableEffects.Select(x => x.Type).ToList();
+            List<MagicItemEffectDefinition> availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
+                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : selectedEnchantIndex, checkruneroll: true);
+            List<string> availableEffectNames = availableEffects.Select(x => x.Type).ToList();
 
-            var selectedItems = InventoryManagement.Instance.GetAllItems()
-                .Where(item => item.IsMagic() && item.IsRunestone() && item.GetMagicItem().Effects.Any(e => availableEffectNames.Contains(e.EffectType)));
+            IEnumerable<ItemDrop.ItemData> selectedItems = InventoryManagement.Instance.GetAllItems()
+                .Where(item => item.IsMagic() &&
+                    item.IsRunestone() &&
+                    item.GetMagicItem().Effects.Any(e => availableEffectNames.Contains(e.EffectType)));
 
             List<InventoryItemListElement> returnList = new List<InventoryItemListElement>();
-            foreach(var entry in selectedItems)
+            foreach(ItemDrop.ItemData entry in selectedItems)
             {
                 returnList.Add(new InventoryItemListElement()
                 {
@@ -755,63 +809,89 @@ namespace EpicLoot.CraftingV2
                 });
             }
             
-            foreach (var entry in returnList) {
+            foreach (InventoryItemListElement entry in returnList)
+            {
                 EpicLoot.Log($"Rune item {entry.Item.GetDecoratedName()} has effects: {string.Join(",", entry.Effects.Select(e => e.Item1))}");
             }
 
             return returnList;
         }
 
-        private static List<InventoryItemListElement> GetRuneExtractCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float cost_modifier) {
-            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Extract).Select(entry => {
-                var itemData = entry.Key.m_itemData.Clone();
+        private static List<InventoryItemListElement> GetRuneExtractCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float costModifier)
+        {
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Extract).Select(entry =>
+            {
+                ItemDrop.ItemData itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
-                var cost = entry.Value;
-                if (cost_modifier != float.NaN) {
-                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+                int cost = entry.Value;
+                if (costModifier != float.NaN) {
+                    cost = Mathf.RoundToInt(entry.Value * costModifier);
                 }
-                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+
+                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{costModifier} result:{cost}");
                 itemData.m_stack = cost;
-                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
+                if (itemData.m_stack <= 0)
+                {
+                    itemData.m_stack = 1;
+                }
+
                 return new InventoryItemListElement() { Item = itemData };
             }).ToList();
         }
 
-        private static List<InventoryItemListElement> GetRuneEtchCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float cost_modifier) {
-            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Etch).Select(entry => {
-                var itemData = entry.Key.m_itemData.Clone();
+        private static List<InventoryItemListElement> GetRuneEtchCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float costModifier)
+        {
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Etch).Select(entry =>
+            {
+                ItemDrop.ItemData itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
-                var cost = entry.Value;
-                if (cost_modifier != float.NaN) {
-                    cost = Mathf.RoundToInt(entry.Value * cost_modifier);
+                int cost = entry.Value;
+                if (costModifier != float.NaN)
+                {
+                    cost = Mathf.RoundToInt(entry.Value * costModifier);
                 }
-                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{cost_modifier} result:{cost}");
+
+                EpicLoot.Log($"Cost settings: E:{entry.Value} modifier:{costModifier} result:{cost}");
                 itemData.m_stack = cost;
-                if (itemData.m_stack <= 0) { itemData.m_stack = 1; }
+                if (itemData.m_stack <= 0)
+                {
+                    itemData.m_stack = 1;
+                }
+
                 return new InventoryItemListElement() { Item = itemData };
             }).ToList();
         }
 
-        private static ItemDrop.ItemData BuildEnchantedRune(ItemDrop.ItemData selectedItem, int targetEnchant, float power_modifier) {
-            MagicItemEffect meffect = selectedItem.GetMagicItem().Effects[targetEnchant];
-            MagicItemEffect runeEffect = new MagicItemEffect(meffect.EffectType);
-            if (meffect.EffectValue != float.NaN && meffect.EffectValue > 1) {
-                runeEffect.EffectValue = meffect.EffectValue * power_modifier;
-                float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[meffect.EffectType].ValuesPerRarity.GetValueDefForRarity(selectedItem.GetRarity()).MaxValue;
+        private static ItemDrop.ItemData BuildEnchantedRune(ItemDrop.ItemData selectedItem, int targetEnchant, float powerModifier)
+        {
+            MagicItemEffect effect = selectedItem.GetMagicItem().Effects[targetEnchant];
+            MagicItemEffect runeEffect = new MagicItemEffect(effect.EffectType);
+
+            if (effect.EffectValue != float.NaN && effect.EffectValue > 1)
+            {
+                runeEffect.EffectValue = effect.EffectValue * powerModifier;
+                float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[effect.EffectType].ValuesPerRarity
+                    .GetValueDefForRarity(selectedItem.GetRarity()).MaxValue;
                 // To clamp down on potentially infinite power looping by re-runing items
-                if (runeEffect.EffectValue > (maxDefaultValue * power_modifier)) { runeEffect.EffectValue = (maxDefaultValue * power_modifier); }
+                if (runeEffect.EffectValue > (maxDefaultValue * powerModifier))
+                {
+                    runeEffect.EffectValue = (maxDefaultValue * powerModifier);
+                }
             }
+
             string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
             EpicLoot.Log($"Checking for EtchedRune ({prefabName}) to return");
-            ItemDrop basedata =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
-            ItemDrop.ItemData newitem = basedata.m_itemData.Clone();
-            MagicItemComponent magicItemComponent = newitem.Data().GetOrCreate<MagicItemComponent>();
+
+            ItemDrop baseData =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
+            ItemDrop.ItemData newItem = baseData.m_itemData.Clone();
+            MagicItemComponent magicItemComponent = newItem.Data().GetOrCreate<MagicItemComponent>();
             MagicItem enchantmentsToRune = new MagicItem {
                 Rarity = selectedItem.GetRarity(),
                 Effects = new List<MagicItemEffect> { runeEffect }
             };
             magicItemComponent.SetMagicItem(enchantmentsToRune);
-            return newitem;
+
+            return newItem;
         }
 
         private static string GetSelectedEnchantmentNameByIndex(ItemDrop.ItemData selectedItem, int targetEnchant)
@@ -831,34 +911,43 @@ namespace EpicLoot.CraftingV2
 
         private static GameObject RuneEnhanceItemAndReturnSuccess(ItemDrop.ItemData item, ItemDrop.ItemData rune, int enchantment)
         {
-            List<MagicItemEffect> runeeffects = rune.GetMagicItem().Effects;
+            List<MagicItemEffect> runeEffects = rune.GetMagicItem().Effects;
 
-            if (runeeffects.Count > 1)
+            if (runeEffects.Count > 1)
             {
-                foreach(var effect in runeeffects) {
+                foreach (MagicItemEffect effect in runeEffects)
+                {
                     // Replace the target enchantment
-                    if (runeeffects.IndexOf(effect) == 0) { 
+                    if (runeEffects.IndexOf(effect) == 0)
+                    {
                         item.GetMagicItem().Effects[enchantment] = effect;
                         continue;
                     }
+
                     // Skip or replace existing effects with the same effect type
-                    if (item.GetMagicItem().Effects.Any(x => x.EffectType == effect.EffectType)) {
+                    if (item.GetMagicItem().Effects.Any(x => x.EffectType == effect.EffectType))
+                    {
                         // If the item already has this effect, but with a lower value, replace it
-                        if (item.GetMagicItem().Effects.Any(x => x.EffectValue < effect.EffectValue)) {
-                            int index_of_effect = item.GetMagicItem().Effects.FindIndex(x => x.EffectType == effect.EffectType);
-                            item.GetMagicItem().Effects[index_of_effect] = effect;
+                        if (item.GetMagicItem().Effects.Any(x => x.EffectValue < effect.EffectValue))
+                        {
+                            int index = item.GetMagicItem().Effects.FindIndex(x => x.EffectType == effect.EffectType);
+                            item.GetMagicItem().Effects[index] = effect;
                         }
+
                         // If the item already has this effect, skip it
                         continue;
                     }
+
                     // Add additional effects
                     item.GetMagicItem().Effects.Add(effect);
                 }
-            } else {
+            }
+            else
+            {
                 item.GetMagicItem().Effects[enchantment] = rune.GetMagicItem().Effects[0];
             }
 
-            var magicItem = item.GetMagicItem();
+            MagicItem magicItem = item.GetMagicItem();
             item.SaveMagicItem(magicItem);
 
             CraftSuccessDialog successDialog;
@@ -878,7 +967,7 @@ namespace EpicLoot.CraftingV2
 
             successDialog.Show(item.Extended());
 
-            var rt = (RectTransform)successDialog.transform;
+            RectTransform rt = (RectTransform)successDialog.transform;
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.anchorMin = new Vector2(0.5f, 0.5f);
@@ -886,10 +975,10 @@ namespace EpicLoot.CraftingV2
 
             if (!EpicLoot.HasAuga)
             {
-                var frame = successDialog.transform.Find("Frame");
+                Transform frame = successDialog.transform.Find("Frame");
                 if (frame != null)
                 {
-                    var frameRT = (RectTransform)frame;
+                    RectTransform frameRT = (RectTransform)frame;
                     frameRT.pivot = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMax = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMin = new Vector2(0.5f, 0.5f);
@@ -905,24 +994,24 @@ namespace EpicLoot.CraftingV2
 
         private static List<Tuple<string, bool>> GetEnchantmentEffects(ItemDrop.ItemData item, bool runecheck = false)
         {
-            var result = new List<Tuple<string, bool>>();
+            List<Tuple<string, bool>> result = new List<Tuple<string, bool>>();
             EpicLoot.Log($"Checking for {item} potential enchantments");
-            var magicItem = item?.GetMagicItem();
+            MagicItem magicItem = item?.GetMagicItem();
             if (magicItem != null)
             {
-                var rarity = magicItem.Rarity;
-                var augmentableEffects = magicItem.Effects;
+                ItemRarity rarity = magicItem.Rarity;
+                List<MagicItemEffect> augmentableEffects = magicItem.Effects;
 
-                for (var index = 0; index < augmentableEffects.Count; index++)
+                for (int index = 0; index < augmentableEffects.Count; index++)
                 {
-                    var augmentableEffect = augmentableEffects[index];
-                    var effectDef = MagicItemEffectDefinitions.Get(augmentableEffect.EffectType);
-                    var canAugment = effectDef != null && effectDef.CanBeAugmented;
+                    MagicItemEffect augmentableEffect = augmentableEffects[index];
+                    MagicItemEffectDefinition effectDef = MagicItemEffectDefinitions.Get(augmentableEffect.EffectType);
+                    bool canAugment = effectDef != null && effectDef.CanBeAugmented;
                     if (runecheck) { canAugment = effectDef != null && effectDef.CanBeRunified; }
 
-                    var text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
-                    var color = EpicLoot.GetRarityColor(rarity);
-                    var alpha = canAugment ? "FF" : "7F";
+                    string text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
+                    string color = EpicLoot.GetRarityColor(rarity);
+                    string alpha = canAugment ? "FF" : "7F";
                     text = $"<color={color}{alpha}>{text}</color>";
 
                     result.Add(new Tuple<string, bool>(text, canAugment));
@@ -934,29 +1023,31 @@ namespace EpicLoot.CraftingV2
 
         private static string GetAvailableAugmentEffects(ItemDrop.ItemData item, int augmentindex)
         {
-            var magicItem = item?.GetMagicItem();
+            MagicItem magicItem = item?.GetMagicItem();
             if (magicItem == null)
+            {
                 return string.Empty;
+            }
 
-            var rarity = magicItem.Rarity;
-            var rarityColor = EpicLoot.GetRarityColor(rarity);
+            ItemRarity rarity = magicItem.Rarity;
+            string rarityColor = EpicLoot.GetRarityColor(rarity);
 
-            var valuelessEffect = false;
+            bool valuelessEffect = false;
             if (augmentindex >= 0 && augmentindex < magicItem.Effects.Count)
             {
-                var currentEffectDef = MagicItemEffectDefinitions.Get(magicItem.Effects[augmentindex].EffectType);
+                MagicItemEffectDefinition currentEffectDef = MagicItemEffectDefinitions.Get(magicItem.Effects[augmentindex].EffectType);
                 valuelessEffect = currentEffectDef.GetValuesForRarity(rarity) == null;
             }
 
-            var availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
+            List<MagicItemEffectDefinition> availableEffects = MagicItemEffectDefinitions.GetAvailableEffects(
                 item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : augmentindex);
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append($"<color={rarityColor}>");
-            foreach (var effectDef in availableEffects)
+            foreach (MagicItemEffectDefinition effectDef in availableEffects)
             {
-                var values = effectDef.GetValuesForRarity(item.GetRarity());
-                var valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
+                MagicItemEffectDefinition.ValueDef values = effectDef.GetValuesForRarity(item.GetRarity());
+                string valueDisplay = values != null ? Mathf.Approximately(values.MinValue, values.MaxValue) ?
                     $"{values.MinValue}" : $"({values.MinValue}-{values.MaxValue})" : "";
                 sb.AppendLine($"‣ {string.Format(Localization.instance.Localize(effectDef.DisplayText), valueDisplay)}");
             }
@@ -970,7 +1061,7 @@ namespace EpicLoot.CraftingV2
             return AugmentHelper.GetAugmentCosts(item, augmentindex)
                 .Select(x =>
                 {
-                    var itemData = x.Key.m_itemData.Clone();
+                    ItemDrop.ItemData itemData = x.Key.m_itemData.Clone();
                     itemData.m_dropPrefab = x.Key.gameObject;
                     itemData.m_stack = x.Value;
                     return new InventoryItemListElement() { Item = itemData };
@@ -980,23 +1071,25 @@ namespace EpicLoot.CraftingV2
         private static GameObject AugmentItem(ItemDrop.ItemData item, int augmentindex)
         {
             // Set as augmented
-            var magicItem = item?.GetMagicItem();
+            MagicItem magicItem = item?.GetMagicItem();
             if (magicItem == null)
+            {
                 return null;
+            }
 
             magicItem.SetEffectAsAugmented(augmentindex);
             item.SaveMagicItem(magicItem);
 
-            var choiceDialog = AugmentHelper.CreateAugmentChoiceDialog(true);
+            AugmentChoiceDialog choiceDialog = AugmentHelper.CreateAugmentChoiceDialog(true);
             choiceDialog.transform.SetParent(EnchantingTableUI.instance.transform);
 
             // Fix audio sources
-            foreach (var audio_source in choiceDialog.GetComponentsInChildren<AudioSource>())
+            foreach (AudioSource audioSource in choiceDialog.GetComponentsInChildren<AudioSource>())
             {
-                audio_source.volume = GetAudioLevel();
+                audioSource.volume = GetAudioLevel();
             }
 
-            var rt = (RectTransform)choiceDialog.transform;
+            RectTransform rt = (RectTransform)choiceDialog.transform;
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.anchorMin = new Vector2(0.5f, 0.5f);
@@ -1004,10 +1097,10 @@ namespace EpicLoot.CraftingV2
 
             if (!EpicLoot.HasAuga)
             {
-                var frame = choiceDialog.transform.Find("Frame");
+                Transform frame = choiceDialog.transform.Find("Frame");
                 if (frame != null)
                 {
-                    var frameRT = (RectTransform)frame;
+                    RectTransform frameRT = (RectTransform)frame;
                     frameRT.pivot = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMax = new Vector2(0.5f, 0.5f);
                     frameRT.anchorMin = new Vector2(0.5f, 0.5f);
@@ -1021,9 +1114,11 @@ namespace EpicLoot.CraftingV2
 
         private static void OnAugmentComplete(ItemDrop.ItemData item, int effectIndex, MagicItemEffect newEffect)
         {
-            var magicItem = item?.GetMagicItem();
+            MagicItem magicItem = item?.GetMagicItem();
             if (magicItem == null)
+            {
                 return;
+            }
 
             if (magicItem.HasEffect(MagicEffectType.Indestructible))
             {
@@ -1036,8 +1131,8 @@ namespace EpicLoot.CraftingV2
                 }
             }
 
-            var oldEffects = magicItem.GetEffects();
-            var oldEffect = (effectIndex >= 0 && effectIndex < oldEffects.Count) ? oldEffects[effectIndex] : null;
+            List<MagicItemEffect> oldEffects = magicItem.GetEffects();
+            MagicItemEffect oldEffect = (effectIndex >= 0 && effectIndex < oldEffects.Count) ? oldEffects[effectIndex] : null;
 
             magicItem.ReplaceEffect(effectIndex, newEffect);
 
@@ -1064,25 +1159,28 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetDisenchantItems()
         {
-            var player = Player.m_localPlayer;
-            var inventory = player.GetInventory();
-            var boundItems = new List<ItemDrop.ItemData>();
+            Player player = Player.m_localPlayer;
+            Inventory inventory = player.GetInventory();
+            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
+
             return InventoryManagement.Instance.GetAllItems()
-                .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value || 
+                .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value ||
                     !boundItems.Contains(item)))
-                .Where(item => item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
+                .Where(item => item.IsMagic(out MagicItem magicItem) && magicItem.CanBeDisenchanted())
                 .Select(item => new InventoryItemListElement() { Item = item })
                 .ToList();
         }
 
         private static List<InventoryItemListElement> GetDisenchantCost(ItemDrop.ItemData item)
         {
-            var result = new List<InventoryItemListElement>();
+            List<InventoryItemListElement> result = new List<InventoryItemListElement>();
             if (item == null || !item.IsMagic())
+            {
                 return result;
+            }
 
-            var rarity = item.GetRarity();
+            ItemRarity rarity = item.GetRarity();
             List<ItemAmountConfig> costList;
             switch (rarity)
             {
@@ -1110,14 +1208,16 @@ namespace EpicLoot.CraftingV2
                     throw new ArgumentOutOfRangeException();
             }
 
-            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Disenchant);
-            var reducedCost = 0;
+            Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Disenchant);
+            int reducedCost = 0;
             if (!float.IsNaN(featureValues.Item2))
-                reducedCost = (int)featureValues.Item2;
-
-            foreach (var itemAmountConfig in costList)
             {
-                var prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
+                reducedCost = (int)featureValues.Item2;
+            }
+
+            foreach (ItemAmountConfig itemAmountConfig in costList)
+            {
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
                 if (prefab == null)
                 {
                     EpicLoot.LogWarning($"Tried to add unknown item ({itemAmountConfig.Item}) " +
@@ -1125,7 +1225,7 @@ namespace EpicLoot.CraftingV2
                     continue;
                 }
 
-                var itemDrop = prefab.GetComponent<ItemDrop>();
+                ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
                 if (itemDrop == null)
                 {
                     EpicLoot.LogWarning($"Tried to add item without ItemDrop ({itemAmountConfig.Item}) " +
@@ -1133,7 +1233,7 @@ namespace EpicLoot.CraftingV2
                     continue;
                 }
 
-                var costItem = itemDrop.m_itemData.Clone();
+                ItemDrop.ItemData costItem = itemDrop.m_itemData.Clone();
                 costItem.m_stack = itemAmountConfig.Amount - reducedCost;
                 result.Add(new InventoryItemListElement() { Item = costItem });
             }
@@ -1144,13 +1244,16 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> DisenchantItem(ItemDrop.ItemData item)
         {
             List<InventoryItemListElement> bonusItems = new List<InventoryItemListElement>();
-            if (item.IsMagic(out var magicItem) && magicItem.CanBeDisenchanted())
+            if (item.IsMagic(out MagicItem magicItem) && magicItem.CanBeDisenchanted())
             {
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(
+                Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(
                     EnchantingFeature.Disenchant);
-                var bonusItemChance = 0;
+                int bonusItemChance = 0;
+
                 if (!float.IsNaN(featureValues.Item1))
+                {
                     bonusItemChance = (int)featureValues.Item1;
+                }
 
                 if (Random.Range(0, 99) < bonusItemChance)
                 {

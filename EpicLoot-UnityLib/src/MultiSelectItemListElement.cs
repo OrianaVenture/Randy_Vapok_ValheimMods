@@ -50,7 +50,7 @@ namespace EpicLoot_UnityLib
         {
             if (ItemIcon != null || MagicBG != null)
             {
-                var iconMaterial = InventoryGui.instance.m_dragItemPrefab.transform.Find("icon").GetComponent<Image>().material;
+                Material iconMaterial = InventoryGui.instance.m_dragItemPrefab.transform.Find("icon").GetComponent<Image>().material;
                 if (iconMaterial != null)
                 {
                     if (ItemIcon != null)
@@ -62,16 +62,19 @@ namespace EpicLoot_UnityLib
 
             if (Tooltip != null)
             {
-                var storeItemTooltip = StoreGui.instance.m_listElement.GetComponent<UITooltip>().m_tooltipPrefab;
+                GameObject storeItemTooltip = StoreGui.instance.m_listElement.GetComponent<UITooltip>().m_tooltipPrefab;
                 Tooltip.m_tooltipPrefab = storeItemTooltip;
             }
 
             if (Audio != null)
             {
-                var uiSFX = GameObject.Find("sfx_gui_button");
+                GameObject uiSFX = GameObject.Find("sfx_gui_button");
                 if (uiSFX != null)
+                {
                     Audio.outputAudioMixerGroup = uiSFX.GetComponent<AudioSource>().outputAudioMixerGroup;
-                    Audio.volume = AudioVolumeLevel();
+                }
+
+                Audio.volume = AudioVolumeLevel();
             }
 
             if (!ReadOnly)
@@ -126,14 +129,18 @@ namespace EpicLoot_UnityLib
         private void OnClicked()
         {
             if (IsSelected())
+            {
                 Deselect(false);
+            }
             else
+            {
                 SelectMaxQuantity(false);
+            }
         }
 
         public void SelectMaxQuantity(bool noSound)
         {
-            var maxSelectedAmount = NoMax || _item == null ? 1 : (_item?.GetItem()?.m_stack ?? 0);
+            int maxSelectedAmount = NoMax || _item == null ? 1 : (_item?.GetItem()?.m_stack ?? 0);
             SelectQuantity(maxSelectedAmount, noSound);
         }
 
@@ -149,19 +156,27 @@ namespace EpicLoot_UnityLib
 
         private void OnSelectedAmountChanged(string typedInAmount)
         {
-            var successParse = int.TryParse(typedInAmount, out var result);
+            bool successParse = int.TryParse(typedInAmount, out int result);
             if (!successParse)
+            {
                 Deselect(false);
+            }
             else
+            {
                 SelectQuantity(result, false);
+            }
         }
 
         private void OnSelectedToggleChanged(bool _)
         {
             if (SelectedToggle.isOn)
+            {
                 SelectMaxQuantity(true);
+            }
             else
+            {
                 Deselect(true);
+            }
         }
 
         private void OnQuantityUpButtonClicked()
@@ -176,7 +191,7 @@ namespace EpicLoot_UnityLib
 
         public void SetItem(IListElement item)
         {
-            var sameItem = _item == item;
+            bool sameItem = _item == item;
             _item = item;
 
             if (_item?.GetItem() == null)
@@ -207,8 +222,10 @@ namespace EpicLoot_UnityLib
                         MagicBG.enabled = false;
                     if (ItemIcon != null)
                         ItemIcon.sprite = _item.GetItem().GetIcon();
-                    if (ItemName != null) {
-                        if (CheckAndSetNameToEnchantingEffects() == false) {
+                    if (ItemName != null)
+                    {
+                        if (CheckAndSetNameToEnchantingEffects() == false)
+                        {
                             ItemName.text = Localization.instance.Localize(_item.GetItem().m_shared.m_name);
                         }
                     }
@@ -221,22 +238,30 @@ namespace EpicLoot_UnityLib
                 }
 
                 if (ItemName != null)
+                {
                     ItemName.text += _item.GetDisplayNameSuffix();
+                }
             }
 
             if (!sameItem)
+            {
                 Deselect(true);
+            }
+
             RefreshGamepadFocusIndicator();
         }
 
-        private bool CheckAndSetNameToEnchantingEffects() {
-            if (UseEnchantAsName && _item.GetEnchantName() != string.Empty) {
+        private bool CheckAndSetNameToEnchantingEffects()
+        {
+            if (UseEnchantAsName && _item.GetEnchantName() != string.Empty)
+            {
                 ItemName.text = _item.GetEnchantName();
                 ItemName.alignment = TextAnchor.MiddleLeft;
                 // Adjust the text box container to give it the whole width, which is normally used for quantity
                 ItemName.GetComponent<RectTransform>().offsetMax = new Vector2(y: 0f, x: -5f);
                 return true;
             }
+
             return false;
         }
 
@@ -247,7 +272,7 @@ namespace EpicLoot_UnityLib
 
         public void SelectQuantity(int quantity, bool noSound)
         {
-            var prevQuantity = _selectedQuantity;
+            int prevQuantity = _selectedQuantity;
             if (_item == null)
             {
                 _selectedQuantity = quantity;
@@ -263,10 +288,14 @@ namespace EpicLoot_UnityLib
             }
 
             if (!SuppressEvents && prevQuantity != _selectedQuantity)
+            {
                 OnSelectionChanged?.Invoke(this, IsSelected(), _selectedQuantity);
+            }
 
             if (Audio != null && !ReadOnly && !noSound && prevQuantity != _selectedQuantity)
+            {
                 Audio.PlayOneShot(OnClickSFX, AudioVolumeLevel());
+            }
 
             Refresh();
         }
@@ -275,7 +304,7 @@ namespace EpicLoot_UnityLib
         {
             RefreshGamepadFocusIndicator();
 
-            var stackItem = _item != null && _item.GetItem().m_shared.m_maxStackSize > 1;
+            bool stackItem = _item != null && _item.GetItem().m_shared.m_maxStackSize > 1;
 
             if (MainButton != null)
             {
@@ -299,7 +328,7 @@ namespace EpicLoot_UnityLib
             if (ItemTotalQuantity != null && _item != null)
             {
                 ItemTotalQuantity.gameObject.SetActive(ReadOnly || stackItem);
-                var quantityText = string.Format(ReadOnly ? ReadOnlyQuantityFormat : TotalQuantityFormat, _item.GetMax());
+                string quantityText = string.Format(ReadOnly ? ReadOnlyQuantityFormat : TotalQuantityFormat, _item.GetMax());
                 if (CheckPlayerInventory)
                 {
                     if (!InventoryManagement.Instance.HasItem(_item.GetItem()))
