@@ -86,7 +86,7 @@ namespace EpicLoot.Adventure.Feature
         private static int GetSeedForInterval(int currentInterval, int intervalDays)
         {
             var worldSeed = ZNet.m_world?.m_seed ?? 0;
-            var playerId = (int)(Player.m_localPlayer?.GetPlayerID() ?? 0);
+            var playerId = (int)(Player.m_localPlayer.GetPlayerID() ?? 0);
             return unchecked(worldSeed + playerId + currentInterval * 1000 + intervalDays * 100);
         }
 

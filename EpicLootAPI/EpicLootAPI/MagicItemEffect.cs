@@ -1,10 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
-using UnityEngine;
 
 namespace EpicLootAPI;
 
@@ -16,6 +14,7 @@ public enum FxAttachMode
     ItemRoot,
     EquipRoot
 }
+
 [PublicAPI]
 public enum ItemRarity
 {
@@ -26,12 +25,14 @@ public enum ItemRarity
     Mythic
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class MagicItemEffect
 {
     public int Version = 1;
     public string EffectType;
     public float EffectValue;
+
     public MagicItemEffect(string type, float value = 1)
     {
         EffectType = type;
@@ -39,13 +40,14 @@ public class MagicItemEffect
     }
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class ValueDef
 {
     public float MinValue;
     public float MaxValue;
     public float Increment; // 0 means it does not roll, step from min to max
-            
+
     public ValueDef(){}
 
     public ValueDef(float min, float max, float increment)
@@ -56,17 +58,19 @@ public class ValueDef
     }
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class ValuesPerRarityDef
 {
-    public ValueDef? Magic;
-    public ValueDef? Rare;
-    public ValueDef? Epic;
-    public ValueDef? Legendary;
-    public ValueDef? Mythic;
+    public ValueDef Magic;
+    public ValueDef Rare;
+    public ValueDef Epic;
+    public ValueDef Legendary;
+    public ValueDef Mythic;
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class MagicItemEffectDefinition
 {
     public string Type;
@@ -83,7 +87,7 @@ public class MagicItemEffectDefinition
     public string EquipFx = "";
     public FxAttachMode EquipFxMode = FxAttachMode.Player;
     public string Ability = "";
-        
+
     [Description("Adds your new magic item definition to a list, use Register to send to epic loot")]
     public MagicItemEffectDefinition(string effectType, string displayText = "", string description = "")
     {
@@ -101,18 +105,25 @@ public class MagicItemEffectDefinition
 
     public static void RegisterAll()
     {
-        foreach (MagicItemEffectDefinition? effect in new List<MagicItemEffectDefinition>(MagicEffects)) effect.Register();
+        foreach (MagicItemEffectDefinition effect in new List<MagicItemEffectDefinition>(MagicEffects))
+        {
+            effect.Register();
+        }
     }
 
     /// <param name="effectType"><see cref="EffectType"/></param>
     /// <returns>simple copy of existing magic effect definition</returns>
-    public static MagicItemEffectDefinition? Copy(string effectType)
+    public static MagicItemEffectDefinition Copy(string effectType)
     {
         string result = (string)(API_GetMagicEffectDefinitionCopy.Invoke(effectType)[0] ?? "");
-        if (string.IsNullOrEmpty(result)) return null;
+        if (string.IsNullOrEmpty(result))
+        {
+            return null;
+        }
+
         try
         {
-            MagicItemEffectDefinition? copy = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(result);
+            MagicItemEffectDefinition copy = JsonConvert.DeserializeObject<MagicItemEffectDefinition>(result);
             return copy;
         }
         catch
@@ -129,9 +140,14 @@ public class MagicItemEffectDefinition
     public bool Register()
     {
         MagicEffects.Remove(this);
-        string data = JsonConvert.SerializeObject(this, new JsonSerializerSettings(){ NullValueHandling = NullValueHandling.Include});
-        object?[] result = API_AddMagicEffect.Invoke(data);
-        if (result[0] is not string key) return false;
+        string data = JsonConvert.SerializeObject(this, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Include });
+        object[] result = API_AddMagicEffect.Invoke(data);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         RunTimeRegistry.Register(this, key);
         EpicLoot.logger.LogDebug($"Registered magic effect: {Type}");
         return true;
@@ -143,9 +159,13 @@ public class MagicItemEffectDefinition
     /// <returns>true if updated</returns>
     public bool Update()
     {
-        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out string key))
+        {
+            return false;
+        }
+
         string json = JsonConvert.SerializeObject(this);
-        object?[] result = API_UpdateMagicEffect.Invoke(key, json);
+        object[] result = API_UpdateMagicEffect.Invoke(key, json);
         var output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated magic effect: {Type}, {output}");
         return output;
@@ -187,11 +207,17 @@ public class MagicItemEffectRequirements
 
     public void AddAllowedItemTypes(params ItemDrop.ItemData.ItemType[] types)
     {
-        foreach(ItemDrop.ItemData.ItemType type in types) AllowedItemTypes.Add(type.ToString());
+        foreach (ItemDrop.ItemData.ItemType type in types)
+        {
+            AllowedItemTypes.Add(type.ToString());
+        }
     }
 
     public void AddExcludedItemTypes(params ItemDrop.ItemData.ItemType[] types)
     {
-        foreach(ItemDrop.ItemData.ItemType type in types) ExcludedItemTypes.Add(type.ToString());
+        foreach (ItemDrop.ItemData.ItemType type in types)
+        {
+            ExcludedItemTypes.Add(type.ToString());
+        }
     }
 }

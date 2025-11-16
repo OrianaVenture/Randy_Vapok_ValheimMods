@@ -1,11 +1,11 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace EpicLootAPI;
@@ -33,9 +33,10 @@ public class AbilityProxyDefinition
             EpicLoot.logger.LogError($"Ability Proxy {ID} Type {type.Name} does not implement Proxy class");
             return;
         }
+
         try
         {
-            object? proxy = Activator.CreateInstance(type);
+            object proxy = Activator.CreateInstance(type);
             RegisterCallbacks((Proxy)proxy);
             ProxyAbilities.Add(this);
         }
@@ -61,7 +62,7 @@ public class AbilityProxyDefinition
             {
                 // Find the corresponding implementation method
                 Type[] parameterTypes = interfaceMethod.GetParameters().Select(p => p.ParameterType).ToArray();
-                MethodInfo? implementationMethod = implementationType.GetMethod(interfaceMethod.Name, parameterTypes);
+                MethodInfo implementationMethod = implementationType.GetMethod(interfaceMethod.Name, parameterTypes);
                 
                 if (implementationMethod == null)
                 {
@@ -76,9 +77,13 @@ public class AbilityProxyDefinition
                 {
                     // Action delegate
                     if (parameterTypes.Length == 0)
+                    {
                         delegateType = typeof(Action);
+                    }
                     else
+                    {
                         delegateType = Expression.GetActionType(parameterTypes);
+                    }
                 }
                 else
                 {
@@ -103,13 +108,22 @@ public class AbilityProxyDefinition
 
     public static void RegisterAll()
     {
-        foreach (AbilityProxyDefinition proxy in new List<AbilityProxyDefinition>(ProxyAbilities)) proxy.Register();
+        foreach (AbilityProxyDefinition proxy in new List<AbilityProxyDefinition>(ProxyAbilities))
+        {
+            proxy.Register();
+        }
     }
+
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(Ability);
-        object?[] result = API_RegisterProxyAbility.Invoke(json, Callbacks);
-        if (result[0] is not string key) return false;
+        object[] result = API_RegisterProxyAbility.Invoke(json, Callbacks);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         RunTimeRegistry.Register(this, key);
         ProxyAbilities.Remove(this);
         EpicLoot.logger.LogDebug("Registered proxy ability: " + Ability.ID);
@@ -118,9 +132,13 @@ public class AbilityProxyDefinition
 
     public bool Update()
     {
-        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out string key))
+        {
+            return false;
+        }
+
         string json = JsonConvert.SerializeObject(Ability);
-        object?[] result = API_UpdateProxyAbility.Invoke(key, json,  Callbacks);
+        object[] result = API_UpdateProxyAbility.Invoke(key, json,  Callbacks);
         bool output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated proxy ability: {Ability.ID}, {output}");
         return output;
@@ -132,7 +150,7 @@ public class AbilityProxyDefinition
 public class Proxy
 {
     public virtual string CooldownEndKey => $"EpicLoot.{AbilityID}.CooldownEnd";
-    protected Player? Player;
+    protected Player Player;
     public string AbilityID = "";
     public float Cooldown;
     
@@ -143,10 +161,7 @@ public class Proxy
         Cooldown = cooldown;
     }
 
-    public virtual void OnUpdate()
-    {
-        
-    }
+    public virtual void OnUpdate() { }
 
     public virtual bool ShouldTrigger()
     {
@@ -200,15 +215,9 @@ public class Proxy
         }
     }
 
-    public virtual void ActivateCustomAction()
-    {
-        
-    }
+    public virtual void ActivateCustomAction() { }
 
-    public virtual void ActivateStatusEffectAction()
-    {
-        
-    }
+    public virtual void ActivateStatusEffectAction() { }
 
     public virtual bool HasCooldown()
     {
@@ -217,13 +226,21 @@ public class Proxy
 
     public virtual void SetCooldownEndTime(float cooldownEndTime)
     {
-        if (Player == null) return;
+        if (Player == null)
+        {
+            return;
+        }
+
         Player.m_nview.GetZDO().Set(CooldownEndKey, cooldownEndTime);
     }
 
     public virtual float GetCooldownEndTime()
     {
-        if (Player == null) return 0f;
+        if (Player == null)
+        {
+            return 0f;
+        }
+
         return Player.m_nview.GetZDO().GetFloat(CooldownEndKey, 0);
     }
 

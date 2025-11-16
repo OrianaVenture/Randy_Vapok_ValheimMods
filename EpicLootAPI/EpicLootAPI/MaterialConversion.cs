@@ -1,8 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
@@ -36,6 +36,7 @@ public class MaterialConversion
     public MaterialConversionType Type;
     public List<MaterialConversionRequirement> Resources = new();
     [Description("Creates a new material conversion definition.")]
+
     public MaterialConversion(MaterialConversionType type, string name, string product, int amount = 1)
     {
         Name = name;
@@ -49,10 +50,15 @@ public class MaterialConversion
     internal static readonly Method API_AddMaterialConversion = new("AddMaterialConversion");
     internal static readonly Method API_UpdateMaterialConversion = new ("UpdateMaterialConversion");
     internal static readonly List<MaterialConversion> MaterialConversions = new();
+
     public static void RegisterAll()
     {
-        foreach(MaterialConversion conversion in new List<MaterialConversion>(MaterialConversions)) conversion.Register();
+        foreach (MaterialConversion conversion in new List<MaterialConversion>(MaterialConversions))
+        {
+            conversion.Register();
+        }
     }
+
     /// <summary>
     /// Register material conversion to EpicLoot MaterialConversions.Conversions
     /// </summary>
@@ -61,8 +67,13 @@ public class MaterialConversion
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_AddMaterialConversion.Invoke(data);
-        if (result[0] is not string key) return false;
+        object[] result = API_AddMaterialConversion.Invoke(data);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         MaterialConversions.Remove(this);
         RunTimeRegistry.Register(this, key);
         EpicLoot.logger.LogDebug($"Registered material conversion: {Name}");
@@ -75,9 +86,13 @@ public class MaterialConversion
     /// <returns>true if updated</returns>
     public bool Update()
     {
-        if (!RunTimeRegistry.TryGetValue(this, out var key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out var key))
+        {
+            return false;
+        }
+
         string json = JsonConvert.SerializeObject(this);
-        object?[] result =  API_UpdateMaterialConversion.Invoke(key, json);
+        object[] result =  API_UpdateMaterialConversion.Invoke(key, json);
         bool output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated material conversion: {Name}, {output}");
         return output;

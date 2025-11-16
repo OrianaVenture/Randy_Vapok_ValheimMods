@@ -15,11 +15,11 @@ namespace EpicLootAPI;
 internal static class RunTimeRegistry
 {
     private static readonly Dictionary<object, string> registry = new();
-        
+
     /// <param name="key"><see cref="object"/></param>
     /// <param name="value">unique identifier <see cref="string"/></param>
     public static void Register(object key, string value) => registry[key] = value;
-        
+
     /// <param name="key"><see cref="object"/></param>
     /// <param name="value">unique identifier <see cref="string"/></param>
     /// <returns>true if key found matching object</returns>

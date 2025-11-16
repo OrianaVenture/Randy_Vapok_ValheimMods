@@ -410,7 +410,7 @@ public static class API
     /// <param name="scale"></param>
     /// <returns></returns>
     [PublicAPI]
-    public static float GetTotalActiveMagicEffectValue(Player? player,ItemDrop.ItemData? item, string effectType, float scale) => 
+    public static float GetTotalActiveMagicEffectValue(Player player,ItemDrop.ItemData? item, string effectType, float scale) => 
         MagicEffectsHelper.GetTotalActiveMagicEffectValue(player, item, effectType, scale);
     
     /// <param name="player">can be null</param>
@@ -419,7 +419,7 @@ public static class API
     /// <param name="scale"></param>
     /// <returns></returns>
     [PublicAPI]
-    public static float GetTotalActiveMagicEffectValueForWeapon(Player? player, ItemDrop.ItemData? item, string effectType, float scale) =>
+    public static float GetTotalActiveMagicEffectValueForWeapon(Player player, ItemDrop.ItemData? item, string effectType, float scale) =>
         MagicEffectsHelper.GetTotalActiveMagicEffectValueForWeapon(player, item, effectType, scale);
 
     /// <param name="player">can be null</param>
@@ -428,7 +428,7 @@ public static class API
     /// <param name="effectValue"><see cref="MagicEffectType"/></param>
     /// <returns>True if player or item has magic effect</returns>
     [PublicAPI]
-    public static bool HasActiveMagicEffect(Player? player, string effectType, ItemDrop.ItemData? item,
+    public static bool HasActiveMagicEffect(Player player, string effectType, ItemDrop.ItemData? item,
         ref float effectValue) => MagicEffectsHelper.HasActiveMagicEffect(player, item, effectType, out effectValue);
     
     /// <param name="player">can be null</param>
@@ -489,7 +489,7 @@ public static class API
     /// <param name="ignoreThisItem"></param>
     /// <returns>total effect value found on player</returns>
     [PublicAPI]
-    public static float GetTotalPlayerActiveMagicEffectValue(Player? player, string effectType, float scale,
+    public static float GetTotalPlayerActiveMagicEffectValue(Player player, string effectType, float scale,
         ItemDrop.ItemData? ignoreThisItem = null) =>
         player.GetTotalActiveMagicEffectValue(effectType, scale, ignoreThisItem);
 
@@ -500,7 +500,7 @@ public static class API
     /// <param name="ignoreThisItem"></param>
     /// <returns>True if player has magic effect</returns>
     [PublicAPI]
-    public static bool PlayerHasActiveMagicEffect(Player? player, string effectType, ref float effectValue,
+    public static bool PlayerHasActiveMagicEffect(Player player, string effectType, ref float effectValue,
         float scale = 1.0f, ItemDrop.ItemData? ignoreThisItem = null) => player.HasActiveMagicEffect(effectType, out effectValue, scale, ignoreThisItem);
     
     #endregion

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace EpicLootAPI;
 
@@ -16,13 +16,14 @@ internal class Method
     private const string ClassName = "API";
     private const string Assembly = "EpicLoot";
     private const string API_LOCATION = Namespace + "." + ClassName + ", " + Assembly;
+
     /// <summary>
     /// Cache of previously resolved Type instances to avoid repeated Type.GetType() calls.
     /// Key: Full type name with assembly (e.g., "MyNamespace.MyClass, MyAssembly")
     /// Value: Resolved Type instance
     /// </summary>
     private static readonly Dictionary<string, Type> CachedTypes = new();
-    private readonly MethodInfo? info;
+    private readonly MethodInfo info;
 
     /// <summary>
     /// Invokes the cached static method with the provided arguments.
@@ -41,10 +42,10 @@ internal class Method
     /// <exception cref="ArgumentException">Thrown when argument types don't match the method signature</exception>
     /// <exception cref="TargetParameterCountException">Thrown when argument count doesn't match the method signature</exception>
     /// <exception cref="TargetInvocationException">Thrown when the invoked method throws an exception</exception>
-    public object?[] Invoke(params object?[] args)
+    public object[] Invoke(params object[] args)
     {
-        object? result = info?.Invoke(null, args);
-        object?[] output = new object?[args.Length + 1];
+        object result = info?.Invoke(null, args);
+        object[] output = new object[args.Length + 1];
         output[0] = result;
         Array.Copy(args, 0, output, 1, args.Length);
         return output;
@@ -84,12 +85,17 @@ internal class Method
     /// </remarks>
     public Method(string typeNameWithAssembly, string methodName, BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Static)
     {
-        if (!TryGetType(typeNameWithAssembly, out Type? type)) return;
+        if (!TryGetType(typeNameWithAssembly, out Type type))
+        {
+            return;
+        }
+
         if (type == null)
         {
             EpicLoot.logger.LogWarning($"Type resolution returned null for: '{typeNameWithAssembly}'");
             return;
         }
+
         info = type.GetMethod(methodName, bindingFlags);
         if (info == null)
         {
@@ -105,17 +111,19 @@ internal class Method
     /// <param name="methodName"></param>
     /// <param name="bindingFlags"></param>
     public Method(string methodName, BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Static) : this(
-        API_LOCATION, methodName, bindingFlags)
-    {
-    }
-    
+        API_LOCATION, methodName, bindingFlags) { }
+
     /// <param name="typeNameWithAssembly"><see cref="string"/></param>
     /// <param name="type"><see cref="Type"/></param>
     /// <returns></returns>
-    private static bool TryGetType(string typeNameWithAssembly, out Type? type)
+    private static bool TryGetType(string typeNameWithAssembly, out Type type)
     {
         // Try to get cached type first for performance
-        if (CachedTypes.TryGetValue(typeNameWithAssembly, out type)) return true;
+        if (CachedTypes.TryGetValue(typeNameWithAssembly, out type))
+        {
+            return true;
+        }
+
         // Attempt to resolve the type from the assembly
         if (Type.GetType(typeNameWithAssembly) is not { } resolvedType)
         {
@@ -138,7 +146,10 @@ internal class Method
     /// <param name="types">params array of <see cref="Type"/></param>
     public Method(string typeNameWithAssembly, string methodName, params Type[] types)
     {
-        if (!TryGetType(typeNameWithAssembly, out Type? type)) return;
+        if (!TryGetType(typeNameWithAssembly, out Type type))
+        {
+            return;
+        }
 
         // Additional null check (defensive programming, should not happen if TryGetValue succeeded)
         if (type == null)
@@ -157,9 +168,7 @@ internal class Method
         }
     }
 
-    public Method(string methodName, params Type[] types) : this(API_LOCATION, methodName, types)
-    {
-    }
+    public Method (string methodName, params Type[] types) : this(API_LOCATION, methodName, types) { }
 
     /// <summary>
     /// Gets the parameter information for the resolved method.
@@ -168,7 +177,7 @@ internal class Method
     /// <returns>Array of ParameterInfo objects describing the method parameters, or empty array if method not resolved.</returns>
     [PublicAPI]
     public ParameterInfo[] GetParameters() => info?.GetParameters() ?? Array.Empty<ParameterInfo>();
-    
+
     [PublicAPI]
     public static void ClearCache() => CachedTypes.Clear();
 }

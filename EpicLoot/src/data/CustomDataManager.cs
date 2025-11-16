@@ -818,7 +818,7 @@ namespace EpicLoot.Data
             set
             {
                 foreignItemInfo.GetType().GetMethod("set_Item", BindingFlags.Public | BindingFlags.Instance)?
-                    .Invoke(foreignItemInfo, new object?[] { key, value });
+                    .Invoke(foreignItemInfo, new object[] { key, value });
             }
         }
 
@@ -830,7 +830,7 @@ namespace EpicLoot.Data
 
         public T GetOrCreate<T>(string key = "") where T : class, new() => Add<T>(key) ?? Get<T>(key)!;
 
-        private object? call(string name, object?[] values, Type?[] args, Type? generic = null)
+        private object call(string name, object[] values, Type?[] args, Type? generic = null)
         {
             foreach (MethodInfo method in foreignItemInfo.GetType().GetMethods())
             {
@@ -857,7 +857,7 @@ namespace EpicLoot.Data
             call(nameof(Get), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
 
         public Dictionary<string, T> GetAll<T>() where T : class =>
-            call(nameof(GetAll), Array.Empty<object?>(), Array.Empty<Type?>(), typeof(T)) as T as Dictionary<string,
+            call(nameof(GetAll), Array.Empty<object>(), Array.Empty<Type?>(), typeof(T)) as T as Dictionary<string,
                 T> ?? new Dictionary<string, T>();
 
         public bool Remove(string key = "") =>
@@ -869,11 +869,11 @@ namespace EpicLoot.Data
         public bool Remove<T>(T itemData) where T : class =>
             call(nameof(Remove), new object[] { itemData }, new Type?[] { null }, typeof(T)) as bool? ?? false;
 
-        public void Save() => call(nameof(Save), Array.Empty<object?>(), Array.Empty<Type?>());
-        public void LoadAll() => call(nameof(LoadAll), Array.Empty<object?>(), Array.Empty<Type?>());
+        public void Save() => call(nameof(Save), Array.Empty<object>(), Array.Empty<Type?>());
+        public void LoadAll() => call(nameof(LoadAll), Array.Empty<object>(), Array.Empty<Type?>());
 
         public IEnumerator<object> GetEnumerator() =>
-            call(nameof(GetEnumerator), Array.Empty<object?>(), Array.Empty<Type?>()) as IEnumerator<object> ??
+            call(nameof(GetEnumerator), Array.Empty<object>(), Array.Empty<Type?>()) as IEnumerator<object> ??
             new List<object>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

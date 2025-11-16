@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace EpicLootAPI;
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class GuaranteedMagicEffect
 {
     public string Type;
-    public ValueDef? Values;
+    public ValueDef Values;
     public GuaranteedMagicEffect(string type, ValueDef values)
     {
         Type = type;
@@ -18,7 +19,8 @@ public class GuaranteedMagicEffect
     public GuaranteedMagicEffect(string type, float min = 1, float max = 1, float increment = 1) : this(type, new ValueDef(min, max, increment)){}
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class TextureReplacement
 {
     public string ItemID;
@@ -35,7 +37,8 @@ public class TextureReplacement
     }
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class LegendaryInfo
 {
     public string ID;
@@ -51,6 +54,7 @@ public class LegendaryInfo
     public bool IsSetItem;
     public bool Enchantable;
     public List<RecipeRequirement> EnchantCost = new List<RecipeRequirement>();
+
     public LegendaryInfo(LegendaryType type, string ID, string name, string description)
     {
         this.ID = ID;
@@ -68,12 +72,16 @@ public class LegendaryInfo
 
     public static void RegisterAll()
     {
-        foreach(var item in new List<LegendaryInfo>(LegendaryItems)) item.Register();
+        foreach (var item in new List<LegendaryInfo>(LegendaryItems))
+        {
+            item.Register();
+        }
     }
+
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_AddLegendaryItem.Invoke(type.ToString(), data);
+        object[] result = API_AddLegendaryItem.Invoke(type.ToString(), data);
         if (result[0] is not string key) return false;
         RunTimeRegistry.Register(this, key);
         LegendaryItems.Remove(this);
@@ -85,7 +93,7 @@ public class LegendaryInfo
     {
         if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_UpdateLegendaryItem.Invoke(key, data);
+        object[] result = API_UpdateLegendaryItem.Invoke(key, data);
         var output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated legendary item: {ID}, {output}");
         return output;
@@ -95,30 +103,35 @@ public class LegendaryInfo
 [PublicAPI]
 public enum LegendaryType
 {
-    Legendary, 
+    Legendary,
     Mythic
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class SetBonusInfo
 {
     public int Count;
     public GuaranteedMagicEffect Effect;
+
     public SetBonusInfo(int count, string type, ValueDef values)
     {
         Count = count;
         Effect = new GuaranteedMagicEffect(type, values);
     }
+
     public SetBonusInfo(int count, string type, float min, float max, float increment) : this (count, type, new ValueDef(min, max, increment)){}
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class LegendarySetInfo
 {
     public string ID;
     public string Name;
     public List<string> LegendaryIDs = new List<string>();
     public List<SetBonusInfo> SetBonuses = new List<SetBonusInfo>();
+
     public LegendarySetInfo(LegendaryType type, string ID, string name)
     {
         this.ID = ID;
@@ -134,13 +147,22 @@ public class LegendarySetInfo
     
     public static void RegisterAll()
     {
-        foreach(var set in new List<LegendarySetInfo>(LegendarySets)) set.Register();
+        foreach (var set in new List<LegendarySetInfo>(LegendarySets))
+        {
+            set.Register();
+        }
     }
+
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_AddLegendarySet.Invoke(type.ToString(), data);
-        if (result[0] is not string key) return false;
+        object[] result = API_AddLegendarySet.Invoke(type.ToString(), data);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         RunTimeRegistry.Register(this, key);
         EpicLoot.logger.LogDebug($"Registered legendary set: {ID}");
         return true;
@@ -148,9 +170,13 @@ public class LegendarySetInfo
 
     public bool Update()
     {
-        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out string key))
+        {
+            return false;
+        }
+
         string data = JsonConvert.SerializeObject(this);   
-        object?[] result = API_UpdateLegendarySet.Invoke(key, data);
+        object[] result = API_UpdateLegendarySet.Invoke(key, data);
         bool output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated legendary set: {ID}, {output}");
         return output;

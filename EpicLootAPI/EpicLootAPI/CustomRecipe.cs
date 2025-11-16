@@ -1,15 +1,17 @@
-﻿using System;
-using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace EpicLootAPI;
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class RecipeRequirement
 {
     public string item;
     public int amount;
+
     public RecipeRequirement(string item, int amount = 1)
     {
         this.item = item;
@@ -17,7 +19,8 @@ public class RecipeRequirement
     }
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class CustomRecipe
 {
     public string name;
@@ -37,8 +40,10 @@ public class CustomRecipe
         craftingStation = craftingTable.GetInternalName();
         Recipes.Add(this);
     }
+
     internal static readonly List<CustomRecipe> Recipes = new();
     internal static readonly Method API_AddRecipe = new ("AddRecipe");
+
     /// <summary>
     /// Invokes <see cref="API_AddRecipe"/> with serialized List <see cref="CustomRecipe"/>
     /// </summary>
@@ -46,19 +51,27 @@ public class CustomRecipe
     [PublicAPI]
     public static void RegisterAll()
     {
-        foreach (var recipe in new List<CustomRecipe>(Recipes)) recipe.Register();
+        foreach (var recipe in new List<CustomRecipe>(Recipes))
+        {
+            recipe.Register();
+        }
     }
+
     public bool Register()
     {
         string json = JsonConvert.SerializeObject(this);
-        object?[] result = API_AddRecipe.Invoke(json);
-        if (result[0] is not string key) return false;
+        object[] result = API_AddRecipe.Invoke(json);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         RunTimeRegistry.Register(this, key);
         Recipes.Remove(this);
         EpicLoot.logger.LogDebug($"Registered recipe: {name}");
         return true;
     }
-
 }
 
 [PublicAPI]

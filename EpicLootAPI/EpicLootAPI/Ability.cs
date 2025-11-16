@@ -1,12 +1,13 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace EpicLootAPI;
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public enum AbilityActivationMode
 {
     Passive, // is not implemented
@@ -14,14 +15,16 @@ public enum AbilityActivationMode
     Activated
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public enum AbilityAction
 {
     Custom,
     StatusEffect
 }
 
-[Serializable][PublicAPI]
+[Serializable]
+[PublicAPI]
 public class AbilityDefinition
 {
     public string ID;
@@ -55,7 +58,10 @@ public class AbilityDefinition
 
     public static void RegisterAll()
     {
-        foreach(AbilityDefinition ability in new List<AbilityDefinition>(Abilities)) ability.Register();
+        foreach (AbilityDefinition ability in new List<AbilityDefinition>(Abilities))
+        {
+            ability.Register();
+        }
     }
     
     /// <summary>
@@ -65,8 +71,13 @@ public class AbilityDefinition
     public bool Register()
     {
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_AddAbility.Invoke(data);
-        if (result[0] is not string key) return false;
+        object[] result = API_AddAbility.Invoke(data);
+
+        if (result[0] is not string key)
+        {
+            return false;
+        }
+
         RunTimeRegistry.Register(this, key);
         Abilities.Remove(this);
         EpicLoot.logger.LogDebug("Registered ability: " + ID);
@@ -79,9 +90,13 @@ public class AbilityDefinition
     /// <returns>True if fields copied</returns>
     public bool Update()
     {
-        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out string key))
+        {
+            return false;
+        }
+
         string data = JsonConvert.SerializeObject(this);
-        object?[] result = API_UpdateAbility.Invoke(key, data);
+        object[] result = API_UpdateAbility.Invoke(key, data);
         bool output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated ability {ID}: {output}");
         return output;
