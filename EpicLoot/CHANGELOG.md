@@ -26,7 +26,11 @@
     * `Apportation` - Teleports you to your thrown weapons location (Leslie)
     * `Chain Lightning` - Chance to cause chain lighting on hit (Leslie)
     * `OffsetAttack` - Third attack in a combo provides stagger immunity and a damage reduction for you, when timed (Leslie)
+    * `Automead` - Automatically consumes mead when health critical (warp)
+    * `InstantMead` - Meads consume instantly when health critical (warp)
+    * `MeadCooldown` - Reduces mead cooldown (warp)
 * NEW automatic drop system assignment for weapons, armor and other items. This removes the requirement to add patches for other modded items for them to appear in drop tables.
+* Search functionality for Epicloot Compendium pages (Thanks Rusty!)
 * NEW EpicLoot API is now available! (Thanks Rusty!)
     * Easily retrieve enchantments that are active on the player
     * Magic Effects can be added by API
