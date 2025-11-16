@@ -297,6 +297,7 @@ namespace EpicLoot_UnityLib
             {
                 CostLabel.enabled = false;
                 CostList.SetItems(new List<IListElement>());
+                AvailableRunes.SetItems(new List<IListElement>());
                 MainButton.interactable = false;
                 return;
             }
@@ -380,7 +381,7 @@ namespace EpicLoot_UnityLib
                 _successDialog = RuneEnchancedItem(itemToEtch, rune, _selectedEnchantmentIndex);
                 _successDialog.SetActive(true);
                 // Remove the rune from the inventory
-                InventoryManagement.Instance.RemoveItem(rune);
+                InventoryManagement.Instance.RemoveExactItem(rune, 1);
                 CostList.SetItems(new List<IListElement>());
             }
 
@@ -389,6 +390,7 @@ namespace EpicLoot_UnityLib
             RefreshAvailableItems();
             _selectedEnchantmentIndex = -1;
             CostList.SetItems(new List<IListElement>());
+            AvailableRunes.SetItems(new List<IListElement>());
         }
 
         protected override AudioClip GetCompleteAudioClip()
