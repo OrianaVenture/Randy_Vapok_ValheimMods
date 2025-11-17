@@ -429,7 +429,7 @@ namespace EpicLoot
             ItemManager.OnItemsRegistered += SetupStatusEffects;
             LoadUnidentifiedItems();
             // Needs to trigger late in order to get all potentially added items by other mods
-            MinimapManager.OnVanillaMapAvailable += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+            MinimapManager.OnVanillaMapDataLoaded += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
             DodgeBuff.CreateMyStatusEffect();
         }
 

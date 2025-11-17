@@ -46,7 +46,7 @@ namespace EpicLoot.Magic
         };
 
         public static void CheckAndAddAllEnchantableItems(bool deregister = true) {
-            if (deregister) { ItemManager.OnItemsRegistered -= () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(); }
+            if (deregister) { MinimapManager.OnVanillaMapDataLoaded -= () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(); }
 
             if (ELConfig.AutoAddEquipment.Value == false && ELConfig.AutoRemoveEquipmentNotFound.Value == false) { return; }
 
