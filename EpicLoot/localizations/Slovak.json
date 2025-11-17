@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnarov hnev",
   "mod_epicloot_legendarysetlabel": "Legendárny predmet setu",
   "mod_epicloot_mythicsetlabel": "Mytický setový predmet",
+  "mod_epicloot_Magic": "ké",
+  "mod_epicloot_Rare": "Vzácný",
+  "mod_epicloot_Epic": "epický",
+  "mod_epicloot_Legendary": "Legendárny",
+  "mod_epicloot_Mythic": "Mystický",
   "mod_epicloot_magic": "ké",
   "mod_epicloot_rare": "Vzácný",
   "mod_epicloot_epic": "epický",
   "mod_epicloot_legendary": "Legendárny",
-  "mod_epicloot_mythic": "Mystický"
+  "mod_epicloot_mythic": "Mystický",
+  "mod_epicloot_me_adrenaline_rush": "Rush adrenalínu",
+  "mod_epicloot_me_adrenaline_rush_desc": "Zvýšené poškodenie počas trvania účinku."
 }

@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Furia lui Ragnar",
   "mod_epicloot_legendarysetlabel": "Articol de echipament legendar",
   "mod_epicloot_mythicsetlabel": "Element mitic",
+  "mod_epicloot_Magic": "Magie",
+  "mod_epicloot_Rare": "rar",
+  "mod_epicloot_Epic": "Epopeic",
+  "mod_epicloot_Legendary": "Legendare",
+  "mod_epicloot_Mythic": "Mitic",
   "mod_epicloot_magic": "Magie",
   "mod_epicloot_rare": "rar",
   "mod_epicloot_epic": "Epopeic",
   "mod_epicloot_legendary": "Legendare",
-  "mod_epicloot_mythic": "Mitic"
+  "mod_epicloot_mythic": "Mitic",
+  "mod_epicloot_me_adrenaline_rush": "Val de adrenalină.",
+  "mod_epicloot_me_adrenaline_rush_desc": "Daune crescute pentru durata efectului."
 }

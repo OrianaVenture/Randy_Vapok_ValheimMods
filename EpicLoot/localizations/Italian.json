@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "La furia di Ragnar",
   "mod_epicloot_legendarysetlabel": "Oggetto Set Leggendario",
   "mod_epicloot_mythicsetlabel": "Oggetto Set Mitico",
+  "mod_epicloot_Magic": "Magia",
+  "mod_epicloot_Rare": "Raro",
+  "mod_epicloot_Epic": "o",
+  "mod_epicloot_Legendary": "Leggendario",
+  "mod_epicloot_Mythic": " Mito",
   "mod_epicloot_magic": "Magia",
   "mod_epicloot_rare": "Raro",
   "mod_epicloot_epic": "o",
   "mod_epicloot_legendary": "Leggendario",
-  "mod_epicloot_mythic": " Mito"
+  "mod_epicloot_mythic": " Mito",
+  "mod_epicloot_me_adrenaline_rush": "Frenesia dell'adrenalina",
+  "mod_epicloot_me_adrenaline_rush_desc": "Aumento del danno per la durata dell'effetto.Aumento del danno per la durata dell'effetto."
 }

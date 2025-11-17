@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnars Zorn",
   "mod_epicloot_legendarysetlabel": "Legendäres Set-Item",
   "mod_epicloot_mythicsetlabel": "Mythisches Set-Item",
+  "mod_epicloot_Magic": "Magie",
+  "mod_epicloot_Rare": "selten",
+  "mod_epicloot_Epic": "Epos",
+  "mod_epicloot_Legendary": "Legendär",
+  "mod_epicloot_Mythic": "Mythisch",
   "mod_epicloot_magic": "Magie",
   "mod_epicloot_rare": "selten",
   "mod_epicloot_epic": "Epos",
   "mod_epicloot_legendary": "Legendär",
-  "mod_epicloot_mythic": "Mythisch"
+  "mod_epicloot_mythic": "Mythisch",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinschub",
+  "mod_epicloot_me_adrenaline_rush_desc": "Erhöhter Schaden für die Dauer des Effekts."
 }

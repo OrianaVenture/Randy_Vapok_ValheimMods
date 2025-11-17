@@ -1,9 +1,10 @@
 {
   "name": "AdvancedPortals",
-  "version_number": "1.0.10",
-  "website_url": "https://github.com/RandyKnapp/ValheimMods/tree/main/AdvancedPortals",
+  "version_number": "1.1.0",
+  "website_url": "https://github.com/OrianaVenture/Randy_Vapok_ValheimMods/tree/main/AdvancedPortals",
   "description": "Add new, lore-friendly and balanced portals to allow some items to be teleported.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2200"
+    "denikson-BepInExPack_Valheim-5.4.2333",
+    "ValheimModding-Jotunn-2.27.0"
   ]
 }

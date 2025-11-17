@@ -4961,6 +4961,7 @@ MonoBehaviour:
   m_canRotate: 1
   m_randomInitBuildRotation: 0
   m_canBeRemoved: 1
+  m_canRockJade: 0
   m_allowRotatedOverlap: 0
   m_vegetationGroundOnly: 0
   m_blockingPieces: []

@@ -69,8 +69,8 @@ public class BountyManagmentSystem : MonoBehaviour
                     var data = sr.ReadToEnd();
                     _bountyLedger = JsonConvert.DeserializeObject<BountyLedger>(data);
                 }
-                catch (Exception e)
-                {
+                catch
+{
                     // Load from original file format V0.9.27
                     fs.Position = 0;
                     _bountyLedger = bf.Deserialize(fs) as BountyLedger;

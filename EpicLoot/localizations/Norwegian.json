@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnars Raseri",
   "mod_epicloot_legendarysetlabel": "Legendarisk settgjenstand",
   "mod_epicloot_mythicsetlabel": "Mytisk settgjenstand",
+  "mod_epicloot_Magic": "Magi",
+  "mod_epicloot_Rare": "Sjelden",
+  "mod_epicloot_Epic": "Episk",
+  "mod_epicloot_Legendary": "Legendarisk",
+  "mod_epicloot_Mythic": "Mytisk",
   "mod_epicloot_magic": "Magi",
   "mod_epicloot_rare": "Sjelden",
   "mod_epicloot_epic": "Episk",
   "mod_epicloot_legendary": "Legendarisk",
-  "mod_epicloot_mythic": "Mytisk"
+  "mod_epicloot_mythic": "Mytisk",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinstøt",
+  "mod_epicloot_me_adrenaline_rush_desc": "Økt skade i varigheten av effekten."
 }

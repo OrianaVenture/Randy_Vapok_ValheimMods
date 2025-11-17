@@ -4,10 +4,45 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
+using static Attack;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot.MagicItemEffects
 {
+    [HarmonyPatch(typeof(Attack))]
+    public static class ExplodingArrow_Patch
+    {
+        //[HarmonyEmitIL("./dumps")]
+        //[HarmonyDebug]
+        [HarmonyTranspiler]
+        [HarmonyPatch(nameof(Attack.FireProjectileBurst))]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions /*, ILGenerator generator*/)
+        {
+            var codeMatcher = new CodeMatcher(instructions);
+            codeMatcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Attack), nameof(Attack.m_weapon))),
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_lastProjectile)))
+                ).Advance(3).InsertAndAdvance(
+                new CodeInstruction(OpCodes.Ldloc_S, (byte)20),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                Transpilers.EmitDelegate(UpdateProjectileHit)
+                ).ThrowIfNotMatch("Unable to patch Exploding Arrows AOE.");
+            return codeMatcher.Instructions();
+        }
+
+        private static void UpdateProjectileHit(GameObject shot, Attack instance)
+        {
+            //EpicLoot.Log($"Checking to set exploding arrow");
+            if (Player.m_localPlayer != null && instance.m_character == Player.m_localPlayer && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue, 0.01f))
+            {
+                //EpicLoot.Log($"Exploding Arrow set for projectile: {effectValue} on {shot.gameObject.name}");
+                shot.GetComponent<Projectile>()?.m_nview.GetZDO().Set("el-aw", effectValue);
+            }
+        }
+    }
+
+
     [HarmonyPatch(typeof(Projectile), nameof(Projectile.Awake))]
     public static class RPC_ExplodingArrow_Projectile_Awake_Patch
     {
@@ -61,12 +96,14 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(Tuple<bool, bool> __state, Vector3 hitPoint, Projectile __instance)
         {
+            //EpicLoot.Log($"Exploding Arrow hit at {hitPoint} with state {__state}");
             if (__instance == null || __instance.m_nview == null || __instance.m_nview.GetZDO() == null)
                 return;
 
             if (__instance.m_didHit)
             {
                 var explodingArrow = __instance.m_nview.GetZDO().GetFloat("el-aw", float.NaN);
+                //EpicLoot.Log($"Exploding Arrow hit with strength {explodingArrow}");
                 if (!float.IsNaN(explodingArrow))
                 {
                     var explodingArrowStrength = explodingArrow * __instance.m_damage.GetTotalDamage();
@@ -81,40 +118,6 @@ namespace EpicLoot.MagicItemEffects
 
             __instance.m_stayAfterHitStatic = __state.Item1;
             __instance.m_stayAfterHitDynamic = __state.Item2;
-        }
-    }
-
-    [HarmonyPatch(typeof(Attack))]
-    public static class ExplodingArrow_Patch
-    {
-        [HarmonyTranspiler]
-        [HarmonyPatch(nameof(Attack.FireProjectileBurst))]
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var codeMatcher = new CodeMatcher(instructions);
-            codeMatcher.MatchStartForward(
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Attack), nameof(Attack.m_weapon))),
-                new CodeMatch(OpCodes.Ldloc_S),
-                new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_lastProjectile)))
-                ).Advance(3).InsertAndAdvance(
-                new CodeInstruction(OpCodes.Ldloc_S, (byte)20),
-                new CodeInstruction(OpCodes.Ldarg_0),
-                Transpilers.EmitDelegate(UpdateProjectileHit)
-                ).ThrowIfNotMatch("Unable to patch Exploding Arrows AOE.");
-            return codeMatcher.Instructions();
-        }
-
-        private static void UpdateProjectileHit(GameObject shot, Attack instance)
-        {
-            if (Player.m_localPlayer != null && instance.m_character == Player.m_localPlayer && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.ExplosiveArrows, out float effectValue, 0.01f))
-            {
-                Projectile projectile = shot.GetComponent<Projectile>();
-
-                if (projectile != null && projectile.m_nview != null)
-                {
-                    projectile.m_nview.GetZDO().Set("el-aw", effectValue);
-                }
-            }
         }
     }
 }

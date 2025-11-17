@@ -145,6 +145,13 @@ namespace EpicLoot
             return magicData != null && magicData.MagicItem != null;
         }
 
+        public static bool IsUnidentified(this ItemDrop.ItemData itemData)
+        {
+            MagicItemComponent mic = itemData.Data().Get<MagicItemComponent>();
+            if (mic == null) { return false; }
+            return mic.MagicItem.IsUnidentified;
+        }
+
         public static bool IsMagic(this ItemDrop.ItemData itemData, out MagicItem magicItem)
         {
             magicItem = itemData.GetMagicItem();
@@ -715,6 +722,14 @@ namespace EpicLoot
         {
             effectValue = GetTotalActiveMagicEffectValue(player, effectType, scale, ignoreThisItem);
             return effectValue > 0;
+        }
+        
+        public static bool HasActiveMagicEffect(this Player player, string effectType)
+        {
+            if (player == null) return false;
+            var effects = player.GetAllActiveMagicEffects(effectType.ToString());
+
+            return effects.Count > 0;
         }
 
         public static List<ItemDrop.ItemData> GetEquippedSetPieces(this Player player, string setName)

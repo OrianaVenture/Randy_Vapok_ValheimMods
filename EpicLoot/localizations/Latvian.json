@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnara dusmas",
   "mod_epicloot_legendarysetlabel": "Legendārs komplektēšanas priekšmets",
   "mod_epicloot_mythicsetlabel": "Mītisks komplektēšanas priekšmets",
+  "mod_epicloot_Magic": "Maģija",
+  "mod_epicloot_Rare": "Reti",
+  "mod_epicloot_Epic": "Episki",
+  "mod_epicloot_Legendary": "Legendāri",
+  "mod_epicloot_Mythic": "Mītiski",
   "mod_epicloot_magic": "Maģija",
   "mod_epicloot_rare": "Reti",
   "mod_epicloot_epic": "Episki",
   "mod_epicloot_legendary": "Legendāri",
-  "mod_epicloot_mythic": "Mītiski"
+  "mod_epicloot_mythic": "Mītiski",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalīna pieplūdums",
+  "mod_epicloot_me_adrenaline_rush_desc": "Palielināts bojājums efekta ilgumā."
 }

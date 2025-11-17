@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,10 +43,11 @@ namespace EpicLoot_UnityLib
                 _toggleGroup.EnsureValidState();
             }
 
-            for (var index = 0; index < RarityButtons.Count; index++)
+            for (int index = 0; index < RarityButtons.Count; index++)
             {
-                var rarityButton = RarityButtons[index];
-                rarityButton.onValueChanged.AddListener((isOn) => {
+                Toggle rarityButton = RarityButtons[index];
+                rarityButton.onValueChanged.AddListener((isOn) =>
+                {
                     if (isOn)
                         RefreshRarity();
                 });
@@ -56,10 +57,15 @@ namespace EpicLoot_UnityLib
         [UsedImplicitly]
         public void OnEnable()
         {
+            foreach(AudioSource audioSource in this.GetComponentsInChildren<AudioSource>())
+            {
+                audioSource.volume = AudioVolumeLevel();
+            }
+
             _rarity = MagicRarityUnity.Magic;
             OnRarityChanged();
             RarityButtons[0].isOn = true;
-            var items = GetEnchantableItems();
+            List<InventoryItemListElement> items = GetEnchantableItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
         }
 
@@ -71,16 +77,18 @@ namespace EpicLoot_UnityLib
             {
                 if (ZInput.GetButtonDown("JoyButtonY"))
                 {
-                    var nextModeIndex = ((int)_rarity + 1) % RarityButtons.Count;
+                    int nextModeIndex = ((int)_rarity + 1) % RarityButtons.Count;
                     RarityButtons[nextModeIndex].isOn = true;
                     ZInput.ResetButtonStatus("JoyButtonY");
                 }
 
                 if (EnchantInfoScrollbar != null)
                 {
-                    var rightStickAxis = ZInput.GetJoyRightStickY();
+                    float rightStickAxis = ZInput.GetJoyRightStickY();
                     if (Mathf.Abs(rightStickAxis) > 0.5f)
+                    {
                         EnchantInfoScrollbar.value = Mathf.Clamp01(EnchantInfoScrollbar.value + rightStickAxis * -0.1f);
+                    }
                 }
             }
 
@@ -94,10 +102,10 @@ namespace EpicLoot_UnityLib
 
         public void RefreshRarity()
         {
-            var prevRarity = _rarity;
-            for (var index = 0; index < RarityButtons.Count; index++)
+            MagicRarityUnity prevRarity = _rarity;
+            for (int index = 0; index < RarityButtons.Count; index++)
             {
-                var button = RarityButtons[index];
+                Toggle button = RarityButtons[index];
                 if (button.isOn)
                 {
                     _rarity = (MagicRarityUnity)index;
@@ -105,12 +113,14 @@ namespace EpicLoot_UnityLib
             }
 
             if (prevRarity != _rarity)
+            {
                 OnRarityChanged();
+            }
         }
 
         public void OnRarityChanged()
         {
-            var selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
+            System.Tuple<InventoryItemListElement, int> selectedItem = AvailableItems.GetSingleSelectedItem<InventoryItemListElement>();
             if (selectedItem?.Item1.GetItem() == null)
             {
                 MainButton.interactable = false;
@@ -120,18 +130,18 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            var item = selectedItem.Item1.GetItem();
-            var info = GetEnchantInfo(item, _rarity);
+            ItemDrop.ItemData item = selectedItem.Item1.GetItem();
+            string info = GetEnchantInfo(item, _rarity);
 
             EnchantInfo.text = info;
             ScrollEnchantInfoToTop();
 
             CostLabel.enabled = true;
-            var cost = GetEnchantCost(item, _rarity);
+            List<InventoryItemListElement> cost = GetEnchantCost(item, _rarity);
             CostList.SetItems(cost.Cast<IListElement>().ToList());
 
-            var canAfford = LocalPlayerCanAffordCost(cost);
-            var featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Enchant);
+            bool canAfford = LocalPlayerCanAffordCost(cost);
+            bool featureUnlocked = EnchantingTableUI.instance.SourceTable.IsFeatureUnlocked(EnchantingFeature.Enchant);
             MainButton.interactable = featureUnlocked && canAfford;
         }
 
@@ -142,7 +152,8 @@ namespace EpicLoot_UnityLib
 
         protected override void DoMainAction()
         {
-            var selectedItem = AvailableItems.GetSelectedItems<InventoryItemListElement>().FirstOrDefault();
+            System.Tuple<InventoryItemListElement, int> selectedItem =
+                AvailableItems.GetSelectedItems<InventoryItemListElement>().FirstOrDefault();
 
             Cancel();
 
@@ -151,10 +162,10 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            var item = selectedItem.Item1.GetItem();
-            var cost = GetEnchantCost(item, _rarity);
+            ItemDrop.ItemData item = selectedItem.Item1.GetItem();
+            List<InventoryItemListElement> cost = GetEnchantCost(item, _rarity);
 
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
             if (!player.NoCostCheat())
             {
                 if (!LocalPlayerCanAffordCost(cost))
@@ -163,7 +174,7 @@ namespace EpicLoot_UnityLib
                     return;
                 }
 
-                foreach (var costElement in cost)
+                foreach (InventoryItemListElement costElement in cost)
                 {
                     InventoryManagement.Instance.RemoveItem(costElement.GetItem());
                 }
@@ -189,7 +200,7 @@ namespace EpicLoot_UnityLib
 
         public void RefreshAvailableItems()
         {
-            var items = GetEnchantableItems();
+            List<InventoryItemListElement> items = GetEnchantableItems();
             AvailableItems.SetItems(items.Cast<IListElement>().ToList());
             AvailableItems.DeselectAll();
             OnSelectedItemsChanged();
@@ -222,7 +233,7 @@ namespace EpicLoot_UnityLib
         {
             base.Lock();
 
-            foreach (var modeButton in RarityButtons)
+            foreach (Toggle modeButton in RarityButtons)
             {
                 modeButton.interactable = false;
             }
@@ -232,7 +243,7 @@ namespace EpicLoot_UnityLib
         {
             base.Unlock();
 
-            foreach (var modeButton in RarityButtons)
+            foreach (Toggle modeButton in RarityButtons)
             {
                 modeButton.interactable = true;
             }

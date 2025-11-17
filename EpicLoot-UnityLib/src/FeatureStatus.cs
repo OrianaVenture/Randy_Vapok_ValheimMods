@@ -23,20 +23,27 @@ namespace EpicLoot_UnityLib
         public void Awake()
         {
             if (Tooltip != null)
+            {
                 MakeFeatureUnlockTooltip(Tooltip.gameObject);
+            }
         }
 
         public void OnEnable()
         {
             if (EnchantingTableUI.instance != null && EnchantingTableUI.instance.SourceTable != null)
+            {
                 EnchantingTableUI.instance.SourceTable.OnFeatureLevelChanged += OnFeatureLevelChanged;
+            }
+
             Refresh();
         }
 
         public void OnDisable()
         {
             if (EnchantingTableUI.instance != null && EnchantingTableUI.instance.SourceTable != null)
+            {
                 EnchantingTableUI.instance.SourceTable.OnFeatureLevelChanged -= OnFeatureLevelChanged;
+            }
         }
 
         public void SetFeature(EnchantingFeature feature)
@@ -51,35 +58,51 @@ namespace EpicLoot_UnityLib
         public void Refresh()
         {
             if (EnchantingTableUI.instance == null || EnchantingTableUI.instance.SourceTable == null)
-                return;
-
-            if (!EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature))
             {
-                if (UnlockedContainer != null)
-                    UnlockedContainer.gameObject.SetActive(false);
-                if (LockedContainer != null)
-                    LockedContainer.gameObject.SetActive(false);
                 return;
             }
 
-            if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature))
+            if (EnchantingTableUI.instance.SourceTable.IsFeatureAvailable(Feature) == false)
             {
                 if (UnlockedContainer != null)
+                {
                     UnlockedContainer.gameObject.SetActive(false);
+                }
+
                 if (LockedContainer != null)
+                {
+                    LockedContainer.gameObject.SetActive(false);
+                }
+
+                return;
+            }
+
+            if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature) == true)
+            {
+                if (UnlockedContainer != null)
+                {
+                    UnlockedContainer.gameObject.SetActive(false);
+                }
+                if (LockedContainer != null)
+                {
                     LockedContainer.gameObject.SetActive(true);
+                }
             }
             else
             {
                 if (UnlockedContainer != null)
+                {
                     UnlockedContainer.gameObject.SetActive(true);
+                }
                 if (LockedContainer != null)
+                {
                     LockedContainer.gameObject.SetActive(false);
+                }
 
-                var level = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
+                int level = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
                 if (level > Stars.Length)
                 {
-                    for (var index = 0; index < Stars.Length; index++)
+                    for (int index = 0; index < Stars.Length; index++)
                     {
                         Stars[index].gameObject.SetActive(index == 0);
                     }
@@ -92,40 +115,47 @@ namespace EpicLoot_UnityLib
                 }
                 else
                 {
-                    for (var index = 0; index < Stars.Length; index++)
+                    for (int index = 0; index < Stars.Length; index++)
                     {
                         bool active = level > index && UpgradesActive(Feature, out _);
                         Stars[index].gameObject.SetActive(active);
                     }
 
-                    if (ManyStarsLabel != null)
-                    {
-                        ManyStarsLabel.gameObject.SetActive(false);
-                    }
+                    ManyStarsLabel?.gameObject.SetActive(false);
                 }
 
-                if (UnlockedLabel != null)
-                    UnlockedLabel.SetActive(level == 0);
+                UnlockedLabel?.SetActive(level == 0);
             }
 
             if (Tooltip != null && UpgradesActive(Feature, out _))
             {
                 Tooltip.m_topic = Localization.instance.Localize(EnchantingTableUpgrades.GetFeatureName(Feature));
 
-                var sb = new StringBuilder();
-                var locked = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature);
-                var currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
-                var maxLevel = EnchantingTableUpgrades.GetFeatureMaxLevel(Feature);
+                StringBuilder sb = new StringBuilder();
+                bool locked = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(Feature);
+                int currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(Feature);
+                int maxLevel = EnchantingTableUpgrades.GetFeatureMaxLevel(Feature);
+
                 if (locked)
-                    sb.AppendLine(Localization.instance.Localize("$mod_epicloot_currentlevel: <color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+                {
+                    sb.AppendLine(Localization.instance.Localize("$mod_epicloot_currentlevel: " +
+                        "<color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+                }
                 else if (currentLevel == 0)
-                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+                {
+                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: " +
+                        $"<color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+                }
                 else
-                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+                {
+                    sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: " +
+                        $"<color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+                }
 
                 if (!locked && currentLevel > 0)
                 {
-                    var text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(EnchantingTableUI.instance.SourceTable, Feature, currentLevel);
+                    string text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(
+                        EnchantingTableUI.instance.SourceTable, Feature, currentLevel);
                     sb.AppendLine($"<color=#EAA800>{text}</color>");
                 }
 
@@ -139,7 +169,9 @@ namespace EpicLoot_UnityLib
         private void OnFeatureLevelChanged(EnchantingFeature feature, int _)
         {
             if (isActiveAndEnabled && feature == Feature)
+            {
                 Refresh();
+            }
         }
     }
 }

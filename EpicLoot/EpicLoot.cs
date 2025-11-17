@@ -9,6 +9,7 @@ using EpicLoot.GatedItemType;
 using EpicLoot.General;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
+using EpicLoot.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;
@@ -21,7 +22,6 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot
@@ -29,15 +29,19 @@ namespace EpicLoot
     public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
+        public static Dictionary<string, Object> AssetCache = new Dictionary<string, Object>();
+
         public Sprite EquippedSprite;
         public Sprite AugaEquippedSprite;
         public Sprite GenericSetItemSprite;
         public Sprite AugaSetItemSprite;
         public Sprite GenericItemBgSprite;
         public Sprite AugaItemBgSprite;
+        public Sprite EnchantmentSparkle;
         public GameObject[] MagicItemLootBeamPrefabs = new GameObject[5];
         public readonly Dictionary<string, GameObject[]> CraftingMaterialPrefabs = new Dictionary<string, GameObject[]>();
         public Sprite SmallButtonEnchantOverlay;
+        public Sprite DodgeBuffSprite;
         public AudioClip[] MagicItemDropSFX = new AudioClip[5];
         public AudioClip ItemLoopSFX;
         public AudioClip AugmentItemSFX;
@@ -46,9 +50,12 @@ namespace EpicLoot
         public Sprite MapIconBounty;
         public AudioClip AbandonBountySFX;
         public AudioClip DoubleJumpSFX;
+        public AudioClip DodgeBuffSFX;
+        public AudioClip OffSetSFX;
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
+
         public const string DummyName = "EL_DummyPrefab";
         public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
@@ -72,7 +79,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.11.7";
+        public const string Version = "0.12.0";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -94,6 +101,7 @@ namespace EpicLoot
         public static string[] MagicMaterials = new string[]
         {
             "Runestone",
+            "EtchedRunestone",
             "Shard",
             "Dust",
             "Reagent",
@@ -111,7 +119,6 @@ namespace EpicLoot
         };
 
         public static EpicAssets Assets = new EpicAssets();
-        public static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
         public static bool AlwaysDropCheat = false;
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
@@ -129,31 +136,35 @@ namespace EpicLoot
         [UsedImplicitly]
         void Awake()
         {
-            Debug.LogError("EPICLOOT: RUSTY BETA BRANCH");
             _instance = this;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
 
+            Jotunn.Logger.LogInfo("Loading unitylib");
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
+            Jotunn.Logger.LogInfo("Setting up config");
             cfg = new ELConfig(Config);
-
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
-
-            LoadPatches();
+            FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
             AddLocalizations();
-
             LoadAssets();
-
             EnchantingUIController.Initialize();
-
             _harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginId);
 
             LootTableLoaded?.Invoke();
+            RegisterMagicEffectEvents();
 
             TerminalCommands.AddTerminalCommands();
+            // Main file config watcher
             SetupWatcher();
+        }
+
+        private static void RegisterMagicEffectEvents()
+        {
+            // This needs to not run until after the game is loaded, otherwise it will not be able to find the ObjectDB
+            MagicItemEffectDefinitions.OnSetupMagicItemEffectDefinitions += Riches_CharacterDrop_GenerateDropList_Patch.UpdateRichesOnEffectSetup;
         }
 
         private static void LoadEmbeddedAssembly(Assembly assembly, string assemblyName)
@@ -173,140 +184,135 @@ namespace EpicLoot
             }
         }
 
-        void Start()
-        {
-            HasAuga = Auga.API.IsLoaded();
+        //sealed void Start()
+        //{
+        //    //HasAuga = Auga.API.IsLoaded();
 
-            if (HasAuga)
-            {
-                Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
-                Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
-            }
-        }
+        //    //if (HasAuga)
+        //    //{
+        //    //    Auga.API.ComplexTooltip_AddItemTooltipCreatedListener(ExtendAugaTooltipForMagicItem);
+        //    //    Auga.API.ComplexTooltip_AddItemStatPreprocessor(AugaTooltipPreprocessor.PreprocessTooltipStat);
+        //    //}
+        //}
 
-        public static void ExtendAugaTooltipForMagicItem(GameObject complexTooltip, ItemDrop.ItemData item)
-        {
-            Auga.API.ComplexTooltip_SetTopic(complexTooltip, Localization.instance.Localize(item.GetDecoratedName()));
+        //public static void ExtendAugaTooltipForMagicItem(GameObject complexTooltip, ItemDrop.ItemData item)
+        //{
+        //    //Auga.API.ComplexTooltip_SetTopic(complexTooltip, Localization.instance.Localize(item.GetDecoratedName()));
 
-            var isMagic = item.IsMagic(out var magicItem);
+        //    var isMagic = item.IsMagic(out var magicItem);
 
-            var inFront = true;
-            var itemBG = complexTooltip.transform.Find("Tooltip/IconHeader/IconBkg/Item");
-            if (itemBG == null)
-            {
-                itemBG = complexTooltip.transform.Find("InventoryElement/icon");
-                inFront = false;
-            }
+        //    var inFront = true;
+        //    var itemBG = complexTooltip.transform.Find("Tooltip/IconHeader/IconBkg/Item");
+        //    if (itemBG == null)
+        //    {
+        //        itemBG = complexTooltip.transform.Find("InventoryElement/icon");
+        //        inFront = false;
+        //    }
 
-            RectTransform magicBG = null;
-            if (itemBG != null)
-            {
-                var itemBGImage = itemBG.GetComponent<Image>();
-                magicBG = (RectTransform)itemBG.transform.Find("magicItem");
-                if (magicBG == null)
-                {
-                    var magicItemObject = Instantiate(itemBGImage, inFront ?
-                        itemBG.transform : itemBG.transform.parent).gameObject;
-                    magicItemObject.name = "magicItem";
-                    magicItemObject.SetActive(true);
-                    magicBG = (RectTransform)magicItemObject.transform;
-                    magicBG.anchorMin = Vector2.zero;
-                    magicBG.anchorMax = new Vector2(1, 1);
-                    magicBG.sizeDelta = Vector2.zero;
-                    magicBG.pivot = new Vector2(0.5f, 0.5f);
-                    magicBG.anchoredPosition = Vector2.zero;
-                    var magicItemInit = magicBG.GetComponent<Image>();
-                    magicItemInit.color = Color.white;
-                    magicItemInit.raycastTarget = false;
-                    magicItemInit.sprite = GetMagicItemBgSprite();
+        //    RectTransform magicBG = null;
+        //    if (itemBG != null)
+        //    {
+        //        var itemBGImage = itemBG.GetComponent<Image>();
+        //        magicBG = (RectTransform)itemBG.transform.Find("magicItem");
+        //        if (magicBG == null)
+        //        {
+        //            var magicItemObject = Instantiate(itemBGImage, inFront ?
+        //                itemBG.transform : itemBG.transform.parent).gameObject;
+        //            magicItemObject.name = "magicItem";
+        //            magicItemObject.SetActive(true);
+        //            magicBG = (RectTransform)magicItemObject.transform;
+        //            magicBG.anchorMin = Vector2.zero;
+        //            magicBG.anchorMax = new Vector2(1, 1);
+        //            magicBG.sizeDelta = Vector2.zero;
+        //            magicBG.pivot = new Vector2(0.5f, 0.5f);
+        //            magicBG.anchoredPosition = Vector2.zero;
+        //            var magicItemInit = magicBG.GetComponent<Image>();
+        //            magicItemInit.color = Color.white;
+        //            magicItemInit.raycastTarget = false;
+        //            magicItemInit.sprite = GetMagicItemBgSprite();
 
-                    if (!inFront)
-                    {
-                        magicBG.SetSiblingIndex(0);
-                    }
-                }
-            }
+        //            if (!inFront)
+        //            {
+        //                magicBG.SetSiblingIndex(0);
+        //            }
+        //        }
+        //    }
 
-            if (magicBG != null)
-            {
-                magicBG.gameObject.SetActive(isMagic);
-            }
+        //    if (magicBG != null)
+        //    {
+        //        magicBG.gameObject.SetActive(isMagic);
+        //    }
 
-            if (item.IsMagicCraftingMaterial())
-            {
-                var rarity = item.GetCraftingMaterialRarity();
-                Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.m_shared.m_icons[GetRarityIconIndex(rarity)]);
-            }
+        //    if (item.IsMagicCraftingMaterial())
+        //    {
+        //        var rarity = item.GetCraftingMaterialRarity();
+        //        //Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.m_shared.m_icons[GetRarityIconIndex(rarity)]);
+        //    }
 
-            if (isMagic)
-            {
-                var magicColor = magicItem.GetColorString();
-                var itemTypeName = magicItem.GetItemTypeName(item.Extended());
+        //    if (isMagic)
+        //    {
+        //        var magicColor = magicItem.GetColorString();
+        //        var itemTypeName = magicItem.GetItemTypeName(item.Extended());
 
-                if (magicBG != null)
-                {
-                    magicBG.GetComponent<Image>().color = item.GetRarityColor();
-                }
+        //        if (magicBG != null)
+        //        {
+        //            magicBG.GetComponent<Image>().color = item.GetRarityColor();
+        //        }
 
-                Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.GetIcon());
+        //        //Auga.API.ComplexTooltip_SetIcon(complexTooltip, item.GetIcon());
 
-                string localizedSubtitle;
-                if (item.IsMagicSetItem())
-                {
-                    localizedSubtitle = $"<color={GetSetItemColor()}>" +
-                        $"$mod_epicloot_legendarysetlabel</color>, {itemTypeName}\n";
-                }
-                else
-                {
-                    localizedSubtitle = $"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>";
-                }
+        //        string localizedSubtitle;
+        //        if (item.IsLegendarySetItem())
+        //        {
+        //            localizedSubtitle = $"<color={GetSetItemColor()}>" +
+        //                $"$mod_epicloot_legendarysetlabel</color>, {itemTypeName}\n";
+        //        }
+        //        else
+        //        {
+        //            localizedSubtitle = $"<color={magicColor}>{magicItem.GetRarityDisplay()} {itemTypeName}</color>";
+        //        }
 
-                try
-                {
-                    Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, Localization.instance.Localize(localizedSubtitle));
-                }
-                catch (Exception)
-                {
-                    Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, localizedSubtitle);
-                }
+        //        try
+        //        {
+        //            //Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, Localization.instance.Localize(localizedSubtitle));
+        //        }
+        //        catch (Exception)
+        //        {
+        //            //Auga.API.ComplexTooltip_SetSubtitle(complexTooltip, localizedSubtitle);
+        //        }
                 
-                if (AugaTooltipNoTextBoxes)
-                    return;
+        //        if (AugaTooltipNoTextBoxes)
+        //            return;
                 
-                //Don't need to process the InventoryTooltip Information.
-                if (complexTooltip.name.Contains("InventoryTooltip"))
-                    return;
+        //        //Don't need to process the InventoryTooltip Information.
+        //        if (complexTooltip.name.Contains("InventoryTooltip"))
+        //            return;
 
-                //The following is used only for Crafting Result Panel.
-                Auga.API.ComplexTooltip_AddDivider(complexTooltip);
+        //        //The following is used only for Crafting Result Panel.
+        //        Auga.API.ComplexTooltip_AddDivider(complexTooltip);
 
-                var magicItemText = magicItem.GetTooltip();
-                var textBox = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
-                magicItemText = magicItemText.Replace("\n\n", "");
-                Auga.API.TooltipTextBox_AddLine(textBox, magicItemText);
+        //        var magicItemText = magicItem.GetTooltip();
+        //        var textBox = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
+        //        magicItemText = magicItemText.Replace("\n\n", "");
+        //        Auga.API.TooltipTextBox_AddLine(textBox, magicItemText);
                 
-                if (magicItem.IsLegendarySetItem())
-                {
-                    var textBox2 = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
-                    Auga.API.TooltipTextBox_AddLine(textBox2, item.GetSetTooltip());
-                }
+        //        if (magicItem.IsLegendarySetItem())
+        //        {
+        //            var textBox2 = Auga.API.ComplexTooltip_AddTwoColumnTextBox(complexTooltip);
+        //            Auga.API.TooltipTextBox_AddLine(textBox2, item.GetSetTooltip());
+        //        }
                 
-                try
-                {
-                    Auga.API.ComplexTooltip_SetDescription(complexTooltip,
-                        Localization.instance.Localize(item.GetDescription()));
-                }
-                catch (Exception)
-                {
-                    Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
-                }
-            }
-        }
-
-        public static void LoadPatches()
-        {
-            FilePatching.LoadAllPatches();
-        }
+        //        try
+        //        {
+        //            Auga.API.ComplexTooltip_SetDescription(complexTooltip,
+        //                Localization.instance.Localize(item.GetDescription()));
+        //        }
+        //        catch (Exception)
+        //        {
+        //            Auga.API.ComplexTooltip_SetDescription(complexTooltip, item.GetDescription());
+        //        }
+        //    }
+        //}
 
         private void AddLocalizations()
         {
@@ -385,7 +391,9 @@ namespace EpicLoot
             Assets.AugaSetItemSprite = assetBundle.LoadAsset<Sprite>("AugaSetItem");
             Assets.GenericItemBgSprite = assetBundle.LoadAsset<Sprite>("GenericItemBg");
             Assets.AugaItemBgSprite = assetBundle.LoadAsset<Sprite>("AugaItemBG");
+            Assets.EnchantmentSparkle = assetBundle.LoadAsset<Sprite>("sparkle");
             Assets.SmallButtonEnchantOverlay = assetBundle.LoadAsset<Sprite>("SmallButtonEnchantOverlay");
+            Assets.DodgeBuffSprite = assetBundle.LoadAsset<Sprite>("DodgeBuff");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Magic] = assetBundle.LoadAsset<GameObject>("MagicLootBeam");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Rare] = assetBundle.LoadAsset<GameObject>("RareLootBeam");
             Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Epic] = assetBundle.LoadAsset<GameObject>("EpicLootBeam");
@@ -405,30 +413,37 @@ namespace EpicLoot
             Assets.MapIconBounty = assetBundle.LoadAsset<Sprite>("MapIconBounty");
             Assets.AbandonBountySFX = assetBundle.LoadAsset<AudioClip>("AbandonBounty");
             Assets.DoubleJumpSFX = assetBundle.LoadAsset<AudioClip>("DoubleJump");
+            Assets.DodgeBuffSFX = assetBundle.LoadAsset<AudioClip>("evasionbuff");
+            Assets.OffSetSFX = assetBundle.LoadAsset<AudioClip>("offset");
             Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
             LoadCraftingMaterialAssets();
+            
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
+            LoadUnidentifiedItems();
+            // Needs to trigger late in order to get all potentially added items by other mods
+            MinimapManager.OnVanillaMapAvailable += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+            DodgeBuff.CreateMyStatusEffect();
         }
 
         public static T LoadAsset<T>(string assetName) where T : Object
         {
             try
             {
-                if (_assetCache.ContainsKey(assetName))
+                if (EpicAssets.AssetCache.ContainsKey(assetName))
                 {
-                    return (T)_assetCache[assetName];
+                    return (T)EpicAssets.AssetCache[assetName];
                 }
 
                 var asset = Assets.AssetBundle.LoadAsset<T>(assetName);
-                _assetCache.Add(assetName, asset);
+                EpicAssets.AssetCache.Add(assetName, asset);
                 return asset;
             }
             catch (Exception e)
@@ -537,6 +552,45 @@ namespace EpicLoot
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);
+                }
+            }
+        }
+
+        private static void LoadUnidentifiedItems() {
+            GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
+            ItemManager.Instance.AddItem(genericUnidentified);
+            genericPrefab.SetActive(false);
+            foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
+                if (type == "None" || type == "All") { continue; }
+                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
+                    var prefab = Object.Instantiate(genericPrefab);
+                    string prefabName = $"{type}_{rarity}_Unidentified";
+                    prefab.name = prefabName;
+                    ItemDrop pid = prefab.GetComponent<ItemDrop>();
+                    var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    pid.m_itemData.m_dropPrefab = prefab;
+                    magicItemComponent.SetMagicItem(new MagicItem {
+                        Rarity = rarity,
+                        IsUnidentified = true,
+                    });
+                    magicItemComponent.Save();
+                    ItemConfig unidentifiedIC = new ItemConfig() {
+                        Name = $"$mod_epicloot_{rarity} $mod_epicloot_unidentified_{type}",
+                        Description = "$mod_epicloot_unidentified_introduce",
+                    };
+                    CustomItem custom = new CustomItem(prefab, false, unidentifiedIC);
+                    ItemManager.Instance.AddItem(custom);
+
+                    // Enable Items once things are working so that ZNet issues don't happen
+                    void EnableUnidentified(string prefabname)
+                    {
+                        PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
+                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
+                        ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
+                    }
+
+                    ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
                 }
             }
         }
@@ -748,15 +802,15 @@ namespace EpicLoot
             switch (rarity)
             {
                 case ItemRarity.Magic:
-                    return "$mod_epicloot_magic";
+                    return "$mod_epicloot_Magic";
                 case ItemRarity.Rare:
-                    return "$mod_epicloot_rare";
+                    return "$mod_epicloot_Rare";
                 case ItemRarity.Epic:
-                    return "$mod_epicloot_epic";
+                    return "$mod_epicloot_Epic";
                 case ItemRarity.Legendary:
-                    return "$mod_epicloot_legendary";
+                    return "$mod_epicloot_Legendary";
                 case ItemRarity.Mythic:
-                    return "$mod_epicloot_mythic";
+                    return "$mod_epicloot_Mythic";
                 default:
                     return "<non magic>";
             }

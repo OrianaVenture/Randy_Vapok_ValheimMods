@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "राग्नार का क्रोध",
   "mod_epicloot_legendarysetlabel": "पौराणिक सेट आइटम",
   "mod_epicloot_mythicsetlabel": "मिथिक सेट आइटम",
+  "mod_epicloot_Magic": "जादू",
+  "mod_epicloot_Rare": "दुर्लभ",
+  "mod_epicloot_Epic": "महाकाव्य",
+  "mod_epicloot_Legendary": "प्रसिद्ध",
+  "mod_epicloot_Mythic": "मिथिक",
   "mod_epicloot_magic": "जादू",
   "mod_epicloot_rare": "दुर्लभ",
   "mod_epicloot_epic": "महाकाव्य",
   "mod_epicloot_legendary": "प्रसिद्ध",
-  "mod_epicloot_mythic": "मिथिक"
+  "mod_epicloot_mythic": "मिथिक",
+  "mod_epicloot_me_adrenaline_rush": "एड्रेनलाइन रशि",
+  "mod_epicloot_me_adrenaline_rush_desc": "प्रभाव की अवधि के दौरान बढ़ी हुई नुकसान।"
 }

@@ -19,6 +19,11 @@ namespace EpicLoot.Crafting
             }
         }
 
+        public static RecipesConfig GetCFG()
+        {
+            return Config;
+        }
+
         public static void SetupRecipes()
         {
             PrefabCreator.Reset();

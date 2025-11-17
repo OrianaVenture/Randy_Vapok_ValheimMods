@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnarowa Furia",
   "mod_epicloot_legendarysetlabel": "Legendarny przedmiot zestawu",
   "mod_epicloot_mythicsetlabel": "Przedmiot zestawu mitologicznego",
+  "mod_epicloot_Magic": "Magia",
+  "mod_epicloot_Rare": "Rzadki",
+  "mod_epicloot_Epic": "ki",
+  "mod_epicloot_Legendary": "Legendarny",
+  "mod_epicloot_Mythic": "Mityczny",
   "mod_epicloot_magic": "Magia",
   "mod_epicloot_rare": "Rzadki",
   "mod_epicloot_epic": "ki",
   "mod_epicloot_legendary": "Legendarny",
-  "mod_epicloot_mythic": "Mityczny"
+  "mod_epicloot_mythic": "Mityczny",
+  "mod_epicloot_me_adrenaline_rush": "Poryw adrenaliny",
+  "mod_epicloot_me_adrenaline_rush_desc": "Zwiększone obrażenia przez czas trwania efektu."
 }

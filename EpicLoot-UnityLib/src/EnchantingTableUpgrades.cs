@@ -11,7 +11,7 @@ namespace EpicLoot_UnityLib
         Enchant,
         Augment,
         Disenchant,
-        Helheim
+        Rune
     }
 
     [Serializable]
@@ -29,7 +29,7 @@ namespace EpicLoot_UnityLib
         public List<List<ItemAmount>> Enchant;
         public List<List<ItemAmount>> Augment;
         public List<List<ItemAmount>> Disenchant;
-        public List<List<ItemAmount>> Helheim;
+        public List<List<ItemAmount>> Rune;
     }
 
     [Serializable]
@@ -40,7 +40,7 @@ namespace EpicLoot_UnityLib
         public List<float[]> Enchant;
         public List<float[]> Augment;
         public List<float[]> Disenchant;
-        public List<float[]> Helheim;
+        public List<float[]> Rune;
     }
 
     [Serializable]
@@ -70,74 +70,111 @@ namespace EpicLoot_UnityLib
             Config = config;
         }
 
+        public static EnchantingUpgradesConfig GetCFG()
+        {
+            return Config;
+        }
+
         public static string GetFeatureName(EnchantingFeature feature)
         {
-            var featureNames = new []
+            switch (feature)
             {
-                "$mod_epicloot_sacrifice",
-                "$mod_epicloot_convertmaterials",
-                "$mod_epicloot_enchant",
-                "$mod_epicloot_augment",
-                "$mod_epicloot_disenchant",
-                "$mod_epicloot_helheim",
-            };
-            return featureNames[(int)feature];
+                case EnchantingFeature.Sacrifice:
+                    return "$mod_epicloot_sacrifice";
+                case EnchantingFeature.ConvertMaterials:
+                    return "$mod_epicloot_convertmaterials";
+                case EnchantingFeature.Enchant:
+                    return "$mod_epicloot_enchant";
+                case EnchantingFeature.Augment:
+                    return "$mod_epicloot_augment";
+                case EnchantingFeature.Disenchant:
+                    return "$mod_epicloot_disenchant";
+                case EnchantingFeature.Rune:
+                    return "$mod_epicloot_runemanagement";
+                default:
+                    return "";
+            }
         }
 
         public static string GetFeatureDescription(EnchantingFeature feature)
         {
-            var featureDescriptions = new []
+            switch (feature)
             {
-                "$mod_epicloot_featureinfo_sacrifice",
-                "$mod_epicloot_featureinfo_convertmaterials",
-                "$mod_epicloot_featureinfo_enchant",
-                "$mod_epicloot_featureinfo_augment",
-                "$mod_epicloot_featureinfo_disenchant",
-                "$mod_epicloot_featureinfo_helheim",
-            };
-            return featureDescriptions[(int)feature];
+                case EnchantingFeature.Sacrifice:
+                    return "$mod_epicloot_featureinfo_sacrifice";
+                case EnchantingFeature.ConvertMaterials:
+                    return "$mod_epicloot_featureinfo_convertmaterials";
+                case EnchantingFeature.Enchant:
+                    return "$mod_epicloot_featureinfo_enchant";
+                case EnchantingFeature.Augment:
+                    return "$mod_epicloot_featureinfo_augment";
+                case EnchantingFeature.Disenchant:
+                    return "$mod_epicloot_featureinfo_disenchant";
+                case EnchantingFeature.Rune:
+                    return "$mod_epicloot_featureinfo_runes";
+                default:
+                    return "";
+            }
         }
 
         public static string GetFeatureUpgradeLevelDescription(EnchantingTable table,
             EnchantingFeature feature, int level)
         {
-            var featureUpgradeDescriptions = new []
+            string description;
+            switch (feature)
             {
-                "$mod_epicloot_featureupgrade_sacrifice",
-                "$mod_epicloot_featureupgrade_convertmaterials",
-                "$mod_epicloot_featureupgrade_enchant",
-                "$mod_epicloot_featureupgrade_augment",
-                "$mod_epicloot_featureupgrade_disenchant",
-                "$mod_epicloot_featureupgrade_helheim",
-            };
+                case EnchantingFeature.Sacrifice:
+                    description = "$mod_epicloot_featureupgrade_sacrifice";
+                    break;
+                case EnchantingFeature.ConvertMaterials:
+                    description = "$mod_epicloot_featureupgrade_convertmaterials";
+                    break;
+                case EnchantingFeature.Enchant:
+                    description = "$mod_epicloot_featureupgrade_enchant";
+                    break;
+                case EnchantingFeature.Augment:
+                    description = "$mod_epicloot_featureupgrade_augment";
+                    break;
+                case EnchantingFeature.Disenchant:
+                    description = "$mod_epicloot_featureupgrade_disenchant";
+                    break;
+                case EnchantingFeature.Rune:
+                    description = "$mod_epicloot_featureupgrade_runes";
+                    break;
+                default:
+                    description = "";
+                    break;
+            }
 
-            var values = table.GetFeatureValue(feature, level);
-            return Localization.instance.Localize(featureUpgradeDescriptions[(int)feature],
-                values.Item1.ToString("0.#"), values.Item2.ToString("0.#"));
+            Tuple<float, float> values = table.GetFeatureValue(feature, level);
+            return Localization.instance.Localize(description,
+                values.Item1.ToString(), values.Item2.ToString());
         }
 
         public static int GetFeatureMaxLevel(EnchantingFeature feature)
         {
-            return Config.MaximumFeatureLevels.TryGetValue(feature, out var maxLevel) ? maxLevel : 1;
+            return Config.MaximumFeatureLevels.TryGetValue(feature, out int maxLevel) ? maxLevel : 1;
         }
 
         public static List<InventoryItemListElement> GetUpgradeCost(EnchantingFeature feature, int level)
         {
-            var result = new List<InventoryItemListElement>();
+            List<InventoryItemListElement> result = new List<InventoryItemListElement>();
 
-            var upgradeCosts = feature switch
+            List<List<ItemAmount>> upgradeCosts = feature switch
             {
                 EnchantingFeature.Sacrifice => Config.UpgradeCosts.Sacrifice,
                 EnchantingFeature.ConvertMaterials => Config.UpgradeCosts.ConvertMaterials,
                 EnchantingFeature.Enchant => Config.UpgradeCosts.Enchant,
                 EnchantingFeature.Augment => Config.UpgradeCosts.Augment,
                 EnchantingFeature.Disenchant => Config.UpgradeCosts.Disenchant,
-                EnchantingFeature.Helheim => Config.UpgradeCosts.Helheim,
+                EnchantingFeature.Rune => Config.UpgradeCosts.Rune,
                 _ => throw new ArgumentOutOfRangeException(nameof(feature), feature, null)
             };
 
             if (upgradeCosts == null)
+            {
                 return result;
+            }
 
             if (level < 0 || level >= upgradeCosts.Count)
             {
@@ -146,13 +183,15 @@ namespace EpicLoot_UnityLib
                 return result;
             }
 
-            var costList = upgradeCosts[level];
+            List<ItemAmount> costList = upgradeCosts[level];
             if (costList == null)
-                return result;
-
-            foreach (var itemAmountConfig in costList)
             {
-                var prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
+                return result;
+            }
+
+            foreach (ItemAmount itemAmountConfig in costList)
+            {
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
                 if (prefab == null)
                 {
                     Debug.LogWarning($"[EpicLoot] Tried to add unknown item ({itemAmountConfig.Item}) " +
@@ -160,7 +199,7 @@ namespace EpicLoot_UnityLib
                     continue;
                 }
 
-                var itemDrop = prefab.GetComponent<ItemDrop>();
+                ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
                 if (itemDrop == null)
                 {
                     Debug.LogWarning($"[EpicLoot] Tried to add item without ItemDrop ({itemAmountConfig.Item}) " +
@@ -168,7 +207,7 @@ namespace EpicLoot_UnityLib
                     continue;
                 }
 
-                var costItem = itemDrop.m_itemData.Clone();
+                ItemDrop.ItemData costItem = itemDrop.m_itemData.Clone();
                 costItem.m_dropPrefab = prefab;
                 costItem.m_stack = itemAmountConfig.Amount;
                 result.Add(new InventoryItemListElement() { Item = costItem });

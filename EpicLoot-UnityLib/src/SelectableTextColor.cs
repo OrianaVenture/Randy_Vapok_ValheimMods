@@ -22,6 +22,7 @@ namespace EpicLoot_UnityLib
                 _defaultColor = _text.color;
                 return;
             }
+
             _tmpText = GetComponentInChildren<TMP_Text>();
             _defaultColor = _tmpText.color;
             useTMP = true;
@@ -32,16 +33,24 @@ namespace EpicLoot_UnityLib
             if (_selectable.IsInteractable())
             {
                 if (!useTMP)
+                {
                     _text.color = _defaultColor;
+                }
                 else
+                {
                     _tmpText.color = _defaultColor;
+                }
             }
             else
             {
                 if (!useTMP)
+                {
                     _text.color = DisabledColor;
+                }
                 else
+                {
                     _tmpText.color = DisabledColor;
+                }
             }
         }
     }

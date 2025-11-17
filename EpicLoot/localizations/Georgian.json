@@ -1420,6 +1420,11 @@
   "mod_epicloot_set_ragnar": "რაგნარის რივთი",
   "mod_epicloot_legendarysetlabel": "ლეგენდარული სეთის ნიშანი",
   "mod_epicloot_mythicsetlabel": "მითიური სეთის ნიშანი",
+  "mod_epicloot_Magic": "მაგიული",
+  "mod_epicloot_Rare": "რედაქლი",
+  "mod_epicloot_Epic": "ეპიკური",
+  "mod_epicloot_Legendary": "ლეგენდარული",
+  "mod_epicloot_Mythic": "მითიური",
   "mod_epicloot_magic": "მაგიული",
   "mod_epicloot_rare": "რედაქლი",
   "mod_epicloot_epic": "ეპიკური",
@@ -1432,5 +1437,7 @@
   "mod_epicloot_l_sleipnirshoof": "სლეიპნირის კუდი",
   "mod_epicloot_l_sleipnirshoof_desc": "ბარდნიულ და მუმიფი ცხენის წინწალი. დაცულია ძლიერი და მაკლე. ისინი, ვინც გამოიყურებენ მას, გილოცებენ სიბნელეს.",
   "mod_epicloot_l_gungnir": "Gungnir, ვარდი ვისარი",
-  "mod_epicloot_l_gungnir_desc": "მოდიფიცირებული არის მსოფლიო ხელის Yggdrasil და წერილებით ენიშრებულია კონტრაქტები, რომელიც საპატიმობო ძლების მიერ მიიღო."
+  "mod_epicloot_l_gungnir_desc": "მოდიფიცირებული არის მსოფლიო ხელის Yggdrasil და წერილებით ენიშრებულია კონტრაქტები, რომელიც საპატიმობო ძლების მიერ მიიღო.",
+  "mod_epicloot_me_adrenaline_rush": "ადრენალინის შედეგი",
+  "mod_epicloot_me_adrenaline_rush_desc": "ზრდებული ზედამხეცება ეფექტის ხანგრძლივობის გარეშე."
 }

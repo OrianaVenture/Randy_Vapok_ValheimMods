@@ -11,6 +11,7 @@ namespace EpicLoot.GatedItemType
         public string ItemFallback;
         [Obsolete]
         public List<string> Items = new List<string>();
+        public List<string> IgnoredItems = new List<string>();
         public Dictionary<string, List<string>> ItemsByBoss = new Dictionary<string, List<string>>();
     }
 

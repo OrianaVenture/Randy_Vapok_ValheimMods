@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Οργή του Ragnar",
   "mod_epicloot_legendarysetlabel": "Θρυλικό Σετ Αντικείμενο",
   "mod_epicloot_mythicsetlabel": "Μυθικό Σετ Αντικείμενο",
+  "mod_epicloot_Magic": "Μαγεία",
+  "mod_epicloot_Rare": "Σπάνιο",
+  "mod_epicloot_Epic": "Επικό",
+  "mod_epicloot_Legendary": "Θρυλικό",
+  "mod_epicloot_Mythic": "Μυθικό",
   "mod_epicloot_magic": "Μαγεία",
   "mod_epicloot_rare": "Σπάνιο",
   "mod_epicloot_epic": "Επικό",
   "mod_epicloot_legendary": "Θρυλικό",
-  "mod_epicloot_mythic": "Μυθικό"
+  "mod_epicloot_mythic": "Μυθικό",
+  "mod_epicloot_me_adrenaline_rush": "Προσάρτηση της αδρεναλίνης",
+  "mod_epicloot_me_adrenaline_rush_desc": "Αυξημένη ζημιά για τη διάρκεια του αποτελέσματος."
 }

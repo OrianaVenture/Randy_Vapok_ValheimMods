@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnars vrede",
   "mod_epicloot_legendarysetlabel": "Legendariskt setföremål",
   "mod_epicloot_mythicsetlabel": "Mytiskt setföremål",
+  "mod_epicloot_Magic": "Magi",
+  "mod_epicloot_Rare": "Sällsynt",
+  "mod_epicloot_Epic": "Episk",
+  "mod_epicloot_Legendary": "Legendarisk",
+  "mod_epicloot_Mythic": "Mytisk",
   "mod_epicloot_magic": "Magi",
   "mod_epicloot_rare": "Sällsynt",
   "mod_epicloot_epic": "Episk",
   "mod_epicloot_legendary": "Legendarisk",
-  "mod_epicloot_mythic": "Mytisk"
+  "mod_epicloot_mythic": "Mytisk",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinstöt",
+  "mod_epicloot_me_adrenaline_rush_desc": "Ökad skada under effektens varaktighet."
 }

@@ -1,9 +1,9 @@
-﻿using EpicLoot.Crafting;
+﻿﻿using System;
+using System.Text;
+using EpicLoot.Crafting;
 using EpicLoot.Data;
 using HarmonyLib;
 using JetBrains.Annotations;
-using System;
-using System.Text;
 using UnityEngine;
 
 namespace EpicLoot
@@ -190,6 +190,34 @@ namespace EpicLoot
                     float totalStaminaUse = staminaUsePercentage * item.m_shared.m_attack.m_attackStamina;
                     if (item.m_shared.m_attack.m_attackStamina > 0.0 && !magicItem.HasEffect(MagicEffectType.Bloodlust))
                         text.Append($"\n$item_staminause: <color={magicAttackStaminaColor}>{totalStaminaUse:#.#}</color>");
+
+                    bool DodgeBuff = magicItem.HasEffect(MagicEffectType.DodgeBuff);
+                    string DodgeBuffColor = DodgeBuff ? magicColor : "orange";
+                    if (DodgeBuff)
+                    {
+                        float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 1f);
+                    }
+
+                    bool OffSetAttack = magicItem.HasEffect(MagicEffectType.OffSetAttack);
+                    string OffSetAttackColor = OffSetAttack ? magicColor : "orange";
+                    if (OffSetAttack)
+                    {
+                        float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.OffSetAttack, 1f);
+                    }
+
+                    bool ChainLightning = magicItem.HasEffect(MagicEffectType.ChainLightning);
+                    string ChainLightningColor = OffSetAttack ? magicColor : "orange";
+                    if (ChainLightning)
+                    {
+                        float ChainLightningValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
+                    }
+
+                    bool Apportation = magicItem.HasEffect(MagicEffectType.Apportation);
+                    string ApportationColor = Apportation ? magicColor : "orange";
+                    if (Apportation)
+                    {
+                        float ApportationValue = magicItem.GetTotalEffectValue(MagicEffectType.Apportation, 1f);
+                    }
 
                     bool magicAttackEitr = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse) || magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
                     bool doubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);

@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Рагнарова Лутина",
   "mod_epicloot_legendarysetlabel": "Легендарен предмет за комплет",
   "mod_epicloot_mythicsetlabel": "Митички предмет за комплетМитички предмет за комплет",
+  "mod_epicloot_Magic": "Магија",
+  "mod_epicloot_Rare": "Ретка",
+  "mod_epicloot_Epic": "Епски",
+  "mod_epicloot_Legendary": "Легендарно",
+  "mod_epicloot_Mythic": "Mitski",
   "mod_epicloot_magic": "Магија",
   "mod_epicloot_rare": "Ретка",
   "mod_epicloot_epic": "Епски",
   "mod_epicloot_legendary": "Легендарно",
-  "mod_epicloot_mythic": "Mitski"
+  "mod_epicloot_mythic": "Mitski",
+  "mod_epicloot_me_adrenaline_rush": "Адреналинско нападение",
+  "mod_epicloot_me_adrenaline_rush_desc": "Поголема штета за времетраење на ефектот."
 }

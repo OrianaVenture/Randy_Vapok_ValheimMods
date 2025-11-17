@@ -25,6 +25,5 @@ public class ModifySummonHealth
                 health *= (1 + effectValue);
             }
         }
-
     }
 }

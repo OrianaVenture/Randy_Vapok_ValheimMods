@@ -52,5 +52,10 @@ namespace EpicLoot.CraftingV2
                 Conversions.Add(entry.Type, entry);
             }
         }
+
+        public static MaterialConversionsConfig GetCFG()
+        {
+            return Config;
+        }
     }
 }

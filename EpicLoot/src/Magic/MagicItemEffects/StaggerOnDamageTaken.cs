@@ -26,7 +26,6 @@ namespace EpicLoot.MagicItemEffects
                 {
                     return;
                 }
-                
                 if (Random.Range(0f, 1f) < effectValue)
                 {
                     attacker.Stagger(-attacker.transform.forward);
