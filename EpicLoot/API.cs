@@ -363,6 +363,14 @@ public static class API
         original.CopyFieldsFrom(def);
         return true;
     }
+
+    [PublicAPI]
+    public static string GetMagicItem(ItemDrop.ItemData itemData)
+    {
+        return JsonConvert.SerializeObject(itemData.GetMagicItem());
+    }
+    
+    
     #endregion
     #region States
     /// <remarks>
