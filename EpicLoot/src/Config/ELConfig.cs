@@ -213,8 +213,8 @@ namespace EpicLoot.Config
                 new AcceptableValueRange<float>(0, 1)));
 
             // Logging
-            _loggingEnabled = Config.Bind("Logging", "Logging Enabled", false, "Enable logging");
-            _logLevel = Config.Bind("Logging", "Log Level", LogLevel.Info,
+            _loggingEnabled = Config.Bind("Logging", "Logging Enabled", true, "Enable logging");
+            _logLevel = Config.Bind("Logging", "Log Level", LogLevel.Error,
                 "Only log messages of the selected level or higher");
 
             // General
