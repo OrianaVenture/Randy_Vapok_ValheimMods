@@ -1474,7 +1474,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Magic",
       "Cost": [
@@ -1497,7 +1498,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1520,7 +1522,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Epic",
       "Cost": [
@@ -1543,7 +1546,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Legendary",
       "Cost": [
@@ -1566,7 +1570,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Mythic",
       "Cost": [
@@ -1591,17 +1596,14 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Magic",
       "Cost": [
         {
           "Item": "DustMagic",
           "Amount": 10
-        },
-        {
-          "Item": "SurtlingCore",
-          "Amount": 2
         }
       ]
     },
@@ -1618,7 +1620,8 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1629,10 +1632,6 @@
         {
           "Item": "WolfHairBundle",
           "Amount": 2
-        },
-        {
-          "Item": "WolfClaw",
-          "Amount": 2
         }
       ]
     },
@@ -1649,17 +1648,14 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Epic",
       "Cost": [
         {
           "Item": "DustEpic",
           "Amount": 10
-        },
-        {
-          "Item": "BlackMetal",
-          "Amount": 5
         }
       ]
     },
@@ -1676,17 +1672,14 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Legendary",
       "Cost": [
         {
           "Item": "DustLegendary",
           "Amount": 10
-        },
-        {
-          "Item": "BlackCore",
-          "Amount": 1
         }
       ]
     },
@@ -1703,17 +1696,14 @@
         "Chest",
         "Legs",
         "Shoulder",
-        "Utility"
+        "Utility",
+        "Trinket"
       ],
       "Rarity": "Mythic",
       "Cost": [
         {
           "Item": "DustMythic",
           "Amount": 10
-        },
-        {
-          "Item": "MoltenCore",
-          "Amount": 1
         }
       ]
     }
@@ -1788,7 +1778,7 @@
           "Amount": 50
         },
         {
-          "Item": "IronBountyToken",
+          "Item": "GoldBountyToken",
           "Amount": 2
         }
       ]
@@ -1835,7 +1825,7 @@
           "Amount": 50
         },
         {
-          "Item": "IronBountyToken",
+          "Item": "GoldBountyToken",
           "Amount": 2
         }
       ]

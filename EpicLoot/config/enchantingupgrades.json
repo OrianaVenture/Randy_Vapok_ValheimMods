@@ -135,12 +135,12 @@
       ],
       [
         { "Item": "ShardEpic", "Amount": 3 },
-        { "Item": "Thunderstone", "Amount": 10 },
+        { "Item": "Thunderstone", "Amount": 5 },
         { "Item": "Coins", "Amount": 200 }
       ],
       [
         { "Item": "ShardEpic", "Amount": 5 },
-        { "Item": "YmirRemains", "Amount": 10 },
+        { "Item": "YmirRemains", "Amount": 5 },
         { "Item": "Coins", "Amount": 300 }
       ],
       [
@@ -192,23 +192,23 @@
     "Rune": [
       [
         { "Item": "SurtlingCore", "Amount": 5 },
-        { "Item": "Bronze", "Amount": 15 }
+        { "Item": "Bronze", "Amount": 2 }
       ],
       [
-        { "Item": "IronBountyToken", "Amount": 10 },
-        { "Item": "Iron", "Amount": 20 }
+        { "Item": "IronBountyToken", "Amount": 5 },
+        { "Item": "Iron", "Amount": 2 }
       ],
       [
-        { "Item": "GoldBountyToken", "Amount": 20 },
-        { "Item": "Silver", "Amount": 25 }
+        { "Item": "GoldBountyToken", "Amount": 5 },
+        { "Item": "Silver", "Amount": 2 }
       ],
       [
-        { "Item": "Thunderstone", "Amount": 30 },
-        { "Item": "BlackMetal", "Amount": 30 }
+        { "Item": "Thunderstone", "Amount": 5 },
+        { "Item": "BlackMetal", "Amount": 2 }
       ],
       [
-        { "Item": "GoldBountyToken", "Amount": 30 },
-        { "Item": "Eitr", "Amount": 35 }
+        { "Item": "GoldBountyToken", "Amount": 10 },
+        { "Item": "Eitr", "Amount": 2 }
       ],
       [
         { "Item": "CelestialFeather", "Amount": 5 },
@@ -216,7 +216,7 @@
       ],
       [
         { "Item": "MoltenCore", "Amount": 5 },
-        { "Item": "FlametalNew", "Amount": 45 }
+        { "Item": "FlametalNew", "Amount": 2 }
       ]
     ]
   },

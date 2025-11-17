@@ -55,6 +55,8 @@
 * Scrolling UI sensitivity tweaks.
 * Improved randomization of item drops by type and tier.
 * Added extended magic effect descriptions to compendium.
+* Reduced Augment Upgrade costs of Thunderstone and YmirRemains from 10 to 5. We felt it was still too high.
+* Other bugs fixes we forgot to write down (sorry! enjoy!)
 
 ## Version 0.11.7
 
