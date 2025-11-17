@@ -344,6 +344,13 @@ namespace EpicLoot_UnityLib
             if (_runeAction == RuneAction.Extract)
             {
                 List<InventoryItemListElement> cost = GetRuneExtractCost(item, _selectedRarity, costReduction);
+                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex, powerModifier);
+
+                if (RuneWithEnchant == null)
+                {
+                    return;
+                }
+
                 Player player = Player.m_localPlayer;
                 if (!player.NoCostCheat())
                 {
@@ -366,7 +373,6 @@ namespace EpicLoot_UnityLib
                     InventoryManagement.Instance.RemoveItem(item);
                 }
 
-                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex, powerModifier);
                 InventoryManagement.Instance.GiveItem(RuneWithEnchant);
                 CostList.SetItems(new List<IListElement>());
             }

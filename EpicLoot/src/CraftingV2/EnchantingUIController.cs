@@ -873,7 +873,34 @@ namespace EpicLoot.CraftingV2
             MagicItemEffect effect = selectedItem.GetMagicItem().Effects[targetEnchant];
             MagicItemEffect runeEffect = new MagicItemEffect(effect.EffectType);
 
-            if (effect.EffectValue != float.NaN && powerModifier < float.NaN && effect.EffectValue > 1)
+            if (effect.EffectValue == float.NaN)
+            {
+                return null;
+            }
+
+            string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
+            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) with power " +
+                $"{effect.EffectValue} * {powerModifier} = {runeEffect.EffectValue} to return");
+
+            GameObject item = PrefabManager.Instance.GetPrefab(prefabName);
+
+            if (item == null)
+            {
+                return null;
+            }
+
+            ItemDrop baseData = item.GetComponent<ItemDrop>();
+
+            if (baseData == null)
+            {
+                return null;
+            }
+
+            ItemDrop.ItemData newItem = baseData.m_itemData.Clone();
+            MagicItemComponent magicItemComponent = newItem.Data().GetOrCreate<MagicItemComponent>();
+
+            // We might need to rethink how power modifier is checked and applied here
+            if (powerModifier != float.NaN && powerModifier < 999f && powerModifier > 0 && effect.EffectValue > 1)
             {
                 runeEffect.EffectValue = effect.EffectValue * powerModifier;
                 float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[effect.EffectType].ValuesPerRarity
@@ -889,13 +916,9 @@ namespace EpicLoot.CraftingV2
                 // Tried to set the item to infinite power level
                 runeEffect.EffectValue = effect.EffectValue;
             }
-            string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
-            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) with power {effect.EffectValue} * {powerModifier} = {runeEffect.EffectValue} to return");
 
-            ItemDrop baseData =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
-            ItemDrop.ItemData newItem = baseData.m_itemData.Clone();
-            MagicItemComponent magicItemComponent = newItem.Data().GetOrCreate<MagicItemComponent>();
-            MagicItem enchantmentsToRune = new MagicItem {
+            MagicItem enchantmentsToRune = new MagicItem
+            {
                 Rarity = selectedItem.GetRarity(),
                 Effects = new List<MagicItemEffect> { runeEffect }
             };
