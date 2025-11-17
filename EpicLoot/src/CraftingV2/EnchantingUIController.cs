@@ -873,7 +873,7 @@ namespace EpicLoot.CraftingV2
             MagicItemEffect effect = selectedItem.GetMagicItem().Effects[targetEnchant];
             MagicItemEffect runeEffect = new MagicItemEffect(effect.EffectType);
 
-            if (effect.EffectValue != float.NaN && effect.EffectValue > 1)
+            if (effect.EffectValue != float.NaN && powerModifier < float.NaN && effect.EffectValue > 1)
             {
                 runeEffect.EffectValue = effect.EffectValue * powerModifier;
                 float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[effect.EffectType].ValuesPerRarity
@@ -884,9 +884,13 @@ namespace EpicLoot.CraftingV2
                     runeEffect.EffectValue = (maxDefaultValue * powerModifier);
                 }
             }
-
+            else
+            {
+                // Tried to set the item to infinite power level
+                runeEffect.EffectValue = effect.EffectValue;
+            }
             string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
-            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) to return");
+            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) with power {effect.EffectValue} * {powerModifier} = {runeEffect.EffectValue} to return");
 
             ItemDrop baseData =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
             ItemDrop.ItemData newItem = baseData.m_itemData.Clone();

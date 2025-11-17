@@ -7,9 +7,9 @@ using EpicLoot.CraftingV2;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot.General;
+using EpicLoot.Magic;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;
@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static ItemDrop;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot
@@ -549,6 +550,10 @@ namespace EpicLoot
                         //Set icons for crafting materials
                         itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
                     }
+
+                    // Add MagicItemComponent or products will not stack until reloaded.
+                    MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);
