@@ -30,7 +30,7 @@
     * `InstantMead` - Meads consume instantly when health critical (warp)
     * `MeadCooldown` - Reduces mead cooldown (warp)
 * NEW automatic drop system assignment for weapons, armor and other items. This removes the requirement to add patches for other modded items for them to appear in drop tables.
-* Search functionality for Epicloot Compendium pages (Thanks Rusty!)
+* NEW search functionality for Epicloot Compendium pages (Thanks Rusty!)
 * NEW EpicLoot API is now available! (Thanks Rusty!)
     * Easily retrieve enchantments that are active on the player
     * Magic Effects can be added by API

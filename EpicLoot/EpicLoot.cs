@@ -29,6 +29,8 @@ namespace EpicLoot
     public sealed class EpicAssets
     {
         public AssetBundle AssetBundle;
+        public static Dictionary<string, Object> AssetCache = new Dictionary<string, Object>();
+
         public Sprite EquippedSprite;
         public Sprite AugaEquippedSprite;
         public Sprite GenericSetItemSprite;
@@ -53,6 +55,7 @@ namespace EpicLoot
         public GameObject DebugTextPrefab;
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
+
         public const string DummyName = "EL_DummyPrefab";
         public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
@@ -116,7 +119,6 @@ namespace EpicLoot
         };
 
         public static EpicAssets Assets = new EpicAssets();
-        public static Dictionary<string, Object> _assetCache = new Dictionary<string, Object>();
         public static bool AlwaysDropCheat = false;
         public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
         public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
@@ -435,13 +437,13 @@ namespace EpicLoot
         {
             try
             {
-                if (_assetCache.ContainsKey(assetName))
+                if (EpicAssets.AssetCache.ContainsKey(assetName))
                 {
-                    return (T)_assetCache[assetName];
+                    return (T)EpicAssets.AssetCache[assetName];
                 }
 
                 var asset = Assets.AssetBundle.LoadAsset<T>(assetName);
-                _assetCache.Add(assetName, asset);
+                EpicAssets.AssetCache.Add(assetName, asset);
                 return asset;
             }
             catch (Exception e)
