@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Magic
 {
@@ -45,19 +46,28 @@ namespace EpicLoot.Magic
             { "Shields", new List<string>() { "TowerShields", "RoundShields", "Bucklers" } },
         };
 
-        public static void CheckAndAddAllEnchantableItems(bool deregister = true) {
-            if (deregister) { MinimapManager.OnVanillaMapDataLoaded -= () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(); }
+        public static void CheckAndAddAllEnchantableItems(bool deregister = true)
+        {
+            if (deregister)
+            {
+                MinimapManager.OnVanillaMapDataLoaded -= () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+            }
 
-            if (ELConfig.AutoAddEquipment.Value == false && ELConfig.AutoRemoveEquipmentNotFound.Value == false) { return; }
+            if (ELConfig.AutoAddEquipment.Value == false && ELConfig.AutoRemoveEquipmentNotFound.Value == false)
+            {
+                return;
+            }
 
             List<ItemTypeInfo> currentConfigs = GatedItemTypeHelper.GatedConfig.ItemInfo;
 
             Dictionary<string, ItemTypeInfo> itemsByCategory = new Dictionary<string, ItemTypeInfo>();
-            Dictionary<string, ItemTypeInfo> foundbyCategory = new Dictionary<string, ItemTypeInfo>();
+            Dictionary<string, ItemTypeInfo> foundByCategory = new Dictionary<string, ItemTypeInfo>();
 
-            foreach (ItemTypeInfo currentConfig in currentConfigs) {
+            foreach (ItemTypeInfo currentConfig in currentConfigs)
+            {
                 itemsByCategory.Add(currentConfig.Type, currentConfig);
-                foundbyCategory.Add(currentConfig.Type, new ItemTypeInfo() { 
+                foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
+                {
                     ItemsByBoss = new Dictionary<string, List<string>>() {
                         { "none", new List<string>() },
                         { "defeated_eikthyr", new List<string>() },
@@ -68,10 +78,11 @@ namespace EpicLoot.Magic
                         { "defeated_queen", new List<string>() },
                         { "defeated_fader", new List<string>() }
                     },
-                    });
+                });
             }
+
             List<ItemDrop> allItems = Resources.FindObjectsOfTypeAll<ItemDrop>().ToList();
-            List <ItemDrop> allEquipment = allItems.Where(i => i.m_itemData != null && 
+            List <ItemDrop> allEquipment = allItems.Where(i => i.m_itemData != null &&
                 i.m_itemData.m_shared != null &&
                 i.m_autoPickup == true &&
                 string.IsNullOrEmpty(i.m_itemData.m_shared.m_dlc) &&
@@ -80,31 +91,44 @@ namespace EpicLoot.Magic
 
             EpicLoot.Log($"Checking all equipment in game.");
 
-            foreach (ItemDrop item in allEquipment) {
-                //EpicLoot.Log($"Checking {item}");
+            foreach (ItemDrop item in allEquipment)
+            {
                 string itemType = DetermineItemType(item.m_itemData);
                 string itemName = item.name;
                 bool rune = item.m_itemData.IsRunestone();
                 // Check if the item is already in the config
                 // If it is, add it to the foundBy
                 bool itemfound = false;
-                if (itemsByCategory.ContainsKey(itemType)) {
-                    if (itemsByCategory[itemType].IgnoredItems.Contains(itemName)) {
-                        foundbyCategory[itemType].IgnoredItems.Add(itemName);
+                if (itemsByCategory.ContainsKey(itemType) && foundByCategory.ContainsKey(itemType))
+                {
+                    if (itemsByCategory[itemType].IgnoredItems.Contains(itemName))
+                    {
+                        foundByCategory[itemType].IgnoredItems.Add(itemName);
                         itemfound = true;
                         continue;
-                    } else {
-                        foreach (var entry in itemsByCategory[itemType].ItemsByBoss) {
-                            if (entry.Value.Contains(itemName)) {
-                                foundbyCategory[itemType].ItemsByBoss[entry.Key].Add(itemName);
+                    }
+                    else
+                    {
+                        foreach (var entry in itemsByCategory[itemType].ItemsByBoss)
+                        {
+                            var catEntry = foundByCategory[itemType].ItemsByBoss;
+                            if (entry.Value.Contains(itemName))
+                            {
+                                if (!catEntry.ContainsKey(entry.Key))
+                                {
+                                    catEntry.Add(entry.Key, new List<string>());
+                                }
+
+                                catEntry[entry.Key].Add(itemName);
                                 itemfound = true;
                                 break;
                             }
                         }
                     }
                 }
-                if (itemfound) {
-                    //EpicLoot.Log("Item found.");
+
+                if (itemfound)
+                {
                     continue;
                 }
 
@@ -112,45 +136,84 @@ namespace EpicLoot.Magic
 
                 if (UncraftableItemsAllowed.Contains(itemName))
                 {
-                    foundbyCategory[itemType].ItemsByBoss[key].Add(itemName);
+                    foundByCategory[itemType].ItemsByBoss[key].Add(itemName);
                     continue;
                 }
 
                 // Item already exists in the config | Or we are not auto-adding items
                 //if (itemfound || ELConfig.AutoAddEquipment.Value == false) { continue; }
-                if ((ELConfig.OnlyAddEquipmentWithRecipes.Value == true && key == "none") || (key == "none" && itemType == "none") || itemType == "Unkown" || IgnoredItems.Contains(itemName)) {
+                if ((ELConfig.OnlyAddEquipmentWithRecipes.Value == true && key == "none") ||
+                    (key == "none" && itemType == "none") ||
+                    itemType == "Unkown" || 
+                    IgnoredItems.Contains(itemName))
+                {
                     EpicLoot.Log($"skipping name:{itemName} type:{itemType} techlevel:{key}");
                     continue;
                 }
 
                 EpicLoot.Log($"{itemType} {key} add {itemName}");
-                foundbyCategory[itemType].ItemsByBoss[key].Add(itemName);
+                foundByCategory[itemType].ItemsByBoss[key].Add(itemName);
             }
 
             // Compare the found items with the current config, if enabled add items, if enabled remove missing items
-            if (ELConfig.AutoRemoveEquipmentNotFound.Value) {
+            if (ELConfig.AutoRemoveEquipmentNotFound.Value)
+            {
                 EpicLoot.Log($"Remove not-found equipment processing.");
-                foreach (var fbc in foundbyCategory) {
-                    if (ELConfig.AutoAddEquipment.Value) {
+                foreach (var fbc in foundByCategory)
+                {
+                    if (!itemsByCategory.ContainsKey(fbc.Key) || !foundByCategory.ContainsKey(fbc.Key))
+                    {
+                        continue;
+                    }
+
+                    if (ELConfig.AutoAddEquipment.Value)
+                    {
                         // Replace entries with only the found values, removes non-found items and adds new ones
-                        itemsByCategory[fbc.Key].IgnoredItems = foundbyCategory[fbc.Key].IgnoredItems;
-                        foreach (var key in itemsByCategory[fbc.Key].ItemsByBoss.Keys) {
-                            if (itemsByCategory[fbc.Key].ItemsByBoss.ContainsKey(key) && foundbyCategory[fbc.Key].ItemsByBoss.ContainsKey(key) && itemsByCategory[fbc.Key].ItemsByBoss[key].Count != foundbyCategory[fbc.Key].ItemsByBoss[key].Count) {
-                                var toaddlist = foundbyCategory[fbc.Key].ItemsByBoss[key].Except(itemsByCategory[fbc.Key].ItemsByBoss[key]).ToList();
-                                var toremovelist = itemsByCategory[fbc.Key].ItemsByBoss[key].Except(foundbyCategory[fbc.Key].ItemsByBoss[key]).ToList();
-                                if (toaddlist.Count > 0) { EpicLoot.Log($"Adding entries in {key} that are not found in the config: {string.Join(", ", toaddlist)}"); }
-                                if (toremovelist.Count > 0) { EpicLoot.Log($"Removing entries in {key} that are not found in the config: {string.Join(", ", toremovelist)}"); }
+                        itemsByCategory[fbc.Key].IgnoredItems = foundByCategory[fbc.Key].IgnoredItems;
+                        foreach (var key in itemsByCategory[fbc.Key].ItemsByBoss.Keys)
+                        {
+                            if (itemsByCategory[fbc.Key].ItemsByBoss.ContainsKey(key) &&
+                                foundByCategory[fbc.Key].ItemsByBoss.ContainsKey(key) &&
+                                itemsByCategory[fbc.Key].ItemsByBoss[key].Count != foundByCategory[fbc.Key].ItemsByBoss[key].Count)
+                            {
+                                var toaddlist = foundByCategory[fbc.Key].ItemsByBoss[key]
+                                    .Except(itemsByCategory[fbc.Key].ItemsByBoss[key]).ToList();
+                                var toremovelist = itemsByCategory[fbc.Key].ItemsByBoss[key]
+                                    .Except(foundByCategory[fbc.Key].ItemsByBoss[key]).ToList();
+                                if (toaddlist.Count > 0)
+                                {
+                                    EpicLoot.Log($"Adding entries in {key} that are not found in the config: {string.Join(", ", toaddlist)}");
+                                }
+                                if (toremovelist.Count > 0)
+                                {
+                                    EpicLoot.Log($"Removing entries in {key} that are not found in the config: {string.Join(", ", toremovelist)}");
+                                }
                             }
                         }
-                        itemsByCategory[fbc.Key].ItemsByBoss = foundbyCategory[fbc.Key].ItemsByBoss;
-                    } else {
+
+                        itemsByCategory[fbc.Key].ItemsByBoss = foundByCategory[fbc.Key].ItemsByBoss;
+                    }
+                    else
+                    {
                         // Just remove items that are not found in the config
-                        itemsByCategory[fbc.Key].IgnoredItems = foundbyCategory[fbc.Key].IgnoredItems.Where(e => itemsByCategory[fbc.Key].IgnoredItems.Contains(e)).ToList();
-                        foreach (var entry in foundbyCategory[fbc.Key].ItemsByBoss) {
-                            var reducedItems = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Where(e => entry.Value.Contains(e)).ToList();
-                            if (reducedItems.Count != itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Count) {
-                                EpicLoot.Log($"Removing items from {fbc.Key} {entry.Key} that are not found in the config: {string.Join(", ", itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Except(reducedItems))}");
+                        itemsByCategory[fbc.Key].IgnoredItems = foundByCategory[fbc.Key].IgnoredItems
+                            .Where(e => itemsByCategory[fbc.Key].IgnoredItems.Contains(e)).ToList();
+
+                        foreach (var entry in foundByCategory[fbc.Key].ItemsByBoss)
+                        {
+                            if (!itemsByCategory[fbc.Key].ItemsByBoss.ContainsKey(entry.Key))
+                            {
+                                continue;
                             }
+
+                            var reducedItems = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key]
+                                .Where(e => entry.Value.Contains(e)).ToList();
+                            if (reducedItems.Count != itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Count)
+                            {
+                                EpicLoot.Log($"Removing items from {fbc.Key} {entry.Key} that are not found in the config: " +
+                                    $"{string.Join(", ", itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Except(reducedItems))}");
+                            }
+
                             itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] = reducedItems;
                         }
                     }
@@ -160,12 +223,28 @@ namespace EpicLoot.Magic
             {
                 EpicLoot.Log("Adding found equipment that was not listed.");
                 // Just add found items, dont remove missing items
-                foreach (var fbc in foundbyCategory) {
-                    if (ELConfig.AutoAddEquipment.Value) {
+                foreach (var fbc in foundByCategory)
+                {
+                    if (ELConfig.AutoAddEquipment.Value)
+                    {
+                        if (!itemsByCategory.ContainsKey(fbc.Key))
+                        {
+                            continue;
+                        }
+
                         // Replace entries with only the found values, removes non-found items and adds new ones
-                        itemsByCategory[fbc.Key].IgnoredItems = itemsByCategory[fbc.Key].IgnoredItems.Union(itemsByCategory[fbc.Key].IgnoredItems).ToList();
-                        foreach (var entry in fbc.Value.ItemsByBoss) {
-                            itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Union(entry.Value).ToList();
+                        itemsByCategory[fbc.Key].IgnoredItems = itemsByCategory[fbc.Key].IgnoredItems
+                            .Union(itemsByCategory[fbc.Key].IgnoredItems).ToList();
+
+                        foreach (var entry in fbc.Value.ItemsByBoss)
+                        {
+                            if (!itemsByCategory[fbc.Key].ItemsByBoss.ContainsKey(entry.Key))
+                            {
+                                continue;
+                            }
+
+                            itemsByCategory[fbc.Key].ItemsByBoss[entry.Key] =
+                                itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Union(entry.Value).ToList();
                         }
                     }
                 }
@@ -174,47 +253,63 @@ namespace EpicLoot.Magic
             EpicLoot.Log("Merging datasets and ensuring no duplicate entries.");
             // merge dataset and ensure unique values
             List<ItemTypeInfo> newConfig = new List<ItemTypeInfo>();
-            foreach (var item in itemsByCategory) {
-                if (item.Value.ItemsByBoss.Count > 0 || item.Value.IgnoredItems.Count > 0) {
+            foreach (var item in itemsByCategory)
+            {
+                if (item.Value.ItemsByBoss.Count > 0 || item.Value.IgnoredItems.Count > 0)
+                {
                     Dictionary<string, List<string>> itemsByBossUniques = new();
-                    foreach(var entry in item.Value.ItemsByBoss) {
+                    foreach(var entry in item.Value.ItemsByBoss)
+                    {
                         itemsByBossUniques.Add(entry.Key, entry.Value.Distinct().ToList());
                     }
+
                     ItemTypeInfo uniqueItems = new ItemTypeInfo() {
                         IgnoredItems = item.Value.IgnoredItems.Distinct().ToList(),
                         ItemFallback = item.Value.ItemFallback,
                         Type = item.Value.Type,
                         ItemsByBoss = itemsByBossUniques
                     };
+
                     newConfig.Add(uniqueItems);
                 }
             }
 
-            if (ELConfig.AutoAddRemoveEquipmentFromVendor.Value) {
+            if (ELConfig.AutoAddRemoveEquipmentFromVendor.Value)
+            {
                 EpicLoot.Log("Adding/Removing entries for the vendor from detected equipment.");
                 Dictionary<string, SecretStashItemConfig> existingVendorItems = new Dictionary<string, SecretStashItemConfig>();
                 List<string> foundItemEntry = new List<string>();
 
                 // Add all of the items currently in the vendor items list
                 EpicLoot.Log("Adding Entries to the vendor list.");
-                foreach (SecretStashItemConfig gamble in AdventureDataManager.Config.Gamble.GambleCosts) {
-                    if (existingVendorItems.ContainsKey(gamble.Item)) {
+                foreach (SecretStashItemConfig gamble in AdventureDataManager.Config.Gamble.GambleCosts)
+                {
+                    if (existingVendorItems.ContainsKey(gamble.Item))
+                    {
                         EpicLoot.LogWarning($"Item {gamble.Item} is already in the vendor items list, skipping duplicate.");
                         continue;
                     }
+
                     existingVendorItems.Add(gamble.Item, gamble);
                 }
 
                 // Check the iteminfo configs for existing and new items
                 EpicLoot.Log("Checking info on existing entries.");
-                foreach (ItemTypeInfo itemType in newConfig) {
-                    foreach (KeyValuePair<string, List<string>> bossEntry in itemType.ItemsByBoss) {
-                        foreach (string itemName in bossEntry.Value) {
-                            if (existingVendorItems.ContainsKey(itemName)) {
+                foreach (ItemTypeInfo itemType in newConfig)
+                {
+                    foreach (KeyValuePair<string, List<string>> bossEntry in itemType.ItemsByBoss)
+                    {
+                        foreach (string itemName in bossEntry.Value)
+                        {
+                            if (existingVendorItems.ContainsKey(itemName))
+                            {
                                 // Found this entry
                                 foundItemEntry.Add(itemName);
-                            } else {
-                                existingVendorItems.Add(itemName, new SecretStashItemConfig() { Item = itemName, CoinsCost = DetermineCoinsCostForItem(bossEntry.Key) });
+                            }
+                            else
+                            {
+                                existingVendorItems.Add(itemName, new SecretStashItemConfig()
+                                { Item = itemName, CoinsCost = DetermineCoinsCostForItem(bossEntry.Key) });
                             }
                         }
                     }
@@ -222,25 +317,29 @@ namespace EpicLoot.Magic
 
                 // Remove Items which are not found
                 EpicLoot.Log("Removing invalid entries.");
-                List<SecretStashItemConfig> newGambleItems = existingVendorItems.Where(x => foundItemEntry.Contains(x.Key)).Select(x => x.Value).ToList();
+                List<SecretStashItemConfig> newGambleItems = existingVendorItems
+                    .Where(x => foundItemEntry.Contains(x.Key)).Select(x => x.Value).ToList();
                 EpicLoot.Log("Building config.");
                 AdventureDataConfig AdventureDataConfigReplacement = AdventureDataManager.Config;
                 AdventureDataConfigReplacement.Gamble.GambleCosts = newGambleItems;
 
                 // Write out the new config, which will trigger a reload of the config
                 EpicLoot.Log("Writing config.");
-                try {
+                try
+                {
                     string contents = JsonConvert.SerializeObject(AdventureDataConfigReplacement, Formatting.Indented);
-                    string overhaul_file_location = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "adventuredata.json");
-                    File.WriteAllText(overhaul_file_location, contents);
+                    string overhaulFileLocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "adventuredata.json");
+                    File.WriteAllText(overhaulFileLocation, contents);
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     EpicLoot.LogError($"Failed to auto-add vendor items to adventuredata.json: {e.Message}");
                 }
 
             }
 
-            if (ELConfig.AutoAddRemoveEquipmentFromLootLists.Value) {
+            if (ELConfig.AutoAddRemoveEquipmentFromLootLists.Value)
+            {
                 EpicLoot.Log("Adding/Removing entries in the loot drop configuration.");
                 LootConfig defaultcfg = LootRoller.Config;
                 List<LootTable> updatedLootTables = [];
@@ -250,44 +349,65 @@ namespace EpicLoot.Magic
                 List<string> metaItemSetNames = LootRoller.Config.ItemSets.Select(x => x.Name).ToList();
                 // List of all of the currently valid items so we can always determine if its at least valid
                 List<string> validItems = [];
-                foreach (var entry in foundbyCategory.Values) {
-                    foreach (var iteme in entry.ItemsByBoss) {
+                foreach (var entry in foundByCategory.Values)
+                {
+                    foreach (var iteme in entry.ItemsByBoss)
+                    {
                         validItems.AddRange(iteme.Value);
                     }
                 }
-                List<string> magicMats = allItems.Where(i => i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()).Select(x => x.m_itemData.m_dropPrefab.name).ToList();
+                List<string> magicMats = allItems.Where(i => i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone())
+                    .Select(x => x.m_itemData.m_dropPrefab.name).ToList();
                 //EpicLoot.Log($"Starting loottable Validation. Valid items to use {validItems.Count} from {allItems.Count}");
                 //EpicLoot.Log($"Found Item Names: {string.Join(",", validItems)}");
                 //EpicLoot.Log($"Found Item sets: {string.Join(",", metaItemSetNames)}");
                 //EpicLoot.Log($"Found Magic mats: {string.Join(",", magicMats)}");
 
-                foreach (LootItemSet lis in LootRoller.Config.ItemSets) {
+                foreach (LootItemSet lis in LootRoller.Config.ItemSets)
+                {
                     List<LootDrop> entries = new List<LootDrop>();
                     List<string> addedItems = new List<string>();
                     // Validate existing entries in the lootset
                     EpicLoot.Log($"Checking LootSet entry: {lis.Name}");
-                    foreach (var loot in lis.Loot) {
-                        if (validItems.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item) || magicMats.Contains(loot.Item)) {
+                    foreach (var loot in lis.Loot)
+                    {
+                        if (validItems.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item) || magicMats.Contains(loot.Item))
+                        {
                             entries.Add(loot);
                             addedItems.Add(loot.Item);
                             continue;
                         }
+
                         EpicLoot.Log($"{loot.Item} is not a found item and will be removed from the loot tables.");
                     }
 
                     //EpicLoot.Log($"Checking Item Tier and Loottype.");
-                    if (DetermineTierAndType(lis.Name, out string tier, out string loottype)) {
-                        if (!tierToBossKey.ContainsKey(tier)) {
+                    if (DetermineTierAndType(lis.Name, out string tier, out string loottype))
+                    {
+                        if (!tierToBossKey.ContainsKey(tier))
+                        {
                             EpicLoot.Log($"tierToBoss does not contain {tier}");
                             continue;
                         }
+
                         string bosskey = tierToBossKey[tier];
-                        foreach (ItemTypeInfo itemType in newConfig) {
-                            if (!setsToCategories.ContainsKey(loottype) || !setsToCategories[loottype].Contains(itemType.Type)) { continue; }
+                        foreach (ItemTypeInfo itemType in newConfig)
+                        {
+                            if (!setsToCategories.ContainsKey(loottype) ||
+                                !setsToCategories[loottype].Contains(itemType.Type) ||
+                                !itemType.ItemsByBoss.ContainsKey(bosskey))
+                            {
+                                continue;
+                            }
+
                             //EpicLoot.Log($"Checking for ItemType entry: {itemType.Type}");
-                            foreach (var gateditem in itemType.ItemsByBoss[bosskey]) {
+                            foreach (var gateditem in itemType.ItemsByBoss[bosskey])
+                            {
                                 // EpicLoot.Log($"Checking if the item was already added: {gateditem}");
-                                if (addedItems.Contains(gateditem)) { continue; }
+                                if (addedItems.Contains(gateditem))
+                                {
+                                    continue;
+                                }
 
                                 entries.Add(new LootDrop() { Item = gateditem, Rarity = DetermineRarityForLoot(tier) });
                             }
@@ -300,23 +420,29 @@ namespace EpicLoot.Magic
                 EpicLoot.Log($"Checking loot tables for invalid entries.");
                 List<string> metaLootTables = new List<string>();
                 //LootRoller.Config.LootTables
-                foreach (LootTable lt in LootRoller.Config.LootTables) {
+                foreach (LootTable lt in LootRoller.Config.LootTables)
+                {
                     List<LootDrop> updatedLootDrop = new List<LootDrop>();
                     List<LeveledLootDef> levelListDef = new List<LeveledLootDef>();
 
                     EpicLoot.Log($"Checking loot in {lt.Object}.");
 
                     // Valid existing entries
-                    if (lt.Loot != null) {
+                    if (lt.Loot != null)
+                    {
                         updatedLootDrop.AddRange(ValidateLootList(lt, metaLootTables, metaItemSetNames, validItems));
                     }
 
                     // Validate existing entries in the leveled loot drops
-                    if (lt.LeveledLoot != null) {
-                        foreach (var lloot in lt.LeveledLoot) {
+                    if (lt.LeveledLoot != null)
+                    {
+                        foreach (var lloot in lt.LeveledLoot)
+                        {
                             List<LootDrop> updatedLootTableLL = new List<LootDrop>();
-                            foreach(var ld in lloot.Loot) {
-                                if (validItems.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item)) {
+                            foreach(var ld in lloot.Loot)
+                            {
+                                if (validItems.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item))
+                                {
                                     updatedLootTableLL.Add(ld);
                                 }
                             }
@@ -333,11 +459,18 @@ namespace EpicLoot.Magic
                 }
                 EpicLoot.Log($"Finished Validating loottable.");
                 // Write out the new config, which will trigger a reload of the config
-                try {
-                    LootConfig newLootConfig = new LootConfig() { ItemSets = updatedItemSets.ToArray(), LootTables = updatedLootTables.ToArray(), MagicEffectsCount = LootRoller.Config.MagicEffectsCount, RestrictedItems = LootRoller.Config.RestrictedItems };
+                try
+                {
+                    LootConfig newLootConfig = new LootConfig()
+                    {
+                        ItemSets = updatedItemSets.ToArray(),
+                        LootTables = updatedLootTables.ToArray(),
+                        MagicEffectsCount = LootRoller.Config.MagicEffectsCount,
+                        RestrictedItems = LootRoller.Config.RestrictedItems
+                    };
                     string contents = JsonConvert.SerializeObject(newLootConfig, Formatting.Indented);
-                    string overhaul_file_location = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "loottables.json");
-                    File.WriteAllText(overhaul_file_location, contents);
+                    string overhaulFileLocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "loottables.json");
+                    File.WriteAllText(overhaulFileLocation, contents);
                 }
                 catch (Exception e)
                 {
@@ -346,18 +479,22 @@ namespace EpicLoot.Magic
             }
             EpicLoot.Log($"Writing iteminfo.");
             // Write out the new config, which will trigger a reload of the config
-            try {
+            try
+            {
                 string contents = JsonConvert.SerializeObject(new ItemInfoConfig() { ItemInfo = newConfig }, Formatting.Indented);
-                string overhaul_file_location = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "iteminfo.json");
-                File.WriteAllText(overhaul_file_location, contents);
-            } catch (Exception e) {
+                string overhaulFileLocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), "iteminfo.json");
+                File.WriteAllText(overhaulFileLocation, contents);
+            }
+            catch (Exception e)
+            {
                 EpicLoot.LogError($"Failed to auto-add items to iteminfo.json: {e.Message}");
                 return;
             }
             EpicLoot.Log($"All equipment, vendor, droptables and iteminfo configs validated.");
         }
 
-        private static List<LootDrop> ValidateLootList(LootTable lt, List<string> metaLootTables, List<string> metaItemSetNames, List<string> validItems) {
+        private static List<LootDrop> ValidateLootList(LootTable lt, List<string> metaLootTables, List<string> metaItemSetNames, List<string> validItems)
+        {
             List<LootDrop> updatedLootDrop = new List<LootDrop>();
             foreach (var loot in lt.Loot)
             {
@@ -371,6 +508,7 @@ namespace EpicLoot.Magic
                         continue;
                     }
                 }
+
                 if (!validItems.Contains(loot.Item) && !metaItemSetNames.Contains(loot.Item))
                 {
                     EpicLoot.Log($"REMOVING: Loot table Item {loot.Item} not found.");
@@ -396,10 +534,12 @@ namespace EpicLoot.Magic
             };
         }
 
-        private static bool DetermineTierAndType(string name, out string tier, out string type) {
+        private static bool DetermineTierAndType(string name, out string tier, out string type)
+        {
             tier = null;
             type = null;
-            if (!name.Contains("Tier")) {
+            if (!name.Contains("Tier"))
+            {
                 EpicLoot.Log("Non Tiered entry");
                 return false;
             }
@@ -509,7 +649,7 @@ namespace EpicLoot.Magic
 
             // Ashlands check
             foreach (Piece.Requirement req in itemRecipe.m_resources) {
-                if (AshLandsResources.Contains(req.m_resItem.name)) { return "defeated_fader"; } 
+                if (AshLandsResources.Contains(req.m_resItem.name)) { return "defeated_fader"; }
             }
 
             // Mistlands check
