@@ -1,3 +1,7 @@
+## Version 0.12.1
+
+* Tweaked the Rune costs config values. Please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate!
+
 ## Version 0.12.0
 
 * NEW Unidentified items:
