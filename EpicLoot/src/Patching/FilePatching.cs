@@ -63,8 +63,32 @@ namespace EpicLoot.Patching
     public static class FilePatching
     {
         public static string PatchesDirPath = GetPatchesDirectoryPath();
-        public static List<string> ConfigFileNames = new List<string>();
+        public static List<string> ConfigFileNames = [
+            "loottables",
+            "magiceffects",
+            "iteminfo",
+            "recipes",
+            "enchantcosts",
+            "itemnames",
+            "adventuredata",
+            "legendaries",
+            "abilities",
+            "materialconversions",
+            "enchantingupgrades"
+        ];
         public static MultiValueDictionary<string, Patch> PatchesPerFile = new MultiValueDictionary<string, Patch>();
+
+        public static void ReloadAndApplyAllPatches()
+        {
+            PatchesPerFile.Clear();
+            LoadAndApplyAllPatches();
+        }
+
+        public static void LoadAndApplyAllPatches()
+        {
+            LoadAllPatches();
+            ApplyAllPatches();
+        }
 
         public static void LoadAllPatches()
         {
@@ -90,10 +114,6 @@ namespace EpicLoot.Patching
                 if (!patchesFolder.Exists)
                     return;
 
-                var pluginFolder = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
-
-                CheckForOldPatches(pluginFolder.Parent);
-                ConfigFileNames = EpicLoot.GetEmbeddedResourceNamesFromDirectory();
                 ProcessPatchDirectory(patchesFolder);
             }
             catch (Exception e)
@@ -103,30 +123,6 @@ namespace EpicLoot.Patching
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
             }
-
-            ApplyAllPatches();
-        }
-
-        public static void CheckForOldPatches(DirectoryInfo pluginFolder)
-        {
-            var oldPatchFolder = Path.Combine(pluginFolder.FullName, "patches");
-            
-            if (Directory.Exists(oldPatchFolder))
-            {
-                if (Directory.GetFiles(oldPatchFolder, "*.json", SearchOption.AllDirectories).Length > 0)
-                {
-                    EpicLoot.LogWarningForce($"***************************************************");
-                    EpicLoot.LogWarningForce($"Epic Loot Patch Folder Has Moved To:");
-                    EpicLoot.LogWarningForce($"{PatchesDirPath}");
-                    EpicLoot.LogWarningForce($"Please move your patch files. Patch files found in this folder will not be loaded");
-                    EpicLoot.LogWarningForce($"***************************************************");
-                }
-            }
-        }
-
-        public static void RemoveFilePatches(string fileName, string patchFile)
-        {
-            PatchesPerFile.GetValues(fileName, true).RemoveAll(y => y.SourceFile.Equals(patchFile));
         }
 
         public static void ProcessPatchDirectory(DirectoryInfo dir)
@@ -187,7 +183,7 @@ namespace EpicLoot.Patching
             }
 
             if (!string.IsNullOrEmpty(patchFile.TargetFile))
-                defaultTargetFile = patchFile.TargetFile;
+                defaultTargetFile = patchFile.TargetFile.Replace(".json","");
 
             if (!string.IsNullOrEmpty(defaultTargetFile) && !ConfigFileNames.Contains(defaultTargetFile))
             {
@@ -268,7 +264,7 @@ namespace EpicLoot.Patching
                 ApplyPatch(sourceJson, patch);
             }
 
-            var output = sourceJson.ToString(ELConfig.OutputPatchedConfigFiles.Value ? Formatting.Indented : Formatting.None);
+            var output = sourceJson.ToString(Formatting.Indented);
             return output;
         }
 
@@ -277,101 +273,34 @@ namespace EpicLoot.Patching
         {
             foreach (var entry in PatchesPerFile)
             {
+                EpicLoot.Log($"Loading patches for {entry.Key}");
                 LoadPatchedJSON(entry.Key);
             }
         }
 
-        public static void ApplyPatchesToSpecificFilesWithNetworkUpdates(List<string> files)
+        internal static void LoadPatchedJSON(string filename)
         {
-            // skip update if there are no changes, this should never happen
-            if (files.Count == 0) return;
-
-            EpicLoot.Log($"Applying {files.Count} patched files");
-            foreach(string file in files)
-            {
-                EpicLoot.Log($"Applying patchfile: {file}");
-                LoadPatchedJSON(file, true);
-            }
-
-            // Once the update has been provided for these files, they dont need updates again unless something changes
-            files.Clear();
-        }
-
-        internal static void LoadPatchedJSON(string filename, bool networkUpdates = false)
-        {
-            string patchedString;
-            try
-            {
-                JObject sourceJson = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
-                patchedString = BuildPatchedConfig(filename, sourceJson);
-            }
-            catch (Exception e)
-            {
-                EpicLoot.LogError($"Failed to read embedded resource for file {filename}: {e.Message}");
-                return;
-            }
-
-            try
-            {
-                // We don't want to do network updates on startup
-                switch (filename)
-                {
-                    case "loottables.json":
-                        LootRoller.Initialize(JsonConvert.DeserializeObject<LootConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendLootConfigs(); }
-                        break;
-                    case "magiceffects.json":
-                        MagicItemEffectDefinitions.Initialize(JsonConvert.DeserializeObject<MagicItemEffectsList>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMagicEffectConfigs(); }
-                        break;
-                    case "iteminfo.json":
-                        GatedItemTypeHelper.Initialize(JsonConvert.DeserializeObject<ItemInfoConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendItemInfoConfigs(); }
-                        break;
-                    case "recipes.json":
-                        RecipesHelper.Initialize(JsonConvert.DeserializeObject<RecipesConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendRecipesConfigs(); }
-                        break;
-                    case "enchantcosts.json":
-                        EnchantCostsHelper.Initialize(JsonConvert.DeserializeObject<EnchantingCostsConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendEnchantCostConfigs(); }
-                        break;
-                    case "itemnames.json":
-                        MagicItemNames.Initialize(JsonConvert.DeserializeObject<ItemNameConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMagicItemNamesConfigs(); }
-                        break;
-                    case "adventuredata.json":
-                        AdventureDataManager.Initialize(JsonConvert.DeserializeObject<AdventureDataConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendAdventureDataConfigs(); }
-                        break;
-                    case "legendaries.json":
-                        UniqueLegendaryHelper.Initialize(JsonConvert.DeserializeObject<LegendaryItemConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendLegendaryConfigs(); }
-                        break;
-                    case "abilities.json":
-                        AbilityDefinitions.Initialize(JsonConvert.DeserializeObject<AbilityConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendAbilitiesConfigs(); }
-                        break;
-                    case "materialconversions.json":
-                        MaterialConversions.Initialize(JsonConvert.DeserializeObject<MaterialConversionsConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendMaterialConversionConfigs(); }
-                        break;
-                    case "enchantingupgrades.json":
-                        EnchantingTableUpgrades.InitializeConfig(JsonConvert.DeserializeObject<EnchantingUpgradesConfig>(patchedString));
-                        if (networkUpdates) { ELConfig.SendEnchantingTableUpgradeConfigs(); }
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                EpicLoot.LogError($"Failed to apply patches for file {filename}: {e.Message}");
+            //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
+            // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
+            // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
+            string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
+            EpicLoot.Log($"Loading config base file {baseCfgFile}");
+            try {
+                // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
+                var baseJsonString = JObject.Parse(File.ReadAllText(baseCfgFile));
+                var patchedString = BuildPatchedConfig(filename, baseJsonString);
+                // We only need to write the file result if its valid. If this file is changed it will trigger a reload of the config.
+                File.WriteAllText(baseCfgFile, patchedString);
+            } catch (Exception e) {
+                EpicLoot.LogWarningForce($"Patching config file {filename} failed." + e);
             }
         }
 
         public static void ApplyPatch(JObject json, Patch patch)
         {
             var selectedTokens = json.SelectTokens(patch.Path).ToList();
-            if (patch.Require && selectedTokens.Count == 0)
+            // Removals that have already happened are allowed to re-run without warnings, since they are no-ops
+            if (patch.Require && selectedTokens.Count == 0 && patch.Action != PatchAction.Remove)
             {
                 EpicLoot.LogErrorForce($"Required Patch ({patch.SourceFile}) path ({patch.Path}) " +
                     $"failed to select any tokens in target file ({patch.TargetFile})!");
@@ -506,11 +435,11 @@ namespace EpicLoot.Patching
                     {
                         var mergeSettings = new JsonMergeSettings
                         {
-                            MergeArrayHandling = MergeArrayHandling.Concat,
+                            // Do not create duplicates when appending arrays
+                            MergeArrayHandling = MergeArrayHandling.Union,
                             MergeNullValueHandling = MergeNullValueHandling.Ignore
                         };
                         ((JArray)token).Merge(patch.Value, mergeSettings);
-
                     }
                     else
                     {

@@ -112,10 +112,10 @@ namespace EpicLoot.Crafting
             MagicBG.enabled = fromItem.IsMagic();
             MagicBG.color = rarityColor;
 
-            if (EpicLoot.HasAuga)
-            {
-                Auga.API.ComplexTooltip_SetItem(gameObject, fromItem);
-            }
+            //if (EpicLoot.HasAuga)
+            //{
+            //    Auga.API.ComplexTooltip_SetItem(gameObject, fromItem);
+            //}
 
             if (NameText != null)
             {
@@ -148,17 +148,18 @@ namespace EpicLoot.Crafting
                 text.text = Localization.instance.Localize((index == 0 ? "<color=white>($mod_epicloot_augment_keep)</color> " : "") + MagicItem.GetEffectText(effect, rarity, true));
                 text.color = rarityColor;
 
-                if (EpicLoot.HasAuga)
+                //if (EpicLoot.HasAuga)
+                //{
+                //    Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, rarityColor);
+                //}
+                //else
+                //{
+
+                //}
+                var buttonColor = button.GetComponent<ButtonTextColor>();
+                if (buttonColor != null)
                 {
-                    Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, rarityColor);
-                }
-                else
-                {
-                    var buttonColor = button.GetComponent<ButtonTextColor>();
-                    if (buttonColor != null)
-                    {
-                        buttonColor.m_defaultColor = rarityColor;
-                    }
+                    buttonColor.m_defaultColor = rarityColor;
                 }
 
                 button.onClick.RemoveAllListeners();

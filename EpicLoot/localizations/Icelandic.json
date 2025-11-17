@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Rögnvaldurs reiði",
   "mod_epicloot_legendarysetlabel": "Frægur set hlutur",
   "mod_epicloot_mythicsetlabel": "Mythical Set ItemMythiskur setningarhluti",
+  "mod_epicloot_Magic": "Töfra",
+  "mod_epicloot_Rare": "Sjaldgæft",
+  "mod_epicloot_Epic": "Epískt",
+  "mod_epicloot_Legendary": "Frægur",
+  "mod_epicloot_Mythic": " Mýtískt",
   "mod_epicloot_magic": "Töfra",
   "mod_epicloot_rare": "Sjaldgæft",
   "mod_epicloot_epic": "Epískt",
   "mod_epicloot_legendary": "Frægur",
-  "mod_epicloot_mythic": " Mýtískt"
+  "mod_epicloot_mythic": " Mýtískt",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalínhvörf",
+  "mod_epicloot_me_adrenaline_rush_desc": "Aukin skaði í gegnumhaldandi áhrif.Aukinn skaði í gegnumhaldandi áhrif."
 }

@@ -31,14 +31,14 @@ namespace EpicLoot.CraftingV2
             {
                 EpicLootAuga.FixFonts(panelBase.gameObject);
 
-                var dividerParts = Auga.API.Divider_CreateLarge(panelBase.transform, "TitleDivider");
-                var dividerRT = (RectTransform)dividerParts.Item1.transform;
-                dividerRT.SetSiblingIndex(0);
-                dividerRT.anchoredPosition = new Vector2(0, 295);
-                dividerRT.sizeDelta = new Vector2(910, 40);
-                Object.Destroy(dividerParts.Item2.GetComponent<ContentSizeFitter>());
-                var contentRT = (RectTransform)dividerParts.Item2.transform;
-                contentRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
+                //var dividerParts = Auga.API.Divider_CreateLarge(panelBase.transform, "TitleDivider");
+                //var dividerRT = (RectTransform)dividerParts.Item1.transform;
+                //dividerRT.SetSiblingIndex(0);
+                //dividerRT.anchoredPosition = new Vector2(0, 295);
+                //dividerRT.sizeDelta = new Vector2(910, 40);
+                //Object.Destroy(dividerParts.Item2.GetComponent<ContentSizeFitter>());
+                //var contentRT = (RectTransform)dividerParts.Item2.transform;
+                //contentRT.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
 
                 panelBase.MainButton = EpicLootAuga.ReplaceButtonFancy(panelBase.MainButton, false, true);
                 
@@ -110,57 +110,57 @@ namespace EpicLoot.CraftingV2
 
         public static void AugaFixupModeSelectButton(Toggle modeButton)
         {
-            Object.Destroy(modeButton.GetComponent<Image>());
-            var toggle = modeButton.GetComponent<Toggle>();
-            toggle.toggleTransition = Toggle.ToggleTransition.None;
-            var oldText = modeButton.transform.Find("Text").GetComponent<Text>();
-            var newButton = Auga.API.MediumButton_Create(modeButton.transform, modeButton.name, oldText.text);
-            newButton.transform.SetSiblingIndex(0);
-            Object.Destroy(oldText.gameObject);
-            var rt = (RectTransform)newButton.transform;
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(34, 0);
-            rt.sizeDelta = new Vector2(0, -10);
+            //Object.Destroy(modeButton.GetComponent<Image>());
+            //var toggle = modeButton.GetComponent<Toggle>();
+            //toggle.toggleTransition = Toggle.ToggleTransition.None;
+            //var oldText = modeButton.transform.Find("Text").GetComponent<Text>();
+            //var newButton = Auga.API.MediumButton_Create(modeButton.transform, modeButton.name, oldText.text);
+            //newButton.transform.SetSiblingIndex(0);
+            //Object.Destroy(oldText.gameObject);
+            //var rt = (RectTransform)newButton.transform;
+            //rt.anchorMin = new Vector2(0, 0);
+            //rt.anchorMax = new Vector2(1, 1);
+            //rt.anchoredPosition = new Vector2(34, 0);
+            //rt.sizeDelta = new Vector2(0, -10);
 
-            newButton.onClick = new Button.ButtonClickedEvent();
-            newButton.onClick.AddListener(() => toggle.OnSubmit(null));
+            //newButton.onClick = new Button.ButtonClickedEvent();
+            //newButton.onClick.AddListener(() => toggle.OnSubmit(null));
 
-            Object.Destroy(newButton.GetComponent<ButtonSfx>());
-            Object.Destroy(newButton.GetComponent<UITooltip>());
+            //Object.Destroy(newButton.GetComponent<ButtonSfx>());
+            //Object.Destroy(newButton.GetComponent<UITooltip>());
         }
 
         public static void AugaFixupRaritySelectButton(Toggle rarityButton)
         {
-            Object.Destroy(rarityButton.GetComponent<Image>());
-            var toggle = rarityButton.GetComponent<Toggle>();
-            toggle.toggleTransition = Toggle.ToggleTransition.None;
-            var oldText = rarityButton.transform.Find("Text").GetComponent<Text>();
-            var newButton = Auga.API.MediumButton_Create(rarityButton.transform, rarityButton.name, oldText.text);
-            newButton.transform.SetSiblingIndex(0);
-            Object.Destroy(oldText.gameObject);
-            var rt = (RectTransform)newButton.transform;
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(0, 0);
-            rt.sizeDelta = new Vector2(0, 0);
+            //Object.Destroy(rarityButton.GetComponent<Image>());
+            //var toggle = rarityButton.GetComponent<Toggle>();
+            //toggle.toggleTransition = Toggle.ToggleTransition.None;
+            //var oldText = rarityButton.transform.Find("Text").GetComponent<Text>();
+            //var newButton = Auga.API.MediumButton_Create(rarityButton.transform, rarityButton.name, oldText.text);
+            //newButton.transform.SetSiblingIndex(0);
+            //Object.Destroy(oldText.gameObject);
+            //var rt = (RectTransform)newButton.transform;
+            //rt.anchorMin = new Vector2(0, 0);
+            //rt.anchorMax = new Vector2(1, 1);
+            //rt.anchoredPosition = new Vector2(0, 0);
+            //rt.sizeDelta = new Vector2(0, 0);
 
-            var rarityColor = toggle.GetComponent<SetRarityColor>();
-            rarityColor.Graphics[0] = newButton.GetComponentInChildren<TMP_Text>();
-            rarityColor.Refresh();
+            //var rarityColor = toggle.GetComponent<SetRarityColor>();
+            //rarityColor.Graphics[0] = newButton.GetComponentInChildren<TMP_Text>();
+            //rarityColor.Refresh();
 
-            var border = toggle.transform.Find("Border").GetComponent<Image>();
-            var augaBorderAsset = EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga");
-            var augaBorderImage = augaBorderAsset.GetComponent<Image>();
-            border.raycastTarget = false;
-            border.sprite = augaBorderImage.sprite;
-            border.pixelsPerUnitMultiplier = augaBorderImage.pixelsPerUnitMultiplier;
+            //var border = toggle.transform.Find("Border").GetComponent<Image>();
+            //var augaBorderAsset = EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga");
+            //var augaBorderImage = augaBorderAsset.GetComponent<Image>();
+            //border.raycastTarget = false;
+            //border.sprite = augaBorderImage.sprite;
+            //border.pixelsPerUnitMultiplier = augaBorderImage.pixelsPerUnitMultiplier;
 
-            newButton.onClick = new Button.ButtonClickedEvent();
-            newButton.onClick.AddListener(() => toggle.OnSubmit(null));
+            //newButton.onClick = new Button.ButtonClickedEvent();
+            //newButton.onClick.AddListener(() => toggle.OnSubmit(null));
 
-            Object.Destroy(newButton.GetComponent<ButtonSfx>());
-            Object.Destroy(newButton.GetComponent<UITooltip>());
+            //Object.Destroy(newButton.GetComponent<ButtonSfx>());
+            //Object.Destroy(newButton.GetComponent<UITooltip>());
         }
     }
 }

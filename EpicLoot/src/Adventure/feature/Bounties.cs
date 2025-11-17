@@ -197,7 +197,7 @@ namespace EpicLoot.Adventure.Feature
         {
             var results = new List<BountyInfo>();
 
-            var saveData = Player.m_localPlayer?.GetAdventureSaveData();
+            var saveData = Player.m_localPlayer.GetAdventureSaveData();
             if (saveData == null)
             {
                 return results;
@@ -338,7 +338,7 @@ namespace EpicLoot.Adventure.Feature
 
         public void AbandonBounty(BountyInfo bountyInfo)
         {
-            var saveData = Player.m_localPlayer?.GetAdventureSaveData();
+            var saveData = Player.m_localPlayer.GetAdventureSaveData();
             if (saveData != null && bountyInfo != null && saveData.BountyIsInProgress(bountyInfo.Interval, bountyInfo.ID))
             {
                 saveData.AbandonedBounty(bountyInfo.ID);

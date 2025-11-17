@@ -7,7 +7,9 @@ using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
+using EpicLoot.Magic;
 using EpicLoot.Patching;
+using EpicLoot.src.Magic;
 using EpicLoot_UnityLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -68,7 +70,18 @@ namespace EpicLoot.Config
         public static ConfigEntry<float> _bossCryptKeyDropPlayerRange;
         public static ConfigEntry<BossDropMode> _bossWishboneDropMode;
         public static ConfigEntry<float> _bossWishboneDropPlayerRange;
+        public static ConfigEntry<string> BalanceConfigurationType;
+        public static ConfigEntry<bool> AutoAddEquipment;
+        public static ConfigEntry<bool> AutoRemoveEquipmentNotFound;
+        public static ConfigEntry<bool> OnlyAddEquipmentWithRecipes;
+        public static ConfigEntry<float> ItemsUnidentifiedDropRatio;
         public static ConfigEntry<float> UIAudioVolumeAdjustment;
+        public static ConfigEntry<bool> AutoAddRemoveEquipmentFromVendor;
+        public static ConfigEntry<bool> AutoAddRemoveEquipmentFromLootLists;
+        public static ConfigEntry<bool> EnableHotReloadPatches;
+        public static ConfigEntry<bool> AlwaysRefreshCoreConfigs;
+
+        public static ConfigEntry<bool> RuneExtractDestroysItem;
 
         private static CustomRPC LootTablesRPC;
         private static CustomRPC MagicEffectsRPC;
@@ -200,15 +213,30 @@ namespace EpicLoot.Config
                 new AcceptableValueRange<float>(0, 1)));
 
             // Logging
-            _loggingEnabled = Config.Bind("Logging", "Logging Enabled", false, "Enable logging");
-            _logLevel = Config.Bind("Logging", "Log Level", LogLevel.Info,
+            _loggingEnabled = Config.Bind("Logging", "Logging Enabled", true, "Enable logging");
+            _logLevel = Config.Bind("Logging", "Log Level", LogLevel.Error,
                 "Only log messages of the selected level or higher");
 
             // General
             UseGeneratedMagicItemNames = Config.Bind("General", "Use Generated Magic Item Names", true,
                 "If true, magic items uses special, randomly generated names based on their rarity, type, and magic effects.");
+            AutoAddEquipment = BindServerConfig("General", "Auto Add Equipment", true, "Automatically adds equipment types that can be enchanted to possible drops and gates them" +
+                "behind their respective bosses. Disabling this also disables automatic removal of items not found.");
+            AutoRemoveEquipmentNotFound = BindServerConfig("General", "Auto Remove Equipment Not Found", true,
+                "Automatically removes equipment types that is not found when loading the game.");
+            OnlyAddEquipmentWithRecipes = BindServerConfig("General", "Only Add Equipment With Recipes", true,
+                "Equipment must be able to be created by a recipe in order to automatically get selected. If this is disabled enemy weapons can be added to drops, they are not always valid.");
+            AutoAddRemoveEquipmentFromVendor = BindServerConfig("General", "Auto Add Remove Equipment From Vendor", true,
+                "Automatically adds/removes equipment from the vendor when it is added/removed from the game. ");
+            AutoAddRemoveEquipmentFromLootLists = BindServerConfig("General", "Auto Add Remove Equipment From Lootlists", true,
+                "Automatically adds/removes equipment from the teir based loot lists, and validates other loot lists only contain valid items.");
 
             // Balance
+            BalanceConfigurationType = BindServerConfig("Balance", "Balance Template", "Default",
+                "Sets the type of balance configuration to use. " +
+                "balanced: the recommended balancing, you'll be powerful but stronger enemies will still be a huge threat. " +
+                "minimal: uses heavy downtuning to not make you overpowered without any mods to increase difficulty." +
+                "legendary: this was the only balance option prior to 0.12, used by itself this will make you godlike.", new AcceptableValueList<string>("balanced", "legendary", "minimal"));
             _gatedItemTypeModeConfig = BindServerConfig("Balance", "Item Drop Limits",
                 GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems,
                 "Sets how the drop system limits what item types can drop. " +
@@ -249,29 +277,41 @@ namespace EpicLoot.Config
             _andvaranautRange = BindServerConfig("Balance", "Andvaranaut Range", 20,
                 "Sets the range that Andvaranaut will locate a treasure chest.");
             SetItemDropChance = BindServerConfig("Balance", "Set Item Drop Chance", 0.15f,
-                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1");
+                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             GlobalDropRateModifier = BindServerConfig("Balance", "Global Drop Rate Modifier", 1.0f,
                 "A global percentage that modifies how likely items are to drop. " +
                 "1 = Exactly what is in the loot tables will drop. " +
                 "0 = Nothing will drop. " +
                 "2 = The number of items in the drop table are twice as likely to drop " +
                 "(note, this doesn't double the number of items dropped, just doubles the relative chance for them to drop). " +
-                "Min = 0, Max = 4");
+                "Min = 0, Max = 4", new AcceptableValueRange<float>(minValue: 0, maxValue: 4));
+            ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f, "" +
+                "Sets the chance that items are dropped as unidentified. This takes precedent over 'Items To Materials Drop Ratio' which means" +
+                "out of 100 items dropped, unidenified items are first calculated, and then the remainder is used to calculate material vs item drop.", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             ItemsToMaterialsDropRatio = BindServerConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
                 "Sets the chance that item drops are instead dropped as magic crafting materials. " +
                 "0 = all items, no materials. " +
                 "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop. " +
                 "At 0.5, half of everything that drops would be items and the other half would be materials. " +
-                "Min = 0, Max = 1");
+                "Min = 0, Max = 1", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             TransferMagicItemToCrafts = BindServerConfig("Balance", "Transfer Enchants to Crafted Items", false,
                 "When enchanted items are used as ingredients in recipes, transfer the highest enchant to the " +
                 "newly crafted item. Default: False.");
+            RuneExtractDestroysItem = BindServerConfig("Balance", "Rune Extract Destroys Item", true,
+                "When extracting a rune from an item, the item will be destroyed. If false, the item will be returned intact. " +
+                "Default: True.");
+
 
             // Debug
-            AlwaysShowWelcomeMessage = Config.Bind("Debug", "AlwaysShowWelcomeMessage", false,
-                "Just a debug flag for testing the welcome message, do not use.");
+            AlwaysShowWelcomeMessage = Config.Bind("Debug", "Show Welcome Message, automatically set to false once config is viewed.", true,
+                "Sets whether or not the welcome message is displayed on startup, this is automatically set to false once the player has viewed the message.");
             OutputPatchedConfigFiles = Config.Bind("Debug", "OutputPatchedConfigFiles", false,
                 "Just a debug flag for testing the patching system, do not use.");
+            EnableHotReloadPatches = BindServerConfig("Debug", "Enable Hot Reloading Patches", true,
+                "Controls whether or not patch edits can be live-reloaded. Can cause lag when recompiling patches.");
+            AlwaysRefreshCoreConfigs = BindServerConfig("Debug", "Always Refresh Core Configs", false,
+                "Overwrites your core configuration with the mod default values on startup. THIS WILL DELETE ANY MODIFICATIONS TO THE CORE CONFIG.");
+
 
             // Abilities
             AbilityKeyCodes[0] = Config.Bind("Abilities", "Ability Hotkey 1", "g", "Hotkey for Ability Slot 1.");
@@ -293,7 +333,7 @@ namespace EpicLoot.Config
                 "Toggles Enchanting Table Upgrade Capabilities. If false, enchanting table features will be unlocked set to Level 1");
             EnchantingTableActivatedTabs = BindServerConfig("Enchanting Table", $"Table Features Active",
                 EnchantingTabs.Sacrifice | EnchantingTabs.Augment | EnchantingTabs.Enchant | EnchantingTabs.Disenchant |
-                EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials, $"Toggles Enchanting Table Feature on and off completely.");
+                EnchantingTabs.Upgrade | EnchantingTabs.ConvertMaterials | EnchantingTabs.Rune, $"Toggles Enchanting Table Feature on and off completely.");
             EnchantingTableUpgradesActive.SettingChanged += (_, _) => EnchantingTableUI.UpdateUpgradeActivation();
             EnchantingTableActivatedTabs.SettingChanged += (_, _) => EnchantingTableUI.UpdateTabActivation();
 
@@ -306,29 +346,18 @@ namespace EpicLoot.Config
 
         public static void InitializeConfig()
         {
-            SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(LootTablesRPC, _ => SendConfig(JsonConvert.SerializeObject(LootRoller.Config)));
-            SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(MagicEffectsRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions())));
+            SychronizeConfig<LootConfig>("loottables.json", LootRoller.Initialize, LootTablesRPC, LootRoller.GetCFG);
+            SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize, MagicEffectsRPC, MagicItemEffectDefinitions.GetMagicItemEffectDefinitions);
             // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
-            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(AdventureDataRPC, _ => SendConfig(JsonConvert.SerializeObject(AdventureDataManager.Config)));
-            SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(ItemConfigRPC, _ => SendConfig(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig)));
-            SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(RecipesRPC, _ => SendConfig(JsonConvert.SerializeObject(RecipesHelper.Config)));
-            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingCostsRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantCostsHelper.Config)));
-            SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(ItemNamesRPC, _ => SendConfig(JsonConvert.SerializeObject(MagicItemNames.Config)));
-            SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(LegendariesRPC, _ => SendConfig(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config)));
-            SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(AbilitiesRPC, _ => SendConfig(JsonConvert.SerializeObject(AbilityDefinitions.Config)));
-            SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize);
-            SynchronizationManager.Instance.AddInitialSynchronization(MaterialConversionRPC, _ => SendConfig(JsonConvert.SerializeObject(MaterialConversions.Config)));
-            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig);
-            SynchronizationManager.Instance.AddInitialSynchronization(EnchantingUpgradesRPC, _ => SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
+            SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize, AdventureDataRPC, AdventureDataManager.GetCFG);
+            SychronizeConfig<ItemInfoConfig>("iteminfo.json", GatedItemTypeHelper.Initialize, ItemConfigRPC, GatedItemTypeHelper.GetCFG);
+            SychronizeConfig<RecipesConfig>("recipes.json", RecipesHelper.Initialize, RecipesRPC, RecipesHelper.GetCFG);
+            SychronizeConfig<EnchantingCostsConfig>("enchantcosts.json", EnchantCostsHelper.Initialize, EnchantingCostsRPC, EnchantCostsHelper.GetCFG);
+            SychronizeConfig<ItemNameConfig>("itemnames.json", MagicItemNames.Initialize, ItemNamesRPC, MagicItemNames.GetCFG);
+            SychronizeConfig<LegendaryItemConfig>("legendaries.json", UniqueLegendaryHelper.Initialize, LegendariesRPC, UniqueLegendaryHelper.GetCFG);
+            SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize, AbilitiesRPC, AbilityDefinitions.GetCFG);
+            SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, MaterialConversionRPC, MaterialConversions.GetCFG);
+            SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, EnchantingUpgradesRPC, EnchantingTableUpgrades.GetCFG);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
@@ -361,72 +390,89 @@ namespace EpicLoot.Config
             return dirInfo.FullName;
         }
 
-        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, bool update = false) where T : class
+        public static string GetOverhaulDirectoryPath()
         {
-            var jsonFile = EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename);
-            var result = JsonConvert.DeserializeObject<T>(jsonFile);
-            // EpicLoot.Log($"deserialized object: {result}");
-            setupMethod(result);
+            var overhaulfolder = Path.Combine(Paths.ConfigPath, "EpicLoot", "baseconfig");
+            var dirInfo = Directory.CreateDirectory(overhaulfolder);
+            return dirInfo.FullName;
         }
 
-        private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
+        public static string GetDefaultEmbeddedFileLocation(string configName) {
+            string embeddedcfgpath = "EpicLoot.config." + configName;
+            if (configName == "magiceffects.json") {
+                embeddedcfgpath = "EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + configName;
+            }
+            return embeddedcfgpath;
+        }
+
+        public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, CustomRPC targetRPC, Func<T> getConfig) where T : class
         {
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
-            {
-                EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
-                return;
+            string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename);
+
+            // Ensure that the core config file exists
+            if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
+                EpicLoot.Log($"Base config file {basecfglocation} does not exist, creating it from embedded default config.");
+                var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
+                File.WriteAllText(basecfglocation, overhaulfiledata);
             }
 
-            // Do not process directories, setup a new watcher- otherwise they get ingored even with subdirectory watching.
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
-            {
-                SetupPatchConfigFileWatch(e.FullPath);
-                EpicLoot.Log($"Adding subdirectory filewatcher: {e.FullPath}");
-                return;
+            // Attempt to parse the core config, if its not valid use the embedded default config
+            try {
+                var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
+                setupMethod(contents);
+            } catch (Exception e) {
+                EpicLoot.LogWarningForce($"Core Config file {basecfglocation} is invalid and internal defaults will be used instead." + e);
+                var defaultConfig = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
+                setupMethod(JsonConvert.DeserializeObject<T>(defaultConfig));
             }
 
-            var fileInfo = new FileInfo(e.FullPath);
-            if (!fileInfo.FullName.Contains(".json")) {
-                EpicLoot.Log($"File: {fileInfo} is not a supported format, ignoring.");
-                return;
+            EpicLoot.Log($"Core Config file {basecfglocation} Loaded and set.");
+            // At this point we have a valid config, either from external file or from embedded defaults.
+
+            ZPackage SendInitialConfig() {
+                string cfgs = JsonConvert.SerializeObject(getConfig());
+                //EpicLoot.Log($"sending {filename} configs: {cfgs}");
+                return SendConfig(cfgs);
             }
-            EpicLoot.Log($"Processing patch file update: {fileInfo}");
-            switch (e.ChangeType)
-            {
-                case WatcherChangeTypes.Created:
-                    EpicLoot.Log($"Patch Created");
-                    //File Created
-                    if (!fileInfo.Exists)
-                        return;
 
-                    // Loads the new file into the patch system
-                    List<string> new_patched_files = FilePatching.ProcessPatchFile(fileInfo);
-                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(new_patched_files);
-                    break;
+            // Setup the initial synchronization for network connection
+            SynchronizationManager.Instance.AddInitialSynchronization(targetRPC, SendInitialConfig);
 
-                case WatcherChangeTypes.Deleted:
-                    //File Deleted
-                    EpicLoot.Log($"Patch Deleted");
-                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(FilePatching.ConfigFileNames);
-                    break;
-
-                case WatcherChangeTypes.Changed:
-                case WatcherChangeTypes.Renamed:
-                    // Changed can be called when a deletion happens. It depends on the OS.
-                    if (!fileInfo.Exists) {
-                        EpicLoot.Log($"Patch Changed");
-                        FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                        break;
+            // Encapsulated file watcher modification method for the config file
+            void FileModified(object sender, FileSystemEventArgs e) {
+                if (e.FullPath != basecfglocation) { return; }
+                EpicLoot.Log($"Config file {basecfglocation} {e.FullPath} has been modified, attempting to update config.");
+                if (!File.Exists(basecfglocation)) { return; }
+                bool valid_update = false;
+                try {
+                    var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
+                    EpicLoot.Log($"Config file {basecfglocation} has been modified, updating config.");
+                    setupMethod(contents);
+                    valid_update = true;
+                } catch (Exception ex) {
+                    EpicLoot.LogWarningForce($"Config file {basecfglocation} is invalid and config will not be updated." + ex);
+                }
+                if (valid_update == false) { return; }
+                if (GUIManager.IsHeadless()) {
+                    try {
+                        targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(getConfig())));
                     }
-                        
-                    //File Changed
-                    EpicLoot.Log($"Patch Changed");
-                    FilePatching.RemoveFilePatches(fileInfo.Name, fileInfo.FullName);
-                    List<string> patched_files = FilePatching.ProcessPatchFile(fileInfo);
-                    FilePatching.ApplyPatchesToSpecificFilesWithNetworkUpdates(patched_files);
-                    break;
+                    catch {
+                        Jotunn.Logger.LogError($"Error while server syncing {filename} configs");
+                    }
+                }
             }
+
+            // Setup the file watcher for the config file
+            var fsw = new FileSystemWatcher(ELConfig.GetOverhaulDirectoryPath());
+            fsw.Created += new FileSystemEventHandler(FileModified);
+            fsw.Changed += new FileSystemEventHandler(FileModified);
+            fsw.Renamed += new RenamedEventHandler(FileModified);
+            fsw.Deleted += new FileSystemEventHandler(FileModified);
+            fsw.NotifyFilter = NotifyFilters.LastWrite;
+            fsw.SynchronizingObject = ThreadingHelper.SynchronizingObject;
+            fsw.EnableRaisingEvents = true;
+            fsw.Filter = filename;
         }
 
         public static void StartupProcessModifiedLocalizations()
@@ -454,13 +500,33 @@ namespace EpicLoot.Config
             }
         }
 
-        internal static void CheckAndUpdateLocalization(Dictionary<string, string> localization_updates, string language)
-        {
-            foreach (var localization in localization_updates)
-            {
-                EpicLoot.Log($"Updating localization: {localization.Key} - {localization.Value}");
-                LocalizationManager.Instance.GetLocalization().ClearToken(language, localization.Key);
-                LocalizationManager.Instance.GetLocalization().AddTranslation(language, localization.Key, localization.Value);
+
+        private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e) {
+            if (EnableHotReloadPatches.Value == false) {
+                return;
+            }
+
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false) {
+                EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
+                return;
+            }
+
+            // Do not process directories, setup a new watcher- otherwise they get ingored even with subdirectory watching.
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory)) {
+                SetupPatchConfigFileWatch(e.FullPath);
+                EpicLoot.Log($"Adding subdirectory filewatcher: {e.FullPath}");
+                return;
+            }
+
+            var fileInfo = new FileInfo(e.FullPath);
+            if (!fileInfo.FullName.Contains(".json")) {
+                return;
+            }
+            EpicLoot.Log($"Processing patch file update: {fileInfo}");
+            FilePatching.ReloadAndApplyAllPatches();
+
+            if (AutoAddEquipment.Value == true || AutoRemoveEquipmentNotFound.Value == true) {
+                AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(false);
             }
         }
 
@@ -476,6 +542,17 @@ namespace EpicLoot.Config
             newPatchWatcher.SynchronizingObject = ThreadingHelper.SynchronizingObject;
             newPatchWatcher.EnableRaisingEvents = true;
             // newPatchWatcher.Filter = "*.json";
+        }
+
+
+        internal static void CheckAndUpdateLocalization(Dictionary<string, string> localization_updates, string language)
+        {
+            foreach (var localization in localization_updates)
+            {
+                EpicLoot.Log($"Updating localization: {localization.Key} - {localization.Value}");
+                LocalizationManager.Instance.GetLocalization().ClearToken(language, localization.Key);
+                LocalizationManager.Instance.GetLocalization().AddTranslation(language, localization.Key, localization.Value);
+            }
         }
 
         private static IEnumerator OnClientRecieveLootConfigs(long sender, ZPackage package)
@@ -561,58 +638,6 @@ namespace EpicLoot.Config
             return package;
         }
 
-        public static void SendLootConfigs() {
-            LootTablesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(LootRoller.Config)));
-        }
-
-        public static void SendMagicEffectConfigs() {
-            MagicEffectsRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MagicItemEffectDefinitions.GetMagicItemEffectDefinitions())));
-        }
-
-        public static void SendItemInfoConfigs() {
-            ItemConfigRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(GatedItemTypeHelper.GatedConfig)));
-        }
-
-        public static void SendRecipesConfigs()
-        {
-            RecipesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(RecipesHelper.Config)));
-        }
-
-        public static void SendEnchantCostConfigs()
-        {
-            EnchantingCostsRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(EnchantCostsHelper.Config)));
-        }
-
-        public static void SendMagicItemNamesConfigs()
-        {
-            ItemNamesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MagicItemNames.Config)));
-        }
-
-        public static void SendAdventureDataConfigs()
-        {
-            AdventureDataRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(AdventureDataManager.Config)));
-        }
-
-        public static void SendLegendaryConfigs()
-        {
-            LegendariesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(UniqueLegendaryHelper.Config)));
-        }
-
-        public static void SendAbilitiesConfigs()
-        {
-            AbilitiesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(AbilityDefinitions.Config)));
-        }
-
-        public static void SendMaterialConversionConfigs()
-        {
-            MaterialConversionRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(MaterialConversions.Config)));
-        }
-
-        public static void SendEnchantingTableUpgradeConfigs()
-        {
-            EnchantingUpgradesRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(EnchantingTableUpgrades.Config)));
-        }
-
         public static IEnumerator OnServerRecieveConfigs(long sender, ZPackage package)
         {
             EpicLoot.Log("Server received config from client, rejecting due to being the server.");
@@ -625,6 +650,26 @@ namespace EpicLoot.Config
         /// IsAdminOnly ensures this is a server authoratative value
         /// <returns></returns>
         public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueList<string> acceptableValues = null, bool advanced = false)
+        {
+            return cfg.Bind(category, key, value,
+                new ConfigDescription(
+                    description,
+                    acceptableValues,
+                new ConfigurationManagerAttributes { IsAdminOnly = true, IsAdvanced = advanced })
+            );
+        }
+
+        public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueRange<float> acceptableValues, bool advanced = false)
+        {
+            return cfg.Bind(category, key, value,
+                new ConfigDescription(
+                    description,
+                    acceptableValues,
+                new ConfigurationManagerAttributes { IsAdminOnly = true, IsAdvanced = advanced })
+            );
+        }
+
+        public static ConfigEntry<T> BindServerConfig<T>(string category, string key, T value, string description, AcceptableValueRange<int> acceptableValues, bool advanced = false)
         {
             return cfg.Bind(category, key, value,
                 new ConfigDescription(

@@ -29,112 +29,113 @@ namespace EpicLoot.Crafting
 
             var inventoryGui = InventoryGui.instance;
             AugmentChoiceDialog choiceDialog;
-            if (EpicLoot.HasAuga)
+            //if (EpicLoot.HasAuga)
+            //{
+                //var resultDialog = Auga.API.Workbench_CreateNewResultsPanel();
+                //resultDialog.SetActive(false);
+
+                //choiceDialog = resultDialog.AddComponent<AugmentChoiceDialog>();
+
+                //var icon = choiceDialog.transform.Find("InventoryElement/icon").GetComponent<Image>();
+                //choiceDialog.MagicBG = Object.Instantiate(icon, icon.transform.parent);
+                //choiceDialog.MagicBG.name = "MagicItemBG";
+                //choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
+                //choiceDialog.MagicBG.color = Color.white;
+                //choiceDialog.MagicBG.rectTransform.anchorMin = new Vector2(0, 0);
+                //choiceDialog.MagicBG.rectTransform.anchorMax = new Vector2(1, 1);
+                //choiceDialog.MagicBG.rectTransform.sizeDelta = new Vector2(0, 0);
+                //choiceDialog.MagicBG.rectTransform.anchoredPosition = new Vector2(0, 0);
+
+                //choiceDialog.NameText = choiceDialog.transform.Find("Topic").GetComponent<TMP_Text>();
+
+                //var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
+                //Object.Destroy(closeButton.gameObject);
+
+                //var tooltipHeight = 360;
+                //var buttonStart = -220;
+                //if (augmentChoices > 3)
+                //{
+                //    var extra = augmentChoices - 3;
+                //    tooltipHeight -= extra * 40;
+                //    buttonStart += extra * 40;
+                //}
+
+                //var tooltip = (RectTransform)choiceDialog.transform.Find("TooltipScrollContainer");
+                //tooltip.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
+                //var scrollbar = (RectTransform)choiceDialog.transform.Find("ScrollBar");
+                //scrollbar.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
+
+                //for (var i = 0; i < augmentChoices; i++)
+                //{
+                //    //var button = Auga.API.MediumButton_Create(resultDialog.transform, $"AugmentButton{i}", string.Empty);
+                //    //Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, Color.white);
+                //    //button.navigation = new Navigation { mode = Navigation.Mode.None };
+
+                //    //var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga"), button.transform);
+                //    //focus.SetActive(false);
+                //    //focus.name = "ButtonFocus";
+
+                //    //var rt = (RectTransform)button.transform;
+                //    //rt.anchoredPosition = new Vector2(0, buttonStart - (i * 40));
+                //    //rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 295);
+                //    //choiceDialog.EffectChoiceButtons.Add(button);
+                //}
+            //}
+            //else
+            //{
+                
+            //}
+            var height = 550.0f;
+            if (augmentChoices > 3)
             {
-                var resultDialog = Auga.API.Workbench_CreateNewResultsPanel();
-                resultDialog.SetActive(false);
-
-                choiceDialog = resultDialog.AddComponent<AugmentChoiceDialog>();
-
-                var icon = choiceDialog.transform.Find("InventoryElement/icon").GetComponent<Image>();
-                choiceDialog.MagicBG = Object.Instantiate(icon, icon.transform.parent);
-                choiceDialog.MagicBG.name = "MagicItemBG";
-                choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
-                choiceDialog.MagicBG.color = Color.white;
-                choiceDialog.MagicBG.rectTransform.anchorMin = new Vector2(0, 0);
-                choiceDialog.MagicBG.rectTransform.anchorMax = new Vector2(1, 1);
-                choiceDialog.MagicBG.rectTransform.sizeDelta = new Vector2(0, 0);
-                choiceDialog.MagicBG.rectTransform.anchoredPosition = new Vector2(0, 0);
-
-                choiceDialog.NameText = choiceDialog.transform.Find("Topic").GetComponent<TMP_Text>();
-
-                var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
-                Object.Destroy(closeButton.gameObject);
-
-                var tooltipHeight = 360;
-                var buttonStart = -220;
-                if (augmentChoices > 3)
-                {
-                    var extra = augmentChoices - 3;
-                    tooltipHeight -= extra * 40;
-                    buttonStart += extra * 40;
-                }
-
-                var tooltip = (RectTransform)choiceDialog.transform.Find("TooltipScrollContainer");
-                tooltip.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
-                var scrollbar = (RectTransform)choiceDialog.transform.Find("ScrollBar");
-                scrollbar.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
-
-                for (var i = 0; i < augmentChoices; i++)
-                {
-                    var button = Auga.API.MediumButton_Create(resultDialog.transform, $"AugmentButton{i}", string.Empty);
-                    Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, Color.white);
-                    button.navigation = new Navigation { mode = Navigation.Mode.None };
-
-                    var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga"), button.transform);
-                    focus.SetActive(false);
-                    focus.name = "ButtonFocus";
-
-                    var rt = (RectTransform)button.transform;
-                    rt.anchoredPosition = new Vector2(0, buttonStart - (i * 40));
-                    rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 295);
-                    choiceDialog.EffectChoiceButtons.Add(button);
-                }
+                var extra = augmentChoices - 3;
+                height += extra * 45;
             }
-            else
+            choiceDialog = CreateDialog<AugmentChoiceDialog>(inventoryGui, "AugmentChoiceDialog", height);
+
+            var background = choiceDialog.gameObject.transform.Find("Frame").gameObject.RectTransform();
+            choiceDialog.MagicBG = Object.Instantiate(inventoryGui.m_recipeIcon, background);
+            choiceDialog.MagicBG.name = "MagicItemBG";
+            choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
+            choiceDialog.MagicBG.color = Color.white;
+
+            choiceDialog.NameText = Object.Instantiate(inventoryGui.m_recipeName, background);
+            choiceDialog.Description = Object.Instantiate(inventoryGui.m_recipeDecription, background);
+            choiceDialog.Description.rectTransform.anchoredPosition += new Vector2(0, -47);
+            choiceDialog.Description.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 340);
+            choiceDialog.Icon = Object.Instantiate(inventoryGui.m_recipeIcon, background);
+
+            var scrollview = CraftSuccessDialog.ConvertToScrollingDescription(choiceDialog.Description, background);
+            var svrt = (RectTransform)scrollview.transform;
+            svrt.SetSiblingIndex(1);
+            svrt.anchorMin = new Vector2(0, 0);
+            svrt.anchorMax = new Vector2(1, 1);
+            svrt.pivot = new Vector2(0.5f, 0.5f);
+            svrt.anchoredPosition = new Vector2(0, 50);
+            svrt.sizeDelta = new Vector2(-20, -300);
+            svrt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 74, 300);
+
+            var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
+            Object.Destroy(closeButton.gameObject);
+
+            for (var i = 0; i < augmentChoices; i++)
             {
-                var height = 550.0f;
-                if (augmentChoices > 3)
-                {
-                    var extra = augmentChoices - 3;
-                    height += extra * 45;
-                }
-                choiceDialog = CreateDialog<AugmentChoiceDialog>(inventoryGui, "AugmentChoiceDialog", height);
-
-                var background = choiceDialog.gameObject.transform.Find("Frame").gameObject.RectTransform();
-                choiceDialog.MagicBG = Object.Instantiate(inventoryGui.m_recipeIcon, background);
-                choiceDialog.MagicBG.name = "MagicItemBG";
-                choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
-                choiceDialog.MagicBG.color = Color.white;
-
-                choiceDialog.NameText = Object.Instantiate(inventoryGui.m_recipeName, background);
-                choiceDialog.Description = Object.Instantiate(inventoryGui.m_recipeDecription, background);
-                choiceDialog.Description.rectTransform.anchoredPosition += new Vector2(0, -47);
-                choiceDialog.Description.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 340);
-                choiceDialog.Icon = Object.Instantiate(inventoryGui.m_recipeIcon, background);
-
-                var scrollview = CraftSuccessDialog.ConvertToScrollingDescription(choiceDialog.Description, background);
-                var svrt = (RectTransform)scrollview.transform;
-                svrt.SetSiblingIndex(1);
-                svrt.anchorMin = new Vector2(0, 0);
-                svrt.anchorMax = new Vector2(1, 1);
-                svrt.pivot = new Vector2(0.5f, 0.5f);
-                svrt.anchoredPosition = new Vector2(0, 50);
-                svrt.sizeDelta = new Vector2(-20, -300);
-                svrt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 74, 300);
-
-                var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
-                Object.Destroy(closeButton.gameObject);
-
-                for (var i = 0; i < augmentChoices; i++)
-                {
-                    Button button = GUIManager.Instance.CreateButton(
-                        text: "Augment",
-                        parent: background.transform,
-                        anchorMin: new Vector2(0.5f, 0f),
-                        anchorMax: new Vector2(0.5f, 0f),
-                        position: new Vector2(0, 55 + ((augmentChoices - 1 - i) * 45)),
-                        width: 300f,
-                        height: 40f).GetComponent<Button>();
-                    button.interactable = true;
-                    var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocus"), button.transform);
-                    focus.SetActive(false);
-                    focus.name = "ButtonFocus";
-                    var rt = button.gameObject.RectTransform();
-                    rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
-                    rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 40);
-                    choiceDialog.EffectChoiceButtons.Add(button);
-                }
+                Button button = GUIManager.Instance.CreateButton(
+                    text: "Augment",
+                    parent: background.transform,
+                    anchorMin: new Vector2(0.5f, 0f),
+                    anchorMax: new Vector2(0.5f, 0f),
+                    position: new Vector2(0, 55 + ((augmentChoices - 1 - i) * 45)),
+                    width: 300f,
+                    height: 40f).GetComponent<Button>();
+                button.interactable = true;
+                var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocus"), button.transform);
+                focus.SetActive(false);
+                focus.name = "ButtonFocus";
+                var rt = button.gameObject.RectTransform();
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
+                rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 40);
+                choiceDialog.EffectChoiceButtons.Add(button);
             }
 
             return choiceDialog;
@@ -172,7 +173,7 @@ namespace EpicLoot.Crafting
             }
 
             return MagicItemEffectDefinitions.GetAvailableEffects(
-                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : recipe.EffectIndex);
+                item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : recipe.EffectIndex, checkaugment: true);
         }
 
         public static string GetAugmentSelectorText(MagicItem magicItem, int i, IReadOnlyList<MagicItemEffect> augmentableEffects, ItemRarity rarity)

@@ -73,41 +73,8 @@
       { "Name": "$mod_epicloot_epic_wrath" },
       { "Name": "$mod_epicloot_epic_yggdrasill" },
       { "Name": "$mod_epicloot_epic_ymir" },
-
       { "Name": "$mod_epicloot_epic_fleet", "MagicEffects": [ "ModifyMovementSpeed" ] },
-      { "Name": "$mod_epicloot_epic_swift", "MagicEffects": [ "ModifyMovementSpeed" ] },
-
-      { "Name": "$mod_epicloot_epic_ash", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_blaze", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_char", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_conflagration", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_drake", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_inferno", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-      { "Name": "$mod_epicloot_epic_surt", "MagicEffects": [ "AddFireDamage", "AddFireResistance" ] },
-
-      { "Name": "$mod_epicloot_epic_blizzard", "MagicEffects": [ "AddFrostDamage", "AddFrostResistance" ] },
-      { "Name": "$mod_epicloot_epic_chill", "MagicEffects": [ "AddFrostDamage", "AddFrostResistance" ] },
-      { "Name": "$mod_epicloot_epic_frost", "MagicEffects": [ "AddFrostDamage", "AddFrostResistance" ] },
-      { "Name": "$mod_epicloot_epic_glacier", "MagicEffects": [ "AddFrostDamage", "AddFrostResistance" ] },
-      { "Name": "$mod_epicloot_epic_hail", "MagicEffects": [ "AddFrostDamage", "AddFrostResistance" ] },
-
-      { "Name": "$mod_epicloot_epic_shock", "MagicEffects": [ "AddLightningDamage", "AddLightningResistance" ] },
-      { "Name": "$mod_epicloot_epic_storm", "MagicEffects": [ "AddLightningDamage", "AddLightningResistance" ] },
-      { "Name": "$mod_epicloot_epic_tempest", "MagicEffects": [ "AddLightningDamage", "AddLightningResistance" ] },
-
-      { "Name": "$mod_epicloot_epic_blight", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-      { "Name": "$mod_epicloot_epic_caustic", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-      { "Name": "$mod_epicloot_epic_contagion", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-      { "Name": "$mod_epicloot_epic_corruption", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-      { "Name": "$mod_epicloot_epic_toxic", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-      { "Name": "$mod_epicloot_epic_venom", "MagicEffects": [ "AddPoisonDamage", "AddPoisonResistance" ] },
-
-      { "Name": "$mod_epicloot_epic_eidolon", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] },
-      { "Name": "$mod_epicloot_epic_phantasm", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] },
-      { "Name": "$mod_epicloot_epic_soul", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] },
-      { "Name": "$mod_epicloot_epic_spectre", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] },
-      { "Name": "$mod_epicloot_epic_spirit", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] },
-      { "Name": "$mod_epicloot_epic_wraith", "MagicEffects": [ "AddSpiritDamage", "AddSpiritResistance" ] }
+      { "Name": "$mod_epicloot_epic_swift", "MagicEffects": [ "ModifyMovementSpeed" ] }
     ],
     "Names" : [
       { "Name": "$mod_epicloot_epic_aegis", "Skills": [ "Blocking" ] },

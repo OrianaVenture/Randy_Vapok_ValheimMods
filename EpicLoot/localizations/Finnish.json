@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnarin raivo",
   "mod_epicloot_legendarysetlabel": "Legendaarinen esinekokoelma",
   "mod_epicloot_mythicsetlabel": "Myyttinen asetus esine",
+  "mod_epicloot_Magic": "Taika",
+  "mod_epicloot_Rare": "Harvinainen",
+  "mod_epicloot_Epic": "Mahtava",
+  "mod_epicloot_Legendary": "Legendaarinen",
+  "mod_epicloot_Mythic": "Myyttinen",
   "mod_epicloot_magic": "Taika",
   "mod_epicloot_rare": "Harvinainen",
   "mod_epicloot_epic": "Mahtava",
   "mod_epicloot_legendary": "Legendaarinen",
-  "mod_epicloot_mythic": "Myyttinen"
+  "mod_epicloot_mythic": "Myyttinen",
+  "mod_epicloot_me_adrenaline_rush": "Adrenaliiniryöppy",
+  "mod_epicloot_me_adrenaline_rush_desc": "Lisääntynyt vahinko vaikutuksen keston ajan."
 }

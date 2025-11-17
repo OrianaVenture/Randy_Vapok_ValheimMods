@@ -1,7 +1,10 @@
+
+using System;
 ﻿using EpicLoot_UnityLib;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using EpicLoot.CraftingV2;
 
 namespace EpicLoot.Crafting
 {
@@ -10,19 +13,22 @@ namespace EpicLoot.Crafting
         public static EnchantingCostsConfig Config;
         public static HashSet<string> DeprecatedMagicEffects = new HashSet<string>
         {
-            MagicEffectType.WaterWalking,
-            MagicEffectType.AddSpiritResistance,
             MagicEffectType.AddSpiritResistancePercentage,
             MagicEffectType.ReduceWeight,
-            MagicEffectType.AddFireResistance,
-            MagicEffectType.AddFrostResistance,
-            MagicEffectType.AddLightningResistance,
             MagicEffectType.AddChoppingResistancePercentage
         };
-
+        #nullable enable
+        public static event Action? OnSetupEnchantingCosts;
+        #nullable disable
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;
+            OnSetupEnchantingCosts?.Invoke();
+        }
+
+        public static EnchantingCostsConfig GetCFG()
+        {
+            return Config;
         }
 
         public static List<ItemAmountConfig> GetSacrificeProducts(ItemDrop.ItemData item)
@@ -100,6 +106,64 @@ namespace EpicLoot.Crafting
                 return true;
             });
 
+            return configEntry?.Cost;
+        }
+
+        public static List<ItemAmountConfig> GetIdentifyCosts(string category, ItemRarity rarity, Heightmap.Biome biome) {
+            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>() { };
+            if (Config.IdentifyCosts.ContainsKey(biome)) {
+                totalCost.AddRange(Config.IdentifyCosts[biome].CostByRarity[rarity]);
+                totalCost.AddRange(Config.IdentifyTypes[category].Costs);
+                return totalCost;
+            } else {
+                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
+                return new List<ItemAmountConfig>(){ };
+            }
+        }
+
+        public static Dictionary<string, string> GetIdentificationCategories() {
+            Dictionary<string, string> categories = new Dictionary<string, string>();
+            foreach(var identifyStyle in Config.IdentifyTypes) {
+                categories.Add(identifyStyle.Key, identifyStyle.Value.Localization);
+            }
+            return categories;
+        }
+
+        public static List<ItemAmountConfig> GetRuneCost(ItemDrop.ItemData item, ItemRarity rarity, RuneActions operation)
+        {
+            bool typecheck = false;
+            ItemDrop.ItemData.ItemType itemtype = ItemDrop.ItemData.ItemType.None;
+            if (item != null) {
+                itemtype = item.m_shared.m_itemType;
+            }
+            List<RuneCostConfig> cfg = new List<RuneCostConfig>();
+            switch (operation) {
+                case RuneActions.Extract:
+                    cfg = Config.RuneExtractCosts;
+                    break;
+                case RuneActions.Etch:
+                    cfg = Config.RuneEtchCosts;
+                    break;
+            }
+
+            var configEntry = cfg.Find(x => {
+                if (x.Rarity != rarity)
+                {
+                    return false;
+                }
+
+                if (x.ItemTypes?.Count > 0 && typecheck && !x.ItemTypes.Contains(itemtype.ToString()))
+                {
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (configEntry == null) {
+                EpicLoot.LogWarning($"Could not find rune cost data for {rarity} {operation}");
+                return new List<ItemAmountConfig>();
+            }
             return configEntry?.Cost;
         }
 

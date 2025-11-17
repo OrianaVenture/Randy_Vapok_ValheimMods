@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "ラグナの怒り",
   "mod_epicloot_legendarysetlabel": "伝説のセットアイテム",
   "mod_epicloot_mythicsetlabel": "神話セットアイテム神話セットアイテム",
+  "mod_epicloot_Magic": "魔法",
+  "mod_epicloot_Rare": "希少な",
+  "mod_epicloot_Epic": "叙事詩的",
+  "mod_epicloot_Legendary": "伝説的な",
+  "mod_epicloot_Mythic": "神話的神話的",
   "mod_epicloot_magic": "魔法",
   "mod_epicloot_rare": "希少な",
   "mod_epicloot_epic": "叙事詩的",
   "mod_epicloot_legendary": "伝説的な",
-  "mod_epicloot_mythic": "神話的神話的"
+  "mod_epicloot_mythic": "神話的神話的",
+  "mod_epicloot_me_adrenaline_rush": "アドレナリンラッシュアドレナリンラッシュ",
+  "mod_epicloot_me_adrenaline_rush_desc": "効果の期間中にダメージが増加します。効果の期間中にダメージが増加します。"
 }

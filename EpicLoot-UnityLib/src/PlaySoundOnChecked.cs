@@ -9,6 +9,9 @@ namespace EpicLoot_UnityLib
         public AudioSource Audio;
         public AudioClip SFX;
 
+        public delegate float AudioVolumeLevelDelegate();
+        public static AudioVolumeLevelDelegate AudioVolumeLevel;
+
         private Toggle _toggle;
 
         public void Awake()
@@ -25,7 +28,10 @@ namespace EpicLoot_UnityLib
         private void OnToggleChanged(bool _)
         {
             if (Audio != null && SFX != null && _toggle.isOn)
-                Audio.PlayOneShot(SFX);
+            {
+                Audio.volume = AudioVolumeLevel();
+                Audio.PlayOneShot(SFX, Audio.volume);
+            }
         }
     }
 }

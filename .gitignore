@@ -9,10 +9,11 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
-*/bin/
-*/obj/
+/bin/
+/**/bin/
+/obj/
+/**/obj/
 /packages/
-
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
@@ -77,11 +78,6 @@ crashlytics-build.properties
 /valheim_Data/BepInEx-out/plugins/EpicLoot/enchantcosts.json
 /valheim_Data/BepInEx-out/plugins/EpicLoot/adventuredata.json
 /valheim_Data/BepInEx-out/plugins/EpicLoot/abilities.json
-ValheimUnity/Assets/ExternalLibraries/EpicLoot-UnityLib.dll
-
-# API
-EpicLootAPI/EpicLootAPI/obj/Debug
-EpicLootAPI/EpicLootAPI/obj/Release
 
 # Unity
 ValheimUnity/Assets/ExternalLibraries/*
@@ -89,9 +85,10 @@ ValheimUnity/AssetBundles/*.manifest
 ValheimUnity/Assets/ExternalLibraries/*.dll
 ValheimUnity/Assets/ExternalLibraries/valheim/*.dll
 ValheimUnity/UserSettings
+ValheimUnity/Assets/ExternalLibraries/EpicLoot-UnityLib.dll
+ValheimUnity/Packages/packages-lock.json
 
 # Manual adds
 Common
 ValheimMods.sln
-EpicLootAPI/EpicLootAPI/bin/
 *.env

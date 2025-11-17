@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace EpicLoot
 {
     public class WeightedRandomCollection<T>
@@ -40,8 +39,7 @@ namespace EpicLoot
             float currentWeightIndex = 0;
 
             T result = default(T);
-            foreach (var item in from weightedItem in _list select new { Value = weightedItem, Weight = _weightSelector(weightedItem) })
-            {
+            foreach (var item in from weightedItem in _list select new { Value = weightedItem, Weight = _weightSelector(weightedItem) }) {
                 currentWeightIndex += item.Weight;
                 
                 if (currentWeightIndex >= itemWeightIndex)

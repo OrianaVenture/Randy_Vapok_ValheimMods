@@ -1,3 +1,75 @@
+## Version 0.12.0
+
+* NEW Unidentified items:
+    * Unidentified items are a new item type that can be dropped as normal loot.
+    * Unidentified items must be identified at the Enchanting Table before they can be used.
+    * Unidentified items can be sacrificed for their tier materials.
+    * New configuration "Balance - Items Unidentified Drop Ratio".
+* NEW Runestone Extraction and Etching features to the Enchanting Table:
+    * Extraction allows you to store a singular enchantment from an item into the Runestone.
+    * Runestone Etching allows you to apply the enchantment from the Runestone onto an item, overwriting an existing enchantment.
+    * New configuration "Balance - Rune Extract Destroys Item"
+* Added ability to edit the core configuration files without patch files.
+  * Files are generated under BepInEx\config\EpicLoot\baseconfig with the current default configurations from the release.
+  * **Note: You will have to delete these configurations to get any new updated values in future mod updates!!!!**
+      * **New configuration "Debug - Always Refresh Core Configs" when set to true will allow overriding these files. Server owners you will probably want this on if you only use patches!**
+* Added the overhaul configuration system which provides access to directly editable configuration. Three configuration defaults are available as base templates:
+    * `Balanced` - The new default for Epic Loot. Enchantments are powerful, but not overpowered.
+    * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
+    * `Vanilla` - A configuration that is closer to the vanilla experience. Enchantments give you an edge, but are not as powerful.
+    * This is set under the Balance - Balance Template in the configuration file.
+* NEW enchantments added:
+    * `DartingThoughts` - Converts a portion of max eitr into eitr regen (sal)
+    * `AddCrafterskills` - Increases crafting and cooking skills (midnight)
+    * `Headhunter` - Increases chance to drop trophies from creatures (midnight)
+    * `ModifyBlockForce` - Increases knockback on shields (warp)
+    * `ModifyNoise` - Reduces character noise (makes you more stealthy) (warp)
+    * `ModifyBuildDistance` - Increases the range you can build at (warp)
+    * `ModifyPickupRange` - Increases the range you can autopickup items (warp)
+    * `ModifyFireRate` - Increases fire rate of ranged weapons (warp)
+    * `ModifyProjectileSpeed` - Increases the speed of fired projectiles (warp)
+    * `AdrenalineRush` - Dodging an attack provides a short burst of increased damage (Leslie)
+    * `Apportation` - Teleports you to your thrown weapons location (Leslie)
+    * `Chain Lightning` - Chance to cause chain lighting on hit (Leslie)
+    * `OffsetAttack` - Third attack in a combo provides stagger immunity and a damage reduction for you, when timed (Leslie)
+    * `Automead` - Automatically consumes mead when health critical (warp)
+    * `InstantMead` - Meads consume instantly when health critical (warp)
+    * `MeadCooldown` - Reduces mead cooldown (warp)
+* NEW automatic drop system assignment for weapons, armor and other items. This removes the requirement to add patches for other modded items for them to appear in drop tables.
+  * New configurations under General:
+    * "Auto Add Equipment"
+    * "Auto Remove Equipment Not Found"
+    * "Only Add Equipment With Recipes"
+    * "Auto Add Remove Equipment From Vendor"
+    * "Auto Add Remove Equipment From Lootlists"
+* NEW search functionality for Epicloot Compendium pages (Thanks Rusty!)
+* NEW EpicLoot API is now available! (Thanks Rusty!)
+    * Easily retrieve enchantments that are active on the player
+    * Magic Effects can be added by API
+    * Abilities can be added by API
+    * Sets can be added by API
+    * Material conversions
+    * Recipes
+    * Sacrifices
+    * Treasure Maps
+    * Bounties
+    * Secret stash items
+* Enchanting Table fixes:
+    * Augment UI now has a scroll bar and can display all item enchantments.
+    * Augmenting can no longer roll duplicates in one reroll.
+    * Sacrifice items now allows multiple items to be selected at once.
+* Magic Effect tweaks:
+    * Riches drops can now be configured and only drops one item from this new loot table at a time.
+    * Double and Triple Shot can now be configured and have been rebalanced.
+    * Elemental and Physical Resistances now have a configurable capped amount.
+    * Eitr Weave buffed significantly.
+* New configuration AudioVolumeAdjustment to control audio volume of this mod.
+* Scrolling UI sensitivity tweaks.
+* Improved randomization of item drops by type and tier.
+* Added extended magic effect descriptions to compendium.
+* Reduced Augment Upgrade costs of Thunderstone and YmirRemains from 10 to 5. We felt it was still too high.
+* Other bugs fixes we forgot to write down (sorry! enjoy!)
+
 ## Version 0.11.7
 
 * Updates for the Russian translation file.

@@ -26,18 +26,12 @@ namespace EpicLoot_UnityLib
         {
             base.Awake();
             _featureButtons.Clear();
-            
-            for (var i = 0; i < ListContainer.childCount; ++ i)
+
+            foreach(MultiSelectItemListElement child in ListContainer.GetComponentsInChildren<MultiSelectItemListElement>(true))
             {
-                var child = ListContainer.GetChild(i);
-                var button = child.GetComponentInChildren<MultiSelectItemListElement>();
-                if (button != null)
-                {
-                    _featureButtons.Add(button);
-                    button.OnSelectionChanged += OnButtonSelected;
-                    if (i == 0)
-                        button.SelectMaxQuantity(true);
-                }
+                _featureButtons.Add(child);
+                child.OnSelectionChanged += OnButtonSelected;
+                child.SelectMaxQuantity(true);
             }
         }
 
@@ -55,17 +49,18 @@ namespace EpicLoot_UnityLib
         private void OnButtonSelected(MultiSelectItemListElement selectedButton, bool selected, int _)
         {
             if (_inProgress)
+            {
                 return;
+            }
 
-            var noneSelected = !_featureButtons.Any(x => x.IsSelected());
-
+            bool noneSelected = !_featureButtons.Any(x => x.IsSelected());
             _selectedFeature = -1;
 
             if (!noneSelected)
             {
-                for (var index = 0; index < _featureButtons.Count; index++)
+                for (int index = 0; index < _featureButtons.Count; index++)
                 {
-                    var button = _featureButtons[index];
+                    MultiSelectItemListElement button = _featureButtons[index];
                     if (button == selectedButton)
                     {
                         _selectedFeature = index;
@@ -89,23 +84,23 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            for (var index = 0; index < _featureButtons.Count; index++)
+            for (int index = 0; index < _featureButtons.Count; index++)
             {
-                var button = _featureButtons[index];
-                var featureIsEnabled = EnchantingTableUI.instance.SourceTable.IsFeatureAvailable((EnchantingFeature)index);
+                MultiSelectItemListElement button = _featureButtons[index];
+                bool featureIsEnabled = EnchantingTableUI.instance.SourceTable.IsFeatureAvailable((EnchantingFeature)index);
                 button.gameObject.SetActive(featureIsEnabled);
             }
 
             if (_selectedFeature >= 0)
             {
-                var selectedButton = _featureButtons[_selectedFeature];
+                MultiSelectItemListElement selectedButton = _featureButtons[_selectedFeature];
 
                 SelectedFeatureText.enabled = true;
                 SelectedFeatureText.text = selectedButton.ItemName.text;
                 SelectedFeatureImage.enabled = true;
                 SelectedFeatureImage.sprite = selectedButton.ItemIcon.sprite;
 
-                var selectedFeature = (EnchantingFeature)_selectedFeature;
+                EnchantingFeature selectedFeature = (EnchantingFeature)_selectedFeature;
                 SelectedFeatureStatus.gameObject.SetActive(true);
                 SelectedFeatureStatus.SetFeature(selectedFeature);
             }
@@ -126,10 +121,11 @@ namespace EpicLoot_UnityLib
                 return;
             }
 
-            var feature = (EnchantingFeature)_selectedFeature;
+            EnchantingFeature feature = (EnchantingFeature)_selectedFeature;
             CostLabel.enabled = true;
-            var maxLevel = EnchantingTableUI.instance.SourceTable.IsFeatureMaxLevel(feature);
-            var canAfford = true;
+            bool maxLevel = EnchantingTableUI.instance.SourceTable.IsFeatureMaxLevel(feature);
+            bool canAfford = true;
+
             if (maxLevel)
             {
                 CostLabel.text = Localization.instance.Localize("$mod_epicloot_featuremaxlevel");
@@ -139,11 +135,11 @@ namespace EpicLoot_UnityLib
             {
                 if (EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature))
                 {
-                    var cost = EnchantingTableUI.instance.SourceTable.GetFeatureUnlockCost(feature);
+                    List<InventoryItemListElement> cost = EnchantingTableUI.instance.SourceTable.GetFeatureUnlockCost(feature);
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_unlockcost");
                     CostList.SetItems(cost.Cast<IListElement>().ToList());
                     canAfford = LocalPlayerCanAffordCost(cost);
-                    var buttonText = Localization.instance.Localize("$mod_epicloot_featureunlock");
+                    string buttonText = Localization.instance.Localize("$mod_epicloot_featureunlock");
                     if (_useTMP)
                         _tmpButtonLabel.text = buttonText;
                     else
@@ -151,11 +147,11 @@ namespace EpicLoot_UnityLib
                 }
                 else
                 {
-                    var cost = EnchantingTableUI.instance.SourceTable.GetFeatureUpgradeCost(feature);
+                    List<InventoryItemListElement> cost = EnchantingTableUI.instance.SourceTable.GetFeatureUpgradeCost(feature);
                     CostLabel.text = Localization.instance.Localize("$mod_epicloot_upgradecost");
                     CostList.SetItems(cost.Cast<IListElement>().ToList());
                     canAfford = LocalPlayerCanAffordCost(cost);
-                    var buttonText = Localization.instance.Localize("$mod_epicloot_upgrade");
+                    string buttonText = Localization.instance.Localize("$mod_epicloot_upgrade");
                     if (_useTMP)
                         _tmpButtonLabel.text = buttonText;
                     else
@@ -170,31 +166,44 @@ namespace EpicLoot_UnityLib
         private string GenerateFeatureInfoText()
         {
             if (_selectedFeature < 0)
+            {
                 return Localization.instance.Localize("$mod_epicloot_featureinfo_none");
+            }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            var feature = (EnchantingFeature)_selectedFeature;
-            var locked = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature);
-            var currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(feature);
-            var maxLevel = EnchantingTableUpgrades.GetFeatureMaxLevel(feature);
+            EnchantingFeature feature = (EnchantingFeature)_selectedFeature;
+            bool locked = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature);
+            int currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(feature);
+            int maxLevel = EnchantingTableUpgrades.GetFeatureMaxLevel(feature);
             sb.AppendLine(Localization.instance.Localize($"<size=26>{EnchantingTableUpgrades.GetFeatureName(feature)}</size>"));
             sb.AppendLine();
+
             if (locked)
-                sb.AppendLine(Localization.instance.Localize("$mod_epicloot_currentlevel: <color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+            {
+                sb.AppendLine(Localization.instance.Localize(
+                    "$mod_epicloot_currentlevel: <color=#AD1616><b>$mod_epicloot_featurelocked</b></color>"));
+            }
             else if (currentLevel == 0)
-                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+            {
+                sb.AppendLine(Localization.instance.Localize(
+                    $"$mod_epicloot_currentlevel: <color=#1AACEF><b>$mod_epicloot_featureunlocked</b></color> / {maxLevel}"));
+            }
             else
-                sb.AppendLine(Localization.instance.Localize($"$mod_epicloot_currentlevel: <color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+            {
+                sb.AppendLine(Localization.instance.Localize(
+                    $"$mod_epicloot_currentlevel: <color=#EAA800><b>{currentLevel}</b></color> / {maxLevel}"));
+            }
+
             sb.AppendLine();
 
             sb.AppendLine(Localization.instance.Localize(EnchantingTableUpgrades.GetFeatureDescription(feature)));
             sb.AppendLine();
             sb.AppendLine(Localization.instance.Localize("$mod_epicloot_effectsperlevel"));
 
-            for (var i = 1; i <= maxLevel; ++i)
+            for (int i = 1; i <= maxLevel; ++i)
             {
-                var text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(EnchantingTableUI.instance.SourceTable, feature, i);
+                string text = EnchantingTableUpgrades.GetFeatureUpgradeLevelDescription(EnchantingTableUI.instance.SourceTable, feature, i);
                 sb.AppendLine($"<color=#808080ff>{i}:</color> " + (i == currentLevel ? $"<color=#EAA800>{text}</color>" : text));
             }
 
@@ -205,21 +214,25 @@ namespace EpicLoot_UnityLib
         {
             Cancel();
             if (_selectedFeature < 0)
+            {
                 return;
+            }
 
-            var feature = (EnchantingFeature)_selectedFeature;
-            var maxLevel = EnchantingTableUI.instance.SourceTable.IsFeatureMaxLevel(feature);
+            EnchantingFeature feature = (EnchantingFeature)_selectedFeature;
+            bool maxLevel = EnchantingTableUI.instance.SourceTable.IsFeatureMaxLevel(feature);
             if (maxLevel)
+            {
                 return;
+            }
 
-            var cost = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature)
+            List<InventoryItemListElement> cost = EnchantingTableUI.instance.SourceTable.IsFeatureLocked(feature)
                 ? EnchantingTableUI.instance.SourceTable.GetFeatureUnlockCost(feature)
                 : EnchantingTableUI.instance.SourceTable.GetFeatureUpgradeCost(feature);
 
-            var canAfford = LocalPlayerCanAffordCost(cost);
+            bool canAfford = LocalPlayerCanAffordCost(cost);
             if (canAfford)
             {
-                var currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(feature);
+                int currentLevel = EnchantingTableUI.instance.SourceTable.GetFeatureLevel(feature);
                 EnchantingTableUI.instance.SourceTable.RequestTableUpgrade(feature, currentLevel +1, (success)=>
                 {
                     if (!success)
@@ -229,7 +242,7 @@ namespace EpicLoot_UnityLib
                         return;
                     }
 
-                    var player = Player.m_localPlayer;
+                    Player player = Player.m_localPlayer;
                     if (!player.NoCostCheat())
                     {
                         if (!LocalPlayerCanAffordCost(cost))
@@ -239,7 +252,7 @@ namespace EpicLoot_UnityLib
                             return;
                         }
 
-                        foreach (var costElement in cost)
+                        foreach (InventoryItemListElement costElement in cost)
                         {
                             InventoryManagement.Instance.RemoveItem(costElement.GetItem());
                         }
@@ -253,7 +266,7 @@ namespace EpicLoot_UnityLib
         public override void Lock()
         {
             base.Lock();
-            foreach (var button in _featureButtons)
+            foreach (MultiSelectItemListElement button in _featureButtons)
             {
                 button.Lock();
             }
@@ -262,7 +275,7 @@ namespace EpicLoot_UnityLib
         public override void Unlock()
         {
             base.Unlock();
-            foreach (var button in _featureButtons)
+            foreach (MultiSelectItemListElement button in _featureButtons)
             {
                 button.Unlock();
             }

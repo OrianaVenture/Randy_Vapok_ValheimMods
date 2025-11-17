@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Яростта на Рагнар",
   "mod_epicloot_legendarysetlabel": "Легендарен комплектен предмет",
   "mod_epicloot_mythicsetlabel": " Митичен комплект предмет",
+  "mod_epicloot_Magic": "Магия",
+  "mod_epicloot_Rare": "Рядък",
+  "mod_epicloot_Epic": "Епичен",
+  "mod_epicloot_Legendary": "Легендарен",
+  "mod_epicloot_Mythic": "Митичен",
   "mod_epicloot_magic": "Магия",
   "mod_epicloot_rare": "Рядък",
   "mod_epicloot_epic": "Епичен",
   "mod_epicloot_legendary": "Легендарен",
-  "mod_epicloot_mythic": "Митичен"
+  "mod_epicloot_mythic": "Митичен",
+  "mod_epicloot_me_adrenaline_rush": "Адреналинов удар",
+  "mod_epicloot_me_adrenaline_rush_desc": "Увеличено увреждане за продължителността на ефекта."
 }

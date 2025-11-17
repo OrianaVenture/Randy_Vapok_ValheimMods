@@ -1,4 +1,5 @@
-﻿using EpicLoot.LootBeams;
+﻿using EpicLoot.Data;
+using EpicLoot.LootBeams;
 using HarmonyLib;
 using UnityEngine;
 
@@ -11,8 +12,11 @@ namespace EpicLoot.Crafting
         {
             bool isMagic = __instance.m_itemData.IsMagicCraftingMaterial();
             bool isRunestone = __instance.m_itemData.IsRunestone();
-            if (isMagic || isRunestone)
+            bool isUnidentified = __instance.m_itemData.IsUnidentified();
+            if (isMagic || isRunestone || isUnidentified)
             {
+
+
                 var particleContainer = __instance.transform.Find("Particles");
                 if (particleContainer != null)
                 {
@@ -24,11 +28,22 @@ namespace EpicLoot.Crafting
                 var magicColor = EpicLoot.GetRarityColor(rarity);
                 var variant = isRunestone ? 0 : EpicLoot.GetRarityIconIndex(rarity);
 
+                // Ensure unidenfitied items are loaded back up if they somehow become non-magical
+                MagicItemComponent mi = __instance.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                if (isUnidentified && mi.MagicItem == null) {
+                    mi.SetMagicItem(new MagicItem
+                    {
+                        Rarity = rarity,
+                        IsUnidentified = true,
+                    });
+                    mi.Save();
+                }
+
                 if (ColorUtility.TryParseHtmlString(magicColor, out var rgbaColor))
                 {
                     __instance.gameObject.AddComponent<BeamColorSetter>().SetColor(rgbaColor);
                 }
-
+                if (isUnidentified) { variant = 0; }
                 __instance.m_itemData.m_variant = variant;
             }
         }

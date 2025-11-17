@@ -47,6 +47,7 @@ namespace EpicLoot.GatedItemType
         public static Dictionary<string, Fallback> FallbackByType = new Dictionary<string, Fallback>();
 
         public static List<string> BossKeysInOrder = new List<string>();
+        public static Dictionary<Heightmap.Biome, string> BiomesToBossKeys = new Dictionary<Heightmap.Biome, string>();
 
         private const string NO_BOSS = "none";
 
@@ -57,6 +58,7 @@ namespace EpicLoot.GatedItemType
             AllItemsWithDetails.Clear();
             FallbackByType.Clear();
             BossKeysInOrder.Clear();
+            BiomesToBossKeys.Clear();
 
             // Add to required lists
             foreach (ItemTypeInfo info in config.ItemInfo)
@@ -70,7 +72,7 @@ namespace EpicLoot.GatedItemType
                     });
                 }
 
-                Dictionary<string, List<string>> itemsByBoss = [];
+                Dictionary<string, List<string>> itemsByBoss = new() { };
                 foreach (var itemByBoss in info.ItemsByBoss)
                 {
                     if (itemsByBoss.ContainsKey(itemByBoss.Key))
@@ -87,10 +89,9 @@ namespace EpicLoot.GatedItemType
                     {
                         if (AllItemsWithDetails.ContainsKey(item))
                         {
-                            EpicLoot.Log($"{item} already registered, merging boss keys.");
                             List<string> reqBosses = AllItemsWithDetails[item].RequiredBosses;
-                            if (!reqBosses.Contains(itemByBoss.Key))
-                            {
+                            if (!reqBosses.Contains(itemByBoss.Key)) {
+                                EpicLoot.Log($"{item} already registered, merging boss keys.");
                                 reqBosses.Add(itemByBoss.Key);
                             }
 
@@ -110,21 +111,22 @@ namespace EpicLoot.GatedItemType
                 {
                     ItemsByTypeAndBoss.Add(info.Type, itemsByBoss);
                 }
-
-                if (info.Items.Count > 0)
-                {
-                    EpicLoot.LogWarningForce("The use of ItemInfo.Items field is obsolete. Please add these items to the ItemsByBoss entry. " +
-                        "To set an item as ungated add them to the \"none\" list.");
-                }
             }
 
             // Items can be ungated, add a dummy entry to account for this
             BossKeysInOrder.Add(NO_BOSS);
+            BiomesToBossKeys.Add(Heightmap.Biome.None, NO_BOSS);
 
-            foreach (var boss in AdventureDataManager.Config.Bounties.Bosses)
-            {
+            foreach (var boss in AdventureDataManager.Config.Bounties.Bosses) {
+                BiomesToBossKeys.Add(boss.Biome, boss.BossDefeatedKey);
                 BossKeysInOrder.Add(boss.BossDefeatedKey);
             }
+            EpicLoot.Log($"Updated Itemconfig total item entries: {AllItemsWithDetails.Keys.Count}");
+        }
+
+        public static ItemInfoConfig GetCFG()
+        {
+            return GatedConfig;
         }
 
         /// <summary>
@@ -176,13 +178,11 @@ namespace EpicLoot.GatedItemType
             bool allowFallback = true,
             bool allowDuplicate = false)
         {
-            if (ItemsByTypeAndBoss[itemType].ContainsKey(boss))
-            {
+            if (ItemsByTypeAndBoss[itemType].ContainsKey(boss)) {
                 List<string> items = ItemsByTypeAndBoss[itemType][boss];
-                items.shuffleList();
                 bool gated = true;
 
-                foreach (string item in items)
+                foreach (string item in items.shuffleList())
                 {
                     gated = CheckIfItemNeedsGate(mode, item);
                     if (gated)
@@ -227,6 +227,31 @@ namespace EpicLoot.GatedItemType
 
             List<string> bossList = null;
 
+            // Check if this is a loot table category
+            
+            if (LootRoller.LootSetContainsEntry(itemOrType)) {
+                List<LootTable> ltcategory = LootRoller.GetFullyResolvedLootTable(itemOrType);
+                List<string> potentialItems = new List<string>();
+                foreach (LootTable lt in ltcategory) {
+                    potentialItems.AddRange(lt.Loot.Select(x => x.Item).ToList());
+                }
+                if (potentialItems.Count == 0) { return null; }
+                
+                string item = potentialItems[UnityEngine.Random.Range(0, potentialItems.Count - 1)];
+                
+                if (!CheckIfItemNeedsGate(gatedMode, item, out GatedItemDetails itemDetails)) {
+                    // This item doesn't need gating, return it, otherwise we setup the category for a fallback
+                    return item;
+                }
+                if (itemDetails == null) {
+                    return null;
+                }
+
+                type = itemDetails.Type;
+                bossList = itemDetails.RequiredBosses;
+            }
+
+            // Check if this is a category of ItemType
             if (!ItemsByTypeAndBoss.ContainsKey(itemOrType))
             {
                 // Passed string is an item
@@ -248,6 +273,7 @@ namespace EpicLoot.GatedItemType
                 type = itemDetails.Type;
                 bossList = itemDetails.RequiredBosses;
             }
+
 
             validBosses = DetermineValidBosses(gatedMode, false, bossList);
 
@@ -422,6 +448,35 @@ namespace EpicLoot.GatedItemType
             }
 
             return bossKey;
+        }
+
+        public static Heightmap.Biome GetCurrentOrLowerBiomeByDefeatedBossSettings(Heightmap.Biome biome, GatedItemTypeMode mode) {
+            // If gating is disabled, return the biome as-is
+            if (mode == GatedItemTypeMode.Unlimited ) { return biome; }
+            if (mode == GatedItemTypeMode.PlayerMustKnowRecipe ) { return biome; } // no way to know for this
+            Heightmap.Biome resultBiome = biome;
+            if (mode == GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems) {
+                if (ZoneSystem.instance.GetGlobalKey(BiomesToBossKeys[biome])) {  return biome; }
+
+                int selectedBiome = BossKeysInOrder.IndexOf(BiomesToBossKeys[biome]);
+                return GetFirstDefeatedBiome(selectedBiome);
+            }
+            if (mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems) {
+                // If the player has not defeated the boss for the next biome, return the previous biome
+                int selectedBiome = BossKeysInOrder.IndexOf(BiomesToBossKeys[biome]) + 1;
+                return GetFirstDefeatedBiome(selectedBiome);
+            }
+            return resultBiome;
+        }
+
+        private static Heightmap.Biome GetFirstDefeatedBiome(int biomeBossKeyIndex) {
+            for (int i = biomeBossKeyIndex - 1; i >= 0; i--) {
+                string bossKey = BossKeysInOrder[i];
+                if (ZoneSystem.instance.GetGlobalKey(bossKey)) {
+                    return BiomesToBossKeys.FirstOrDefault(x => x.Value == bossKey).Key;
+                }
+            }
+            return Heightmap.Biome.None;
         }
 
         private static string GetItemName(string item)

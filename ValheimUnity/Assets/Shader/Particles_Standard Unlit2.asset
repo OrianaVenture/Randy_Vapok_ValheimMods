@@ -16,10 +16,10 @@ Shader:
         m_Attributes: []
         m_Type: 4
         m_Flags: 0
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: white
           m_TexDim: 2
@@ -28,10 +28,10 @@ Shader:
         m_Attributes: []
         m_Type: 0
         m_Flags: 0
-        m_DefValue[0]: 1
-        m_DefValue[1]: 1
-        m_DefValue[2]: 1
-        m_DefValue[3]: 1
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 1
+        'm_DefValue[2]': 1
+        'm_DefValue[3]': 1
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -40,10 +40,10 @@ Shader:
         m_Attributes: []
         m_Type: 3
         m_Flags: 0
-        m_DefValue[0]: 0.5
-        m_DefValue[1]: 0
-        m_DefValue[2]: 1
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0.5
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 1
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -52,10 +52,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -64,10 +64,10 @@ Shader:
         m_Attributes: []
         m_Type: 4
         m_Flags: 0
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: bump
           m_TexDim: 2
@@ -76,10 +76,10 @@ Shader:
         m_Attributes: []
         m_Type: 0
         m_Flags: 0
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 1
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 1
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -88,10 +88,10 @@ Shader:
         m_Attributes: []
         m_Type: 4
         m_Flags: 0
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: white
           m_TexDim: 2
@@ -100,10 +100,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -112,10 +112,10 @@ Shader:
         m_Attributes: []
         m_Type: 3
         m_Flags: 0
-        m_DefValue[0]: 0.5
-        m_DefValue[1]: 0
-        m_DefValue[2]: 1
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0.5
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 1
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -124,10 +124,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -136,10 +136,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -148,10 +148,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -160,10 +160,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 0
-        m_DefValue[0]: 2
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 2
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -172,10 +172,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -184,10 +184,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -196,10 +196,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -208,10 +208,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -220,10 +220,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -232,10 +232,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -244,10 +244,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -256,10 +256,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -268,10 +268,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -280,10 +280,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 1
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 1
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -292,10 +292,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 2
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 2
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -304,10 +304,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -316,10 +316,10 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -328,10 +328,10 @@ Shader:
         m_Attributes: []
         m_Type: 1
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -340,10 +340,10 @@ Shader:
         m_Attributes: []
         m_Type: 1
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -352,10 +352,10 @@ Shader:
         m_Attributes: []
         m_Type: 1
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
@@ -364,18 +364,16 @@ Shader:
         m_Attributes: []
         m_Type: 2
         m_Flags: 1
-        m_DefValue[0]: 0
-        m_DefValue[1]: 0
-        m_DefValue[2]: 0
-        m_DefValue[3]: 0
+        'm_DefValue[0]': 0
+        'm_DefValue[1]': 0
+        'm_DefValue[2]': 0
+        'm_DefValue[3]': 0
         m_DefTexture:
           m_DefaultName: 
           m_TexDim: 1
     m_SubShaders:
     - m_Passes:
       - serializedVersion: 2
-        m_EditorDataHash: []
-        m_Platforms: 
         m_NameIndices: {}
         m_Type: 2
         m_State:
@@ -757,12 +755,6 @@ Shader:
           m_StatusMessage: 
           m_CombinedStatus: 0
       - serializedVersion: 2
-        m_EditorDataHash:
-        - serializedVersion: 2
-          Hash: 17ddb4db78528031161740df1930e98f
-        - serializedVersion: 2
-          Hash: fc56e6a33168b582be8fb8f1b336cd40
-        m_Platforms: 0412
         m_NameIndices: {}
         m_Type: 0
         m_State:
@@ -3201,12 +3193,6 @@ Shader:
           m_StatusMessage: 
           m_CombinedStatus: 0
       - serializedVersion: 2
-        m_EditorDataHash:
-        - serializedVersion: 2
-          Hash: 01e915d6c20a4f22710ab0f5329bb9c0
-        - serializedVersion: 2
-          Hash: 251f624646c24037d6124c1dfeb93f98
-        m_Platforms: 0412
         m_NameIndices:
           $Globals: 1
           _MainTex: 0
@@ -11188,7 +11174,7 @@ Shader:
         m_TypesMask: 3
         m_IncludesHash:
           serializedVersion: 2
-          Hash: 920497038f5dd2da5588e28dc8a9447f
+          Hash: 9c43f30e5d8d419fb2bea4c5961c51c6
         m_CodeHash:
           serializedVersion: 2
           Hash: 10c6726568e882119261a70151173723
@@ -11247,6 +11233,8 @@ Shader:
           requirements: 4075
         - keywordName: UNITY_DEVICE_SUPPORTS_NATIVE_16BIT
           requirements: 536870912
+        - keywordName: UNITY_DEVICE_SUPPORTS_INLINE_RAY_TRACING
+          requirements: 34359738368
         m_NonStrippedUserKeywords: FOG_LINEAR FOG_EXP FOG_EXP2
         m_BuiltinKeywords: 
       107529:
@@ -11272,7 +11260,7 @@ Shader:
         m_TypesMask: 3
         m_IncludesHash:
           serializedVersion: 2
-          Hash: 920497038f5dd2da5588e28dc8a9447f
+          Hash: 9c43f30e5d8d419fb2bea4c5961c51c6
         m_CodeHash:
           serializedVersion: 2
           Hash: e1ca7d4a5d4ee08f9bdc1e61d44b7e44
@@ -11331,6 +11319,8 @@ Shader:
           requirements: 4075
         - keywordName: UNITY_DEVICE_SUPPORTS_NATIVE_16BIT
           requirements: 536870912
+        - keywordName: UNITY_DEVICE_SUPPORTS_INLINE_RAY_TRACING
+          requirements: 34359738368
         m_NonStrippedUserKeywords: INSTANCING_ON
         m_BuiltinKeywords: SHADOWS_DEPTH SHADOWS_CUBE
       176849:
@@ -11462,3 +11452,4 @@ Shader:
     m_HasSurfaceShaders: 0
     m_HasFixedFunctionShaders: 0
   m_CompileSmokeTestAfterImport: 0
+  m_AssetGUID: 00000000000000000000000000000000

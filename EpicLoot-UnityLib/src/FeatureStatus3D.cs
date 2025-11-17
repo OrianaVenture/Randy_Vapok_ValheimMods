@@ -22,21 +22,28 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
-            var featureIsUnlocked = SourceTable.IsFeatureAvailable(Feature) && SourceTable.IsFeatureUnlocked(Feature);
+            bool featureIsUnlocked = SourceTable.IsFeatureAvailable(Feature) && SourceTable.IsFeatureUnlocked(Feature);
             if (UnlockedObject != null)
-                UnlockedObject.SetActive(featureIsUnlocked);
-
-            var currentLevel = SourceTable.GetFeatureLevel(Feature);
-            for (var index = 0; index < LevelObjects.Length; index++)
             {
-                var levelObject = LevelObjects[index];
+                UnlockedObject.SetActive(featureIsUnlocked);
+            }
+
+            int currentLevel = SourceTable.GetFeatureLevel(Feature);
+            for (int index = 0; index < LevelObjects.Length; index++)
+            {
+                GameObject levelObject = LevelObjects[index];
                 if (levelObject == null)
+                {
                     continue;
+                }
+
                 levelObject.SetActive(featureIsUnlocked && currentLevel == index);
             }
 
             if (featureIsUnlocked && currentLevel >= LevelObjects.Length && LevelObjects[LevelObjects.Length - 1] != null)
+            {
                 LevelObjects[LevelObjects.Length - 1].SetActive(true);
+            }
         }
     }
 }

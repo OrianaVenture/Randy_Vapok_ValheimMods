@@ -24,11 +24,13 @@ namespace EpicLoot_UnityLib
 
         public void Refresh()
         {
-            var unlockedCount = 0;
+            int unlockedCount = 0;
             foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
             {
                 if (SourceTable.IsFeatureAvailable(feature) && SourceTable.IsFeatureUnlocked(feature))
+                {
                     ++unlockedCount;
+                }
             }
 
             BaseObjects.SetActive(true);

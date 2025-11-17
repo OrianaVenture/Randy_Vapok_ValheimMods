@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnar's Woede",
   "mod_epicloot_legendarysetlabel": "Legendarisch set-item",
   "mod_epicloot_mythicsetlabel": "Mythisch set item",
+  "mod_epicloot_Magic": "Magie",
+  "mod_epicloot_Rare": "Zeldzaam",
+  "mod_epicloot_Epic": "Epos",
+  "mod_epicloot_Legendary": "Legendarisch",
+  "mod_epicloot_Mythic": " Mythisch",
   "mod_epicloot_magic": "Magie",
   "mod_epicloot_rare": "Zeldzaam",
   "mod_epicloot_epic": "Epos",
   "mod_epicloot_legendary": "Legendarisch",
-  "mod_epicloot_mythic": " Mythisch"
+  "mod_epicloot_mythic": " Mythisch",
+  "mod_epicloot_me_adrenaline_rush": "Adrenaline stoot",
+  "mod_epicloot_me_adrenaline_rush_desc": "Verhoogde schade gedurende de duur van het effect."
 }

@@ -1432,5 +1432,12 @@
   "mod_epicloot_rare": "罕見",
   "mod_epicloot_epic": "史诗般的",
   "mod_epicloot_legendary": "傳奇",
-  "mod_epicloot_mythic": "神話般的"
+  "mod_epicloot_mythic": "神話般的",
+  "mod_epicloot_Magic": "魔法",
+  "mod_epicloot_Rare": "罕見",
+  "mod_epicloot_Epic": "史诗般的",
+  "mod_epicloot_Legendary": "傳奇",
+  "mod_epicloot_Mythic": "神話般的",
+  "mod_epicloot_me_adrenaline_rush": "肾上腺素飙升",
+  "mod_epicloot_me_adrenaline_rush_desc": "增加傷害在效果時間內。"
 }

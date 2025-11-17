@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "โกรธของแรกนาร์",
   "mod_epicloot_legendarysetlabel": "ไอเท็มเซ็ตตำนาน",
   "mod_epicloot_mythicsetlabel": " ไอเท็มเซตสมบัติ",
+  "mod_epicloot_Magic": "เวทมนต์",
+  "mod_epicloot_Rare": "หายาก",
+  "mod_epicloot_Epic": "มหัศจร",
+  "mod_epicloot_Legendary": "ตำนาน",
+  "mod_epicloot_Mythic": "ส่วนที่เป็นตำนาน",
   "mod_epicloot_magic": "เวทมนต์",
   "mod_epicloot_rare": "หายาก",
   "mod_epicloot_epic": "มหัศจร",
   "mod_epicloot_legendary": "ตำนาน",
-  "mod_epicloot_mythic": "ส่วนที่เป็นตำนาน"
+  "mod_epicloot_mythic": "ส่วนที่เป็นตำนาน",
+  "mod_epicloot_me_adrenaline_rush": "กระตุ้นอารมณ์",
+  "mod_epicloot_me_adrenaline_rush_desc": "เพิ่มความเสียหายตลอดระยะเวลาของผลขึ้น"
 }

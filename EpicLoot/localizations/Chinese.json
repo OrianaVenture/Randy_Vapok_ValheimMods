@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "雷格纳的愤怒",
   "mod_epicloot_legendarysetlabel": "传奇套装物品传奇套装物品",
   "mod_epicloot_mythicsetlabel": "神话级套装物品神话级套装物品",
+  "mod_epicloot_Magic": "魔法",
+  "mod_epicloot_Rare": "罕见",
+  "mod_epicloot_Epic": "史诗级",
+  "mod_epicloot_Legendary": "传奇",
+  "mod_epicloot_Mythic": "神话般的",
   "mod_epicloot_magic": "魔法",
   "mod_epicloot_rare": "罕见",
   "mod_epicloot_epic": "史诗级",
   "mod_epicloot_legendary": "传奇",
-  "mod_epicloot_mythic": "神话般的"
+  "mod_epicloot_mythic": "神话般的",
+  "mod_epicloot_me_adrenaline_rush": "肾上腺素飙升",
+  "mod_epicloot_me_adrenaline_rush_desc": "增加伤害持续时间。"
 }

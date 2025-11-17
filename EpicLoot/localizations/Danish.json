@@ -1428,9 +1428,16 @@
   "mod_epicloot_set_ragnar": "Ragnars vrede",
   "mod_epicloot_legendarysetlabel": "Legendarisk Sæt Genstand",
   "mod_epicloot_mythicsetlabel": "Mytisk Sætgenstand",
+  "mod_epicloot_Magic": "Magi",
+  "mod_epicloot_Rare": "Sjælden",
+  "mod_epicloot_Epic": "Episk",
+  "mod_epicloot_Legendary": "Legendarisk",
+  "mod_epicloot_Mythic": "Mytisk",
   "mod_epicloot_magic": "Magi",
   "mod_epicloot_rare": "Sjælden",
   "mod_epicloot_epic": "Episk",
   "mod_epicloot_legendary": "Legendarisk",
-  "mod_epicloot_mythic": "Mytisk"
+  "mod_epicloot_mythic": "Mytisk",
+  "mod_epicloot_me_adrenaline_rush": "Adrenalinsus",
+  "mod_epicloot_me_adrenaline_rush_desc": "Øget skade i varigheden af effekten."
 }

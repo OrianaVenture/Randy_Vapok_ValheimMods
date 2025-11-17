@@ -18,6 +18,18 @@ The mod is currently in ***Early Access***! That means it's **not done**! Be pat
 
 ***EpicLoot works in multiplayer and on dedicated servers!*** The server and all players should have the mod and its dependencies installed.
 
+## Version 0.12!
+
+Introducing a large new feature: **Runes!**
+
+* New unidentified items can drop which can be brought to the enchantment table to reveal their effects.
+* Sacrifice an existing magic item to extract a magic effect into a Runestone.
+* Use a Rune on an existing magic item to augment an effect.
+
+You may need to enable this feature in your existing configuration file on a version upgrade. Check "Enchanting Table - Table Features Active" has "Rune".
+
+See the wiki on thunderstore for more information! Link below!
+
 ## Ashlands Update Notice!
 
 The Ashlands update introduced the addition of the Mythic tier rarity, as well as a huge rebalance of the mod to be more vanilla friendly. If you are upgrading from a previous version you may wish to restore the old values. There is now an add-on with patches to restore the old Epic values: [thunderstore link](https://thunderstore.io/c/valheim/p/RandyKnapp/EpicPatches_EpicLoot/).
@@ -35,6 +47,7 @@ Epic Loot Team Members:
   * [OrianaVenture](https://github.com/OrianaVenture) - Joined in Dec 2023, helping with maintenance and improvements.
   * [Warp](https://github.com/jneb802) - Joined in Oct 2024, helped design new magic effects.
   * [MidnightFX](https://github.com/MidnightsFX) - Joined in Oct 2024, helping with maintenance and improvements.
+  * [Rusty](https://github.com/RustyMods) - Joined in Oct 2025, helped create the API.
 
 Contibutions from the following modders were invaluable and appreciated: 
   * [blaxxun (CLLC)](https://www.nexusmods.com/valheim/mods/495) - bugfixes, config sync, various magic item effects

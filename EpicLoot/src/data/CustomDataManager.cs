@@ -13,7 +13,6 @@ using UnityEngine;
 
 namespace EpicLoot.Data
 {
-    #nullable enable
     [PublicAPI]
     public abstract class CustomItemData
     {
@@ -58,7 +57,7 @@ namespace EpicLoot.Data
         // If non-null, the new item will have CustomItemData with this new string-value
         // By default stacking is disallowed. Set AllowStackingIdenticalValues property to true for
         // trivial by Value comparisons.
-        public virtual string? TryStack(CustomItemData? data) => AllowStackingIdenticalValues &&
+        public virtual string TryStack(CustomItemData data) => AllowStackingIdenticalValues &&
             data?.Value == Value ? Value : null;
     }
 
@@ -71,7 +70,7 @@ namespace EpicLoot.Data
     {
         public static HashSet<Type> ForceLoadTypes = new();
 
-        internal static string? _modGuid;
+        internal static string _modGuid;
 
         internal static string modGuid => _modGuid ??= ((Func<string>)(() =>
         {
@@ -96,7 +95,7 @@ namespace EpicLoot.Data
         public ItemDrop.ItemData ItemData { get; private set; }
 
         private Dictionary<string, CustomItemData> data = new();
-        private WeakReference<ItemInfo>? selfReference = null;
+        private WeakReference<ItemInfo> selfReference = null;
 
         internal HashSet<string> isCloned = new();
 
@@ -119,7 +118,7 @@ namespace EpicLoot.Data
                 }
 
                 knownTypes.Add(typeKey);
-                Type? baseType = type;
+                Type baseType = type;
                 while (baseType is not null)
                 {
                     AddInterfaces(baseType);
@@ -138,9 +137,9 @@ namespace EpicLoot.Data
 
         internal static string dataKey(string key) => $"{modGuid}#{key}";
 
-        public string? this[string key]
+        public string this[string key]
         {
-            get => Get<StringItemData>(key)?.Value;
+            get => Get<StringItemData>(key).Value;
             set => GetOrCreate<StringItemData>(key).Value = value ?? "";
         }
 
@@ -167,7 +166,7 @@ namespace EpicLoot.Data
 
         public T GetOrCreate<T>(string key = "") where T : CustomItemData, new() => Add<T>(key) ?? Get<T>(key)!;
 
-        public T? Add<T>(string key = "") where T : CustomItemData, new()
+        public T Add<T>(string key = "") where T : CustomItemData, new()
         {
             string compoundKey = classKey(typeof(T), key);
             string fullKey = dataKey(compoundKey);
@@ -184,7 +183,7 @@ namespace EpicLoot.Data
             return obj;
         }
 
-        public T? Get<T>(string key = "") where T : class
+        public T Get<T>(string key = "") where T : class
         {
             if (!typeInheritorsCache.TryGetValue(typeof(T), out HashSet<Type> inheritors))
             {
@@ -201,13 +200,13 @@ namespace EpicLoot.Data
                 string compoundKey = classKey(inheritor, key);
                 if (data.TryGetValue(compoundKey, out CustomItemData dataObj))
                 {
-                    return (T?)(object)dataObj;
+                    return (T)(object)dataObj;
                 }
 
                 string fullKey = dataKey(compoundKey);
                 if (ItemData.m_customData.ContainsKey(fullKey))
                 {
-                    return (T?)(object)constructDataObj(compoundKey)!;
+                    return (T)(object)constructDataObj(compoundKey)!;
                 }
             }
 
@@ -241,7 +240,7 @@ namespace EpicLoot.Data
 
         public bool Remove<T>(T itemData) where T : CustomItemData => Remove<T>(itemData.Key);
 
-        private CustomItemData? constructDataObj(string key)
+        private CustomItemData constructDataObj(string key)
         {
             string[] keyParts = key.Split(new[] { '#' }, 2);
             if (Type.GetType(keyParts[0]) is not { } type || !typeof(CustomItemData).IsAssignableFrom(type))
@@ -312,7 +311,7 @@ namespace EpicLoot.Data
             }
         }
 
-        public Dictionary<string, string>? IsStackableWithOtherInfo(ItemInfo? info)
+        public Dictionary<string, string> IsStackableWithOtherInfo(ItemInfo info)
         {
             LoadAll();
             Dictionary<string, string> newValues = new();
@@ -361,7 +360,7 @@ namespace EpicLoot.Data
             return newValues.ToDictionary(kv => dataKey(kv.Key), kv => kv.Value);
         }
 
-        private static void RegisterForceLoadedTypesAddItem(ItemDrop.ItemData? __result)
+        private static void RegisterForceLoadedTypesAddItem(ItemDrop.ItemData __result)
         {
             if (__result is not null)
             {
@@ -430,13 +429,13 @@ namespace EpicLoot.Data
             }
         }
 
-        private static ItemDrop.ItemData? checkingForStackableItemData;
+        private static ItemDrop.ItemData checkingForStackableItemData;
 
         private static void SaveCheckingForStackableItemData(ItemDrop.ItemData item) =>
             checkingForStackableItemData = item;
         private static void ResetCheckingForStackableItemData() => checkingForStackableItemData = null;
 
-        private static Dictionary<string, string>? newValuesOnStackable;
+        private static Dictionary<string, string> newValuesOnStackable;
 
         private static IEnumerable<CodeInstruction> CheckStackableInFindFreeStackMethods(
             IEnumerable<CodeInstruction> instructionsEnumerable)
@@ -447,7 +446,7 @@ namespace EpicLoot.Data
             CodeInstruction targetedInstr = instructions.First(i => i.labels.Contains(target));
             CodeInstruction lastBranch = instructions.Reverse().First(i =>
             i.Branches(out Label? label) && targetedInstr.labels.Contains(label!.Value));
-            CodeInstruction? loadingInstruction = null;
+            CodeInstruction loadingInstruction = null;
 
             for (int i = 0; i < instructions.Length; ++i)
             {
@@ -478,7 +477,7 @@ namespace EpicLoot.Data
             }
         }
 
-        private static bool CheckItemDataIsStackableFindFree(ItemDrop.ItemData item, ItemDrop.ItemData? target)
+        private static bool CheckItemDataIsStackableFindFree(ItemDrop.ItemData item, ItemDrop.ItemData target)
         {
             if (target is null)
             {
@@ -496,7 +495,7 @@ namespace EpicLoot.Data
 
         private static void ResetNewValuesOnStackable() => newValuesOnStackable = null;
 
-        private static void ApplyNewValuesOnStackable(ItemDrop.ItemData? __result)
+        private static void ApplyNewValuesOnStackable(ItemDrop.ItemData __result)
         {
             if (__result is not null && newValuesOnStackable is not null)
             {
@@ -507,7 +506,7 @@ namespace EpicLoot.Data
             }
         }
 
-        private static Dictionary<string, string>? IsStackable(ItemDrop.ItemData a, ItemDrop.ItemData b)
+        private static Dictionary<string, string> IsStackable(ItemDrop.ItemData a, ItemDrop.ItemData b)
         {
             if (a.Data() is { } info)
             {
@@ -523,7 +522,7 @@ namespace EpicLoot.Data
         }
 
         private static bool CheckItemDataStackableAddItem(Inventory __instance, ItemDrop.ItemData item,
-            int x, int y, ref Dictionary<string, string>? __state, ref bool __result)
+            int x, int y, ref Dictionary<string, string> __state, ref bool __result)
         {
             if (__instance.GetItemAt(x, y) is { } itemAt)
             {
@@ -540,7 +539,7 @@ namespace EpicLoot.Data
         }
 
         private static void ApplyCustomItemDataStackableAddItem(Inventory __instance,
-            int x, int y, Dictionary<string, string>? __state, bool __result)
+            int x, int y, Dictionary<string, string> __state, bool __result)
         {
             if (__result && __state is not null)
             {
@@ -557,7 +556,7 @@ namespace EpicLoot.Data
             item.m_itemData.m_customData = customData;
         }
 
-        private static Dictionary<string, string>? IsStackableItemDrop(ItemDrop drop, ItemDrop.ItemData item) =>
+        private static Dictionary<string, string> IsStackableItemDrop(ItemDrop drop, ItemDrop.ItemData item) =>
             IsStackable(drop.m_itemData, item);
 
         private static IEnumerable<CodeInstruction> HandleAutostackableItems(
@@ -618,7 +617,7 @@ namespace EpicLoot.Data
             throw new Exception("Found no stack store in a branch");
         }
 
-        private static ItemDrop.ItemData? currentlyUpgradingItem;
+        private static ItemDrop.ItemData currentlyUpgradingItem;
 
         private static IEnumerable<CodeInstruction> TransferCustomItemDataOnUpgrade(
             IEnumerable<CodeInstruction> instructions, ILGenerator ilg)
@@ -662,7 +661,7 @@ namespace EpicLoot.Data
             else if (item.m_itemData.m_dropPrefab is { } prefab && item.m_itemData.m_customData.Count == 0)
             {
                 ZNetView netView = item.GetComponent<ZNetView>();
-                ZDO? zdo = netView && netView.IsValid() ? netView.GetZDO() : null;
+                ZDO zdo = netView && netView.IsValid() ? netView.GetZDO() : null;
 
                 if (zdo == null)
                 {
@@ -797,20 +796,20 @@ namespace EpicLoot.Data
     [PublicAPI]
     public class ForeignItemInfo : IEnumerable<object>
     {
-        public string Mod => (string?)foreignItemInfo.GetType().GetProperty(nameof(Mod))?.GetValue(foreignItemInfo) ?? "";
+        public string Mod => (string)foreignItemInfo.GetType().GetProperty(nameof(Mod))?.GetValue(foreignItemInfo) ?? string.Empty;
         public ItemDrop.ItemData ItemData { get; private set; }
 
         private readonly object foreignItemInfo;
 
-        public string? this[string key]
+        public string this[string key]
         {
             get
             {
                 if (foreignItemInfo.GetType().InvokeMember("Item",
-                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty, 
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty,
                     null, foreignItemInfo, new object[] { key }) is { } stringData)
                 {
-                    return (string?)stringData.GetType().GetProperty("Value")?.GetValue(stringData);
+                    return (string)stringData.GetType().GetProperty("Value").GetValue(stringData);
                 }
 
                 return null;
@@ -818,7 +817,7 @@ namespace EpicLoot.Data
             set
             {
                 foreignItemInfo.GetType().GetMethod("set_Item", BindingFlags.Public | BindingFlags.Instance)?
-                    .Invoke(foreignItemInfo, new object?[] { key, value });
+                    .Invoke(foreignItemInfo, new object[] { key, value });
             }
         }
 
@@ -830,7 +829,7 @@ namespace EpicLoot.Data
 
         public T GetOrCreate<T>(string key = "") where T : class, new() => Add<T>(key) ?? Get<T>(key)!;
 
-        private object? call(string name, object?[] values, Type?[] args, Type? generic = null)
+        private object call(string name, object[] values, Type[] args, Type generic = null)
         {
             foreach (MethodInfo method in foreignItemInfo.GetType().GetMethods())
             {
@@ -850,14 +849,14 @@ namespace EpicLoot.Data
             return null;
         }
 
-        public T? Add<T>(string key = "") where T : class, new() =>
+        public T Add<T>(string key = "") where T : class, new() =>
             call(nameof(Add), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
 
-        public T? Get<T>(string key = "") where T : class =>
+        public T Get<T>(string key = "") where T : class =>
             call(nameof(Get), new object[] { key }, new[] { typeof(string) }, typeof(T)) as T;
 
         public Dictionary<string, T> GetAll<T>() where T : class =>
-            call(nameof(GetAll), Array.Empty<object?>(), Array.Empty<Type?>(), typeof(T)) as T as Dictionary<string,
+            call(nameof(GetAll), Array.Empty<object>(), Array.Empty<Type>(), typeof(T)) as T as Dictionary<string,
                 T> ?? new Dictionary<string, T>();
 
         public bool Remove(string key = "") =>
@@ -867,13 +866,13 @@ namespace EpicLoot.Data
             call(nameof(Remove), new object[] { key }, new[] { typeof(string) }, typeof(T)) as bool? ?? false;
 
         public bool Remove<T>(T itemData) where T : class =>
-            call(nameof(Remove), new object[] { itemData }, new Type?[] { null }, typeof(T)) as bool? ?? false;
+            call(nameof(Remove), new object[] { itemData }, new Type[] { null }, typeof(T)) as bool? ?? false;
 
-        public void Save() => call(nameof(Save), Array.Empty<object?>(), Array.Empty<Type?>());
-        public void LoadAll() => call(nameof(LoadAll), Array.Empty<object?>(), Array.Empty<Type?>());
+        public void Save() => call(nameof(Save), Array.Empty<object>(), Array.Empty<Type>());
+        public void LoadAll() => call(nameof(LoadAll), Array.Empty<object>(), Array.Empty<Type>());
 
         public IEnumerator<object> GetEnumerator() =>
-            call(nameof(GetEnumerator), Array.Empty<object?>(), Array.Empty<Type?>()) as IEnumerator<object> ??
+            call(nameof(GetEnumerator), Array.Empty<object>(), Array.Empty<Type>()) as IEnumerator<object> ??
             new List<object>().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -884,7 +883,7 @@ namespace EpicLoot.Data
     {
         internal static readonly ConditionalWeakTable<ItemDrop.ItemData, ItemInfo> itemInfo = new();
         private static readonly ConditionalWeakTable<ItemDrop.ItemData, Dictionary<string,
-            ForeignItemInfo?>> foreignItemInfo = new();
+            ForeignItemInfo>> foreignItemInfo = new();
 
         public static ItemInfo Data(this ItemDrop.ItemData item)
         {
@@ -892,17 +891,19 @@ namespace EpicLoot.Data
             {
                 return info;
             }
+
             itemInfo.Add(item, info = new ItemInfo(item));
             return info;
         }
 
-        public static ForeignItemInfo? Data(this ItemDrop.ItemData item, string mod)
+        public static ForeignItemInfo Data(this ItemDrop.ItemData item, string mod)
         {
-            Dictionary<string, ForeignItemInfo?> foreignInfos = foreignItemInfo.GetOrCreateValue(item);
-            if (foreignInfos.TryGetValue(mod, out ForeignItemInfo? modObject))
+            Dictionary<string, ForeignItemInfo> foreignInfos = foreignItemInfo.GetOrCreateValue(item);
+            if (foreignInfos.TryGetValue(mod, out ForeignItemInfo modObject))
             {
                 return modObject;
             }
+
             if (!Chainloader.PluginInfos.TryGetValue(mod, out PluginInfo plugin))
             {
                 return null;

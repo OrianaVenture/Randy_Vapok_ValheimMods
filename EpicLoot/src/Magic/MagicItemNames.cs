@@ -1,4 +1,5 @@
 ﻿using EpicLoot.Config;
+using EpicLoot.Crafting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -45,6 +46,10 @@ namespace EpicLoot
         public static void Initialize(ItemNameConfig config)
         {
             Config = config;
+        }
+        public static ItemNameConfig GetCFG()
+        {
+            return Config;
         }
 
         public static string GetNameForItem(ItemDrop.ItemData item, MagicItem magicItem)

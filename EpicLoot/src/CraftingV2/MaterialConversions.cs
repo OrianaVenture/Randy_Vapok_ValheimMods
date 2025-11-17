@@ -39,16 +39,23 @@ namespace EpicLoot.CraftingV2
     {
         public static MaterialConversionsConfig Config;
         public static MultiValueDictionary<MaterialConversionType, MaterialConversion> Conversions = new MultiValueDictionary<MaterialConversionType, MaterialConversion>();
+        public static event Action OnSetupMaterialConversions;
 
         public static void Initialize(MaterialConversionsConfig config)
         {
             Config = config;
+            OnSetupMaterialConversions?.Invoke();
 
             Conversions.Clear();
             foreach (var entry in Config.MaterialConversions)
             {
                 Conversions.Add(entry.Type, entry);
             }
+        }
+
+        public static MaterialConversionsConfig GetCFG()
+        {
+            return Config;
         }
     }
 }

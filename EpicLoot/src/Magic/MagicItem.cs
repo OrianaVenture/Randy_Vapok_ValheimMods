@@ -44,6 +44,7 @@ namespace EpicLoot
         public string DisplayName;
         public string LegendaryID;
         public string SetID;
+        public bool IsUnidentified = false;
 
         public string GetItemTypeName(ItemDrop.ItemData baseItem)
         {
@@ -74,6 +75,18 @@ namespace EpicLoot
             tooltip.Append($"</color>");
             
             tooltip.AppendLine($"$mod_epicloot_itemtooltip_rarity: {GetRarityDisplay()}<pos=75%>$mod_epicloot_itemtooltip_effects: <color={color}>{Effects.Count}</color>");
+
+            return tooltip.ToString();
+        }
+
+        public string GetCompactTooltip() {
+            var color = GetColorString();
+            var tooltip = new StringBuilder();
+            tooltip.Append($"<color={color}>");
+            for (var index = 0; index < Effects.Count; index++) {
+                tooltip.AppendLine($"{GetEffectText(Effects[index], Rarity, true)}");
+            }
+            tooltip.Append($"</color>");
 
             return tooltip.ToString();
         }

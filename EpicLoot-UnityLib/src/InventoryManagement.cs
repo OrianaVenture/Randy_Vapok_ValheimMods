@@ -93,7 +93,7 @@ public class InventoryManagement
 
         do
         {
-            var itemToAdd = item.Clone();
+            ItemDrop.ItemData itemToAdd = item.Clone();
             itemToAdd.m_stack = Mathf.Min(item.m_stack, item.m_shared.m_maxStackSize);
             item.m_stack -= itemToAdd.m_stack;
 
@@ -112,7 +112,7 @@ public class InventoryManagement
 
     private void AddItem(ref Inventory inventory, string item, int amount)
     {
-        var result = inventory.AddItem(item, amount, 1, 0, 0, string.Empty);
+        ItemDrop.ItemData result = inventory.AddItem(item, amount, 1, 0, 0, string.Empty);
 
         if (result == null)
         {
@@ -136,17 +136,17 @@ public class InventoryManagement
     {
         Debug.Log($"Attempting to drop item {item} with amount {amount}");
         Player player = Player.m_localPlayer;
-        var prefab = ObjectDB.instance.GetItemPrefab(item);
+        GameObject prefab = ObjectDB.instance.GetItemPrefab(item);
 
         if (prefab != null)
         {
-            var go = GameObject.Instantiate(prefab,
+            GameObject go = GameObject.Instantiate(prefab,
                 player.transform.position + player.transform.forward + player.transform.up,
                 player.transform.rotation);
 
-            var itemdrop = go.GetComponent<ItemDrop>();
+            ItemDrop itemdrop = go.GetComponent<ItemDrop>();
             itemdrop.SetStack(amount);
-            itemdrop.GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
+            itemdrop.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 5f;
 
             SendMessage($"$msg_dropped {itemdrop.m_itemData.m_shared.m_name}",
                 itemdrop.m_itemData.m_stack, itemdrop.m_itemData.GetIcon());
@@ -157,10 +157,10 @@ public class InventoryManagement
     {
         Debug.Log($"Attempting to drop itemdata {item.m_shared.m_name} with amount {item.m_stack}");
         Player player = Player.m_localPlayer;
-        var itemDrop = ItemDrop.DropItem(item, item.m_stack,
+        ItemDrop itemDrop = ItemDrop.DropItem(item, item.m_stack,
             player.transform.position + player.transform.forward + player.transform.up,
             player.transform.rotation);
-        itemDrop.GetComponent<Rigidbody>().velocity = Vector3.up * 5f;
+        itemDrop.GetComponent<Rigidbody>().linearVelocity = Vector3.up * 5f;
 
         SendMessage($"$msg_dropped {itemDrop.m_itemData.m_shared.m_name}",
             itemDrop.m_itemData.m_stack, itemDrop.m_itemData.GetIcon());
