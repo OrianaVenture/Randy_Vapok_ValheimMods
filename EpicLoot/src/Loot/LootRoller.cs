@@ -270,19 +270,19 @@ namespace EpicLoot
                         switch (rarity)
                         {
                             case ItemRarity.Magic:
-                                Rarity = [100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0, 0, 0];
+                                lootdrop.Rarity = [100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0, 0, 0];
                                 break;
                             case ItemRarity.Rare:
-                                Rarity = [0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0, 0];
+                                lootdrop.Rarity = [0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0, 0];
                                 break;
                             case ItemRarity.Epic:
-                                Rarity = [0, 0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0];
+                                lootdrop.Rarity = [0, 0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor, 0];
                                 break;
                             case ItemRarity.Legendary:
-                                Rarity = [0, 0, 0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor];
+                                lootdrop.Rarity = [0, 0, 0, 100 - luckUpgradesRarityFactor, luckUpgradesRarityFactor];
                                 break;
                             case ItemRarity.Mythic:
-                                Rarity = [0, 0, 0, 0, 100];
+                                lootdrop.Rarity = [0, 0, 0, 0, 100];
                                 break;
                         }
                         itemRollRarity = RollItemRarity(lootdrop, luckFactor);
@@ -308,7 +308,7 @@ namespace EpicLoot
                     EpicLoot.Log($"Selected Drops from: {lt.Object} - {selectedDrops.Count}");
                     foreach (LootDrop lootDrop in selectedDrops)
                     {
-                        string itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? Item : "Invalid Item Name";
+                        string itemName = !string.IsNullOrEmpty(lootDrop?.Item) ? lootDrop.Item : "Invalid Item Name";
                         int rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
 
