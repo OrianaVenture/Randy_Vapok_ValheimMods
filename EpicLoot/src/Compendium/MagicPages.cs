@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using EpicLoot.Adventure;
 using HarmonyLib;
 using JetBrains.Annotations;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,6 +39,12 @@ public class MagicPages : MonoBehaviour
             component.Reset();
             if (text is not MagicInfo magicInfo) return true;
             component.OnSelectText(magicInfo);
+            foreach (var element in __instance.m_texts)
+            {
+                element.m_selected.SetActive(false);
+            }
+
+            magicInfo.m_selected.SetActive(true);
             return false;
         }
     }
@@ -92,7 +96,11 @@ public class MagicPages : MonoBehaviour
     private static TreasureBountyInfo TreasureBountyPage;
     private static MagicEffectInfo MagicEffectsPage;
 
-    private static int fontSize = 16;
+    public const int headerFontSize = 30;
+    public const int largeFontSize = 24;
+    public const int mediumFontSize = 18;
+    public const int fontSize = 16;
+
     private static float minWidth;
     private static float minHeight;
     
@@ -127,7 +135,6 @@ public class MagicPages : MonoBehaviour
         Search.background.sprite = closeButton.spriteState.disabledSprite;
         Search.SetFont(FontManager.GetFont(FontManager.FontOptions.AveriaSerifLibre));
         Search.field.onValueChanged.AddListener(OnSearch);
-        
         MagicPagesTextArea = new TextList(compendiumTextArea, frame);
         Reset();
     }
@@ -135,7 +142,7 @@ public class MagicPages : MonoBehaviour
 
     public void Update()
     {
-        return;
+        //  makes search field glow when focused
         if (wasGlowing && !InSearchField())
         {
             Search.EnableGlow(false);
@@ -266,9 +273,7 @@ public class MagicPages : MonoBehaviour
     {
         public readonly TextElement title = title;
         public readonly TextElement[] content = content;
-        
         public bool IsMatch(string query) => title.IsMatch(query) || content.Any(x => x.IsMatch(query));
-
         public void Enable(bool enable)
         {
             title.Enable(enable);
@@ -350,10 +355,10 @@ public class MagicPages : MonoBehaviour
         public readonly InputField field;
         private readonly Text placeholder;
         public readonly Image background;
-        public readonly Image glow;
+        private readonly Image glow;
         private readonly RectTransform textRect;
         private readonly RectTransform placeholderRect;
-        private float widthPadding = 20f;
+        private const float widthPadding = 20f;
 
         public SearchField(Transform parent)
         {
@@ -462,7 +467,7 @@ public class MagicEffectInfo(string topic) : MagicInfo(topic)
                 ItemDrop.ItemData item = entry2.Value;
                 content.Add($" <color=#c0c0c0ff>- {MagicItem.GetEffectText(effect, item.GetRarity(), false)} ({item.GetDecoratedName()})</color>");
             }
-            instance.MagicPagesTextArea.Add($"<size=20><color={EpicLoot.GetRarityColor(highestRarity)}>{totalEffectText}</color></size>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<size={MagicPages.mediumFontSize}><color={EpicLoot.GetRarityColor(highestRarity)}>{totalEffectText}</color></size>", content.ToArray());
         }
     }
 }
@@ -480,7 +485,7 @@ public class ExplainInfo(string topic) : MagicInfo(topic)
             
         foreach (KeyValuePair<string, string> kvp in sortedMagicEffects)
         {
-            instance.MagicPagesTextArea.Add($"<size=24>{kvp.Key}</size>", $"<color=#c0c0c0ff>{kvp.Value}</color>", "");
+            instance.MagicPagesTextArea.Add($"<size={MagicPages.largeFontSize}>{kvp.Key}</size>", $"<color=#c0c0c0ff>{kvp.Value}</color>", "");
         }
     }
 }
@@ -509,7 +514,7 @@ public class TreasureBountyInfo(string topic) : MagicInfo(topic)
                                                             $"#{treasureMap.Interval + 1}</color>"));
             }
             
-            instance.MagicPagesTextArea.Add("<color=orange><size=30>$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.headerFontSize}>$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
             content.Clear();
         }
 
@@ -526,7 +531,7 @@ public class TreasureBountyInfo(string topic) : MagicInfo(topic)
                 }
 
                 string targetName = AdventureDataManager.GetBountyName(bounty);
-                content.Add($"<size=24>{targetName}</size>  <color=#c0c0c0ff>$mod_epicloot_activebounties_classification: <color=#d66660>{AdventureDataManager.GetMonsterName(bounty.Target.MonsterID)}</color>, ");
+                content.Add($"<size={MagicPages.largeFontSize}>{targetName}</size>  <color=#c0c0c0ff>$mod_epicloot_activebounties_classification: <color=#d66660>{AdventureDataManager.GetMonsterName(bounty.Target.MonsterID)}</color>, ");
                 var info =
                     $" $mod_epicloot_activebounties_biome: <color={GetBiomeColor(bounty.Biome)}>$biome_{bounty.Biome.ToString().ToLower()}</color></color>";
 
@@ -549,7 +554,7 @@ public class TreasureBountyInfo(string topic) : MagicInfo(topic)
                 int gold = bounty.RewardGold;
                 content.Add($", $mod_epicloot_bounties_tooltip_rewards {(iron > 0 ? $"<color=white>{MerchantPanel.GetIronBountyTokenName()} x{iron}</color>" : "")}{(iron > 0 && gold > 0 ? ", " : "")}{(gold > 0 ? $"<color=#f5da53>{MerchantPanel.GetGoldBountyTokenName()} x{gold}</color>" : "")}</color>"); 
             }
-            instance.MagicPagesTextArea.Add("<color=orange><size=30>$mod_epicloot_activebounties</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.headerFontSize}>$mod_epicloot_activebounties</size></color>", content.ToArray());
         }
 
         if (!hasValues)
