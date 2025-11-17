@@ -4,14 +4,20 @@
     * Unidentified items are a new item type that can be dropped as normal loot.
     * Unidentified items must be identified at the Enchanting Table before they can be used.
     * Unidentified items can be sacrificed for their tier materials.
+    * New configuration "Balance - Items Unidentified Drop Ratio".
 * NEW Runestone Extraction and Etching features to the Enchanting Table:
     * Extraction allows you to store a singular enchantment from an item into the Runestone.
     * Runestone Etching allows you to apply the enchantment from the Runestone onto an item, overwriting an existing enchantment.
+    * New configuration "Balance - Rune Extract Destroys Item"
 * Added ability to edit the core configuration files without patch files.
+  * Files are generated under BepInEx\config\EpicLoot\baseconfig with the current default configurations from the release.
+  * **Note: You will have to delete these configurations to get any new updated values in future mod updates!!!!**
+      * **New configuration "Debug - Always Refresh Core Configs" when set to true will allow overriding these files. Server owners you will probably want this on if you only use patches!**
 * Added the overhaul configuration system which provides access to directly editable configuration. Three configuration defaults are available as base templates:
     * `Balanced` - The new default for Epic Loot. Enchantments are powerful, but not overpowered.
     * `Legendary` - Similar the old default of epicloot, enchantments are very powerful.
     * `Vanilla` - A configuration that is closer to the vanilla experience. Enchantments give you an edge, but are not as powerful.
+    * This is set under the Balance - Balance Template in the configuration file.
 * NEW enchantments added:
     * `DartingThoughts` - Converts a portion of max eitr into eitr regen (sal)
     * `AddCrafterskills` - Increases crafting and cooking skills (midnight)
@@ -30,6 +36,12 @@
     * `InstantMead` - Meads consume instantly when health critical (warp)
     * `MeadCooldown` - Reduces mead cooldown (warp)
 * NEW automatic drop system assignment for weapons, armor and other items. This removes the requirement to add patches for other modded items for them to appear in drop tables.
+  * New configurations under General:
+    * "Auto Add Equipment"
+    * "Auto Remove Equipment Not Found"
+    * "Only Add Equipment With Recipes"
+    * "Auto Add Remove Equipment From Vendor"
+    * "Auto Add Remove Equipment From Lootlists"
 * NEW search functionality for Epicloot Compendium pages (Thanks Rusty!)
 * NEW EpicLoot API is now available! (Thanks Rusty!)
     * Easily retrieve enchantments that are active on the player

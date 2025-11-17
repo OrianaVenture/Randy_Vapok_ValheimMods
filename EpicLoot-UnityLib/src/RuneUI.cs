@@ -84,6 +84,9 @@ namespace EpicLoot_UnityLib
         [UsedImplicitly]
         public void OnEnable()
         {
+            RuneExtractButton.isOn = false;
+            RuneEtchButton.Select();
+            RuneEtchButton.isOn = true;
             EtchModeSelected(true);
         }
 
