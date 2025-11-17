@@ -7,9 +7,9 @@ using EpicLoot.CraftingV2;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
 using EpicLoot.General;
+using EpicLoot.Magic;
 using EpicLoot.MagicItemEffects;
 using EpicLoot.Patching;
-using EpicLoot.Magic;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;
@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static ItemDrop;
 using Object = UnityEngine.Object;
 
 namespace EpicLoot
@@ -79,7 +80,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.0";
+        public const string Version = "0.12.1";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -429,7 +430,7 @@ namespace EpicLoot
             ItemManager.OnItemsRegistered += SetupStatusEffects;
             LoadUnidentifiedItems();
             // Needs to trigger late in order to get all potentially added items by other mods
-            MinimapManager.OnVanillaMapAvailable += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
+            MinimapManager.OnVanillaMapDataLoaded += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
             DodgeBuff.CreateMyStatusEffect();
         }
 
@@ -549,6 +550,10 @@ namespace EpicLoot
                         //Set icons for crafting materials
                         itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
                     }
+
+                    // Add MagicItemComponent or products will not stack until reloaded.
+                    MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);

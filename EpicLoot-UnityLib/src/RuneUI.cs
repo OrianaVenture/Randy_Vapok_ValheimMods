@@ -31,11 +31,11 @@ namespace EpicLoot_UnityLib
         public delegate List<InventoryItemListElement> GetRuneEtchItemsDelegate();
         public delegate List<InventoryItemListElement> GetApplyableRunesDelegate(ItemDrop.ItemData item, string selected_enchantment);
         public delegate List<Tuple<string, bool>> GetItemEnchantsDelegate(ItemDrop.ItemData item, bool runecheck);
-        public delegate List<InventoryItemListElement> GetRuneExtractCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float cost_modifier);
-        public delegate List<InventoryItemListElement> GetRuneEtchCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float cost_modifier);
+        public delegate List<InventoryItemListElement> GetRuneExtractCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float costModifier);
+        public delegate List<InventoryItemListElement> GetRuneEtchCostDelegate(ItemDrop.ItemData item, MagicRarityUnity rarity, float costModifier);
         public delegate bool RuneItemDestructionEnabledDelegate();
         public delegate MagicRarityUnity GetItemRarityDelegate(ItemDrop.ItemData item);
-        public delegate ItemDrop.ItemData GetItemEnchantedByRuneDelegate(ItemDrop.ItemData item,  int enchantment, float power_mod);
+        public delegate ItemDrop.ItemData GetItemEnchantedByRuneDelegate(ItemDrop.ItemData item, int enchantment, float powerModifier);
         public delegate string GetSelectedEnchantmentByIndexDelegate(ItemDrop.ItemData item, int enchantment);
         public delegate GameObject ApplyRuneToItemAndReturnSuccess(ItemDrop.ItemData item, ItemDrop.ItemData rune, int enchantment);
 
@@ -344,6 +344,13 @@ namespace EpicLoot_UnityLib
             if (_runeAction == RuneAction.Extract)
             {
                 List<InventoryItemListElement> cost = GetRuneExtractCost(item, _selectedRarity, costReduction);
+                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex, powerModifier);
+
+                if (RuneWithEnchant == null)
+                {
+                    return;
+                }
+
                 Player player = Player.m_localPlayer;
                 if (!player.NoCostCheat())
                 {
@@ -366,7 +373,6 @@ namespace EpicLoot_UnityLib
                     InventoryManagement.Instance.RemoveItem(item);
                 }
 
-                ItemDrop.ItemData RuneWithEnchant = ItemToBeRuned(item, _selectedEnchantmentIndex, powerModifier);
                 InventoryManagement.Instance.GiveItem(RuneWithEnchant);
                 CostList.SetItems(new List<IListElement>());
             }

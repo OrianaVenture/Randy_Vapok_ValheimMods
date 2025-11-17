@@ -26,7 +26,7 @@ Introducing a large new feature: **Runes!**
 * Sacrifice an existing magic item to extract a magic effect into a Runestone.
 * Use a Rune on an existing magic item to augment an effect.
 
-You may need to enable this feature in your existing configuration file on a version upgrade. Check "Enchanting Table - Table Features Active" has "Rune".
+You may need to enable this feature in your existing configuration file on a version upgrade. Check the randyknapp.mods.epicloot.cfg file "Enchanting Table - Table Features Active" has "Rune" in the list.
 
 See the wiki on thunderstore for more information! Link below!
 

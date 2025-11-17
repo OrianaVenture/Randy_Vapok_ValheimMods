@@ -558,6 +558,7 @@ namespace EpicLoot.CraftingV2
                     return identifyStyle.Value;
                 }
             }
+
             return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
         }
 
@@ -570,10 +571,14 @@ namespace EpicLoot.CraftingV2
                 biome, EpicLoot.GetGatedItemTypeMode());
 
             List<LootTable> lootTables = new List<LootTable>() { };
-            foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome]) {
+            foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome])
+            {
                 EpicLoot.Log($" - Checking loot set {lootSetName}");
                 List<LootTable> lootTable = LootRoller.GetFullyResolvedLootTable(lootSetName);
-                if (lootTable != null) { lootTables.AddRange(lootTable); }
+                if (lootTable != null)
+                {
+                    lootTables.AddRange(lootTable);
+                }
             }
 
             EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.Localization)} {lootTables.Count}");
@@ -817,14 +822,15 @@ namespace EpicLoot.CraftingV2
             return returnList;
         }
 
-        private static List<InventoryItemListElement> GetRuneExtractCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float costModifier)
+        private static List<InventoryItemListElement> GetRuneExtractCost(ItemDrop.ItemData item, MagicRarityUnity rarity, float costModifier)
         {
-            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Extract).Select(entry =>
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)rarity, RuneActions.Extract).Select(entry =>
             {
                 ItemDrop.ItemData itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
                 int cost = entry.Value;
-                if (costModifier != float.NaN) {
+                if (costModifier != float.NaN)
+                {
                     cost = Mathf.RoundToInt(entry.Value * costModifier);
                 }
 
@@ -839,9 +845,9 @@ namespace EpicLoot.CraftingV2
             }).ToList();
         }
 
-        private static List<InventoryItemListElement> GetRuneEtchCost(ItemDrop.ItemData item, MagicRarityUnity _rarity, float costModifier)
+        private static List<InventoryItemListElement> GetRuneEtchCost(ItemDrop.ItemData item, MagicRarityUnity rarity, float costModifier)
         {
-            return EnchantHelper.GetRuneCost(item, (ItemRarity)_rarity, RuneActions.Etch).Select(entry =>
+            return EnchantHelper.GetRuneCost(item, (ItemRarity)rarity, RuneActions.Etch).Select(entry =>
             {
                 ItemDrop.ItemData itemData = entry.Key.m_itemData.Clone();
                 itemData.m_dropPrefab = entry.Key.gameObject;
@@ -867,7 +873,34 @@ namespace EpicLoot.CraftingV2
             MagicItemEffect effect = selectedItem.GetMagicItem().Effects[targetEnchant];
             MagicItemEffect runeEffect = new MagicItemEffect(effect.EffectType);
 
-            if (effect.EffectValue != float.NaN && effect.EffectValue > 1)
+            if (effect.EffectValue == float.NaN)
+            {
+                return null;
+            }
+
+            string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
+            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) with power " +
+                $"{effect.EffectValue} * {powerModifier} = {runeEffect.EffectValue} to return");
+
+            GameObject item = PrefabManager.Instance.GetPrefab(prefabName);
+
+            if (item == null)
+            {
+                return null;
+            }
+
+            ItemDrop baseData = item.GetComponent<ItemDrop>();
+
+            if (baseData == null)
+            {
+                return null;
+            }
+
+            ItemDrop.ItemData newItem = baseData.m_itemData.Clone();
+            MagicItemComponent magicItemComponent = newItem.Data().GetOrCreate<MagicItemComponent>();
+
+            // We might need to rethink how power modifier is checked and applied here
+            if (powerModifier != float.NaN && powerModifier < 999f && powerModifier > 0 && effect.EffectValue > 1)
             {
                 runeEffect.EffectValue = effect.EffectValue * powerModifier;
                 float maxDefaultValue = MagicItemEffectDefinitions.AllDefinitions[effect.EffectType].ValuesPerRarity
@@ -878,14 +911,14 @@ namespace EpicLoot.CraftingV2
                     runeEffect.EffectValue = (maxDefaultValue * powerModifier);
                 }
             }
+            else
+            {
+                // Tried to set the item to infinite power level
+                runeEffect.EffectValue = effect.EffectValue;
+            }
 
-            string prefabName = $"EtchedRunestone{selectedItem.GetRarity()}";
-            EpicLoot.Log($"Checking for EtchedRune ({prefabName}) to return");
-
-            ItemDrop baseData =  PrefabManager.Instance.GetPrefab(prefabName)?.GetComponent<ItemDrop>();
-            ItemDrop.ItemData newItem = baseData.m_itemData.Clone();
-            MagicItemComponent magicItemComponent = newItem.Data().GetOrCreate<MagicItemComponent>();
-            MagicItem enchantmentsToRune = new MagicItem {
+            MagicItem enchantmentsToRune = new MagicItem
+            {
                 Rarity = selectedItem.GetRarity(),
                 Effects = new List<MagicItemEffect> { runeEffect }
             };

@@ -133,11 +133,15 @@ namespace EpicLoot.Crafting
         {
             bool typecheck = false;
             ItemDrop.ItemData.ItemType itemtype = ItemDrop.ItemData.ItemType.None;
-            if (item != null) {
+            
+            if (item != null)
+            {
                 itemtype = item.m_shared.m_itemType;
             }
+
             List<RuneCostConfig> cfg = new List<RuneCostConfig>();
-            switch (operation) {
+            switch (operation)
+            {
                 case RuneActions.Extract:
                     cfg = Config.RuneExtractCosts;
                     break;
@@ -146,7 +150,8 @@ namespace EpicLoot.Crafting
                     break;
             }
 
-            var configEntry = cfg.Find(x => {
+            var configEntry = cfg.Find(x =>
+            {
                 if (x.Rarity != rarity)
                 {
                     return false;
@@ -160,7 +165,8 @@ namespace EpicLoot.Crafting
                 return true;
             });
 
-            if (configEntry == null) {
+            if (configEntry == null)
+            {
                 EpicLoot.LogWarning($"Could not find rune cost data for {rarity} {operation}");
                 return new List<ItemAmountConfig>();
             }

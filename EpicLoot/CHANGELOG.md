@@ -1,3 +1,12 @@
+## Version 0.12.1
+
+* Tweaked the Rune costs config values. 
+  * If you used version 0.12.0 please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate!
+* Fixed Rune UI not enabling correctly on existing enchanting tables.
+* Fixed an issue when adding multiple bosses to the same biome with the patch system.
+* Fixed magic items not stacking when using the features from the Recycle & Reclaim mod.
+* Fixed an issue with Rune configurations not syncing properly on a server.
+
 ## Version 0.12.0
 
 * NEW Unidentified items:
