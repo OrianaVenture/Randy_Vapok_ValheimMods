@@ -32,7 +32,7 @@ Include `EpicLootAPI.dll` into your project and bundle it into your plugin using
 ```
 ### 2. Source Files
 
-Copy API.cs and EffectTypes.cs into your plugin project.
+Copy all the files in the project.
 ⚠️ Do not modify the provided methods unless you know what you are doing.
 
 ### Using API
@@ -50,6 +50,13 @@ public void Awake()
     Definition.Requirements.AllowedSkillTypes.Add(Skills.SkillType.Bows, Skills.SkillType.Spears);
     Definition.Requirements.AllowedRarities.Add(ItemRarity.Epic, ItemRarity.Legendary, ItemRarity.Mythic);
     Definition.SelectionWeight = 1;
+    
+    // example updating
+    Terminal.ConsoleCommand update = new("Blink_Update", "Updates blink magic effect", _ => 
+    {
+        Definition.DisplayText = "TEST BLINK";
+        Defintion.Update();
+    })
 }
 
 [HarmonyPatch(typeof(Projectile), nameof(Projectile.OnHit))]

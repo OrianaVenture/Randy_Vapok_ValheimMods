@@ -87,8 +87,8 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
 
         if (!hasValues)
         {
-            //TODO: localize no active adventures text
-            instance.MagicPagesTextArea.Add("No active adventures");
+            //TODO: localize in all languages, only in english atm
+            instance.MagicPagesTextArea.Add("$mod_epicloot_no_active_adventures");
         }
     }
 

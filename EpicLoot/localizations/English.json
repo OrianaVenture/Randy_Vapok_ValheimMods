@@ -1471,5 +1471,8 @@
     "mod_epicloot_rare": "Rare",
     "mod_epicloot_epic": "Epic",
     "mod_epicloot_legendary": "Legendary",
-    "mod_epicloot_mythic": "Mythic"
+    "mod_epicloot_mythic": "Mythic",
+  
+    "mod_epicloot_search_placeholder": "Search...",
+    "mod_epicloot_no_active_adventures": "No active adventures"
 }

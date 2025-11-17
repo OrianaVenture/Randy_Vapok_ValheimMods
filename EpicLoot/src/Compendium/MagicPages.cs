@@ -48,7 +48,7 @@ public class MagicPages : MonoBehaviour
         MinHeight = textAreaRect.rect.height;
         Search = new MagicSearchField(frame);
 
-        // Calculate the Seach bar position
+        // Calculate the Search bar position
         float spacing = 30f;
         float buttonEdge = closeButtonRect.position.x + (closeButtonRect.rect.width / 2); // Button is centered
         float boxEdge = textAreaRect.position.x; // Box is anchored to the bottom right
@@ -119,7 +119,7 @@ public class MagicPages : MonoBehaviour
         TitleElement = MagicPagesTextArea.Create(text.m_topic);
         TitleElement!.SetSize(MinWidth, 100f);
         TitleElement.SetFontSize(HEADER_FONT_SIZE);
-        TitleElement.SetColor(new Color(1f, 0.5f, 0f));
+        TitleElement.SetColor(new Color(1f, 0.65f, 0.15f));
         TitleElement.SetAlignment(TextAnchor.MiddleCenter);
         
         text.Build(this);

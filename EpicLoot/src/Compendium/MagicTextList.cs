@@ -8,8 +8,6 @@ namespace EpicLoot.Compendium;
 public class MagicTextList
 {
     private readonly GameObject _obj;
-    private readonly Image _background;
-    private readonly ScrollRect _scrollRect;
     private readonly VerticalLayoutGroup _layout;
     private readonly MagicTextElement _template;
     private readonly RectTransform _overlayRect;
@@ -20,12 +18,11 @@ public class MagicTextList
     {
         _obj = GameObject.Instantiate(source, parent);
         _obj.name = "EpicLootMagicTextArea";
-        _background = _obj.GetComponent<Image>();
-        _scrollRect = _obj.transform.Find("ScrollArea").GetComponent<ScrollRect>();
         _layout = _obj.transform.Find("ScrollArea/Content").GetComponent<VerticalLayoutGroup>();
         _layout.childAlignment = TextAnchor.UpperLeft;
-        _layout.childControlWidth = false;
+        _layout.childControlWidth = true;
         _layout.childControlHeight = false;
+        _layout.childForceExpandWidth = true;
         _layout.padding.left = 5;
         _layout.spacing = 0;
 
@@ -70,13 +67,13 @@ public class MagicTextList
 
     public void Add(string title, params string[] content)
     {
-        MagicTextElement titleElement = _template.Create(title, _layout.transform);
+        MagicTextElement titleElement = Create(title);
         titleElement.EnableOutline(true);
         List<MagicTextElement> contentElements = new();
 
         foreach (string text in content)
         {
-            MagicTextElement contentElement = _template.Create(text, _layout.transform);
+            MagicTextElement contentElement = Create(text);
             contentElements.Add(contentElement);
         }
 

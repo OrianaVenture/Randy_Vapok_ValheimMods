@@ -1,6 +1,7 @@
 ﻿using EpicLoot.Compendium;
 using HarmonyLib;
 using JetBrains.Annotations;
+using UnityEngine;
 
 namespace EpicLoot;
 
@@ -44,13 +45,17 @@ internal static class TextsDialog_OnSelectText_Patch
 
         component.OnSelectText(magicInfo);
 
-        foreach (var element in __instance.m_texts)
+        foreach (TextsDialog.TextInfo element in __instance.m_texts)
         {
             element.m_selected.SetActive(false);
         }
 
         magicInfo.m_selected.SetActive(true);
 
+        // this coroutine will basically force canvas to update... constantly ?? wow...
+        __instance.StartCoroutine(__instance.FocusOnCurrentLevel(__instance.m_leftScrollRect,
+            __instance.m_listRoot, magicInfo.m_selected.transform as RectTransform));
+        // does not seem to do anything, but vanilla texts dialogue does it ? so... maybe keep it ?
         return false;
     }
 }
@@ -97,4 +102,3 @@ internal static class Chat_HasFocus_Patch
         __result &= !MagicPages.InSearchField();
     }
 }
-

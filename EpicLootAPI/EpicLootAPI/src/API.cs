@@ -20,7 +20,7 @@ public static class EpicLoot
     private static readonly Method API_HasLegendaryItem = new("HasLegendaryItem");
     private static readonly Method API_HasLegendarySet = new("HasLegendarySet");
     private static readonly Method API_RegisterAsset = new("RegisterAsset");
-    private static readonly Method API_GetMagicItem = new("GetMagicItem");
+    private static readonly Method API_GetMagicItem = new("GetMagicItemJson");
 
     [PublicAPI][Description("Send all your custom conversions, effects, item definitions, etc... to Epic Loot")]
     public static void RegisterAll()
@@ -282,7 +282,7 @@ public static class EpicLoot
     /// <param name="itemData"></param>
     /// <returns></returns>
     [PublicAPI]
-    public static MagicItem GetMagicItem(this ItemDrop.ItemData itemData)
+    public static MagicItem? GetMagicItem(this ItemDrop.ItemData itemData)
     {
         object[] result = API_GetMagicItem.Invoke(itemData);
         string json = (string)(result[0] ?? "");

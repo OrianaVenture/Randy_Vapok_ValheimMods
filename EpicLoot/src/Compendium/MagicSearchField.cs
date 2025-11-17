@@ -15,38 +15,42 @@ public class MagicSearchField
 
     public readonly InputField Input;
 
-    private const float WIDTH_PADDING = 20f;
+    private const float WIDTH_PADDING = 30f;
 
     public MagicSearchField(Transform parent)
     {
         _obj = new GameObject("searchField");
         _rect = _obj.AddComponent<RectTransform>();
+        _rect.localScale = Vector3.one;
         _obj.transform.SetParent(parent);
         _background = _obj.AddComponent<Image>();
         Input = _obj.AddComponent<InputField>();
         Input.targetGraphic = _background;
 
         _glow = new GameObject("glow").AddComponent<Image>();
-        var craftGlow = InventoryGui.instance.m_crafting.Find("RepairButton/Glow").GetComponent<Image>();
+        Image craftGlow = InventoryGui.instance.m_crafting.Find("RepairButton/Glow").GetComponent<Image>();
         _glow.sprite = craftGlow.sprite;
         _glow.type = craftGlow.type;
         _glow.color = craftGlow.color;
         _glow.material = craftGlow.material;
         _glow.rectTransform.SetParent(_rect);
+        _glow.rectTransform.localScale = Vector3.one;
         _glow.enabled = false;
 
         GameObject text = new GameObject("Text");
         _textRect = text.AddComponent<RectTransform>();
+        _textRect.localScale = Vector3.one;
         text.transform.SetParent(_obj.transform);
-        Input.textComponent = text.AddComponent<Text>(); ;
+        Input.textComponent = text.AddComponent<Text>();
         Input.textComponent.alignment = TextAnchor.MiddleLeft;
 
         GameObject placeholderObj = new GameObject("Placeholder");
         _placeholderRect = placeholderObj.AddComponent<RectTransform>();
+        _placeholderRect.localScale = Vector3.one;
         placeholderObj.transform.SetParent(_obj.transform);
         _placeholder = placeholderObj.AddComponent<Text>();
-        //TODO: localize search text
-        _placeholder.text = "Search...";
+        //TODO: localize search text all languages, only in english atm
+        _placeholder.text = Localization.instance.Localize("$mod_epicloot_search_placeholder");
         _placeholder.color = Color.gray;
         Input.placeholder = _placeholder;
         _placeholder.alignment = TextAnchor.MiddleLeft;

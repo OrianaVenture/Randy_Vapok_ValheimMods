@@ -17,6 +17,7 @@ public class MagicTextElement
         _rect = _obj.AddComponent<RectTransform>();
         _rect.sizeDelta = new Vector2(MagicPages.instance.MinWidth - 10f, 35f);
         _rect.SetParent(parent);
+        _rect.localScale = Vector3.one;
 
         _text = _obj.AddComponent<Text>();
         _outline = _obj.AddComponent<Outline>();
