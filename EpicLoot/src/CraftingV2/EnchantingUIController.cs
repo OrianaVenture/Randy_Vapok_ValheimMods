@@ -571,6 +571,18 @@ namespace EpicLoot.CraftingV2
                 biome, EpicLoot.GetGatedItemTypeMode());
 
             List<LootTable> lootTables = new List<LootTable>() { };
+
+            // Attempt to fall back to a previous biome if there is no biome defined for this
+            // If that fails, just select the first identification key
+            if (!cfg.BiomeLootLists.ContainsKey(allowedBiome))
+            {
+                allowedBiome = GatedItemTypeHelper.GetPreviousBiome(allowedBiome);
+                if (!cfg.BiomeLootLists.ContainsKey(allowedBiome)) 
+                {
+                    allowedBiome = cfg.BiomeLootLists.First().Key;
+                }
+            }
+
             foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome])
             {
                 EpicLoot.Log($" - Checking loot set {lootSetName}");
