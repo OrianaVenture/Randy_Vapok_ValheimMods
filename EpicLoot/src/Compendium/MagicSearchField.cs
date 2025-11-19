@@ -49,7 +49,6 @@ public class MagicSearchField
         _placeholderRect.localScale = Vector3.one;
         placeholderObj.transform.SetParent(_obj.transform);
         _placeholder = placeholderObj.AddComponent<Text>();
-        //TODO: localize search text all languages, only in english atm
         _placeholder.text = Localization.instance.Localize("$mod_epicloot_search_placeholder");
         _placeholder.color = Color.gray;
         Input.placeholder = _placeholder;
