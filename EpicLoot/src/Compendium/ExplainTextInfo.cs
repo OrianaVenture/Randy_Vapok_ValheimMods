@@ -16,8 +16,7 @@ public class ExplainTextInfo(string topic) : MagicTextInfo(topic)
 
         foreach (KeyValuePair<string, string> kvp in sortedMagicEffects)
         {
-            instance.MagicPagesTextArea.Add($"<size={MagicPages.LARGE_FONT_SIZE}>{kvp.Key}</size>",
-                $"<color=#c0c0c0ff>{kvp.Value}</color>", "");
+            instance.MagicPagesTextArea.Add($"<size={MagicPages.LARGE_FONT_SIZE}>{kvp.Key}</size>", $"<color=#c0c0c0ff>{kvp.Value}</color>", "");
         }
     }
 }
