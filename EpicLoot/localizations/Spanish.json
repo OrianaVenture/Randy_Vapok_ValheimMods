@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendario",
   "mod_epicloot_mythic": "Mítico",
   "mod_epicloot_me_adrenaline_rush": "Subidón de adrenalina",
-  "mod_epicloot_me_adrenaline_rush_desc": "Aumento de daño durante la duración del efecto."
+  "mod_epicloot_me_adrenaline_rush_desc": "Aumento de daño durante la duración del efecto.",
+  "mod_epicloot_search_placeholder": "Buscar...",
+  "mod_epicloot_no_active_adventures": "No hay aventuras activas",
+  "mod_epicloot_set_bonuses": "Bonos de conjunto"
 }

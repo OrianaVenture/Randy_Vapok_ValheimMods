@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Légendaire",
   "mod_epicloot_mythic": "Mythique",
   "mod_epicloot_me_adrenaline_rush": "Poussée d'adrénaline",
-  "mod_epicloot_me_adrenaline_rush_desc": "Augmentation des dégâts pendant la durée de l'effet."
+  "mod_epicloot_me_adrenaline_rush_desc": "Augmentation des dégâts pendant la durée de l'effet.",
+  "mod_epicloot_search_placeholder": "Rechercher...",
+  "mod_epicloot_no_active_adventures": "Aucune aventure en cours",
+  "mod_epicloot_set_bonuses": "Bonus de set"
 }

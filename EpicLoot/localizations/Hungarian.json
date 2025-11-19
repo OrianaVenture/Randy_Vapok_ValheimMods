@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendás",
   "mod_epicloot_mythic": "mitikus",
   "mod_epicloot_me_adrenaline_rush": "Adrenalin löket",
-  "mod_epicloot_me_adrenaline_rush_desc": "Növekvő kár az hatás ideje alatt."
+  "mod_epicloot_me_adrenaline_rush_desc": "Növekvő kár az hatás ideje alatt.",
+  "mod_epicloot_search_placeholder": "Keresés...",
+  "mod_epicloot_no_active_adventures": "Nincs aktív kaland",
+  "mod_epicloot_set_bonuses": "Szett bónuszok"
 }

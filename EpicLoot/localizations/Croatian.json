@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendaran",
   "mod_epicloot_mythic": "Mitski",
   "mod_epicloot_me_adrenaline_rush": "Adrenalinski nalet",
-  "mod_epicloot_me_adrenaline_rush_desc": "Povećana šteta tijekom trajanja učinka."
+  "mod_epicloot_me_adrenaline_rush_desc": "Povećana šteta tijekom trajanja učinka.",
+  "mod_epicloot_search_placeholder": "Pretraži...",
+  "mod_epicloot_no_active_adventures": "Nema aktivnih avantura",
+  "mod_epicloot_set_bonuses": "Set bonusi"
 }

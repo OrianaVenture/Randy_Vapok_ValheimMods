@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "传奇",
   "mod_epicloot_mythic": "神话般的",
   "mod_epicloot_me_adrenaline_rush": "肾上腺素飙升",
-  "mod_epicloot_me_adrenaline_rush_desc": "增加伤害持续时间。"
+  "mod_epicloot_me_adrenaline_rush_desc": "增加伤害持续时间。",
+  "mod_epicloot_search_placeholder": "搜索...",
+  "mod_epicloot_no_active_adventures": "没有正在进行的冒险",
+  "mod_epicloot_set_bonuses": "套装加成"
+
 }

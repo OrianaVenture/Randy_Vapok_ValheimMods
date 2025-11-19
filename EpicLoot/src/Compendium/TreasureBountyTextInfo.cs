@@ -24,16 +24,15 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
             IOrderedEnumerable<TreasureMapChestInfo> sortedTreasureMaps = saveData.TreasureMaps
                 .Where(x => x.State == TreasureMapState.Purchased)
                 .OrderBy(x => GetBiomeOrder(x.Biome));
-
-            content.Add("");
+            
             foreach (TreasureMapChestInfo treasureMap in sortedTreasureMaps)
             {
-                content.Add(Localization.instance.Localize($" - $mod_epicloot_merchant_treasuremaps: " +
-                    $"<color={GetBiomeColor(treasureMap.Biome)}>$biome_{treasureMap.Biome.ToString().ToLower()} " +
-                    $"#{treasureMap.Interval + 1}</color>"));
+                content.Add($" - $mod_epicloot_merchant_treasuremaps: " +
+                            $"<color={GetBiomeColor(treasureMap.Biome)}>$biome_{treasureMap.Biome.ToString().ToLower()} " +
+                            $"#{treasureMap.Interval + 1}</color>");
             }
 
-            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.HEADER_FONT_SIZE}>" + $"$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.HEADER_FONT_SIZE}>$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
             content.Clear();
         }
 
@@ -41,8 +40,7 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
         {
             hasValues = true;
             IOrderedEnumerable<BountyInfo> sortedBounties = saveData.Bounties.OrderBy(x => x.State);
-
-            content.Add("");
+            
             foreach (BountyInfo bounty in sortedBounties)
             {
                 if (bounty.State != BountyState.InProgress && bounty.State != BountyState.Complete)
@@ -82,7 +80,7 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
                 
             }
 
-            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.HEADER_FONT_SIZE}>" + $"$mod_epicloot_activebounties</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.HEADER_FONT_SIZE}>" + $"$mod_epicloot_activebounties</size></color>", content.ToArray());
         }
 
         if (!hasValues)

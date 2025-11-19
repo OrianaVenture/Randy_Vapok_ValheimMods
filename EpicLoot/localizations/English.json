@@ -1474,5 +1474,6 @@
     "mod_epicloot_mythic": "Mythic",
   
     "mod_epicloot_search_placeholder": "Search...",
-    "mod_epicloot_no_active_adventures": "No active adventures"
+    "mod_epicloot_no_active_adventures": "No active adventures",
+    "mod_epicloot_set_bonuses": "Set Bonuses"
 }

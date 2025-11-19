@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "ตำนาน",
   "mod_epicloot_mythic": "ส่วนที่เป็นตำนาน",
   "mod_epicloot_me_adrenaline_rush": "กระตุ้นอารมณ์",
-  "mod_epicloot_me_adrenaline_rush_desc": "เพิ่มความเสียหายตลอดระยะเวลาของผลขึ้น"
+  "mod_epicloot_me_adrenaline_rush_desc": "เพิ่มความเสียหายตลอดระยะเวลาของผลขึ้น",
+  "mod_epicloot_search_placeholder": "ค้นหา...",
+  "mod_epicloot_no_active_adventures": "ไม่มีการผจญภัยที่กำลังดำเนินอยู่",
+  "mod_epicloot_set_bonuses": "โบนัสชุด"
 }

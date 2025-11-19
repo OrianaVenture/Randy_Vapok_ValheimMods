@@ -1439,5 +1439,8 @@
   "mod_epicloot_l_gungnir": "Gungnir, ვარდი ვისარი",
   "mod_epicloot_l_gungnir_desc": "მოდიფიცირებული არის მსოფლიო ხელის Yggdrasil და წერილებით ენიშრებულია კონტრაქტები, რომელიც საპატიმობო ძლების მიერ მიიღო.",
   "mod_epicloot_me_adrenaline_rush": "ადრენალინის შედეგი",
-  "mod_epicloot_me_adrenaline_rush_desc": "ზრდებული ზედამხეცება ეფექტის ხანგრძლივობის გარეშე."
+  "mod_epicloot_me_adrenaline_rush_desc": "ზრდებული ზედამხეცება ეფექტის ხანგრძლივობის გარეშე.",
+  "mod_epicloot_search_placeholder": "ძიება...",
+  "mod_epicloot_no_active_adventures": "მოქმედი თავგადასავალი არ არის",
+  "mod_epicloot_set_bonuses": "ჯგუფური ბონუსები"
 }

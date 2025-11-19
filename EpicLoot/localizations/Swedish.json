@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendarisk",
   "mod_epicloot_mythic": "Mytisk",
   "mod_epicloot_me_adrenaline_rush": "Adrenalinstöt",
-  "mod_epicloot_me_adrenaline_rush_desc": "Ökad skada under effektens varaktighet."
+  "mod_epicloot_me_adrenaline_rush_desc": "Ökad skada under effektens varaktighet.",
+  "mod_epicloot_search_placeholder": "Sök...",
+  "mod_epicloot_no_active_adventures": "Inga aktiva äventyr",
+  "mod_epicloot_set_bonuses": "Setbonusar"
 }

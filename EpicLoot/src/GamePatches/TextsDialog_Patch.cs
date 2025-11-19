@@ -24,6 +24,7 @@ internal static class TextsDialog_UpdateTextsList_Patch
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 0 : 2, MagicPages.instance.MagicEffectsPage);
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 1 : 3, MagicPages.instance.ExplainPage);
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 2 : 4, MagicPages.instance.TreasureBountyPage);
+        __instance.m_texts.Insert(EpicLoot.HasAuga ? 3 : 5, MagicPages.instance.SetInfos);
     }
 }
 

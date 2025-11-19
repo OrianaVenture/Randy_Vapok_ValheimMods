@@ -1439,5 +1439,8 @@
   "mod_epicloot_Rare": "Редкий",
   "mod_epicloot_Epic": "Эпический",
   "mod_epicloot_Legendary": "Легендарный",
-  "mod_epicloot_Mythic": "Мифический"
+  "mod_epicloot_Mythic": "Мифический",
+  "mod_epicloot_search_placeholder": "Поиск...",
+  "mod_epicloot_no_active_adventures": "Активных приключений нет",
+  "mod_epicloot_set_bonuses": "Бонусы комплекта"
 }

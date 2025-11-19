@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Легендарно",
   "mod_epicloot_mythic": "Mitski",
   "mod_epicloot_me_adrenaline_rush": "Адреналинско нападение",
-  "mod_epicloot_me_adrenaline_rush_desc": "Поголема штета за времетраење на ефектот."
+  "mod_epicloot_me_adrenaline_rush_desc": "Поголема штета за времетраење на ефектот.",
+  "mod_epicloot_search_placeholder": "Пребарај...",
+  "mod_epicloot_no_active_adventures": "Нема активни авантури",
+  "mod_epicloot_set_bonuses": "Бонуси од сет",
 }

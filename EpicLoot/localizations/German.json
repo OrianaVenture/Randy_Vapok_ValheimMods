@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendär",
   "mod_epicloot_mythic": "Mythisch",
   "mod_epicloot_me_adrenaline_rush": "Adrenalinschub",
-  "mod_epicloot_me_adrenaline_rush_desc": "Erhöhter Schaden für die Dauer des Effekts."
+  "mod_epicloot_me_adrenaline_rush_desc": "Erhöhter Schaden für die Dauer des Effekts.",
+  "mod_epicloot_search_placeholder": "Suchen...",
+  "mod_epicloot_no_active_adventures": "Keine aktiven Abenteuer",
+  "mod_epicloot_set_bonuses": "Set-Boni"
 }

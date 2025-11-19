@@ -23,12 +23,25 @@ public class MagicTextElement
         _outline = _obj.AddComponent<Outline>();
         _outline.enabled = false;
         _text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        _text.verticalOverflow = VerticalWrapMode.Overflow;
+        _text.verticalOverflow = VerticalWrapMode.Truncate;
         _text.font = MagicFontManager.GetFont(MagicFontManager.FontOptions.AveriaSerifLibre);
         _text.fontSize = MagicPages.FONT_SIZE;
         _text.supportRichText = true;
-
-        _obj.AddComponent<ContentSizeFitter>();
+    }
+    
+    private void Resize()
+    {
+        float newHeight = GetTextPreferredHeight(_text, _rect);
+        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, Mathf.Max(newHeight, 35f));
+    }
+    
+    private static float GetTextPreferredHeight(Text text, RectTransform rect)
+    {
+        if (string.IsNullOrEmpty(text.text)) return 0f;
+        TextGenerator textGen = text.cachedTextGenerator;
+        TextGenerationSettings settings = text.GetGenerationSettings(rect.rect.size);
+        float preferredHeight = textGen.GetPreferredHeight(text.text, settings);
+        return preferredHeight;
     }
 
     private MagicTextElement(GameObject source)
@@ -53,6 +66,7 @@ public class MagicTextElement
     private void Set(string line)
     {
         _text.text = Localization.instance.Localize(line);
+        Resize();
     }
     public void SetParent(Transform parent) => _rect.SetParent(parent);
     public void Destroy() => UnityEngine.Object.Destroy(_obj);

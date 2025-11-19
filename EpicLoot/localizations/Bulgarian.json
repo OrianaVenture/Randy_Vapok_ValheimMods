@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Легендарен",
   "mod_epicloot_mythic": "Митичен",
   "mod_epicloot_me_adrenaline_rush": "Адреналинов удар",
-  "mod_epicloot_me_adrenaline_rush_desc": "Увеличено увреждане за продължителността на ефекта."
+  "mod_epicloot_me_adrenaline_rush_desc": "Увеличено увреждане за продължителността на ефекта.",
+  "mod_epicloot_search_placeholder": "Търсене...",
+  "mod_epicloot_no_active_adventures": "Няма активни приключения",
+  "mod_epicloot_set_bonuses": "Комплектни бонуси"
+
 }

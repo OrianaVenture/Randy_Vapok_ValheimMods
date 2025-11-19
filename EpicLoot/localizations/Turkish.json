@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Efsanevi",
   "mod_epicloot_mythic": "Mitolojik",
   "mod_epicloot_me_adrenaline_rush": "Adrenalin patlaması",
-  "mod_epicloot_me_adrenaline_rush_desc": "Artan hasar etki süresince."
+  "mod_epicloot_me_adrenaline_rush_desc": "Artan hasar etki süresince.",
+  "mod_epicloot_search_placeholder": "Ara...",
+  "mod_epicloot_no_active_adventures": "Aktif macera yok",
+  "mod_epicloot_set_bonuses": "Set Bonusları"
 }

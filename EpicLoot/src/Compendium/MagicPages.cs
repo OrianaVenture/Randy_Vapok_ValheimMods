@@ -9,6 +9,7 @@ public class MagicPages : MonoBehaviour
     public ExplainTextInfo ExplainPage;
     public TreasureBountyTextInfo TreasureBountyPage;
     public MagicEffectTextInfo MagicEffectsPage;
+    public SetInfo SetInfos;
 
     public const int HEADER_FONT_SIZE = 40;
     public const int LARGE_FONT_SIZE = 24;
@@ -35,6 +36,8 @@ public class MagicPages : MonoBehaviour
             $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_adventure_title"));
         MagicEffectsPage = new MagicEffectTextInfo(Localization.instance.Localize(
             $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_active_magic_effects"));
+        SetInfos = new SetInfo(Localization.instance.Localize(
+            $"{EpicLoot.GetMagicEffectPip(false)} Legendary Sets"));
         
         instance = this;
         

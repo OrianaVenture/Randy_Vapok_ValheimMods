@@ -1439,5 +1439,8 @@
   "mod_epicloot_legendary": "Legendarisch",
   "mod_epicloot_mythic": " Mythisch",
   "mod_epicloot_me_adrenaline_rush": "Adrenaline stoot",
-  "mod_epicloot_me_adrenaline_rush_desc": "Verhoogde schade gedurende de duur van het effect."
+  "mod_epicloot_me_adrenaline_rush_desc": "Verhoogde schade gedurende de duur van het effect.",
+  "mod_epicloot_search_placeholder": "Zoeken...",
+  "mod_epicloot_no_active_adventures": "Geen actieve avonturen",
+  "mod_epicloot_set_bonuses": "Setbonussen"
 }
