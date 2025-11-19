@@ -39,10 +39,10 @@ namespace EpicLoot.MagicItemEffects
                 return lowHealthThreshold; 
             }
             
-            if (player.HasActiveMagicEffect(MagicEffectType.ModifyLowHealth, out float effectValue))
+            if (player.HasActiveMagicEffect(MagicEffectType.ModifyLowHealth, out float effectValue, 0.01f))
             {
                 lowHealthThreshold += effectValue;
-                Dictionary<string, float> lowhealthcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
+                Dictionary<string, float> lowhealthcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.ModifyLowHealth].Config;
                 if (lowhealthcfg != null && lowhealthcfg.ContainsKey("Max") && lowhealthcfg["Max"] < lowHealthThreshold)
                 {
                     lowHealthThreshold = lowhealthcfg["Max"];
