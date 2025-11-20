@@ -5853,11 +5853,11 @@
         }
       },
       "Config": {
-        "SilverNecklace": 60,
-        "Ruby": 40,
-        "AmberPearl": 20,
-        "Amber": 10,
-        "Coins": 1
+        "SilverNecklace": 300,
+        "Ruby": 200,
+        "AmberPearl": 100,
+        "Amber": 50,
+        "Coins": 8
       },
       "SelectionWeight": 1,
       "Prefixes": [
