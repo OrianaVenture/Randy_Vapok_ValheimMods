@@ -185,7 +185,8 @@ namespace EpicLoot_UnityLib
             foreach (EnchantingFeature feature in Enum.GetValues(typeof(EnchantingFeature)))
             {
                 string featureName = feature.ToString();
-                if (_nview.GetZDO().GetInt(FormatFeatureName(featureName), uninitializedSentinel) == uninitializedSentinel)
+                int featureValue = _nview.GetZDO().GetInt(FormatFeatureName(featureName), uninitializedSentinel);
+                if (featureValue < 0)
                 {
                     //For those that travel here from afar, you might be asking yourself why I'm adding and subtracting 1 to the level.
                     //It's because Iron Gate decided that 0 value ZDO's should be removed when world save occurs........
