@@ -148,5 +148,7 @@ namespace EpicLoot.Abilities
         {
             SetCooldownEndTime(0);
         }
+        
+        public virtual void OnRemoved(){}
     }
 }

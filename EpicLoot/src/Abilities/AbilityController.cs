@@ -84,24 +84,61 @@ namespace EpicLoot.Abilities
             UpdatePlayerAbilities();
         }
 
+        // public void UpdatePlayerAbilities()
+        // {
+        //     var availableAbilities = GetAvailableAbilities();
+        //     _currentAbilities.RemoveAll(x => !availableAbilities.Exists(y => y.ID == x.AbilityDef.ID));
+        //
+        //     for (var i = 0; i < AbilitySlotCount && i < availableAbilities.Count; i++)
+        //     {
+        //         var abilityDef = availableAbilities[i];
+        //         if (abilityDef.ActivationMode == AbilityActivationMode.Activated
+        //             || abilityDef.ActivationMode == AbilityActivationMode.Triggerable)
+        //         {
+        //             if (!_currentAbilities.Exists(x => x.AbilityDef.ID == abilityDef.ID))
+        //             {
+        //                 var ability = AbilityFactory.Create(abilityDef.ID);
+        //                 ability.Initialize(abilityDef, _player);
+        //                 _currentAbilities.Add(ability);
+        //             }
+        //         }
+        //     }
+        // }
+        
         public void UpdatePlayerAbilities()
         {
-            var availableAbilities = GetAvailableAbilities();
+            List<AbilityDefinition> availableAbilities = GetAvailableAbilities();
+            HashSet<string> availableAbilityIds = new HashSet<string>(
+                availableAbilities
+                    .Take(AbilitySlotCount)
+                    .Where(x => x.ActivationMode is AbilityActivationMode.Activated or AbilityActivationMode.Triggerable)
+                    .Select(x => x.ID)
+            );
 
-            _currentAbilities.RemoveAll(x => !availableAbilities.Exists(y => y.ID == x.AbilityDef.ID));
-
-            for (var i = 0; i < AbilitySlotCount && i < availableAbilities.Count; i++)
+            // Single pass: remove old abilities and track which ones we still have
+            HashSet<string> existingAbilityIds = new HashSet<string>();
+            for (var i = _currentAbilities.Count - 1; i >= 0; --i)
             {
-                var abilityDef = availableAbilities[i];
-                if (abilityDef.ActivationMode == AbilityActivationMode.Activated
-                    || abilityDef.ActivationMode == AbilityActivationMode.Triggerable)
+                Ability ability = _currentAbilities[i];
+                if (!availableAbilityIds.Contains(ability.AbilityDef.ID))
                 {
-                    if (!_currentAbilities.Exists(x => x.AbilityDef.ID == abilityDef.ID))
-                    {
-                        var ability = AbilityFactory.Create(abilityDef.ID);
-                        ability.Initialize(abilityDef, _player);
-                        _currentAbilities.Add(ability);
-                    }
+                    ability.OnRemoved();
+                    _currentAbilities.RemoveAt(i);
+                }
+                else
+                {
+                    existingAbilityIds.Add(ability.AbilityDef.ID);
+                }
+            }
+
+            // Add new abilities
+            foreach (AbilityDefinition abilityDef in availableAbilities.Take(AbilitySlotCount))
+            {
+                if (abilityDef.ActivationMode is AbilityActivationMode.Activated or AbilityActivationMode.Triggerable && !existingAbilityIds.Contains(abilityDef.ID))
+                {
+                    Ability ability = AbilityFactory.Create(abilityDef.ID);
+                    ability.Initialize(abilityDef, _player);
+                    _currentAbilities.Add(ability);
                 }
             }
         }
