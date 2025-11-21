@@ -1442,5 +1442,6 @@
   "mod_epicloot_me_adrenaline_rush_desc": "効果の期間中にダメージが増加します。効果の期間中にダメージが増加します。",
   "mod_epicloot_search_placeholder": "検索...",
   "mod_epicloot_no_active_adventures": "アクティブな冒険はありません",
-  "mod_epicloot_set_bonuses": "セットボーナス"
+  "mod_epicloot_set_bonuses": "セットボーナス",
+  "mod_epicloot_legendary_sets": "伝説のセット"
 }

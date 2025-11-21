@@ -1442,5 +1442,6 @@
   "mod_epicloot_me_adrenaline_rush_desc": "효과 기간 동안 피해 증가합니다.",
   "mod_epicloot_search_placeholder": "검색...",
   "mod_epicloot_no_active_adventures": "활성화된 모험이 없습니다",
-  "mod_epicloot_set_bonuses": "세트 보너스"
+  "mod_epicloot_set_bonuses": "세트 보너스",
+  "mod_epicloot_legendary_sets": "전설 세트"
 }

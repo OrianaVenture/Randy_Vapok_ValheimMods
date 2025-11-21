@@ -37,7 +37,7 @@ public class MagicPages : MonoBehaviour
         MagicEffectsPage = new MagicEffectTextInfo(Localization.instance.Localize(
             $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_active_magic_effects"));
         SetInfos = new SetInfo(Localization.instance.Localize(
-            $"{EpicLoot.GetMagicEffectPip(false)} Legendary Sets"));
+            $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_legendary_sets"));
         
         instance = this;
         

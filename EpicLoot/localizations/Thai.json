@@ -1442,5 +1442,6 @@
   "mod_epicloot_me_adrenaline_rush_desc": "เพิ่มความเสียหายตลอดระยะเวลาของผลขึ้น",
   "mod_epicloot_search_placeholder": "ค้นหา...",
   "mod_epicloot_no_active_adventures": "ไม่มีการผจญภัยที่กำลังดำเนินอยู่",
-  "mod_epicloot_set_bonuses": "โบนัสชุด"
+  "mod_epicloot_set_bonuses": "โบนัสชุด",
+  "mod_epicloot_legendary_sets": "ชุดในตำนาน"
 }
