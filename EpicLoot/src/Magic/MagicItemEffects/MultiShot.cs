@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Reflection.Emit;
 using UnityEngine;
 
@@ -9,12 +8,17 @@ namespace EpicLoot.MagicItemEffects
     [HarmonyPatch]
     public static class MultiShot
     {
-
-        public static bool isTripleShotActive = false;
+        public static bool IsTripleShotActive = false;
+        public static int ShotProjectiles = 0;
+        public const string CHANCE_KEY = "Chance";
+        public const string DAMAGE_KEY = "Damage";
+        public const string COSTSCALE_KEY = "CostScale";
+        public const string ACCURACY_KEY = "Accuracy";
+        public const string PROJECTILES_KEY = "Projectiles";
 
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
         [HarmonyPrefix]
-        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes? __state)
+        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes __state)
         {
             if (__instance?.GetWeapon() == null || __instance.m_character == null || !__instance.m_character.IsPlayer())
             {
@@ -22,106 +26,107 @@ namespace EpicLoot.MagicItemEffects
             }
 
             __state = __instance.GetWeapon().m_shared.m_damages;
+            Player player = (Player)__instance.m_character;
 
-
-            var player = (Player)__instance.m_character;
-
-            if (player.HasActiveMagicEffect(MagicEffectType.TripleBowShot, out float tripleBowEffectValue)) {
-                var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
-
-                // If chance is enabled, roll to see if the effect will run
-                if (tripleshotcfg != null && tripleshotcfg["Chance"] < 1f) {
-                    if (UnityEngine.Random.value > tripleshotcfg["Chance"]) { return; }
-                }
-
-                isTripleShotActive = true;
-
-                // Modify triple shot damage by the config or the fallback 0.35f;
-                var weaponDamage = __instance.GetWeapon().m_shared.m_damages;
-                if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Damage")) {
-                    weaponDamage.Modify(tripleshotcfg["Damage"]);
-                } else {
-                    weaponDamage.Modify(0.75f);
-                }
-                __instance.GetWeapon().m_shared.m_damages = weaponDamage;
-
-                ModifyAttackCost(player, tripleshotcfg, __instance.GetAttackStamina(), __instance.GetAttackEitr(), __instance.GetAttackHealth());
-
-                // Modify the shots accuracy, if its not defined, no accuracy change
-                if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Accuracy"))
-                {
-                    __instance.m_projectileAccuracy = __instance.m_weapon.m_shared.m_attack.m_projectileAccuracy * tripleshotcfg["Accuracy"];
-                }
-
-                // Set projectiles, if config is not defined its x3
-                if (tripleshotcfg != null && tripleshotcfg.ContainsKey("Projectiles")) {
-                    __instance.m_projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * Mathf.RoundToInt(tripleshotcfg["Projectiles"]);
-                } else {
-                    __instance.m_projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * 3;
-                }
-            } else {
-                isTripleShotActive = false;
+            if (player != Player.m_localPlayer)
+            {
+                return;
             }
 
-            if (player.HasActiveMagicEffect(MagicEffectType.DoubleMagicShot, out float doubleMagicEffectValue)) {
-                Dictionary<string, float> magicshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
-
-                // If chance is enabled, roll to see if the effect will run
-                if (magicshotcfg != null && magicshotcfg["Chance"] < 1f) {
-                    if (UnityEngine.Random.value > magicshotcfg["Chance"]) { return; }
-                }
-
-                // Modify double shot damage by the config or the fallback 0.5f;
-                var weaponDamage = __instance.GetWeapon().m_shared.m_damages;
-                if (magicshotcfg != null && magicshotcfg.ContainsKey("Damage")) {
-                    weaponDamage.Modify(magicshotcfg["Damage"]);
-                } else {
-                    weaponDamage.Modify(0.9f);
-                }
-                __instance.GetWeapon().m_shared.m_damages = weaponDamage;
-
-
-                // Modify the shots accuracy, if its not defined, no accuracy change
-                if (magicshotcfg != null && magicshotcfg.ContainsKey("Accuracy"))
+            if (player.HasActiveMagicEffect(MagicEffectType.TripleBowShot, out float tripleBowEffectValue))
+            {
+                Dictionary<string, float> bowShotCfg = null;
+                if (MagicItemEffectDefinitions.AllDefinitions != null &&
+                    MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.TripleBowShot))
                 {
-                    __instance.m_projectileAccuracy = __instance.m_weapon.m_shared.m_attack.m_projectileAccuracy * magicshotcfg["Accuracy"];
+                    bowShotCfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
                 }
-                //// Cap the accuracy
-                //if (__instance.m_projectileAccuracy < 5) {
-                //    __instance.m_projectileAccuracy = 5;
-                //    __instance.m_projectileAccuracyMin = 3;
-                //}
 
-                ModifyAttackCost(player, magicshotcfg, __instance.GetAttackStamina(), __instance.GetAttackEitr(), __instance.GetAttackHealth());
-
-                // Set projectiles, if config is not defined its x3
-                if (magicshotcfg != null && magicshotcfg.ContainsKey("Projectiles")) {
-                    __instance.m_projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * Mathf.RoundToInt(magicshotcfg["Projectiles"]);
-                } else {
-                    __instance.m_projectiles = __instance.m_weapon.m_shared.m_attack.m_projectiles * 2;
+                if (ModifyShot(ref player, ref __instance, bowShotCfg, 0.4f, 2f, 1.25f, 3))
+                {
+                    IsTripleShotActive = true;
                 }
             }
+            else
+            {
+                IsTripleShotActive = false;
+            }
+
+            if (player.HasActiveMagicEffect(MagicEffectType.DoubleMagicShot, out float doubleMagicEffectValue))
+            {
+                Dictionary<string, float> magicShotCfg = null;
+                if (MagicItemEffectDefinitions.AllDefinitions != null &&
+                    MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.DoubleMagicShot))
+                {
+                    magicShotCfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
+                }
+
+                ModifyShot(ref player, ref __instance, magicShotCfg, 0.66f, 2f, 1.2f, 2);
+            }
+        }
+
+        private static bool ModifyShot(ref Player player, ref Attack attack, Dictionary<string, float> configuration,
+            float damage, float costScale, float accuracy, int projectiles)
+        {
+            if (configuration != null)
+            {
+                // If chance is enabled, roll to see if the effect will run
+                if (configuration.ContainsKey(CHANCE_KEY) && configuration[CHANCE_KEY] < 1f)
+                {
+                    if (UnityEngine.Random.value > configuration[CHANCE_KEY])
+                    {
+                        return false;
+                    }
+                }
+
+                if (configuration.ContainsKey(DAMAGE_KEY))
+                {
+                    damage = configuration[DAMAGE_KEY];
+                }
+
+                if (configuration.ContainsKey(COSTSCALE_KEY))
+                {
+                    costScale = configuration[COSTSCALE_KEY];
+                }
+
+                if (configuration.ContainsKey(ACCURACY_KEY))
+                {
+                    accuracy = configuration[ACCURACY_KEY];
+                }
+
+                if (configuration.ContainsKey(PROJECTILES_KEY))
+                {
+                    projectiles = Mathf.RoundToInt(configuration[PROJECTILES_KEY]);
+                }
+            }
+
+            HitData.DamageTypes weaponDamage = attack.GetWeapon().m_shared.m_damages;
+            weaponDamage.Modify(damage);
+            attack.GetWeapon().m_shared.m_damages = weaponDamage;
+
+            ModifyAttackCost(player, costScale, attack.GetAttackStamina(), attack.GetAttackEitr(), attack.GetAttackHealth());
+
+            attack.m_projectileAccuracy = attack.m_weapon.m_shared.m_attack.m_projectileAccuracy * accuracy;
+            attack.m_projectiles = attack.m_weapon.m_shared.m_attack.m_projectiles * projectiles;
+            ShotProjectiles = projectiles;
+
+            return true;
         }
 
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-        public static void Postfix(Attack __instance, ref HitData.DamageTypes? __state)
+        public static void Postfix(Attack __instance, ref HitData.DamageTypes __state)
         {
             if (__state != null)
             {
-                __instance.GetWeapon().m_shared.m_damages = __state.Value;
+                __instance.GetWeapon().m_shared.m_damages = __state;
             }
         }
 
-        public static void ModifyAttackCost(Player player, Dictionary<string, float> config, float stamcost, float eitrcost, float healthcost) {
-            if (config != null && config.ContainsKey("CostScale")) {
-                if (stamcost > 0) { player.UseStamina(healthcost * config["CostScale"]); }
-                if (eitrcost > 0) { player.UseEitr(healthcost * config["CostScale"]); }
-                if (healthcost > 0) { player.UseHealth(healthcost * config["CostScale"]); }
-            } else {
-                if (stamcost > 0) { player.UseStamina(healthcost * 2); }
-                if (eitrcost > 0) { player.UseEitr(healthcost * 2); }
-                if (healthcost > 0) { player.UseHealth(healthcost * 2); }
-            }
+        public static void ModifyAttackCost(Player player, float scale, float stamcost, float eitrcost, float healthcost)
+        {
+            if (stamcost > 0) { player.UseStamina(healthcost * scale); }
+            if (eitrcost > 0) { player.UseEitr(healthcost * scale); }
+            if (healthcost > 0) { player.UseHealth(healthcost * scale); }
         }
     }
 
@@ -134,9 +139,9 @@ namespace EpicLoot.MagicItemEffects
         //[HarmonyDebug]
         [HarmonyTranspiler]
         [HarmonyPatch(nameof(Attack.UseAmmo))]
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions /*, ILGenerator generator*/)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var codeMatcher = new CodeMatcher(instructions);
+            CodeMatcher codeMatcher = new CodeMatcher(instructions);
             codeMatcher.MatchStartForward(
                 new CodeMatch(OpCodes.Callvirt),
                 new CodeMatch(OpCodes.Ldarg_1),
@@ -151,18 +156,14 @@ namespace EpicLoot.MagicItemEffects
 
         public static bool CustomRemoveItem(Inventory inventory, ItemDrop.ItemData item, int amount)
         {
-            if (MultiShot.isTripleShotActive) {
-                MultiShot.isTripleShotActive = false;
-                var tripleshotcfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.TripleBowShot].Config;
-                if (tripleshotcfg != null && tripleshotcfg["Projectiles"] < 1f) {
-                    amount *= Mathf.RoundToInt(tripleshotcfg["Projectiles"]);
-                } else {
-                    amount *= 3;
-                }
+            if (MultiShot.IsTripleShotActive)
+            {
+                amount *= MultiShot.ShotProjectiles;
+                MultiShot.IsTripleShotActive = false;
+                MultiShot.ShotProjectiles = 0;
             }
+
             return inventory.RemoveItem(item, amount);
         }
-
     }
-
 }
