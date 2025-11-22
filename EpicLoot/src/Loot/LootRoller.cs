@@ -201,7 +201,8 @@ namespace EpicLoot
                 CheatEffectCount > 0;
         }
 
-        public static Dictionary<string,float> GetLootTableChances(Vector3 location, List<LootTable> LootTables) {
+        public static Dictionary<string,float> GetLootTableChances(Vector3 location, List<LootTable> LootTables)
+        {
             Dictionary<string, float> results = new Dictionary<string, float>();
             EpicLoot.Log($"Checking {LootTables.Count} loot tables");
             foreach(LootTable lt in LootTables)
@@ -260,7 +261,7 @@ namespace EpicLoot
 
             while (results.Count < numResults)
             {
-                foreach(LootTable lt in lootTables.shuffleList())
+                foreach (LootTable lt in lootTables.shuffleList())
                 {
                     if (results.Count >= numResults)
                     {
@@ -317,7 +318,8 @@ namespace EpicLoot
                         int rarityLength = lootDrop?.Rarity?.Length != null ? lootDrop.Rarity.Length : -1;
                         EpicLoot.Log($"Item: {itemName} - Rarity Count: {rarityLength} - Weight: {lootDrop.Weight}");
 
-                        if (itemName == "Invalid Item Name") {
+                        if (itemName == "Invalid Item Name")
+                        {
                             failures += 1;
                             continue;
                         }
@@ -367,10 +369,10 @@ namespace EpicLoot
                         ZNetScene.instance.Destroy(droppedItem); // Destroy the object, we just needed the itemdata
                     }
                 }
-                
             }
 
-            if (failures > 0) {
+            if (failures > 0)
+            {
                 EpicLoot.LogWarningForce($"{failures} during item selection, this may have triggered a fallback. Ensure your iteminfo does not have invalid items.");
             }
 

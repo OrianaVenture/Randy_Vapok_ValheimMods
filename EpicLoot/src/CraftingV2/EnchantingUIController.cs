@@ -795,7 +795,7 @@ namespace EpicLoot.CraftingV2
                         continue;
                     }
 
-                    if (item.IsMagic() && item.IsRunestone() == false && !item.IsUnidentified())
+                    if (item.IsMagic() && item.CanBeRunified() && !item.IsRunestone() && !item.IsUnidentified())
                     {
                         result.Add(new InventoryItemListElement() { Item = item });
                     }
@@ -1074,8 +1074,12 @@ namespace EpicLoot.CraftingV2
                 {
                     MagicItemEffect augmentableEffect = augmentableEffects[index];
                     MagicItemEffectDefinition effectDef = MagicItemEffectDefinitions.Get(augmentableEffect.EffectType);
-                    bool canAugment = effectDef != null && effectDef.CanBeAugmented;
-                    if (runecheck) { canAugment = effectDef != null && effectDef.CanBeRunified; }
+                    bool canAugment = (effectDef != null && effectDef.CanBeAugmented);
+                    if (runecheck)
+                    {
+                        // Rune check if it is for the Rune UI, Augment if not
+                        canAugment = (effectDef != null && effectDef.CanBeRunified);
+                    }
 
                     string text = AugmentHelper.GetAugmentSelectorText(magicItem, index, augmentableEffects, rarity);
                     string color = EpicLoot.GetRarityColor(rarity);

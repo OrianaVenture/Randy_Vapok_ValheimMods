@@ -305,6 +305,17 @@ namespace EpicLoot
                 .Any(effectDef => effectDef.CanBeAugmented);
         }
 
+        public static bool CanBeRunified(this ItemDrop.ItemData itemData)
+        {
+            if (!itemData.IsMagic())
+            {
+                return false;
+            }
+
+            return itemData.GetMagicItem().Effects.Select(effect => MagicItemEffectDefinitions.Get(effect.EffectType))
+                .Any(effectDef => effectDef.CanBeRunified);
+        }
+
         public static string GetSetID(this ItemDrop.ItemData itemData, out bool isMundane)
         {
             isMundane = true;
@@ -422,6 +433,7 @@ namespace EpicLoot
                             instanceData.SetMagicItem(prefabData.MagicItem);
                         }
                     }
+
                     return itemDropPrefab.gameObject;
                 }
             }
