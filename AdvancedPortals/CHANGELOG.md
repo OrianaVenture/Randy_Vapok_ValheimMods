@@ -1,3 +1,6 @@
+## 1.1.1
+* Fixed a small typo issue that only manifested when TargetPortal was installed.
+
 ## 1.1.0
 * Overhauled portal appearances to better match vanilla styles!
 * Now requires Jotunn to run, please install this new dependency!

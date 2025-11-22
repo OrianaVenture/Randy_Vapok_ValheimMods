@@ -24,7 +24,7 @@ namespace AdvancedPortals
     {
         public const string PluginId = "randyknapp.mods.advancedportals";
         public const string DisplayName = "Advanced Portals";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -166,7 +166,7 @@ namespace AdvancedPortals
                 if (handlePortalClickMethod != null)
                 {
                     _harmony.Patch(handlePortalClickMethod, new HarmonyMethod(
-                        typeof(AdvancedPortals), nameof(Teleport_Patch.TargetPortal_HandlePortalClick_Prefix)));
+                        typeof(Teleport_Patch), nameof(Teleport_Patch.TargetPortal_HandlePortalClick_Prefix)));
                     _harmony.Patch(handlePortalClickMethod, null, new HarmonyMethod(
                         typeof(Teleport_Patch), nameof(Teleport_Patch.Generic_Postfix)));
                 }
