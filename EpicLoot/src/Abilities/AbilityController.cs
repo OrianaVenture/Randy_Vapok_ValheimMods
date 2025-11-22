@@ -83,27 +83,6 @@ namespace EpicLoot.Abilities
         {
             UpdatePlayerAbilities();
         }
-
-        // public void UpdatePlayerAbilities()
-        // {
-        //     var availableAbilities = GetAvailableAbilities();
-        //     _currentAbilities.RemoveAll(x => !availableAbilities.Exists(y => y.ID == x.AbilityDef.ID));
-        //
-        //     for (var i = 0; i < AbilitySlotCount && i < availableAbilities.Count; i++)
-        //     {
-        //         var abilityDef = availableAbilities[i];
-        //         if (abilityDef.ActivationMode == AbilityActivationMode.Activated
-        //             || abilityDef.ActivationMode == AbilityActivationMode.Triggerable)
-        //         {
-        //             if (!_currentAbilities.Exists(x => x.AbilityDef.ID == abilityDef.ID))
-        //             {
-        //                 var ability = AbilityFactory.Create(abilityDef.ID);
-        //                 ability.Initialize(abilityDef, _player);
-        //                 _currentAbilities.Add(ability);
-        //             }
-        //         }
-        //     }
-        // }
         
         public void UpdatePlayerAbilities()
         {

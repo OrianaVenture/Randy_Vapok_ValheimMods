@@ -105,7 +105,10 @@ public class AbilityDefinition
 
     public bool HasCurrentAbility(Player player)
     {
-        if (!RunTimeRegistry.TryGetValue(this, out string key)) return false;
+        if (!RunTimeRegistry.TryGetValue(this, out string key))
+        {
+            return false;
+        }
         object[] result = API_HasCurrentAbility.Invoke(player, key);
         bool output = (bool)(result[0] ?? false);
         return output;
