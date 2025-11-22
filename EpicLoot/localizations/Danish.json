@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Legendarisk",
   "mod_epicloot_mythic": "Mytisk",
   "mod_epicloot_me_adrenaline_rush": "Adrenalinsus",
-  "mod_epicloot_me_adrenaline_rush_desc": "Øget skade i varigheden af effekten."
+  "mod_epicloot_me_adrenaline_rush_desc": "Øget skade i varigheden af effekten.",
+  "mod_epicloot_search_placeholder": "Søg...",
+  "mod_epicloot_no_active_adventures": "Ingen aktive eventyr",
+  "mod_epicloot_set_bonuses": "Sætbonusser",
+  "mod_epicloot_legendary_sets": "Legendariske sæt"
 }
