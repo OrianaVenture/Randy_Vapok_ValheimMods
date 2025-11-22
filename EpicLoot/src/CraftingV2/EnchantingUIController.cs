@@ -219,9 +219,7 @@ namespace EpicLoot.CraftingV2
             Player player = Player.m_localPlayer;
             List<InventoryItemListElement> result = new List<InventoryItemListElement>();
 
-            Inventory inventory = player.GetInventory();
-            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
-            inventory.GetBoundItems(boundItems);
+            List<ItemDrop.ItemData> boundItems = InventoryManagement.Instance.GetBoundItems();
             List<ItemDrop.ItemData> items = InventoryManagement.Instance.GetAllItems();
             if (items != null)
             {
@@ -784,9 +782,7 @@ namespace EpicLoot.CraftingV2
                 return result;
             }
 
-            Inventory inventory = Player.m_localPlayer.GetInventory();
-            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
-            inventory.GetBoundItems(boundItems);
+            List<ItemDrop.ItemData> boundItems = InventoryManagement.Instance.GetBoundItems();
             List<ItemDrop.ItemData> items = InventoryManagement.Instance.GetAllItems();
 
             if (items != null)
@@ -1231,10 +1227,7 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetDisenchantItems()
         {
-            Player player = Player.m_localPlayer;
-            Inventory inventory = player.GetInventory();
-            List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
-            inventory.GetBoundItems(boundItems);
+            List<ItemDrop.ItemData> boundItems = InventoryManagement.Instance.GetBoundItems();
 
             return InventoryManagement.Instance.GetAllItems()
                 .Where(item => !item.m_equipped && !item.IsRunestone()  && (ELConfig.ShowEquippedAndHotbarItemsInSacrificeTab.Value ||
