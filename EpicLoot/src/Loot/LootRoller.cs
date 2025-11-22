@@ -262,7 +262,10 @@ namespace EpicLoot
             {
                 foreach(LootTable lt in lootTables.shuffleList())
                 {
-                    if (results.Count >= numResults) { break; }
+                    if (results.Count >= numResults)
+                    {
+                        break;
+                    }
 
                     ItemRarity itemRollRarity = rarity;
                     if (luckUpgradesRarity == true)
