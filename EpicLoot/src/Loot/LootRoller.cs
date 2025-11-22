@@ -5,6 +5,7 @@ using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
 using EpicLoot.GatedItemType;
+using EpicLoot.General;
 using EpicLoot.LegendarySystem;
 using EpicLoot.MagicItemEffects;
 using EpicLoot_UnityLib;
@@ -246,7 +247,6 @@ namespace EpicLoot
             float powerLevelMod = 1.0f)
         {
             var luckFactor = GetLuckFactor(location);
-
             List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
             HashSet<string> rolledItems = new HashSet<string>();
             int failures = 0;
@@ -260,8 +260,10 @@ namespace EpicLoot
 
             while (results.Count < numResults)
             {
-                foreach(LootTable lt in lootTables)
+                foreach(LootTable lt in lootTables.shuffleList())
                 {
+                    if (results.Count >= numResults) { break; }
+
                     ItemRarity itemRollRarity = rarity;
                     if (luckUpgradesRarity == true)
                     {
