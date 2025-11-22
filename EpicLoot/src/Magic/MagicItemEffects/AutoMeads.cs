@@ -17,7 +17,7 @@ public class AutoMeads
             Player player = __instance as Player;
             if (player == null || player != Player.m_localPlayer) return;
             if (!player.HasActiveMagicEffect(MagicEffectType.AutoMead)) return;
-            if (!ModifyWithLowHealth.PlayerHasLowHealth(player) && !PlayerWillBecomeHealthCritical(player, hit)) return;
+            if (ModifyWithLowHealth.PlayerHasLowHealth(player) == false || PlayerWillBecomeHealthCritical(player, hit) == false) return;
             
             Inventory inventory = player.m_inventory;
             if (inventory == null) return;
@@ -38,7 +38,7 @@ public class AutoMeads
         if (statusEffect == null) return false;
         if (statusEffect is SE_Stats seStats)
         {
-            return seStats.m_healthOverTime > 0;
+            return (seStats.m_healthOverTime > 0 || seStats.m_healthUpFront > 0);
         }
         
         return false;
@@ -46,8 +46,8 @@ public class AutoMeads
 
     public static bool PlayerWillBecomeHealthCritical(Player player, HitData hit)
     {
-        float lowHealthPercentage = ModifyWithLowHealth.GetLowHealthPercentage(player);
-        float currentHealth = player.m_health;
+        float low_health_point = Mathf.Min(ModifyWithLowHealth.GetLowHealthPercentage(player), 1.0f) * player.GetMaxHealth();
+        float currentHealth = player.GetHealth();
         float hitTotalDamage = hit.GetTotalDamage();
         
         hitTotalDamage -= hit.m_damage.m_chop;
@@ -56,8 +56,8 @@ public class AutoMeads
 
         float armorValue = player.GetBodyArmor();
         hitTotalDamage = ApplyArmor(hitTotalDamage, armorValue);
-
-        if ((currentHealth - hitTotalDamage) > lowHealthPercentage) return true;
+        //EpicLoot.Log($"({currentHealth} - {hitTotalDamage} = {currentHealth - hitTotalDamage}) < {low_health_point}");
+        if ((currentHealth - hitTotalDamage) < low_health_point) return true;
         
         return false;
     }

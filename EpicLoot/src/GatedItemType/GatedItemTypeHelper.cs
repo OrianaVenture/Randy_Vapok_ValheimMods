@@ -532,6 +532,13 @@ namespace EpicLoot.GatedItemType
             return resultBiome;
         }
 
+        public static Heightmap.Biome GetPreviousBiome(Heightmap.Biome biome)
+        {
+            int index = BiomesInOrder.IndexOf(biome) - 1;
+            if (index < 0) { return Heightmap.Biome.None; }
+            return BiomesInOrder[index];
+        }
+
         private static Heightmap.Biome GetHighestDefeatedBiome(Heightmap.Biome startBiome)
         {
             for (int i = BiomesInOrder.IndexOf(startBiome); i >= 0; i--)

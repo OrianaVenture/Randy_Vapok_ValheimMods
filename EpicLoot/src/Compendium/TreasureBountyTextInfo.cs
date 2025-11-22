@@ -24,16 +24,18 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
             IOrderedEnumerable<TreasureMapChestInfo> sortedTreasureMaps = saveData.TreasureMaps
                 .Where(x => x.State == TreasureMapState.Purchased)
                 .OrderBy(x => GetBiomeOrder(x.Biome));
-
+            
             foreach (TreasureMapChestInfo treasureMap in sortedTreasureMaps)
             {
-                content.Add(Localization.instance.Localize($"$mod_epicloot_merchant_treasuremaps: " +
-                    $"<color={GetBiomeColor(treasureMap.Biome)}>$biome_{treasureMap.Biome.ToString().ToLower()} " +
-                    $"#{treasureMap.Interval + 1}</color>"));
+                content.Add($" - $mod_epicloot_merchant_treasuremaps: " +
+                            $"<color={GetBiomeColor(treasureMap.Biome)}>$biome_{treasureMap.Biome.ToString().ToLower()} " +
+                            $"#{treasureMap.Interval + 1}</color>");
             }
 
-            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.HEADER_FONT_SIZE}>" +
-                $"$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626>" + 
+                                            $"<size={MagicPages.LARGE_FONT_SIZE}>" + 
+                                            "$mod_epicloot_merchant_treasuremaps" + 
+                                            "</size></color>", content.ToArray());
             content.Clear();
         }
 
@@ -41,7 +43,7 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
         {
             hasValues = true;
             IOrderedEnumerable<BountyInfo> sortedBounties = saveData.Bounties.OrderBy(x => x.State);
-
+            
             foreach (BountyInfo bounty in sortedBounties)
             {
                 if (bounty.State != BountyState.InProgress && bounty.State != BountyState.Complete)
@@ -50,12 +52,11 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
                 }
 
                 string targetName = AdventureDataManager.GetBountyName(bounty);
-                content.Add($"<size={MagicPages.LARGE_FONT_SIZE}>{targetName}</size>  " +
-                    $"<color=#c0c0c0ff>$mod_epicloot_activebounties_classification: " +
+                content.Add($" - <size={MagicPages.LARGE_FONT_SIZE}>{targetName}</size>  " +
+                    $"<color=#c0c0c0ff>$mod_epicloot_activebounties_classification:</color> " +
                     $"<color=#d66660>{AdventureDataManager.GetMonsterName(bounty.Target.MonsterID)}</color>, ");
-                var info =
-                    $" $mod_epicloot_activebounties_biome: <color={GetBiomeColor(bounty.Biome)}>" +
-                    $"$biome_{bounty.Biome.ToString().ToLower()}</color></color>";
+
+                string info = $" $mod_epicloot_activebounties_biome: <color={GetBiomeColor(bounty.Biome)}>$biome_{bounty.Biome.ToString().ToLower()}</color>";
 
                 string status = "";
                 switch (bounty.State)
@@ -68,27 +69,27 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
                         break;
                 }
 
-                info += $"  <color=#c0c0c0ff>$mod_epicloot_bounties_tooltip_status {status}";
+                info += $"  <color=#c0c0c0ff>$mod_epicloot_bounties_tooltip_status {status}</color>";
 
-                content.Add(info);
 
                 int iron = bounty.RewardIron;
                 int gold = bounty.RewardGold;
-                content.Add($", $mod_epicloot_bounties_tooltip_rewards " +
-                    $"{(iron > 0 ? $"<color=white>{MerchantPanel.GetIronBountyTokenName()} x{iron}</color>" : "")}" +
-                    $"{(iron > 0 && gold > 0 ? ", " : "")}" +
-                    $"{(gold > 0 ? $"<color=#f5da53>{MerchantPanel.GetGoldBountyTokenName()} x{gold}</color>" : "")}" +
-                    $"</color>");
+                info += $", $mod_epicloot_bounties_tooltip_rewards " +
+                        $"{(iron > 0 ? $"<color=white>{MerchantPanel.GetIronBountyTokenName()} x{iron}</color>" : "")}" +
+                        $"{(iron > 0 && gold > 0 ? ", " : "")}" +
+                        $"{(gold > 0 ? $"<color=#f5da53>{MerchantPanel.GetGoldBountyTokenName()} x{gold}</color>" : "")}";
+                
+                content.Add(info);
+                
             }
 
-            instance.MagicPagesTextArea.Add($"<color=orange><size={MagicPages.HEADER_FONT_SIZE}>" +
-                $"$mod_epicloot_activebounties</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.LARGE_FONT_SIZE}>" 
+                                            + $"$mod_epicloot_activebounties</size></color>", content.ToArray());
         }
 
         if (!hasValues)
         {
-            //TODO: localize no active adventures text
-            instance.MagicPagesTextArea.Add("No active adventures");
+            instance.MagicPagesTextArea.Add("$mod_epicloot_no_active_adventures");
         }
     }
 
