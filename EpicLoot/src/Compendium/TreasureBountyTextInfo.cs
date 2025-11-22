@@ -32,7 +32,10 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
                             $"#{treasureMap.Interval + 1}</color>");
             }
 
-            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.HEADER_FONT_SIZE}>$mod_epicloot_merchant_treasuremaps</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626>" 
+                                            + $"<size={MagicPages.HEADER_FONT_SIZE}>" 
+                                            + "$mod_epicloot_merchant_treasuremaps" 
+                                            + "</size></color>", content.ToArray());
             content.Clear();
         }
 
@@ -80,7 +83,8 @@ public class TreasureBountyTextInfo(string topic) : MagicTextInfo(topic)
                 
             }
 
-            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.HEADER_FONT_SIZE}>" + $"$mod_epicloot_activebounties</size></color>", content.ToArray());
+            instance.MagicPagesTextArea.Add($"<color=#FFA626><size={MagicPages.HEADER_FONT_SIZE}>" 
+                                            + $"$mod_epicloot_activebounties</size></color>", content.ToArray());
         }
 
         if (!hasValues)

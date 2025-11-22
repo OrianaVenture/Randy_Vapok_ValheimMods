@@ -7,9 +7,15 @@ public class SetInfo(string topic, bool showSearchBar = true) : MagicTextInfo(to
 {
     public override void Build(MagicPages instance)
     {
-        foreach (LegendarySetInfo set in UniqueLegendaryHelper.LegendarySets.Values) FormatSetInfo(instance, set, ItemRarity.Legendary);
+        foreach (LegendarySetInfo set in UniqueLegendaryHelper.LegendarySets.Values)
+        {
+            FormatSetInfo(instance, set, ItemRarity.Legendary);
+        }
 
-        foreach (LegendarySetInfo set in UniqueLegendaryHelper.MythicSets.Values) FormatSetInfo(instance, set, ItemRarity.Mythic);
+        foreach (LegendarySetInfo set in UniqueLegendaryHelper.MythicSets.Values)
+        {
+            FormatSetInfo(instance, set, ItemRarity.Mythic);
+        }
     }
     
     private static void FormatSetInfo(MagicPages instance, LegendarySetInfo set, ItemRarity rarity)
@@ -17,7 +23,10 @@ public class SetInfo(string topic, bool showSearchBar = true) : MagicTextInfo(to
         List<LegendaryInfo> infos = [];
         foreach (string item in set.LegendaryIDs)
         {
-            if (!UniqueLegendaryHelper.TryGetLegendaryInfo(item, out LegendaryInfo info)) continue;
+            if (!UniqueLegendaryHelper.TryGetLegendaryInfo(item, out LegendaryInfo info))
+            {
+                continue;
+            }
             infos.Add(info);
         }
         List<string> content = [];
@@ -32,7 +41,9 @@ public class SetInfo(string topic, bool showSearchBar = true) : MagicTextInfo(to
         foreach (SetBonusInfo bonus in set.SetBonuses)
         {
             if (!MagicItemEffectDefinitions.AllDefinitions.TryGetValue(bonus.Effect.Type, out MagicItemEffectDefinition definition))
+            {
                 continue;
+            }
             
             content.Add($" - ({bonus.Count}) {string.Format(Localization.instance.Localize(definition.DisplayText), "<b><color=yellow>X</color></b>")}");
         }

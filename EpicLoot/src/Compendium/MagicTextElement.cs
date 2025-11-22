@@ -37,7 +37,10 @@ public class MagicTextElement
     
     private static float GetTextPreferredHeight(Text text, RectTransform rect)
     {
-        if (string.IsNullOrEmpty(text.text)) return 0f;
+        if (string.IsNullOrEmpty(text.text))
+        {
+            return 0f;
+        }
         TextGenerator textGen = text.cachedTextGenerator;
         TextGenerationSettings settings = text.GetGenerationSettings(rect.rect.size);
         float preferredHeight = textGen.GetPreferredHeight(text.text, settings);

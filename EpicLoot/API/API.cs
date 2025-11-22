@@ -246,6 +246,7 @@ public static partial class API
     [PublicAPI]
     public static string GetMagicItemJson(ItemDrop.ItemData itemData)
     {
+        if (!itemData.IsMagic()) return null;
         return JsonConvert.SerializeObject(itemData.GetMagicItem());
     }
 }
