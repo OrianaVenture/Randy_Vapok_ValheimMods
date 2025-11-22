@@ -9,7 +9,6 @@ using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using EpicLoot.Magic;
 using EpicLoot.Patching;
-using EpicLoot.src.Magic;
 using EpicLoot_UnityLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -419,8 +418,6 @@ namespace EpicLoot.Config
             // Attempt to parse the core config, if its not valid use the embedded default config
             try {
                 var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
-
-                // Compare version numbers on the config, if the 
 
                 setupMethod(contents);
             } catch (Exception e) {
