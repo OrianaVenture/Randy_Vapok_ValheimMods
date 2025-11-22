@@ -516,7 +516,7 @@ namespace EpicLoot.CraftingV2
             //}
             //else
             //{
-                
+
             //}
             successDialog = CraftSuccessDialog.Create(EnchantingTableUI.instance.transform);
 
@@ -551,6 +551,12 @@ namespace EpicLoot.CraftingV2
 
         private static IdentifyTypeConfig SelectLootIdentifyDetails(string filter)
         {
+            if (EnchantCostsHelper.Config.IdentifyTypes.Count == 0)
+            {
+                EpicLoot.LogWarning("IdentifyTypes is not defined in the configurations! Cannot select loot.");
+                return null;
+            }
+
             foreach (KeyValuePair<string, IdentifyTypeConfig> identifyStyle in EnchantCostsHelper.Config.IdentifyTypes)
             {
                 if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter)
@@ -566,21 +572,17 @@ namespace EpicLoot.CraftingV2
         {
             EpicLoot.Log($"Getting loot tables for identify style " +
                 $"{Localization.instance.Localize(cfg.Localization)} in biome {biome} " +
-                $"cfg keys: {string.Join(",",cfg.BiomeLootLists.Keys)}");
+                $"cfg keys: { string.Join(",", cfg.BiomeLootLists.Keys) }");
             Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
                 biome, EpicLoot.GetGatedItemTypeMode());
 
             List<LootTable> lootTables = new List<LootTable>() { };
 
-            // Attempt to fall back to a previous biome if there is no biome defined for this
-            // If that fails, just select the first identification key
             if (!cfg.BiomeLootLists.ContainsKey(allowedBiome))
             {
-                allowedBiome = GatedItemTypeHelper.GetPreviousBiome(allowedBiome);
-                if (!cfg.BiomeLootLists.ContainsKey(allowedBiome)) 
-                {
-                    allowedBiome = cfg.BiomeLootLists.First().Key;
-                }
+                // Fallback to the first defined biome loot list if the biome cannot be found.
+                // This should be set to none in the user configurations for best results.
+                allowedBiome = cfg.BiomeLootLists.First().Key;
             }
 
             foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome])
@@ -600,13 +602,18 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> LootRollSelectedItems(
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float powerModifier)
         {
-            Player player = Player.m_localPlayer;
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
 
+            if (category == null)
+            {
+                return new List<InventoryItemListElement>();
+            }
+
+            Player player = Player.m_localPlayer;
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
             foreach (Tuple<ItemDrop.ItemData, int> itemstack in items)
             {
-                Enum.TryParse<Heightmap.Biome>(itemstack.Item1.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
+                Heightmap.Biome biome = EnchantHelper.GetBiomeFromUnidentifiedItem(itemstack.Item1);
                 List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
                 List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(
                     player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, powerModifier);
@@ -623,22 +630,26 @@ namespace EpicLoot.CraftingV2
             return totalRolledItems.Select(item => new InventoryItemListElement() { Item = item }).ToList();
         }
 
-        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(string filter, List<ItemDrop.ItemData> items_selected)
+        private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(string filter, List<ItemDrop.ItemData> itemsSelected)
         {
-            Player player = Player.m_localPlayer;
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
             List<string> resultItemNames = new List<string>();
 
+            if (category == null || Player.m_localPlayer == null)
+            {
+                return new List<InventoryItemListElement>();
+            }
+
             List<Heightmap.Biome> biomesCovered = new List<Heightmap.Biome> { };
 
-            foreach (ItemDrop.ItemData item in items_selected)
+            foreach (ItemDrop.ItemData item in itemsSelected)
             {
                 if (item == null || item.m_dropPrefab == null)
                 {
                     continue;
                 }
                 
-                Enum.TryParse<Heightmap.Biome>(item.m_dropPrefab.name.Split('_')[0], out Heightmap.Biome biome);
+                Heightmap.Biome biome = EnchantHelper.GetBiomeFromUnidentifiedItem(item);
                 if (biomesCovered.Contains(biome))
                 {
                     continue;
@@ -646,7 +657,8 @@ namespace EpicLoot.CraftingV2
 
                 List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
                 biomesCovered.Add(biome);
-                Dictionary<string, float> itemChances = LootRoller.GetLootTableChances(player.transform.position, selectedLootTables);
+                Dictionary<string, float> itemChances = LootRoller
+                    .GetLootTableChances(Player.m_localPlayer.transform.position, selectedLootTables);
                 foreach (KeyValuePair<string, float> entry in itemChances)
                 {
                     if (!resultItemNames.Contains(entry.Key))
@@ -684,6 +696,12 @@ namespace EpicLoot.CraftingV2
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float costModifier = 1.0f)
         {
             IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+
+            if (category == null)
+            {
+                return new List<InventoryItemListElement>();
+            }
+
             EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
@@ -714,7 +732,12 @@ namespace EpicLoot.CraftingV2
                 
                 EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{totalStackSize} x modifier:{costModifier} = result:{cost}");
                 itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
-                if (itemData.m_stack <= 0) { continue; } // skip costs that are zero
+                if (itemData.m_stack <= 0)
+                {
+                    // skip costs that are zero
+                    continue;
+                }
+
                 results.Add(new InventoryItemListElement() { Item = itemData });
             }
             return results;
@@ -754,10 +777,14 @@ namespace EpicLoot.CraftingV2
 
         private static List<InventoryItemListElement> GetRuneModifyableItems(bool allowBound)
         {
-            Player player = Player.m_localPlayer;
             List<InventoryItemListElement> result = new List<InventoryItemListElement>();
 
-            Inventory inventory = player.GetInventory();
+            if (Player.m_localPlayer == null)
+            {
+                return result;
+            }
+
+            Inventory inventory = Player.m_localPlayer.GetInventory();
             List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
             inventory.GetBoundItems(boundItems);
             List<ItemDrop.ItemData> items = InventoryManagement.Instance.GetAllItems();
