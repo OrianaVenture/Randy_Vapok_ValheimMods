@@ -36,7 +36,7 @@ namespace EpicLoot.MagicItemEffects
 
             if (player == null)
             {
-                return lowHealthThreshold; 
+                return lowHealthThreshold;
             }
             
             if (player.HasActiveMagicEffect(MagicEffectType.ModifyLowHealth, out float effectValue, 0.01f))
