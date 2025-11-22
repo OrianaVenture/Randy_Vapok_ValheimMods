@@ -511,8 +511,18 @@ namespace EpicLoot.GatedItemType
             return bossKey;
         }
 
+        /// <summary>
+        /// Returns a valid biome defined in the BiomesInOrder list based off the GatedItemTypeMode.
+        /// </summary>
         public static Heightmap.Biome GetCurrentOrLowerBiomeByDefeatedBossSettings(Heightmap.Biome biome, GatedItemTypeMode mode)
         {
+            if (!BiomesInOrder.Contains(biome))
+            {
+                // TODO: Handle biome definitions user defined lists better.
+                // Configurations can have custom biomes not defined in all configuration locations.
+                return biome;
+            }
+
             if (mode == GatedItemTypeMode.Unlimited || mode == GatedItemTypeMode.PlayerMustKnowRecipe)
             {
                 return biome;

@@ -191,5 +191,11 @@ public static partial class API
         }
         public override float GetCooldownEndTime() => GetCallback<Func<float>>(nameof(GetCooldownEndTime)) is not { } callback 
             ? base.GetCooldownEndTime() : callback();
+        
+        public override void OnRemoved()
+        {
+            if (GetCallback<Action>(nameof(OnRemoved)) is not { } callback) base.OnRemoved();
+            else callback();
+        }
     }
 }

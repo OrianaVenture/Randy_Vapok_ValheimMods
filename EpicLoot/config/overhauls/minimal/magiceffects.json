@@ -5787,10 +5787,10 @@
         }
       },
       "Config": {
-        "SilverNecklace": 90,
-        "Ruby": 80,
-        "AmberPearl": 70,
-        "Amber": 60,
+        "SilverNecklace": 900,
+        "Ruby": 800,
+        "AmberPearl": 700,
+        "Amber": 600,
         "Coins": 10
       },
       "SelectionWeight": 10,

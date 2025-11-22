@@ -244,8 +244,9 @@ public static partial class API
     /// <param name="itemData"></param>
     /// <returns></returns>
     [PublicAPI]
-    public static MagicItem GetMagicItem(ItemDrop.ItemData itemData)
+    public static string GetMagicItemJson(ItemDrop.ItemData itemData)
     {
-        return itemData.GetMagicItem();
+        if (!itemData.IsMagic()) return null;
+        return JsonConvert.SerializeObject(itemData.GetMagicItem());
     }
 }

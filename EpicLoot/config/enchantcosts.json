@@ -1717,6 +1717,9 @@
         "BlackForest": [
           "Tier2Everything"
         ],
+        "Ocean": [
+          "Tier2Everything"
+        ],
         "Swamp": [
           "Tier3Everything"
         ],
@@ -1750,6 +1753,9 @@
           "Tier1Weapons"
         ],
         "BlackForest": [
+          "Tier2Weapons"
+        ],
+        "Ocean": [
           "Tier2Weapons"
         ],
         "Swamp": [
@@ -1794,6 +1800,10 @@
           "Tier2Armor",
           "Tier2Shields"
         ],
+        "Ocean": [
+          "Tier2Armor",
+          "Tier2Shields"
+        ],
         "Swamp": [
           "Tier3Armor",
           "Tier3Shields"
@@ -1832,6 +1842,7 @@
         "None": [ "ModUtility" ],
         "Meadows": [ "Tier1Tools", "ModUtility" ],
         "BlackForest": [ "Tier2Tools", "ModUtility", "Tier2Trinkets" ],
+        "Ocean": [ "Tier2Tools", "ModUtility", "Tier2Trinkets" ],
         "Swamp": [ "Tier3Tools", "ModUtility", "Tier3Trinkets" ],
         "Mountain": [ "Tier3Tools", "ModUtility", "Tier4Trinkets" ],
         "Plains": [ "Tier3Tools", "ModUtility", "Tier5Trinkets" ],

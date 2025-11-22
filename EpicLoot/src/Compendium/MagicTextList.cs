@@ -24,8 +24,9 @@ public class MagicTextList
         _scrollRect = _obj.transform.Find("ScrollArea").GetComponent<ScrollRect>();
         _layout = _obj.transform.Find("ScrollArea/Content").GetComponent<VerticalLayoutGroup>();
         _layout.childAlignment = TextAnchor.UpperLeft;
-        _layout.childControlWidth = false;
+        _layout.childControlWidth = true;
         _layout.childControlHeight = false;
+        _layout.childForceExpandWidth = true;
         _layout.padding.left = 5;
         _layout.spacing = 0;
 
@@ -72,8 +73,8 @@ public class MagicTextList
     {
         MagicTextElement titleElement = _template.Create(title, _layout.transform);
         titleElement.EnableOutline(true);
+        
         List<MagicTextElement> contentElements = new();
-
         foreach (string text in content)
         {
             MagicTextElement contentElement = _template.Create(text, _layout.transform);

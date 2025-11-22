@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Legendinis",
   "mod_epicloot_mythic": "Mitolinis",
   "mod_epicloot_me_adrenaline_rush": "Adrenalino šuolis",
-  "mod_epicloot_me_adrenaline_rush_desc": "Padidintas žala veikimo trukmei metu.Padidintas žalos kiekis veikimo metu."
+  "mod_epicloot_me_adrenaline_rush_desc": "Padidintas žala veikimo trukmei metu.Padidintas žalos kiekis veikimo metu.",
+  "mod_epicloot_search_placeholder": "Ieškoti...",
+  "mod_epicloot_no_active_adventures": "Nėra aktyvių nuotykių",
+  "mod_epicloot_set_bonuses": "Rinkinys premijos",
+  "mod_epicloot_legendary_sets": "Legendinės rinkiniai"
 }

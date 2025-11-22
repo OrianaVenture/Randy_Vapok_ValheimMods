@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Легендарний",
   "mod_epicloot_mythic": "Міфічний",
   "mod_epicloot_me_adrenaline_rush": "Адреналіновий удар",
-  "mod_epicloot_me_adrenaline_rush_desc": "Збільшений шкідливий вплив на тривалість ефекту."
+  "mod_epicloot_me_adrenaline_rush_desc": "Збільшений шкідливий вплив на тривалість ефекту.",
+  "mod_epicloot_search_placeholder": "Пошук...",
+  "mod_epicloot_no_active_adventures": "Немає активних пригод",
+  "mod_epicloot_set_bonuses": "Бонуси комплекту",
+  "mod_epicloot_legendary_sets": "Легендарні набори"
 }

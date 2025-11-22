@@ -184,4 +184,17 @@ public class InventoryManagement
 
         inventory.RemoveItem(item, amount);
     }
+
+    public List<ItemDrop.ItemData> GetBoundItems()
+    {
+        List<ItemDrop.ItemData> boundItems = new List<ItemDrop.ItemData>();
+
+        if (Player.m_localPlayer != null)
+        {
+            Inventory inventory = Player.m_localPlayer.GetInventory();
+            inventory.GetBoundItems(boundItems);
+        }
+
+        return boundItems;
+    }
 }

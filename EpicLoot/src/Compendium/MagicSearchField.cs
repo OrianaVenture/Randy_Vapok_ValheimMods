@@ -21,6 +21,7 @@ public class MagicSearchField
     {
         _obj = new GameObject("searchField");
         _rect = _obj.AddComponent<RectTransform>();
+        _rect.localScale = Vector3.one;
         _obj.transform.SetParent(parent);
         _background = _obj.AddComponent<Image>();
         Input = _obj.AddComponent<InputField>();
@@ -33,6 +34,7 @@ public class MagicSearchField
         _glow.color = craftGlow.color;
         _glow.material = craftGlow.material;
         _glow.rectTransform.SetParent(_rect);
+        _glow.rectTransform.localScale = Vector3.one;
         _glow.enabled = false;
 
         GameObject text = new GameObject("Text");

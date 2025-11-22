@@ -57,4 +57,18 @@ public static partial class API
         original.CopyFieldsFrom(def);
         return true;
     }
+    
+    public static bool HasCurrentAbility(Player player, string key)
+    {
+        if (!RuntimeRegistry.TryGetValue(key, out AbilityDefinition definition))
+        {
+            return false;
+        }
+
+        if (!player.TryGetComponent(out AbilityController controller))
+        {
+            return false;
+        }
+        return controller.GetCurrentAbility(definition.ID) is not null;
+    }
 }

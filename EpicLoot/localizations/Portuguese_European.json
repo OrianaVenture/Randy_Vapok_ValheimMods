@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Legendário",
   "mod_epicloot_mythic": "Mítico",
   "mod_epicloot_me_adrenaline_rush": "Rush de adrenalina",
-  "mod_epicloot_me_adrenaline_rush_desc": "Aumento do dano durante a duração do efeito."
+  "mod_epicloot_me_adrenaline_rush_desc": "Aumento do dano durante a duração do efeito.",
+  "mod_epicloot_search_placeholder": "Pesquisar...",
+  "mod_epicloot_no_active_adventures": "Nenhuma aventura ativa",
+  "mod_epicloot_set_bonuses": "Bónus de conjunto",
+  "mod_epicloot_legendary_sets": "Conjuntos Lendários"
 }

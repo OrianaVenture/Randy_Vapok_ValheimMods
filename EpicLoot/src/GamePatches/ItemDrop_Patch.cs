@@ -1,6 +1,8 @@
-﻿using EpicLoot.Data;
+﻿using EpicLoot.Crafting;
+using EpicLoot.Data;
 using EpicLoot.LootBeams;
 using HarmonyLib;
+using UnityEngine;
 
 namespace EpicLoot
 {
@@ -38,9 +40,14 @@ namespace EpicLoot
     {
         public static void Postfix(Inventory __instance)
         {
-            foreach (var itemData in __instance.m_inventory)
+            foreach (ItemDrop.ItemData itemData in __instance.m_inventory)
             {
-                var prefabData = itemData.InitializeCustomData();
+                GameObject prefabData = itemData.InitializeCustomData();
+                // This is to ensure that magicmaterials that were created without their itemdata has matching custom data, this creates an empty saved magicitem componet
+                // But only if it does not already have the requesite entry
+                if (itemData.IsMagicCraftingMaterial() && itemData.m_customData.Count == 0) {
+                    itemData.m_customData.Add("randyknapp.mods.epicloot#EpicLoot.MagicItemComponent", "");
+                }
                 if (prefabData != null)
                 {
                     itemData.m_dropPrefab = prefabData;

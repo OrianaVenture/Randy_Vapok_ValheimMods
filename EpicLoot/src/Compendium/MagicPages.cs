@@ -9,6 +9,7 @@ public class MagicPages : MonoBehaviour
     public ExplainTextInfo ExplainPage;
     public TreasureBountyTextInfo TreasureBountyPage;
     public MagicEffectTextInfo MagicEffectsPage;
+    public SetInfo SetInfos;
 
     public const int HEADER_FONT_SIZE = 40;
     public const int LARGE_FONT_SIZE = 24;
@@ -35,6 +36,8 @@ public class MagicPages : MonoBehaviour
             $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_adventure_title"));
         MagicEffectsPage = new MagicEffectTextInfo(Localization.instance.Localize(
             $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_active_magic_effects"));
+        SetInfos = new SetInfo(Localization.instance.Localize(
+            $"{EpicLoot.GetMagicEffectPip(false)} $mod_epicloot_legendary_sets"));
         
         instance = this;
         
@@ -119,7 +122,7 @@ public class MagicPages : MonoBehaviour
         TitleElement = MagicPagesTextArea.Create(text.m_topic);
         TitleElement!.SetSize(MinWidth, 100f);
         TitleElement.SetFontSize(HEADER_FONT_SIZE);
-        TitleElement.SetColor(new Color(1f, 0.5f, 0f));
+        TitleElement.SetColor(new Color(1f, 0.65f, 0.15f));
         TitleElement.SetAlignment(TextAnchor.MiddleCenter);
         
         text.Build(this);

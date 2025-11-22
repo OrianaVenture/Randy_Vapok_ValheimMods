@@ -1,6 +1,7 @@
 ﻿using EpicLoot.Compendium;
 using HarmonyLib;
 using JetBrains.Annotations;
+using UnityEngine;
 
 namespace EpicLoot;
 
@@ -23,6 +24,7 @@ internal static class TextsDialog_UpdateTextsList_Patch
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 0 : 2, MagicPages.instance.MagicEffectsPage);
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 1 : 3, MagicPages.instance.ExplainPage);
         __instance.m_texts.Insert(EpicLoot.HasAuga ? 2 : 4, MagicPages.instance.TreasureBountyPage);
+        __instance.m_texts.Insert(EpicLoot.HasAuga ? 3 : 5, MagicPages.instance.SetInfos);
     }
 }
 
@@ -44,13 +46,15 @@ internal static class TextsDialog_OnSelectText_Patch
 
         component.OnSelectText(magicInfo);
 
-        foreach (var element in __instance.m_texts)
+        foreach (TextsDialog.TextInfo element in __instance.m_texts)
         {
             element.m_selected.SetActive(false);
         }
 
         magicInfo.m_selected.SetActive(true);
-
+        
+        __instance.StartCoroutine(__instance.FocusOnCurrentLevel(__instance.m_leftScrollRect,
+            __instance.m_listRoot, magicInfo.m_selected.transform as RectTransform));
         return false;
     }
 }

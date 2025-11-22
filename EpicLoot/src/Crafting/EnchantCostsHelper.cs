@@ -109,23 +109,30 @@ namespace EpicLoot.Crafting
             return configEntry?.Cost;
         }
 
-        public static List<ItemAmountConfig> GetIdentifyCosts(string category, ItemRarity rarity, Heightmap.Biome biome) {
+        public static List<ItemAmountConfig> GetIdentifyCosts(string category, ItemRarity rarity, Heightmap.Biome biome)
+        {
             List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>() { };
-            if (Config.IdentifyCosts.ContainsKey(biome)) {
+            if (Config.IdentifyCosts.ContainsKey(biome))
+            {
                 totalCost.AddRange(Config.IdentifyCosts[biome].CostByRarity[rarity]);
                 totalCost.AddRange(Config.IdentifyTypes[category].Costs);
-                return totalCost;
-            } else {
-                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
-                return new List<ItemAmountConfig>(){ };
             }
+            else
+            {
+                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
+            }
+
+            return totalCost;
         }
 
-        public static Dictionary<string, string> GetIdentificationCategories() {
+        public static Dictionary<string, string> GetIdentificationCategories()
+        {
             Dictionary<string, string> categories = new Dictionary<string, string>();
-            foreach(var identifyStyle in Config.IdentifyTypes) {
+            foreach(var identifyStyle in Config.IdentifyTypes)
+            {
                 categories.Add(identifyStyle.Key, identifyStyle.Value.Localization);
             }
+
             return categories;
         }
 

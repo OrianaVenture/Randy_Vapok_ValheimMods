@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Legendaarinen",
   "mod_epicloot_mythic": "Myyttinen",
   "mod_epicloot_me_adrenaline_rush": "Adrenaliiniryöppy",
-  "mod_epicloot_me_adrenaline_rush_desc": "Lisääntynyt vahinko vaikutuksen keston ajan."
+  "mod_epicloot_me_adrenaline_rush_desc": "Lisääntynyt vahinko vaikutuksen keston ajan.",
+  "mod_epicloot_search_placeholder": "Haku...",
+  "mod_epicloot_no_active_adventures": "Ei aktiivisia seikkailuja",
+  "mod_epicloot_set_bonuses": "Settiponukset",
+  "mod_epicloot_legendary_sets": "Legendaariset setit"
 }

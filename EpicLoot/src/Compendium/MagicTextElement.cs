@@ -17,17 +17,16 @@ public class MagicTextElement
         _rect = _obj.AddComponent<RectTransform>();
         _rect.sizeDelta = new Vector2(MagicPages.instance.MinWidth - 10f, 35f);
         _rect.SetParent(parent);
+        _rect.localScale = Vector3.one;
 
         _text = _obj.AddComponent<Text>();
         _outline = _obj.AddComponent<Outline>();
         _outline.enabled = false;
         _text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        _text.verticalOverflow = VerticalWrapMode.Overflow;
+        _text.verticalOverflow = VerticalWrapMode.Truncate;
         _text.font = MagicFontManager.GetFont(MagicFontManager.FontOptions.AveriaSerifLibre);
         _text.fontSize = MagicPages.FONT_SIZE;
         _text.supportRichText = true;
-
-        _obj.AddComponent<ContentSizeFitter>();
     }
 
     private MagicTextElement(GameObject source)
@@ -37,6 +36,24 @@ public class MagicTextElement
         _text = _obj.GetComponent<Text>();
         _outline = _obj.GetComponent<Outline>();
         Enable(true);
+    }
+    
+    public void Resize()
+    {
+        float newHeight = GetTextPreferredHeight(_text, _rect);
+        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, Mathf.Max(newHeight, 35f));
+    }
+    
+    private static float GetTextPreferredHeight(Text text, RectTransform rect)
+    {
+        if (string.IsNullOrEmpty(text.text))
+        {
+            return 0f;
+        }
+        TextGenerator textGen = text.cachedTextGenerator;
+        TextGenerationSettings settings = text.GetGenerationSettings(rect.rect.size);
+        float preferredHeight = textGen.GetPreferredHeight(text.text, settings);
+        return preferredHeight;
     }
 
     public float GetHeight() => _rect.sizeDelta.y;
@@ -52,6 +69,7 @@ public class MagicTextElement
     private void Set(string line)
     {
         _text.text = Localization.instance.Localize(line);
+        Resize();
     }
     public void SetParent(Transform parent) => _rect.SetParent(parent);
     public void Destroy() => UnityEngine.Object.Destroy(_obj);
