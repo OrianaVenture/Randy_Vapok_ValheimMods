@@ -1439,5 +1439,9 @@
   "mod_epicloot_legendary": "Legendarny",
   "mod_epicloot_mythic": "Mityczny",
   "mod_epicloot_me_adrenaline_rush": "Poryw adrenaliny",
-  "mod_epicloot_me_adrenaline_rush_desc": "Zwiększone obrażenia przez czas trwania efektu."
+  "mod_epicloot_me_adrenaline_rush_desc": "Zwiększone obrażenia przez czas trwania efektu.",
+  "mod_epicloot_search_placeholder": "Szukaj...",
+  "mod_epicloot_no_active_adventures": "Brak aktywnych przygód",
+  "mod_epicloot_set_bonuses": "Bonusy zestawu",
+  "mod_epicloot_legendary_sets": "Legendarne zestawy"
 }

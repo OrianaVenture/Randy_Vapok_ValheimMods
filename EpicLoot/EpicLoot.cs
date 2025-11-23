@@ -72,7 +72,7 @@ namespace EpicLoot
     [BepInPlugin(PluginId, DisplayName, Version)]
     [BepInDependency(Jotunn.Main.ModGuid)]
     [BepInDependency("com.ValheimModding.NewtonsoftJsonDetector")]
-    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Patch)]
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
@@ -552,8 +552,7 @@ namespace EpicLoot
                     }
 
                     // Add MagicItemComponent or products will not stack until reloaded.
-                    MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
+                    itemDrop.m_itemData.CreateMagicItem();
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);
@@ -561,29 +560,42 @@ namespace EpicLoot
             }
         }
 
-        private static void LoadUnidentifiedItems() {
+        private static void LoadUnidentifiedItems()
+        {
+            // TODO: Add support for biomes added by other mods as needed.
             GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
             CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
             ItemManager.Instance.AddItem(genericUnidentified);
             genericPrefab.SetActive(false);
-            foreach (string type in Enum.GetNames(typeof(Heightmap.Biome))) {
-                if (type == "None" || type == "All") { continue; }
-                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity))) {
+
+            foreach (string biome in Enum.GetNames(typeof(Heightmap.Biome)))
+            {
+                if (biome == "None" || biome == "All")
+                {
+                    continue;
+                }
+
+                foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
+                {
                     var prefab = Object.Instantiate(genericPrefab);
-                    string prefabName = $"{type}_{rarity}_Unidentified";
+                    string prefabName = $"{biome}_{rarity}_Unidentified";
                     prefab.name = prefabName;
                     ItemDrop pid = prefab.GetComponent<ItemDrop>();
                     var magicItemComponent = pid.m_itemData.Data().GetOrCreate<MagicItemComponent>();
                     pid.m_itemData.m_dropPrefab = prefab;
-                    magicItemComponent.SetMagicItem(new MagicItem {
+                    magicItemComponent.SetMagicItem(new MagicItem
+                    {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
                     magicItemComponent.Save();
-                    ItemConfig unidentifiedIC = new ItemConfig() {
-                        Name = $"$mod_epicloot_{rarity} $mod_epicloot_unidentified_{type}",
+                    
+                    ItemConfig unidentifiedIC = new ItemConfig()
+                    {
+                        Name = $"$mod_epicloot_{rarity} $mod_epicloot_unidentified_{biome}",
                         Description = "$mod_epicloot_unidentified_introduce",
                     };
+
                     CustomItem custom = new CustomItem(prefab, false, unidentifiedIC);
                     ItemManager.Instance.AddItem(custom);
 
@@ -591,7 +603,8 @@ namespace EpicLoot
                     void EnableUnidentified(string prefabname)
                     {
                         PrefabManager.Instance.GetPrefab(prefabName).SetActive(true);
-                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab = PrefabManager.Instance.GetPrefab(prefabName);
+                        PrefabManager.Instance.GetPrefab(prefabName).GetComponent<ItemDrop>().m_itemData.m_dropPrefab =
+                            PrefabManager.Instance.GetPrefab(prefabName);
                         ItemManager.OnItemsRegistered -= () => EnableUnidentified(prefabname);
                     }
 

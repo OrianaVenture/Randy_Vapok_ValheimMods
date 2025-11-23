@@ -9,7 +9,6 @@ using EpicLoot.GatedItemType;
 using EpicLoot.LegendarySystem;
 using EpicLoot.Magic;
 using EpicLoot.Patching;
-using EpicLoot.src.Magic;
 using EpicLoot_UnityLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -423,6 +422,7 @@ namespace EpicLoot.Config
             // Attempt to parse the core config, if its not valid use the embedded default config
             try {
                 var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
+
                 setupMethod(contents);
             } catch (Exception e) {
                 EpicLoot.LogWarningForce($"Core Config file {basecfglocation} is invalid and internal defaults will be used instead." + e);

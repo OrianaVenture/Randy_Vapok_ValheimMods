@@ -457,14 +457,15 @@ namespace EpicLoot.Data
                 {
                     loadingInstruction = instructions[i + 1].Clone();
                     loadingInstruction.opcode = new Dictionary<OpCode, OpCode>
-                {
-                    { OpCodes.Stloc_0, OpCodes.Ldloc_0 },
-                    { OpCodes.Stloc_1, OpCodes.Ldloc_1 },
-                    { OpCodes.Stloc_2, OpCodes.Ldloc_2 },
-                    { OpCodes.Stloc_3, OpCodes.Ldloc_3 },
-                    { OpCodes.Stloc_S, OpCodes.Ldloc_S }
-                }[loadingInstruction.opcode];
+                    {
+                        { OpCodes.Stloc_0, OpCodes.Ldloc_0 },
+                        { OpCodes.Stloc_1, OpCodes.Ldloc_1 },
+                        { OpCodes.Stloc_2, OpCodes.Ldloc_2 },
+                        { OpCodes.Stloc_3, OpCodes.Ldloc_3 },
+                        { OpCodes.Stloc_S, OpCodes.Ldloc_S }
+                    }[loadingInstruction.opcode];
                 }
+
                 if (instructions[i] == lastBranch)
                 {
                     yield return loadingInstruction!;

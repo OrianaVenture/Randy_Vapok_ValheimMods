@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Magic
 {
@@ -267,6 +268,11 @@ namespace EpicLoot.Magic
                     }
                 }
 
+                if (itemfound)
+                {
+                    continue;
+                }
+
                 if (entries.Count > 0) { updatedItemSets.Add(new LootItemSet { Name = lis.Name, Loot = entries.ToArray() }); }
             }
 
@@ -410,7 +416,7 @@ namespace EpicLoot.Magic
                 if (item.Value.ItemsByBoss.Count > 0 || item.Value.IgnoredItems.Count > 0)
                 {
                     Dictionary<string, List<string>> itemsByBossUniques = new();
-                    foreach (var entry in item.Value.ItemsByBoss)
+                    foreach(var entry in item.Value.ItemsByBoss)
                     {
                         itemsByBossUniques.Add(entry.Key, entry.Value.Distinct().ToList());
                     }
