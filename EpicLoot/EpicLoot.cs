@@ -79,7 +79,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.1";
+        public const string Version = "0.12.2";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -551,8 +551,9 @@ namespace EpicLoot
                     }
 
                     // Add MagicItemComponent or products will not stack until reloaded.
-                    MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
+                    // TODO: test removal fixes new bugs
+                    //MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                    //itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);
