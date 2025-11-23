@@ -71,7 +71,7 @@ namespace EpicLoot
     [BepInPlugin(PluginId, DisplayName, Version)]
     [BepInDependency(Jotunn.Main.ModGuid)]
     [BepInDependency("com.ValheimModding.NewtonsoftJsonDetector")]
-    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Patch)]
     [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
@@ -551,9 +551,7 @@ namespace EpicLoot
                     }
 
                     // Add MagicItemComponent or products will not stack until reloaded.
-                    // TODO: test removal fixes new bugs
-                    //MagicItemComponent magicItem = itemDrop.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                    //itemDrop.m_itemData.SaveMagicItem(magicItem.MagicItem);
+                    itemDrop.m_itemData.CreateMagicItem();
 
                     CustomItem custom = new CustomItem(prefab, false);
                     ItemManager.Instance.AddItem(custom);

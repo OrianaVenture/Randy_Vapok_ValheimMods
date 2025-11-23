@@ -210,6 +210,12 @@ namespace EpicLoot
             return itemData.GetMagicItem()?.HasEffect(effectType) ?? false;
         }
 
+        public static void CreateMagicItem(this ItemDrop.ItemData itemData)
+        {
+            MagicItemComponent magicItem = itemData.Data().GetOrCreate<MagicItemComponent>();
+            itemData.SaveMagicItem(magicItem.MagicItem);
+        }
+
         public static void SaveMagicItem(this ItemDrop.ItemData itemData, MagicItem magicItem)
         {
             itemData.Data().GetOrCreate<MagicItemComponent>().SetMagicItem(magicItem);
@@ -414,7 +420,10 @@ namespace EpicLoot
             return results;
         }
 
-        public static GameObject InitializeCustomData(this ItemDrop.ItemData itemData)
+        /// <summary>
+        /// Copies the MagicItemComponent Magic Item from the drop prefab to set the magic data on this instance.
+        /// </summary>
+        public static void InitializeCustomData(this ItemDrop.ItemData itemData)
         {
             GameObject prefab = itemData.m_dropPrefab;
             if (prefab != null)
@@ -429,12 +438,8 @@ namespace EpicLoot
                     {
                         instanceData.SetMagicItem(prefabData.MagicItem);
                     }
-
-                    return itemDropPrefab.gameObject;
                 }
             }
-
-            return null;
         }
 
         public static string GetSetTooltip(this ItemDrop.ItemData item)

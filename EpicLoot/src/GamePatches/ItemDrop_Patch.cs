@@ -1,4 +1,5 @@
-﻿using EpicLoot.LootBeams;
+﻿using EpicLoot.Crafting;
+using EpicLoot.LootBeams;
 using HarmonyLib;
 using UnityEngine;
 
@@ -14,12 +15,7 @@ namespace EpicLoot
                 return;
             }
 
-            GameObject prefabData = __instance.m_itemData.InitializeCustomData();
-
-            if (prefabData != null)
-            {
-                __instance.m_itemData.m_dropPrefab = prefabData;
-            }
+            __instance.m_itemData.InitializeCustomData();
 
             if (__instance.gameObject.GetComponent<LootBeam>() == null)
             {
@@ -35,12 +31,12 @@ namespace EpicLoot
         {
             foreach (ItemDrop.ItemData itemData in __instance.m_inventory)
             {
-                GameObject prefabData = itemData.InitializeCustomData();
-
-                if (prefabData != null)
+                if (itemData.IsMagicCraftingMaterial())
                 {
-                    itemData.m_dropPrefab = prefabData;
+                    itemData.CreateMagicItem();
                 }
+
+                itemData.InitializeCustomData();
             }
         }
     }
