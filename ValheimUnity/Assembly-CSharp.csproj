@@ -105,6 +105,7 @@
     <None Include="Assets\ExternalLibraries\MonoMod.RuntimeDetour.dll" />
     <None Include="Assets\ExternalLibraries\valheim\Splatform.dll" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Demo scenes\Demo scene lasers\If you want to use lasers in 2D.txt" />
+    <None Include="Assets\ExternalLibraries\valheim\Assembly-CSharp.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\JVLMock\Particles_Standard Unlit2.shader" />
     <None Include="Assets\X_RPGVFX\RPG VFX Bundle\Shaders\Distortion.shader" />
@@ -641,6 +642,10 @@
       <HintPath>Assets\ExternalLibraries\Mono.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="AdvancedPortals">
       <HintPath>Assets\ExternalLibraries\AdvancedPortals.dll</HintPath>
       <Private>False</Private>
@@ -663,6 +668,10 @@
     </Reference>
     <Reference Include="Splatform">
       <HintPath>Assets\ExternalLibraries\valheim\Splatform.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>Assets\ExternalLibraries\valheim\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
@@ -719,10 +728,6 @@
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>Assets\ExternalLibraries\BepInEx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">

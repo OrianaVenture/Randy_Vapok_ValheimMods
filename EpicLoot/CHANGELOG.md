@@ -14,6 +14,9 @@
 * Fixed an issue with loot rolling creating too many items.
 * Fixed items that cannot be runified showing up in the rune UI menus.
 * Fixed an issue with magic items not initializing correctly after the 11.7 update (attempt to fix another bug made more, fun times).
+* Fixed particle effects on dropped Andvaranaut.
+
+
 * Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete them.
 
 ## Version 0.12.1
