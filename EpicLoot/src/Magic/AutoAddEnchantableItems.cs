@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Magic
 {
@@ -18,7 +17,6 @@ namespace EpicLoot.Magic
     {
         public class AutoSorterConfiguration
         {
-            public int version = 1;
             public List<string> UncraftableItemsAlwaysAllowed = new List<string>();
             public Dictionary<string, string> TierToBossKey = new Dictionary<string, string>();
             public Dictionary<string, List<string>> SetsToCategories = new Dictionary<string, List<string>>();
@@ -29,7 +27,7 @@ namespace EpicLoot.Magic
 
         public class SortingData
         {
-            public string BossKey { get; set; } = "none";
+            public string BossKey { get; set; } = NONE;
             public List<string> BiomeLevelItems { get; set; } = new List<string>();
             public List<string> BiomeSpecificCraftingStations { get; set; } = new List<string>();
 
@@ -47,58 +45,8 @@ namespace EpicLoot.Magic
 
         private static readonly List<string> IgnoredItems = LootRoller.Config.RestrictedItems.ToList();
 
-        public static AutoSorterConfiguration Config = new AutoSorterConfiguration() {
-            version = 1,
-            UncraftableItemsAlwaysAllowed = new List<string> { "THSwordWood", "SpearWood", "BattleaxeWood", "KnifeWood", "MaceWood", "AtgeirWood", "AxeWood", "SledgeWood" },
-            TierToBossKey = new Dictionary<string, string>() {
-                { "Tier0", "none" },
-                { "Tier1", "defeated_eikthyr" },
-                { "Tier2", "defeated_gdking" },
-                { "Tier3", "defeated_bonemass" },
-                { "Tier4", "defeated_dragon" },
-                { "Tier5", "defeated_goblinking" },
-                { "Tier6", "defeated_queen" },
-                { "Tier7", "defeated_fader" },
-            },
-            SetsToCategories = new Dictionary<string, List<string>>(){
-                { "Weapons", new List<string>() { "Swords", "Axes", "TwoHandAxes", "Knives", "Fists", "Staffs", "Clubs", "Sledges", "Polearms", "Spears", "Bows" } },
-                { "Tools", new List<string>() { "Pickaxes", "Torches", "Tools" } },
-                { "Armor", new List<string>() { "ChestArmor", "LegsArmor", "HeadArmor", "ShouldersArmor" } },
-                { "Shields", new List<string>() { "TowerShields", "RoundShields", "Bucklers" } },
-            },
-            BiomeSorterData = new Dictionary<string, SortingData>()
-            {
-                { "Ashlands", new SortingData() { BossKey = "defeated_fader", BiomeLevelItems = new List<string> { "FlametalNew", "Blackwood", "CharredBone", "MoltenCore", "GemstoneBlue", "GemstoneGreen", "GemstoneRed", "CelestialFeather" } } },
-                { "Mistlands", new SortingData() { BossKey = "defeated_queen", BiomeLevelItems = new List<string> { "YggdrasilWood", "BlackMarble", "Eitr", "BlackCore", "Mandible", "Carapace", "ScaleHide", "YagluthDrop" }, BiomeSpecificCraftingStations = new List<string>() { "piece_magetable", "blackforge" } } },
-                { "Plains", new SortingData() { BossKey = "defeated_bonemass", BiomeLevelItems = new List<string> { "Needle", "BlackMetal", "LinenThread", "UndeadBjornRibcage", "TrophyBjornUndead" } } },
-                { "Mountain", new SortingData() { BossKey = "defeated_dragon", BiomeLevelItems = new List<string> { "Silver", "Obsidian", "WolfHairBundle", "WolfClaw", "WolfFang" }, BiomeSpecificCraftingStations = new List<string>() { "piece_artisanstation" } } },
-                { "Swamp", new SortingData() { BossKey = "defeated_bonemass", BiomeLevelItems = new List<string> { "Iron", "Chain", "ElderBark", "Guck", "Chitin", "SerpentScale" } } },
-                { "Blackforest", new SortingData() { BossKey = "defeated_gdking", BiomeLevelItems = new List<string> { "Copper", "Tin", "Bronze", "RoundLog", "FineWood", "TrollHide", "BjornHide", "BjornPaw" } } },
-                { "Meadows", new SortingData() { BossKey = "defeated_eikythr", BiomeLevelItems = new List<string> { "Wood", "Stone", "Flint", "LeatherScraps", "DeerHide" } } },
-            },
-            TierRarityProbabilities = new Dictionary<string, List<float>>()
-            {
-                { "Tier0", [97, 2, 1, 0, 0] },
-                { "Tier1", [94, 3, 2, 1, 0] },
-                { "Tier2", [80, 14, 4, 2, 0] },
-                { "Tier3", [38, 50, 8, 3, 1] },
-                { "Tier4", [5, 35, 50, 17, 3] },
-                { "Tier5", [0, 15, 60, 20, 5] },
-                { "Tier6", [0, 10, 50, 30, 10] },
-                { "Tier7", [0, 5, 35, 45, 15] },
-            },
-            VendorCostByBiomeKey = new Dictionary<string, int>()
-            {
-                { "none", 50 },
-                { "defeated_eikthyr", 100 },
-                { "defeated_gdking", 400 },
-                { "defeated_bonemass", 600 },
-                { "defeated_dragon", 900 },
-                { "defeated_goblinking", 1100 },
-                { "defeated_queen", 1300 },
-                { "defeated_fader", 1600 }
-            }
-        };
+        public static AutoSorterConfiguration Config;
+        public static readonly string NONE = "none";
 
         public static void CheckAndAddAllEnchantableItems(bool deregister = true)
         {
@@ -123,7 +71,7 @@ namespace EpicLoot.Magic
                 foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
                 {
                     ItemsByBoss = new Dictionary<string, List<string>>() {
-                        { "none", new List<string>() },
+                        { NONE, new List<string>() },
                         { "defeated_eikthyr", new List<string>() },
                         { "defeated_gdking", new List<string>() },
                         { "defeated_bonemass", new List<string>() },
@@ -172,7 +120,6 @@ namespace EpicLoot.Magic
                 .Select(x => x.m_itemData.m_dropPrefab.name).ToList();
             AddRemoveItemsFromLootLists(magicMats, foundByCategory, newConfig);
 
-            EpicLoot.Log($"Writing iteminfo.");
             // Write out the new config, which will trigger a reload of the config
             try
             {
@@ -185,7 +132,6 @@ namespace EpicLoot.Magic
                 EpicLoot.LogError($"Failed to auto-add items to iteminfo.json: {e.Message}");
                 return;
             }
-            EpicLoot.Log($"All equipment, vendor, droptables and iteminfo configs validated.");
         }
 
         private static void AddRemoveItemsFromLootLists(List<string> magicMats, Dictionary<string, ItemTypeInfo> foundByCategory, List<ItemTypeInfo> newConfig)
@@ -212,11 +158,6 @@ namespace EpicLoot.Magic
                 }
             }
 
-            //EpicLoot.Log($"Starting loottable Validation. Valid items to use {validItems.Count} from {allItems.Count}");
-            //EpicLoot.Log($"Found Item Names: {string.Join(",", validItems)}");
-            //EpicLoot.Log($"Found Item sets: {string.Join(",", metaItemSetNames)}");
-            //EpicLoot.Log($"Found Magic mats: {string.Join(",", magicMats)}");
-
             foreach (LootItemSet lis in LootRoller.Config.ItemSets)
             {
                 List<LootDrop> entries = new List<LootDrop>();
@@ -235,12 +176,11 @@ namespace EpicLoot.Magic
                     EpicLoot.Log($"{loot.Item} is not a found item and will be removed from the loot tables.");
                 }
 
-                //EpicLoot.Log($"Checking Item Tier and Loottype.");
                 if (DetermineTierAndType(lis.Name, out string tier, out string loottype))
                 {
                     if (!Config.TierToBossKey.ContainsKey(tier))
                     {
-                        EpicLoot.Log($"tierToBoss does not contain {tier}");
+                        EpicLoot.Log($"tierToBoss does not contain {tier}, loot tables for the requested tier and boss will be incorrect.");
                         continue;
                     }
 
@@ -254,10 +194,8 @@ namespace EpicLoot.Magic
                             continue;
                         }
 
-                        //EpicLoot.Log($"Checking for ItemType entry: {itemType.Type}");
                         foreach (var gateditem in itemType.ItemsByBoss[bosskey])
                         {
-                            // EpicLoot.Log($"Checking if the item was already added: {gateditem}");
                             if (addedItems.Contains(gateditem))
                             {
                                 continue;
@@ -266,11 +204,6 @@ namespace EpicLoot.Magic
                             entries.Add(new LootDrop() { Item = gateditem, Rarity = DetermineRarityForLoot(tier) });
                         }
                     }
-                }
-
-                if (itemfound)
-                {
-                    continue;
                 }
 
                 if (entries.Count > 0) { updatedItemSets.Add(new LootItemSet { Name = lis.Name, Loot = entries.ToArray() }); }
@@ -283,8 +216,6 @@ namespace EpicLoot.Magic
             {
                 List<LootDrop> updatedLootDrop = new List<LootDrop>();
                 List<LeveledLootDef> levelListDef = new List<LeveledLootDef>();
-
-                EpicLoot.Log($"Checking loot in {lt.Object}.");
 
                 // Valid existing entries
                 if (lt.Loot != null)
@@ -354,7 +285,6 @@ namespace EpicLoot.Magic
             {
                 if (existingVendorItems.ContainsKey(gamble.Item))
                 {
-                    //EpicLoot.Log($"Item {gamble.Item} is already in the vendor items list, skipping duplicate.");
                     continue;
                 }
 
@@ -362,7 +292,6 @@ namespace EpicLoot.Magic
             }
 
             // Check the iteminfo configs for existing and new items
-            EpicLoot.Log("Checking info on existing entries.");
             foreach (ItemTypeInfo itemType in newConfig)
             {
                 foreach (KeyValuePair<string, List<string>> bossEntry in itemType.ItemsByBoss)
@@ -488,8 +417,8 @@ namespace EpicLoot.Magic
 
                 // Item already exists in the config | Or we are not auto-adding items
                 //if (itemfound || ELConfig.AutoAddEquipment.Value == false) { continue; }
-                if ((ELConfig.OnlyAddEquipmentWithRecipes.Value == true && key == "none") ||
-                    (key == "none" && itemType == "none") ||
+                if ((ELConfig.OnlyAddEquipmentWithRecipes.Value == true && key == NONE) ||
+                    (key == NONE && itemType == NONE) ||
                     itemType == "Unkown" ||
                     IgnoredItems.Contains(itemName))
                 {
@@ -616,7 +545,7 @@ namespace EpicLoot.Magic
 
                 if (!validItems.Contains(loot.Item) && !metaItemSetNames.Contains(loot.Item))
                 {
-                    EpicLoot.Log($"REMOVING: Loot table Item {loot.Item} not found.");
+                    EpicLoot.Log($"REMOVING: Loot table ({lt.Object}) Item {loot.Item} not found.");
                     continue;
                 }
                 updatedLootDrop.Add(loot);
@@ -643,14 +572,14 @@ namespace EpicLoot.Magic
 
             tier = name.Substring(0, 5);
             type = name.Substring(5);
-            //EpicLoot.Log($"{name} = Tier={tier} Type={type}");
             // Maybe we want to ensure the everything groups are properly setup? How much loot table validation should we do?
             if (type == "Tier" || type == "Everything") { return false; }
             return true;
         }
 
         private static float[] DetermineRarityForLoot(string tier) {
-            if (Config.TierRarityProbabilities.ContainsKey(tier)) {
+            if (Config.TierRarityProbabilities.ContainsKey(tier))
+            {
                 return Config.TierRarityProbabilities[tier].ToArray();
             }
             return [97, 2, 1, 0, 0];
@@ -733,19 +662,25 @@ namespace EpicLoot.Magic
         public static string DetermineBossLevelForItem(ItemDrop.ItemData item)
         {
             Recipe itemRecipe = ObjectDB.instance.GetRecipe(item);
-            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) { return "none"; }
+            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) { return NONE; }
 
             // We need to completely evaluate each tier until we find a match, so that we only match the highest tier for the selected item.
 
             foreach(Piece.Requirement req in itemRecipe.m_resources) {
                 foreach(KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData)
                 {
-                    if (sortdata.Value.BiomeLevelItems.Contains(req.m_resItem.name)) { return sortdata.Value.BossKey; }
-                    if (sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name)) { return sortdata.Value.BossKey; }
+                    if (sortdata.Value.BiomeLevelItems.Contains(req.m_resItem.name))
+                    {
+                        return sortdata.Value.BossKey;
+                    }
+                    if (sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
+                    {
+                        return sortdata.Value.BossKey;
+                    }
                 }
             }
 
-            return "none";
+            return NONE;
         }
     }
 }
