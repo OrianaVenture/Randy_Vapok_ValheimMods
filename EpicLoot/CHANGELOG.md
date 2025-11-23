@@ -1,3 +1,21 @@
+## Version 0.12.2
+
+* Fixed some display issues with the in game compendium.
+* Added some localizations for the compendium menus.
+* Updated Russian translations.
+* Fixed an issue with Identify items not selecting a valid fallback, resulting in failure to identify items (mainly swamp items).
+  * If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate!
+* Fixed some edge cases with magic materials not stacking with each other in the player inventory.
+* Fixed Auto Mead not applying correctly.
+* Fixed error handling for Multishot magic effects.
+* Fixed modify low health threshold magic effect checking the wrong effect value.
+* Reduced riches value for balanced and minimal configuration options.
+  * Again, need to regenerate baseconfig to see the changes.
+* Fixed an issue with loot rolling creating too many items.
+* Fixed items that cannot be runified showing up in the rune UI menus.
+* Fixed an issue with magic items not initializing correctly after the 11.7 update (attempt to fix another bug made more, fun times).
+* Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete them.
+
 ## Version 0.12.1
 
 * Tweaked the Rune costs config values. 
