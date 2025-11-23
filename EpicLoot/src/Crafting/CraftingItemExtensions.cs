@@ -15,7 +15,8 @@ namespace EpicLoot.Crafting
 
         public static bool IsUnidentified(this ItemDrop.ItemData item)
         {
-            return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material && item.m_shared.m_ammoType.EndsWith(magicUnidentified);
+            return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material &&
+                item.m_shared.m_ammoType.EndsWith(magicUnidentified);
         }
 
         public static ItemRarity GetCraftingMaterialRarity(this ItemDrop.ItemData item)

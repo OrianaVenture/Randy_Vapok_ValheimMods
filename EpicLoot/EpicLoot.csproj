@@ -60,7 +60,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj" />
+    <ProjectReference Include="..\EpicLoot-UnityLib\EpicLoot-UnityLib.csproj">
+      <Project>{8DABA031-AEA4-472F-A9AA-DE8B1AA69DE5}</Project>
+      <Name>EpicLoot-UnityLib</Name>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="CopyToModManagers" AfterTargets="Build">
