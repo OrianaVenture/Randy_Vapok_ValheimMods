@@ -72,18 +72,13 @@ namespace EpicLoot
             {
                 if (string.IsNullOrEmpty(itemSet.Name))
                 {
-                    EpicLoot.LogError($"Tried to add ItemSet with no name!");
+                    EpicLoot.LogWarning($"Tried to add ItemSet with no name!");
                     continue;
                 }
 
                 if (!ItemSets.ContainsKey(itemSet.Name))
                 {
-                    //EpicLoot.Log($"Added ItemSet: {itemSet.Name}");
                     ItemSets.Add(itemSet.Name, itemSet);
-                }
-                else
-                {
-                    EpicLoot.LogError($"Tried to add ItemSet {itemSet.Name}, but it already exists!");
                 }
             }
         }
@@ -94,14 +89,12 @@ namespace EpicLoot
             foreach (var lootTable in lootTables.Where(x => x.RefObject == null || x.RefObject == ""))
             {
                 AddLootTable(lootTable);
-                //EpicLoot.Log($"Added loottable for {lootTable.Object}");
             }
 
             // Add loottables that are based off mob or object templates
             foreach (var lootTable in lootTables.Where(x => x.RefObject != null && x.RefObject != ""))
             {
                 AddLootTable(lootTable);
-                //EpicLoot.Log($"Added loottable for {lootTable.Object} using {lootTable.RefObject} as reference");
             }
         }
 
@@ -114,7 +107,6 @@ namespace EpicLoot
                 return;
             }
 
-            //EpicLoot.Log($"Added LootTable: {key}");
             if (!LootTables.ContainsKey(key))
             {
                 LootTables.Add(key, new List<LootTable>());
@@ -373,7 +365,8 @@ namespace EpicLoot
 
             if (failures > 0)
             {
-                EpicLoot.LogWarningForce($"{failures} during item selection, this may have triggered a fallback. Ensure your iteminfo does not have invalid items.");
+                EpicLoot.LogWarningForce($"{failures} during item selection, this may have triggered a fallback. " +
+                    $"Ensure your iteminfo does not have invalid items.");
             }
 
             return results;
@@ -996,36 +989,46 @@ namespace EpicLoot
             return results;
         }
 
-        public static List<LootTable> GetFullyResolvedLootTable(string name) {
+        public static List<LootTable> GetFullyResolvedLootTable(string name)
+        {
             List<LootTable> results = new List<LootTable>();
-            if (LootTables.TryGetValue(name, out var lootTables)) {
-                foreach (var lootTable in lootTables) {
+            if (LootTables.TryGetValue(name, out var lootTables))
+            {
+                foreach (var lootTable in lootTables)
+                {
                     results.Add(lootTable);
                 }
             }
+
             List<LootDrop> setDrops = new List<LootDrop>();
             CheckForSet(name, setDrops, out List<LootDrop> setResults);
-            LootTable lootTableFromRefs = new LootTable() {
+            LootTable lootTableFromRefs = new LootTable()
+            {
                 Object = name,
                 Drops = [[1, 1]],
                 Loot = setResults.ToArray(),
             };
+
             results.Add(lootTableFromRefs);
 
             EpicLoot.Log($"GetFullyResolvedLootTable({name}) found {results.Count} loot tables");
             return results;
         }
 
-        private static bool CheckForSet(string lootdrop, List<LootDrop> current_results, out List<LootDrop> results) {
+        private static bool CheckForSet(string lootdrop, List<LootDrop> current_results, out List<LootDrop> results)
+        {
             results = current_results;
-            if (ItemSets.TryGetValue(lootdrop, out LootItemSet lootset)) {
-                //EpicLoot.Log($"CheckForSet found itemset: {lootset.Name} for {lootdrop}");
-                foreach (LootDrop ld in lootset.Loot) {
-                    if (!CheckForSet(ld.Item, current_results, out results)) {
+            if (ItemSets.TryGetValue(lootdrop, out LootItemSet lootset))
+            {
+                foreach (LootDrop ld in lootset.Loot)
+                {
+                    if (!CheckForSet(ld.Item, current_results, out results))
+                    {
                         results.Add(ld);
                     }
                 }
             }
+
             return false;
         }
 
@@ -1045,19 +1048,20 @@ namespace EpicLoot
                 }
                 EpicLoot.LogWarning($"Requested Loot table ({objectName}) does not exist, defaulting to ({results.Key})");
             }
+
             return results;
         }
 
         public static List<KeyValuePair<int, float>> GetDropsForLevel([NotNull] LootTable lootTable,
             int level, bool useNextHighestIfNotPresent = true)
         {
-
             if (level <= 3 && !ArrayUtils.IsNullOrEmpty(lootTable.Drops))
             {
                 if (lootTable.LeveledLoot.Any(x => x.Level == level))
                 {
                     EpicLoot.LogWarning($"Duplicated leveled drops for ({lootTable.Object} lvl {level}), using 'Drops'");
                 }
+
                 return ToDropList(lootTable.Drops);
             }
 
@@ -1153,11 +1157,16 @@ namespace EpicLoot
             {
                 int fallbackAttempts = 0;
                 var newEffect = RollEffects(availableEffects, rarity, 1, true).FirstOrDefault();
-                while (newEffect != null && currentEffectTypes.Contains(newEffect.EffectType) && fallbackAttempts < 5) {
+                while (newEffect != null && currentEffectTypes.Contains(newEffect.EffectType) && fallbackAttempts < 5)
+                {
                     // If we rolled the same effect as the current one, try again a few times
                     EpicLoot.LogWarning($"Rolled a duplicate effect: {newEffect.EffectType} for item: {item.m_shared.m_name}, retrying...");
                     MagicItemEffect nmieffect = RollEffects(availableEffects, rarity, 1, true).FirstOrDefault();
-                    if (nmieffect == null) { continue; }
+                    if (nmieffect == null)
+                    {
+                        continue;
+                    }
+
                     newEffect = nmieffect;
                     fallbackAttempts++;
                 }
@@ -1170,6 +1179,7 @@ namespace EpicLoot
                     availableEffects.RemoveAll(x => x.Type == newEffect.EffectType);
                 }
             }
+
             results.Add(currentEffect);
             results.Reverse();
             return results;
@@ -1258,6 +1268,7 @@ namespace EpicLoot
                 lootDrop.Rarity = [100, 0, 0, 0, 0];
                 EpicLoot.LogWarning($"No rarity table was found for {loot_info.Value[0]} using default: [100, 0, 0, 0, 0]");
             }
+
             var rarityBase = GetRarityWeights(lootDrop.Rarity, 0);
             var rarityLuck = GetRarityWeights(lootDrop.Rarity, luckFactor);
 
