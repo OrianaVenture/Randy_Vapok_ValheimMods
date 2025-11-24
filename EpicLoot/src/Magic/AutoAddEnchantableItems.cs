@@ -356,7 +356,7 @@ namespace EpicLoot.Magic
                         validItems.AddRange(iteme.Value);
                     }
                 }
-                List<string> magicMats = allItems.Where(i => i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone())
+                List<string> magicMats = allItems.Where(i => i.m_itemData != null && (i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()))
                     .Select(x => x.m_itemData.m_dropPrefab.name).ToList();
                 //EpicLoot.Log($"Starting loottable Validation. Valid items to use {validItems.Count} from {allItems.Count}");
                 //EpicLoot.Log($"Found Item Names: {string.Join(",", validItems)}");
