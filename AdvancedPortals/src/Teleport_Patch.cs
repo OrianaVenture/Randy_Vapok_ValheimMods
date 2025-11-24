@@ -82,38 +82,33 @@ namespace AdvancedPortals
             CurrentAdvancedPortal = null;
         }
 
-        // High priority to run after other mods
+        // High priority to run before other mods
         [HarmonyPatch(typeof(Inventory), nameof(Inventory.IsTeleportable))]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPriority(Priority.High)]
-        public static void Inventory_IsTeleportable_Pretfix(Inventory __instance, ref bool __result, ref bool __runOriginal)
+        public static void Inventory_IsTeleportable_Pretfix(Inventory __instance, ref bool __result)
         {
-            if (CurrentAdvancedPortal == null)
+            if (CurrentAdvancedPortal == null || __result == true)
             {
-                // Do not change run original rule
-                return;
-            }
-
-            if (ZoneSystem.instance.GetGlobalKey(GlobalKeys.TeleportAll) || CurrentAdvancedPortal.AllowEverything)
-            {
-                __result = true;
-                __runOriginal = false;
+                // Do not change result for non-advanced portals, or if it already allowed to teleport
                 return;
             }
 
             foreach (ItemDrop.ItemData itemData in __instance.GetAllItems())
             {
-                if (!itemData.m_shared.m_teleportable && itemData.m_dropPrefab != null &&
+                if (itemData.m_dropPrefab == null)
+                {
+                    continue;
+                }
+
+                if (!itemData.m_shared.m_teleportable &&
                     !CurrentAdvancedPortal.AllowedItems.Contains(itemData.m_dropPrefab.name))
                 {
-                    __result = false;
-                    __runOriginal = false;
                     return;
                 }
             }
 
             __result = true;
-            __runOriginal = false;
         }
     }
 }
