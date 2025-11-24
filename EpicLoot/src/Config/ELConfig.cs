@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static EpicLoot.Magic.AutoAddEnchantableItems;
 
 namespace EpicLoot.Config
 {
@@ -93,6 +94,7 @@ namespace EpicLoot.Config
         private static CustomRPC AbilitiesRPC;
         private static CustomRPC MaterialConversionRPC;
         private static CustomRPC EnchantingUpgradesRPC;
+        private static CustomRPC AutoSorterConfigurationRPC;
 
         private static string LocalizationDir = GetLocalizationDirectoryPath();
         private static readonly List<string> LocalizationLanguages = new List<string>() {
@@ -157,6 +159,7 @@ namespace EpicLoot.Config
             AbilitiesRPC = NetworkManager.Instance.AddRPC("AbilitiesRPC", OnServerRecieveConfigs, OnClientRecieveAbilityConfigs);
             MaterialConversionRPC = NetworkManager.Instance.AddRPC("MaterialConversionRPC", OnServerRecieveConfigs, OnClientRecieveMaterialConversionConfigs);
             EnchantingUpgradesRPC = NetworkManager.Instance.AddRPC("EnchantingUpgradesRPC", OnServerRecieveConfigs, OnClientRecieveEnchantingUpgradesConfigs);
+            AutoSorterConfigurationRPC = NetworkManager.Instance.AddRPC("AutoSorterConfigurationRPC", OnServerRecieveConfigs, OnClientRecieveAutoSorterConfigs);
         }
 
         private void CreateConfigValues(ConfigFile Config)
@@ -357,6 +360,7 @@ namespace EpicLoot.Config
             SychronizeConfig<AbilityConfig>("abilities.json", AbilityDefinitions.Initialize, AbilitiesRPC, AbilityDefinitions.GetCFG);
             SychronizeConfig<MaterialConversionsConfig>("materialconversions.json", MaterialConversions.Initialize, MaterialConversionRPC, MaterialConversions.GetCFG);
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig, EnchantingUpgradesRPC, EnchantingTableUpgrades.GetCFG);
+            SychronizeConfig<AutoSorterConfiguration>("itemsorter.json", AutoAddEnchantableItems.InitializeConfig, AutoSorterConfigurationRPC, AutoAddEnchantableItems.GetCFG);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
@@ -396,9 +400,11 @@ namespace EpicLoot.Config
             return dirInfo.FullName;
         }
 
-        public static string GetDefaultEmbeddedFileLocation(string configName) {
+        public static string GetDefaultEmbeddedFileLocation(string configName)
+        {
             string embeddedcfgpath = "EpicLoot.config." + configName;
-            if (configName == "magiceffects.json") {
+            if (configName == "magiceffects.json")
+            {
                 embeddedcfgpath = "EpicLoot.config.overhauls." + BalanceConfigurationType.Value + "." + configName;
             }
             return embeddedcfgpath;
@@ -406,21 +412,25 @@ namespace EpicLoot.Config
 
         public static void SychronizeConfig<T>(string filename, Action<T> setupMethod, CustomRPC targetRPC, Func<T> getConfig) where T : class
         {
-            string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename);
+            string basecfglocation = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), filename);
 
             // Ensure that the core config file exists
-            if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
+            if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value)
+            {
                 EpicLoot.Log($"Base config file {basecfglocation} does not exist, creating it from embedded default config.");
                 var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
                 File.WriteAllText(basecfglocation, overhaulfiledata);
             }
 
             // Attempt to parse the core config, if its not valid use the embedded default config
-            try {
+            try
+            {
                 var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
 
                 setupMethod(contents);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 EpicLoot.LogWarningForce($"Core Config file {basecfglocation} is invalid and internal defaults will be used instead." + e);
                 var defaultConfig = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
                 setupMethod(JsonConvert.DeserializeObject<T>(defaultConfig));
@@ -429,7 +439,8 @@ namespace EpicLoot.Config
             EpicLoot.Log($"Core Config file {basecfglocation} Loaded and set.");
             // At this point we have a valid config, either from external file or from embedded defaults.
 
-            ZPackage SendInitialConfig() {
+            ZPackage SendInitialConfig()
+            {
                 string cfgs = JsonConvert.SerializeObject(getConfig());
                 //EpicLoot.Log($"sending {filename} configs: {cfgs}");
                 return SendConfig(cfgs);
@@ -439,25 +450,32 @@ namespace EpicLoot.Config
             SynchronizationManager.Instance.AddInitialSynchronization(targetRPC, SendInitialConfig);
 
             // Encapsulated file watcher modification method for the config file
-            void FileModified(object sender, FileSystemEventArgs e) {
+            void FileModified(object sender, FileSystemEventArgs e)
+            {
                 if (e.FullPath != basecfglocation) { return; }
                 EpicLoot.Log($"Config file {basecfglocation} {e.FullPath} has been modified, attempting to update config.");
                 if (!File.Exists(basecfglocation)) { return; }
                 bool valid_update = false;
-                try {
+                try
+                {
                     var contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(basecfglocation));
                     EpicLoot.Log($"Config file {basecfglocation} has been modified, updating config.");
                     setupMethod(contents);
                     valid_update = true;
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     EpicLoot.LogWarningForce($"Config file {basecfglocation} is invalid and config will not be updated." + ex);
                 }
                 if (valid_update == false) { return; }
-                if (GUIManager.IsHeadless()) {
-                    try {
+                if (GUIManager.IsHeadless())
+                {
+                    try
+                    {
                         targetRPC.SendPackage(ZNet.instance.m_peers, SendConfig(JsonConvert.SerializeObject(getConfig())));
                     }
-                    catch {
+                    catch
+                    {
                         Jotunn.Logger.LogError($"Error while server syncing {filename} configs");
                     }
                 }
@@ -481,13 +499,15 @@ namespace EpicLoot.Config
             EpicLoot.Log($"Processing localization startup file patches: {string.Join(",", files)}");
             foreach (var file in files)
             {
-                if (!file.Contains(".json")) {
+                if (!file.Contains(".json"))
+                {
                     EpicLoot.Log($"File: {file} is not a supported format, ignoring.");
                     continue;
                 }
                 var fileInfo = new FileInfo(file);
                 string language = file.Trim().Split(Path.DirectorySeparatorChar).Last().Split('.').First().Trim();
-                if (!LocalizationLanguages.Contains(language)) {
+                if (!LocalizationLanguages.Contains(language))
+                {
                     EpicLoot.LogWarning($"{language} is not a supported language [{string.Join(", ", LocalizationLanguages.ToArray())}]");
                     continue;
                 }
@@ -501,31 +521,37 @@ namespace EpicLoot.Config
         }
 
 
-        private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e) {
-            if (EnableHotReloadPatches.Value == false) {
+        private static void IngestPatchFilesFromDisk(object s, FileSystemEventArgs e)
+        {
+            if (EnableHotReloadPatches.Value == false)
+            {
                 return;
             }
 
-            if (SynchronizationManager.Instance.PlayerIsAdmin == false) {
+            if (SynchronizationManager.Instance.PlayerIsAdmin == false)
+            {
                 EpicLoot.Log("Player is not an admin, and not allowed to change local configuration. Local config change will not be loaded.");
                 return;
             }
 
             // Do not process directories, setup a new watcher- otherwise they get ingored even with subdirectory watching.
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory)) {
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
                 SetupPatchConfigFileWatch(e.FullPath);
                 EpicLoot.Log($"Adding subdirectory filewatcher: {e.FullPath}");
                 return;
             }
 
             var fileInfo = new FileInfo(e.FullPath);
-            if (!fileInfo.FullName.Contains(".json")) {
+            if (!fileInfo.FullName.Contains(".json"))
+            {
                 return;
             }
             EpicLoot.Log($"Processing patch file update: {fileInfo}");
             FilePatching.ReloadAndApplyAllPatches();
 
-            if (AutoAddEquipment.Value == true || AutoRemoveEquipmentNotFound.Value == true) {
+            if (AutoAddEquipment.Value == true || AutoRemoveEquipmentNotFound.Value == true)
+            {
                 AutoAddEnchantableItems.CheckAndAddAllEnchantableItems(false);
             }
         }
@@ -621,11 +647,20 @@ namespace EpicLoot.Config
             yield return null;
         }
 
+        private static IEnumerator OnClientRecieveAutoSorterConfigs(long sender, ZPackage package)
+        {
+            AutoAddEnchantableItems.InitializeConfig(ClientRecieveParseJsonConfig<AutoSorterConfiguration>(package.ReadString()));
+            yield return null;
+        }
+
         private static T ClientRecieveParseJsonConfig<T>(string json)
         {
-            try {
+            try
+            {
                 return JsonConvert.DeserializeObject<T>(json);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 EpicLoot.LogError($"There was an error syncing client configs: {e}");
             }
             return default;
