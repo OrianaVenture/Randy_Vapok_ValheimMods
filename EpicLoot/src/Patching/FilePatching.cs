@@ -1,22 +1,13 @@
 ﻿using BepInEx;
 using Common;
-using EpicLoot.Abilities;
-using EpicLoot.Adventure;
 using EpicLoot.Config;
-using EpicLoot.Crafting;
-using EpicLoot.CraftingV2;
-using EpicLoot.GatedItemType;
-using EpicLoot.LegendarySystem;
-using EpicLoot_UnityLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Patching
 {
