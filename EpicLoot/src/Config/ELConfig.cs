@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Config
 {
@@ -412,6 +413,7 @@ namespace EpicLoot.Config
             if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
                 EpicLoot.Log($"Base config file {basecfglocation} does not exist, creating it from embedded default config.");
                 var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
+                FilePatching.LoadPatchedJSON(filename.Split('.')[0], true);
                 File.WriteAllText(basecfglocation, overhaulfiledata);
             }
 

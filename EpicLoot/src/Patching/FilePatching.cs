@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace EpicLoot.Patching
 {
@@ -81,11 +82,6 @@ namespace EpicLoot.Patching
         public static void ReloadAndApplyAllPatches()
         {
             PatchesPerFile.Clear();
-            LoadAndApplyAllPatches();
-        }
-
-        public static void LoadAndApplyAllPatches()
-        {
             LoadAllPatches();
             ApplyAllPatches();
         }
@@ -273,17 +269,21 @@ namespace EpicLoot.Patching
         {
             foreach (var entry in PatchesPerFile)
             {
-                EpicLoot.Log($"Loading patches for {entry.Key}");
                 LoadPatchedJSON(entry.Key);
             }
         }
 
-        internal static void LoadPatchedJSON(string filename)
+        internal static void LoadPatchedJSON(string filename, bool firstrun = false)
         {
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
             string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
+            if (ELConfig.AlwaysRefreshCoreConfigs.Value == false && firstrun == false) {
+                // Skip applying patches if this is not a first run and we are not refreshing the core configs
+                return;
+            }
+            EpicLoot.Log($"Loaded patches for {filename}");
             EpicLoot.Log($"Loading config base file {baseCfgFile}");
             try {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
