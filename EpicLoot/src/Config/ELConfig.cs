@@ -142,6 +142,7 @@ namespace EpicLoot.Config
             cfg.SaveOnConfigSet = true;
             CreateConfigValues(Config);
             SetupConfigRPCs();
+            FilePatching.LoadAllPatches();
             InitializeConfig();
         }
 
@@ -413,8 +414,8 @@ namespace EpicLoot.Config
             if (File.Exists(basecfglocation) == false || AlwaysRefreshCoreConfigs.Value) {
                 EpicLoot.Log($"Base config file {basecfglocation} does not exist, creating it from embedded default config.");
                 var overhaulfiledata = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
-                FilePatching.LoadPatchedJSON(filename.Split('.')[0], true);
                 File.WriteAllText(basecfglocation, overhaulfiledata);
+                FilePatching.LoadPatchedJSON(filename.Split('.')[0], true);
             }
 
             // Attempt to parse the core config, if its not valid use the embedded default config

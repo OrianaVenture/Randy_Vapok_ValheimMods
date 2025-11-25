@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using Common;
+
 using EpicLoot.Config;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -105,7 +106,7 @@ namespace EpicLoot.Patching
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Unable to Get Patch Directory: {e.Message}");
+                Debug.LogWarning($"Unable to Get Patch Directory: {e.StackTrace}");
                 var debugPath = GetPatchesDirectoryPath(true);
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
