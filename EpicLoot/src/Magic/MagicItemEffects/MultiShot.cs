@@ -116,11 +116,11 @@ namespace EpicLoot.MagicItemEffects
         }
 
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-        public static void Postfix(Attack __instance, ref HitData.DamageTypes __state)
+        public static void Postfix(Attack __instance, ref HitData.DamageTypes? __state)
         {
             if (__state != null && __instance.m_character != null && !__instance.m_character.IsPlayer())
             {
-                __instance.GetWeapon().m_shared.m_damages = __state;
+                __instance.GetWeapon().m_shared.m_damages = (HitData.DamageTypes)__state;
             }
         }
 
