@@ -79,7 +79,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.2";
+        public const string Version = "0.12.3";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -140,13 +140,12 @@ namespace EpicLoot
 
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            Jotunn.Logger.LogInfo("Loading unitylib");
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
-            Jotunn.Logger.LogInfo("Setting up config");
+
             cfg = new ELConfig(Config);
+
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
-            FilePatching.LoadAndApplyAllPatches();
             InitializeAbilities();
             AddLocalizations();
             LoadAssets();

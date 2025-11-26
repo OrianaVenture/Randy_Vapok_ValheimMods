@@ -16,10 +16,12 @@ namespace EpicLoot.MagicItemEffects
         public const string ACCURACY_KEY = "Accuracy";
         public const string PROJECTILES_KEY = "Projectiles";
 
+        // Note the ref HitData.DamageTypes? __state, this must be nullable to avoid zeroing out archer damage
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
         [HarmonyPrefix]
-        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes __state)
+        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes? __state)
         {
+            
             if (__instance?.GetWeapon() == null || __instance.m_character == null || !__instance.m_character.IsPlayer())
             {
                 return;
@@ -114,11 +116,11 @@ namespace EpicLoot.MagicItemEffects
         }
 
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-        public static void Postfix(Attack __instance, ref HitData.DamageTypes __state)
+        public static void Postfix(Attack __instance, ref HitData.DamageTypes? __state)
         {
-            if (__state != null)
+            if (__state != null && __instance.m_character != null && !__instance.m_character.IsPlayer())
             {
-                __instance.GetWeapon().m_shared.m_damages = __state;
+                __instance.GetWeapon().m_shared.m_damages = (HitData.DamageTypes)__state;
             }
         }
 

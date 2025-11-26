@@ -88,7 +88,8 @@ namespace EpicLoot.GatedItemType
                         if (AllItemsWithDetails.ContainsKey(item))
                         {
                             List<string> reqBosses = AllItemsWithDetails[item].RequiredBosses;
-                            if (!reqBosses.Contains(itemByBoss.Key)) {
+                            if (!reqBosses.Contains(itemByBoss.Key))
+                            {
                                 EpicLoot.Log($"{item} already registered, merging boss keys.");
                                 reqBosses.Add(itemByBoss.Key);
                             }
@@ -135,7 +136,8 @@ namespace EpicLoot.GatedItemType
                     BiomesInOrder.Add(boss.Biome);
                 }
             }
-            EpicLoot.Log($"Updated Itemconfig total item entries: {AllItemsWithDetails.Keys.Count}");
+
+            EpicLoot.Log($"Gated items configured, total registered: {AllItemsWithDetails.Keys.Count}");
         }
 
         public static ItemInfoConfig GetCFG()
