@@ -1,20 +1,13 @@
 ﻿using BepInEx;
 using Common;
-using EpicLoot.Abilities;
-using EpicLoot.Adventure;
+
 using EpicLoot.Config;
-using EpicLoot.Crafting;
-using EpicLoot.CraftingV2;
-using EpicLoot.GatedItemType;
-using EpicLoot.LegendarySystem;
-using EpicLoot_UnityLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace EpicLoot.Patching
@@ -81,11 +74,6 @@ namespace EpicLoot.Patching
         public static void ReloadAndApplyAllPatches()
         {
             PatchesPerFile.Clear();
-            LoadAndApplyAllPatches();
-        }
-
-        public static void LoadAndApplyAllPatches()
-        {
             LoadAllPatches();
             ApplyAllPatches();
         }
@@ -118,7 +106,7 @@ namespace EpicLoot.Patching
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Unable to Get Patch Directory: {e.Message}");
+                Debug.LogWarning($"Unable to Get Patch Directory: {e.StackTrace}");
                 var debugPath = GetPatchesDirectoryPath(true);
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
@@ -273,17 +261,21 @@ namespace EpicLoot.Patching
         {
             foreach (var entry in PatchesPerFile)
             {
-                EpicLoot.Log($"Loading patches for {entry.Key}");
                 LoadPatchedJSON(entry.Key);
             }
         }
 
-        internal static void LoadPatchedJSON(string filename)
+        internal static void LoadPatchedJSON(string filename, bool firstrun = false)
         {
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
             string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
+            if (ELConfig.AlwaysRefreshCoreConfigs.Value == false && firstrun == false) {
+                // Skip applying patches if this is not a first run and we are not refreshing the core configs
+                return;
+            }
+            EpicLoot.Log($"Loaded patches for {filename}");
             EpicLoot.Log($"Loading config base file {baseCfgFile}");
             try {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
