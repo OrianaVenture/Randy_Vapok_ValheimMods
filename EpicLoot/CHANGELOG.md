@@ -1,3 +1,12 @@
+## Version 0.12.3
+
+* Changed how patches are applied - they will no longer override your baseconfig files on startup! You should be able to generate your baseconfig files once then make changes without them being reverted. See the [wiki for more information](https://thunderstore.io/c/valheim/p/RandyKnapp/EpicLoot/wiki/358-6-config-patching/). We apologize for the confusion around this new feature.
+* Fixed an issue with MultiShot breaking enemy projectile damage (someday we will get this effect right on the first try).
+* Changed the ..removespeedpenalty_display localization from "Weightless" to "Unhindered". This was a small issue with the 0.12.0 update. Previously this effect was called "No Movement Speed Penalty".
+* Added missing configurations for ModifyMagicFireRate and ModifyFireRate in the magiceffects.json files.
+  * If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate! Or grab the changes from github to manually update your files.
+* Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete them.
+
 ## Version 0.12.2
 
 * Fixed some display issues with the in game compendium.
@@ -15,9 +24,6 @@
 * Fixed items that cannot be runified showing up in the rune UI menus.
 * Fixed an issue with magic items not initializing correctly after the 11.7 update (attempt to fix another bug made more, fun times).
 * Fixed particle effects on dropped Andvaranaut.
-
-
-* Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete them.
 
 ## Version 0.12.1
 
