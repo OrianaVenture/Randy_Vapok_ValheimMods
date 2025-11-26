@@ -40,4 +40,21 @@ namespace EpicLoot
             }
         }
     }
+
+    [HarmonyPatch(typeof(Container), nameof(Container.Load))]
+    public static class Container_Load_Patch
+    {
+        public static void Postfix(Container __instance)
+        {
+            foreach (ItemDrop.ItemData itemData in __instance.m_inventory.m_inventory)
+            {
+                if (itemData.IsMagicCraftingMaterial())
+                {
+                    itemData.CreateMagicItem();
+                }
+
+                itemData.InitializeCustomData();
+            }
+        }
+    }
 }
