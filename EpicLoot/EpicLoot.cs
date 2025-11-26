@@ -140,12 +140,10 @@ namespace EpicLoot
 
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            Jotunn.Logger.LogInfo("Loading unitylib");
             LoadEmbeddedAssembly(assembly, "EpicLoot-UnityLib.dll");
-            Jotunn.Logger.LogInfo("Setting up config");
 
             cfg = new ELConfig(Config);
-            FilePatching.ApplyAllPatches();
+
             // Set the referenced common logger to the EL specific reference so that common things get logged
             PrefabCreator.Logger = Logger;
             InitializeAbilities();

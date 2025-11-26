@@ -14,7 +14,6 @@ namespace EpicLoot.Crafting
         public static HashSet<string> DeprecatedMagicEffects = new HashSet<string>
         {
             MagicEffectType.AddSpiritResistancePercentage,
-            MagicEffectType.ReduceWeight,
             MagicEffectType.AddChoppingResistancePercentage
         };
         #nullable enable

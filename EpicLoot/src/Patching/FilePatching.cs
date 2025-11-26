@@ -106,7 +106,7 @@ namespace EpicLoot.Patching
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Unable to Get Patch Directory: {e.StackTrace}");
+                Debug.LogWarning($"Unable to Get Patch Directory: {e.Message}");
                 var debugPath = GetPatchesDirectoryPath(true);
                 Debug.LogWarning($"Attempted PatchesDirPath is [{PatchesDirPath}]");
                 Debug.LogWarning($"Attempted debugPath is [{debugPath}]");
@@ -243,9 +243,6 @@ namespace EpicLoot.Patching
         public static string BuildPatchedConfig(string targetFile, JObject sourceJson)
         {
             var patches = PatchesPerFile.GetValues(targetFile, true).OrderByDescending(x => x.Priority).ToList();
-            if (patches.Count == 0) {
-                return null;
-            }
 
             foreach (var patch in patches)
             {
@@ -270,21 +267,32 @@ namespace EpicLoot.Patching
             //var base_json_string = JObject.Parse(EpicLoot.ReadEmbeddedResourceFile("EpicLoot.config." + filename));
             // If the overhaul config is present, use that as the definition- otherwise fall back to the embedded config
             // Also fall back if the overhaul configuration is invalid, and note with a warning that this happened.
-            string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(),filename + ".json");
-            if (ELConfig.AlwaysRefreshCoreConfigs.Value == false && firstrun == false) {
+            string baseCfgFile = Path.Combine(ELConfig.GetOverhaulDirectoryPath(), $"{filename}.json");
+            if (ELConfig.AlwaysRefreshCoreConfigs.Value == false && firstrun == false)
+            {
                 // Skip applying patches if this is not a first run and we are not refreshing the core configs
                 return;
             }
-            EpicLoot.Log($"Loaded patches for {filename}");
-            EpicLoot.Log($"Loading config base file {baseCfgFile}");
-            try {
+
+            // Ensure that the core config file exists
+            if (File.Exists(baseCfgFile) == false)
+            {
+                ELConfig.CreateBaseConfigurations(baseCfgFile, filename);
+            }
+
+            try
+            {
                 // Load the yaml file, and convert it to a json object, and then parse it into a json node tree
-                var baseJsonString = JObject.Parse(File.ReadAllText(baseCfgFile));
-                var patchedString = BuildPatchedConfig(filename, baseJsonString);
+                JObject baseJsonString = JObject.Parse(File.ReadAllText(baseCfgFile));
+                string patchedString = BuildPatchedConfig(filename, baseJsonString);
                 // We only need to write the file result if its valid. If this file is changed it will trigger a reload of the config.
                 File.WriteAllText(baseCfgFile, patchedString);
-            } catch (Exception e) {
-                EpicLoot.LogWarningForce($"Patching config file {filename} failed." + e);
+
+                EpicLoot.Log($"Loaded and applied patches for {filename}.json");
+            }
+            catch (Exception e)
+            {
+                EpicLoot.LogWarningForce($"Applying pacthes for {filename}.json failed!\n {e}");
             }
         }
 
