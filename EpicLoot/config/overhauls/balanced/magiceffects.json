@@ -3395,7 +3395,28 @@
       "DisplayText": "$mod_epicloot_me_weightless_display",
       "Description": "$mod_epicloot_me_weightless_desc",
       "Requirements": {
-        "NoRoll": true
+        "ExclusiveEffectTypes": [
+          "ReduceWeight"
+        ],
+        "AllowedItemTypes": [
+          "OneHandedWeapon",
+          "TwoHandedWeapon",
+          "TwoHandedWeaponLeft",
+          "Bow",
+          "Torch",
+          "Tool",
+          "Shield",
+          "Helmet",
+          "Chest",
+          "Legs",
+          "Shoulder",
+          "Staff"
+        ],
+        "AllowedRarities": [
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
       },
       "SelectionWeight": 5,
       "Prefixes": [
