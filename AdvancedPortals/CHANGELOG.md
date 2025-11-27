@@ -1,3 +1,6 @@
+## 1.1.2
+* Changed portals metal check patch to better respect other mods including World Advancement & Progression.
+
 ## 1.1.1
 * Fixed a small typo issue that only manifested when TargetPortal was installed.
 
