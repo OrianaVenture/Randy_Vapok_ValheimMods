@@ -17,7 +17,7 @@ namespace EpicLoot.Magic
     {
         public class AutoSorterConfiguration
         {
-            public List<string> UncraftableItemsAlwaysAllowed = new List<string>();
+            public Dictionary<string, List<string>> UncraftableItemsAlwaysAllowed = new Dictionary<string, List<string>>();
             public Dictionary<string, string> TierToBossKey = new Dictionary<string, string>();
             public Dictionary<string, List<string>> SetsToCategories = new Dictionary<string, List<string>>();
             public Dictionary<string, SortingData> BiomeSorterData = new Dictionary<string, SortingData>();
@@ -409,9 +409,18 @@ namespace EpicLoot.Magic
 
                 string key = DetermineBossLevelForItem(item.m_itemData);
 
-                if (Config.UncraftableItemsAlwaysAllowed.Contains(itemName))
+                bool uncraftable_found = false;
+                foreach(KeyValuePair<string, List<string>> uncraftable in Config.UncraftableItemsAlwaysAllowed)
                 {
-                    foundByCategory[itemType].ItemsByBoss[key].Add(itemName);
+                    if (uncraftable.Value.Contains(itemName)) {
+                        foundByCategory[itemType].ItemsByBoss[uncraftable.Key].Add(itemName);
+                        uncraftable_found = true;
+                        break;
+                    }
+                }
+
+                if (uncraftable_found)
+                {
                     continue;
                 }
 
