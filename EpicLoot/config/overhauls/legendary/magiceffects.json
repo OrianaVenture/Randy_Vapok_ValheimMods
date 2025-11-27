@@ -1763,7 +1763,7 @@
       "Description": "$mod_epicloot_me_modifyfirerate_desc",
       "Requirements": {
         "AllowedItemTypes": [
-          "Staff"
+          "Bow"
         ]
       },
       "ValuesPerRarity": {
@@ -1799,6 +1799,50 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_modifyfirerate_suffix1"
+      ]
+    },
+    {
+      "Type": "ModifyMagicFireRate",
+      "DisplayText": "$mod_epicloot_me_modifymagicfirerate_display",
+      "Description": "$mod_epicloot_me_modifymagicfirerate_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Staff"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 10,
+          "MaxValue": 15,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 15,
+          "MaxValue": 20,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 20,
+          "MaxValue": 30,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 30,
+          "MaxValue": 40,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 40,
+          "MaxValue": 60,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifymagicfirerate_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifymagicfirerate_suffix1"
       ]
     },
     {

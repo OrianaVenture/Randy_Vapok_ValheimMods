@@ -1524,6 +1524,50 @@
       ]
     },
     {
+      "Type": "ModifyFireRate",
+      "DisplayText": "$mod_epicloot_me_modifyfirerate_display",
+      "Description": "$mod_epicloot_me_modifyfirerate_desc",
+      "Requirements": {
+        "AllowedItemTypes": [
+          "Bow"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 1,
+          "MaxValue": 3,
+          "Increment": 1
+        },
+        "Rare": {
+          "MinValue": 3,
+          "MaxValue": 4,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 4,
+          "MaxValue": 6,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 6,
+          "MaxValue": 8,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 8,
+          "MaxValue": 10,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 1,
+      "Prefixes": [
+        "$mod_epicloot_me_modifyfirerate_prefix1"
+      ],
+      "Suffixes": [
+        "$mod_epicloot_me_modifyfirerate_suffix1"
+      ]
+    },
+    {
       "Type": "ModifyMagicFireRate",
       "DisplayText": "$mod_epicloot_me_modifymagicfirerate_display",
       "Description": "$mod_epicloot_me_modifymagicfirerate_desc",
