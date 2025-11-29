@@ -36,7 +36,9 @@ namespace EpicLoot.MagicItemEffects
 
             // Record the damages value so it can be restored after changes
             __state = __instance.GetWeapon().m_shared.m_damages;
+            IsTripleShotActive = false;
 
+            // If a weapon can have both magic effects applied to it this logic will need to be revised.
             if (player.HasActiveMagicEffect(MagicEffectType.TripleBowShot, out float tripleBowEffectValue))
             {
                 Dictionary<string, float> bowShotCfg = null;
@@ -52,17 +54,11 @@ namespace EpicLoot.MagicItemEffects
                 }
                 else
                 {
-                    IsTripleShotActive = false;
                     // We did not change anything, set to null so postfix restore logic is skipped
                     __state = null;
                 }
             }
-            else
-            {
-                IsTripleShotActive = false;
-            }
-
-            if (player.HasActiveMagicEffect(MagicEffectType.DoubleMagicShot, out float doubleMagicEffectValue))
+            else if (player.HasActiveMagicEffect(MagicEffectType.DoubleMagicShot, out float doubleMagicEffectValue))
             {
                 Dictionary<string, float> magicShotCfg = null;
                 if (MagicItemEffectDefinitions.AllDefinitions != null &&
@@ -76,6 +72,10 @@ namespace EpicLoot.MagicItemEffects
                     // We did not change anything, set to null so postfix restore logic is skipped
                     __state = null;
                 }
+            }
+            else
+            {
+                __state = null;
             }
         }
 
