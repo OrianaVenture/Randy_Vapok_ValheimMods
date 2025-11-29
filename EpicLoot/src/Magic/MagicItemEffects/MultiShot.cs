@@ -96,30 +96,34 @@ namespace EpicLoot.MagicItemEffects
                 if (configuration.ContainsKey(DAMAGE_KEY))
                 {
                     damage = configuration[DAMAGE_KEY];
-                    HitData.DamageTypes weaponDamage = attack.GetWeapon().m_shared.m_damages;
-                    weaponDamage.Modify(damage);
-                    attack.GetWeapon().m_shared.m_damages = weaponDamage;
                 }
 
                 if (configuration.ContainsKey(COSTSCALE_KEY))
                 {
                     costScale = configuration[COSTSCALE_KEY];
-                    ModifyAttackCost(player, costScale, attack.GetAttackStamina(), attack.GetAttackEitr(), attack.GetAttackHealth());
                 }
 
                 if (configuration.ContainsKey(ACCURACY_KEY))
                 {
                     accuracy = configuration[ACCURACY_KEY];
-                    attack.m_projectileAccuracy = attack.m_weapon.m_shared.m_attack.m_projectileAccuracy * accuracy;
                 }
 
                 if (configuration.ContainsKey(PROJECTILES_KEY))
                 {
                     projectiles = Mathf.RoundToInt(configuration[PROJECTILES_KEY]);
-                    attack.m_projectiles = attack.m_weapon.m_shared.m_attack.m_projectiles * projectiles;
-                    ShotProjectiles = projectiles;
                 }
             }
+
+            HitData.DamageTypes weaponDamage = attack.GetWeapon().m_shared.m_damages;
+            weaponDamage.Modify(damage);
+            attack.GetWeapon().m_shared.m_damages = weaponDamage;
+
+            ModifyAttackCost(player, costScale, attack.GetAttackStamina(), attack.GetAttackEitr(), attack.GetAttackHealth());
+
+            attack.m_projectileAccuracy = attack.m_weapon.m_shared.m_attack.m_projectileAccuracy * accuracy;
+
+            attack.m_projectiles = attack.m_weapon.m_shared.m_attack.m_projectiles * projectiles;
+            ShotProjectiles = projectiles;
 
             return true;
         }
