@@ -16,24 +16,26 @@ namespace EpicLoot.MagicItemEffects
         public const string ACCURACY_KEY = "Accuracy";
         public const string PROJECTILES_KEY = "Projectiles";
 
-        // Note the ref HitData.DamageTypes? __state, this must be nullable to avoid zeroing out archer damage
+        // Note: the ref HitData.DamageTypes? __state is set to null if no changes are made
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
         [HarmonyPrefix]
-        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes __state)
+        public static void Attack_FireProjectileBurst_Prefix(Attack __instance, ref HitData.DamageTypes? __state)
         {
-            
+            __state = null;
             if (__instance?.GetWeapon() == null || __instance.m_character == null || !__instance.m_character.IsPlayer())
             {
                 return;
             }
 
-            __state = __instance.GetWeapon().m_shared.m_damages;
             Player player = (Player)__instance.m_character;
 
             if (player != Player.m_localPlayer)
             {
                 return;
             }
+
+            // Record the damages value so it can be restored after changes
+            __state = __instance.GetWeapon().m_shared.m_damages;
 
             if (player.HasActiveMagicEffect(MagicEffectType.TripleBowShot, out float tripleBowEffectValue))
             {
@@ -47,6 +49,12 @@ namespace EpicLoot.MagicItemEffects
                 if (ModifyShot(ref player, ref __instance, bowShotCfg, 0.4f, 2f, 1.25f, 3))
                 {
                     IsTripleShotActive = true;
+                }
+                else
+                {
+                    IsTripleShotActive = false;
+                    // We did not change anything, set to null so postfix restore logic is skipped
+                    __state = null;
                 }
             }
             else
@@ -63,7 +71,11 @@ namespace EpicLoot.MagicItemEffects
                     magicShotCfg = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
                 }
 
-                ModifyShot(ref player, ref __instance, magicShotCfg, 0.66f, 2f, 1.2f, 2);
+                if (!ModifyShot(ref player, ref __instance, magicShotCfg, 0.66f, 2f, 1.2f, 2))
+                {
+                    // We did not change anything, set to null so postfix restore logic is skipped
+                    __state = null;
+                }
             }
         }
 
@@ -112,12 +124,15 @@ namespace EpicLoot.MagicItemEffects
             return true;
         }
 
+        /// <summary>
+        /// Restore the attack damages to previous state if changed by the prefix.
+        /// </summary>
         [HarmonyPatch(typeof(Attack), nameof(Attack.FireProjectileBurst))]
-        public static void Postfix(Attack __instance, ref HitData.DamageTypes __state)
+        public static void Postfix(Attack __instance, ref HitData.DamageTypes? __state)
         {
-            if (__state != null && __state.GetTotalDamage() > 0 && __instance.m_character != null && __instance.m_character.IsPlayer())
+            if (__state != null)
             {
-                __instance.GetWeapon().m_shared.m_damages = __state;
+                __instance.GetWeapon().m_shared.m_damages = __state.Value;
             }
         }
 
