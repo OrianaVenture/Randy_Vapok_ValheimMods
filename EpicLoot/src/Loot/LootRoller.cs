@@ -472,65 +472,66 @@ namespace EpicLoot
                     {
                         // If the item is rolled to be unidentified, we need to check if it is a valid item type, if its not we don't make it unidentified
                         GameObject lootTableDrop = ObjectDB.instance.GetItemPrefab(lootDrop.Item);
-                        ItemDrop.ItemData.ItemType id = ItemDrop.ItemData.ItemType.OneHandedWeapon;
-
                         if (lootTableDrop != null)
                         {
-                            id = lootTableDrop.GetComponent<ItemDrop>().m_itemData.m_shared.m_itemType;
-                        }
-
-                        if (EpicLoot.IsAllowedMagicItemType(id))
-                        {
-                            var rarity = RollItemRarity(lootDrop, luckFactor);
-
-                            // Determine which biome this item is a part of, and set the drop biome to that tier
-                            GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(lootDrop.Item, out var itemDetails);
-                            List<Heightmap.Biome> biomes = new List<Heightmap.Biome>();
-                            if (itemDetails != null)
+                            // If loot table drop is null, or has no item drop component, or is not equippable, then we don't make it unidentified
+                            ItemDrop lootItemDrop = lootTableDrop.GetComponent<ItemDrop>();
+                            if (lootItemDrop != null)
                             {
-                                foreach(string bosskey in itemDetails.RequiredBosses)
+                                if (lootItemDrop.m_itemData.IsEquipable())
                                 {
-                                    foreach (BountyBossConfig bossEntry in AdventureDataManager.Config.Bounties.Bosses)
+                                    var rarity = RollItemRarity(lootDrop, luckFactor);
+
+                                    // Determine which biome this item is a part of, and set the drop biome to that tier
+                                    GatedItemTypeHelper.AllItemsWithDetails.TryGetValue(lootDrop.Item, out var itemDetails);
+                                    List<Heightmap.Biome> biomes = new List<Heightmap.Biome>();
+                                    if (itemDetails != null)
                                     {
-                                        if (bossEntry.BossDefeatedKey != bosskey)
+                                        foreach(string bosskey in itemDetails.RequiredBosses)
                                         {
-                                            continue;
+                                            foreach (BountyBossConfig bossEntry in AdventureDataManager.Config.Bounties.Bosses)
+                                            {
+                                                if (bossEntry.BossDefeatedKey != bosskey)
+                                                {
+                                                    continue;
+                                                }
+                                                biomes.Add(bossEntry.Biome);
+                                            }
                                         }
-                                        biomes.Add(bossEntry.Biome);
+                                    }
+
+                                    if (biomes.Count <= 0)
+                                    {
+                                        ZoneSystem.instance.GetGroundData(ref dropPoint, out var _, out var biome, out var _, out var _);
+                                        biomes.Add(biome);
+                                    }
+
+                                    string selectBiome = biomes.First().ToString();
+                                    GameObject prefab = ObjectDB.instance.GetItemPrefab($"{selectBiome}_{rarity}_Unidentified");
+                                    if (prefab == null)
+                                    {
+                                        // Warn and drop the normal item instead
+                                        EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified " +
+                                            $"but prefab was not found! Dropping {lootDrop.Item} instead.");
+                                    }
+                                    else
+                                    {
+                                        EpicLoot.Log($"Adding {rarity} unidentified item");
+                                        Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
+                                        ZNetView.m_forceDisableInit = !initializeObject;
+                                        GameObject lootdrop = Object.Instantiate(prefab, dropPoint, randomRotation);
+                                        // Ensure that the unidentified item has the correct magic item data for the rarity
+                                        var mic = lootdrop.GetComponent<ItemDrop>().m_itemData.Data().GetOrCreate<MagicItemComponent>();
+                                        mic.SetMagicItem(new MagicItem
+                                        {
+                                            Rarity = rarity,
+                                            IsUnidentified = true,
+                                        });
+                                        ZNetView.m_forceDisableInit = false;
+                                        results.Add(lootdrop);
+                                        continue;
                                     }
                                 }
-                            }
-
-                            if (biomes.Count <= 0)
-                            {
-                                ZoneSystem.instance.GetGroundData(ref dropPoint, out var _, out var biome, out var _, out var _);
-                                biomes.Add(biome);
-                            }
-
-                            string selectBiome = biomes.First().ToString();
-                            GameObject prefab = ObjectDB.instance.GetItemPrefab($"{selectBiome}_{rarity}_Unidentified");
-                            if (prefab == null)
-                            {
-                                // Warn and drop the normal item instead
-                                EpicLoot.LogWarning($"Tried to spawn unidentified item for {selectBiome}_{rarity}_Unidentified " +
-                                    $"but prefab was not found! Dropping {lootDrop.Item} instead.");
-                            }
-                            else
-                            {
-                                EpicLoot.Log($"Adding {rarity} unidentified item");
-                                Quaternion randomRotation = Quaternion.Euler(0.0f, Random.Range(0.0f, 360.0f), 0.0f);
-                                ZNetView.m_forceDisableInit = !initializeObject;
-                                GameObject lootdrop = Object.Instantiate(prefab, dropPoint, randomRotation);
-                                // Ensure that the unidentified item has the correct magic item data for the rarity
-                                var mic = lootdrop.GetComponent<ItemDrop>().m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                                mic.SetMagicItem(new MagicItem
-                                {
-                                    Rarity = rarity,
-                                    IsUnidentified = true,
-                                });
-                                ZNetView.m_forceDisableInit = false;
-                                results.Add(lootdrop);
-                                continue;
                             }
                         }
                     }
