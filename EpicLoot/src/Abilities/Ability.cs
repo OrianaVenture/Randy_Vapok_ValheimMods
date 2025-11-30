@@ -117,7 +117,7 @@ namespace EpicLoot.Abilities
             var statusEffect = ObjectDB.instance.GetStatusEffect(statusEffectName.GetStableHashCode());
             if (statusEffect == null)
             {
-                EpicLoot.LogError($"Tried to activate a status effect ability ({AbilityDef.ID}) but the status effect asset could not be found ({statusEffectName})!");
+                EpicLoot.LogError($"Tried to activate a status effect ability ({AbilityDef.ID}) but the status effect asset could not be found ({statusEffectName}) in ObjectDB!");
                 return;
             }
 
