@@ -10,7 +10,7 @@ namespace EpicLootAPI;
 [PublicAPI]
 public class ItemAmount
 {
-    public string Item;
+    public string Item = "";
     public int Amount;
 
     public ItemAmount(string item, int amount = 1)
@@ -18,6 +18,8 @@ public class ItemAmount
         Item = item;
         Amount = amount;
     }
+    
+    public ItemAmount(){}
 }
 
 [Serializable]

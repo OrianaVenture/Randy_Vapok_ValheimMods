@@ -20,7 +20,7 @@ public static class EpicLoot
     private static readonly Method API_HasLegendaryItem = new("HasLegendaryItem");
     private static readonly Method API_HasLegendarySet = new("HasLegendarySet");
     private static readonly Method API_RegisterAsset = new("RegisterAsset");
-    private static readonly Method API_GetMagicItem = new("GetMagicItem");
+    private static readonly Method API_GetMagicItemJson = new("GetMagicItemJson");
 
     [PublicAPI][Description("Send all your custom conversions, effects, item definitions, etc... to Epic Loot")]
     public static void RegisterAll()
@@ -270,21 +270,17 @@ public static class EpicLoot
         logger.LogDebug($"Has active magic effect: {effectType}, value: {output}");
         return output;
     }
-
-    /// <param name="itemData"></param>
-    /// <returns>Magic Item as a json formatted string</returns>
+    
+    /// <summary>
+    /// Retrieves the MagicItem data for an ItemData by deserializing from JSON.
+    /// JSON is used as an intermediate format to avoid direct type dependencies between EpicLoot and EpicLootAPI assemblies.
+    /// </summary>
+    /// <param name="itemData">The item to get magic item data from.</param>
+    /// <returns>The MagicItem if it exists, otherwise null.</returns>
     [PublicAPI]
-    public static string GetMagicItemJson(ItemDrop.ItemData itemData)
+    public static MagicItem? GetMagicItem(this ItemDrop.ItemData itemData)
     {
-        return JsonConvert.SerializeObject(itemData.GetMagicItem());
-    }
-
-    /// <param name="itemData"></param>
-    /// <returns></returns>
-    [PublicAPI]
-    public static MagicItem GetMagicItem(this ItemDrop.ItemData itemData)
-    {
-        object[] result = API_GetMagicItem.Invoke(itemData);
+        object[] result = API_GetMagicItemJson.Invoke(itemData);
         string json = (string)(result[0] ?? "");
 
         if (string.IsNullOrEmpty(json))

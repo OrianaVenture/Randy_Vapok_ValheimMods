@@ -9,7 +9,7 @@ namespace EpicLootAPI;
 [PublicAPI]
 public class BountyMinion
 {
-    public string ID;
+    public string ID = "";
     public int Count;
 
     public BountyMinion(string ID, int count)
@@ -17,14 +17,16 @@ public class BountyMinion
         this.ID = ID;
         Count = count;
     }
+    
+    public BountyMinion(){}
 }
 
 [Serializable]
 [PublicAPI]
 public class BountyTarget
 {
-    public Heightmap.Biome Biome;
-    public string TargetID;
+    public Heightmap.Biome Biome = Heightmap.Biome.None;
+    public string TargetID = "";
     public int RewardGold;
     public int RewardIron;
     public int RewardCoins;
@@ -37,6 +39,8 @@ public class BountyTarget
             
         BountyTargets.Add(this);
     }
+    
+    public BountyTarget(){}
     
     internal static readonly List<BountyTarget> BountyTargets = new();
     internal static readonly Method API_AddBountyTarget = new("AddBountyTarget");

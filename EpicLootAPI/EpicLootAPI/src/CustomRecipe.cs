@@ -23,10 +23,10 @@ public class RecipeRequirement
 [PublicAPI]
 public class CustomRecipe
 {
-    public string name;
-    public string item;
+    public string name = "";
+    public string item = "";
     public int amount;
-    public string craftingStation;
+    public string craftingStation = "";
     public int minStationLevel = 1;
     public bool enabled = true;
     public string repairStation = "";
@@ -40,6 +40,8 @@ public class CustomRecipe
         craftingStation = craftingTable.GetInternalName();
         Recipes.Add(this);
     }
+    
+    public CustomRecipe(){}
 
     internal static readonly List<CustomRecipe> Recipes = new();
     internal static readonly Method API_AddRecipe = new ("AddRecipe");

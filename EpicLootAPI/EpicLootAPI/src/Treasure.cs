@@ -9,7 +9,7 @@ namespace EpicLootAPI;
 [PublicAPI]
 public class TreasureMap
 {
-    public Heightmap.Biome Biome;
+    public Heightmap.Biome Biome = Heightmap.Biome.None;
     public int Cost;
     public int ForestTokens;
     public int GoldTokens;
@@ -18,7 +18,7 @@ public class TreasureMap
     public float MinRadius;
     public float MaxRadius;
 
-    public TreasureMap (Heightmap.Biome biome, int cost, float minRadius, float maxRadius)
+    public TreasureMap(Heightmap.Biome biome, int cost, float minRadius, float maxRadius)
     {
         Biome = biome;
         Cost = cost;
@@ -27,6 +27,8 @@ public class TreasureMap
 
         Treasures.Add(this);
     }
+    
+    public TreasureMap(){}
     
     internal static readonly List<TreasureMap> Treasures = new();
     private static readonly Method API_AddTreasureMap = new("AddTreasureMap");

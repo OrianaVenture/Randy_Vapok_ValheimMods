@@ -9,24 +9,26 @@ namespace EpicLootAPI;
 [PublicAPI]
 public class GuaranteedMagicEffect
 {
-    public string Type;
-    public ValueDef Values;
+    public string Type = "";
+    public ValueDef Values = new();
     public GuaranteedMagicEffect(string type, ValueDef values)
     {
         Type = type;
         Values = values;
     }
     public GuaranteedMagicEffect(string type, float min = 1, float max = 1, float increment = 1) : this(type, new ValueDef(min, max, increment)){}
+    
+    public GuaranteedMagicEffect(){}
 }
 
 [Serializable]
 [PublicAPI]
 public class TextureReplacement
 {
-    public string ItemID;
-    public string MainTexture;
-    public string ChestTex;
-    public string LegsTex;
+    public string ItemID = "";
+    public string MainTexture = "";
+    public string ChestTex = "";
+    public string LegsTex = "";
 
     public TextureReplacement(string itemID, string mainTex = "", string chestTex = "", string legsTex = "")
     {
@@ -35,15 +37,17 @@ public class TextureReplacement
         ChestTex = chestTex;
         LegsTex = legsTex;
     }
+    
+    public TextureReplacement(){}
 }
 
 [Serializable]
 [PublicAPI]
 public class LegendaryInfo
 {
-    public string ID;
-    public string Name;
-    public string Description;
+    public string ID = "";
+    public string Name = "";
+    public string Description = "";
     public MagicItemEffectRequirements Requirements = new ();
     public List<GuaranteedMagicEffect> GuaranteedMagicEffects = new List<GuaranteedMagicEffect>();
     public int GuaranteedEffectCount = -1;
@@ -63,6 +67,8 @@ public class LegendaryInfo
         this.type = type;
         LegendaryItems.Add(this);
     }
+    
+    public LegendaryInfo(){}
 
     private LegendaryType type;
 
@@ -112,7 +118,7 @@ public enum LegendaryType
 public class SetBonusInfo
 {
     public int Count;
-    public GuaranteedMagicEffect Effect;
+    public GuaranteedMagicEffect Effect = new();
 
     public SetBonusInfo(int count, string type, ValueDef values)
     {
@@ -121,14 +127,16 @@ public class SetBonusInfo
     }
 
     public SetBonusInfo(int count, string type, float min, float max, float increment) : this (count, type, new ValueDef(min, max, increment)){}
+    
+    public SetBonusInfo(){}
 }
 
 [Serializable]
 [PublicAPI]
 public class LegendarySetInfo
 {
-    public string ID;
-    public string Name;
+    public string ID = "";
+    public string Name = "";
     public List<string> LegendaryIDs = new List<string>();
     public List<SetBonusInfo> SetBonuses = new List<SetBonusInfo>();
 
@@ -139,6 +147,8 @@ public class LegendarySetInfo
         this.type = type;
         LegendarySets.Add(this);
     }
+    
+    public LegendarySetInfo(){}
     
     private LegendaryType type;
     internal static readonly List<LegendarySetInfo> LegendarySets = new();

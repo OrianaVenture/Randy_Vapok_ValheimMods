@@ -30,7 +30,7 @@ public enum ItemRarity
 public class MagicItemEffect
 {
     public int Version = 1;
-    public string EffectType;
+    public string EffectType = "";
     public float EffectValue;
 
     public MagicItemEffect(string type, float value = 1)
@@ -38,6 +38,8 @@ public class MagicItemEffect
         EffectType = type;
         EffectValue = value;
     }
+    
+    public MagicItemEffect(){}
 }
 
 [Serializable]
@@ -56,26 +58,33 @@ public class ValueDef
         MaxValue = max;
         Increment = increment;
     }
+
+    public void Set(float min, float max, float increment = 1)
+    {
+        MinValue = min;
+        MaxValue = max;
+        Increment = increment;
+    }
 }
 
 [Serializable]
 [PublicAPI]
 public class ValuesPerRarityDef
 {
-    public ValueDef Magic;
-    public ValueDef Rare;
-    public ValueDef Epic;
-    public ValueDef Legendary;
-    public ValueDef Mythic;
+    public ValueDef Magic = new();
+    public ValueDef Rare = new();
+    public ValueDef Epic = new();
+    public ValueDef Legendary = new();
+    public ValueDef Mythic = new();
 }
 
 [Serializable]
 [PublicAPI]
 public class MagicItemEffectDefinition
 {
-    public string Type;
-    public string DisplayText;
-    public string Description;
+    public string Type = "";
+    public string DisplayText = "";
+    public string Description = "";
     public MagicItemEffectRequirements Requirements = new MagicItemEffectRequirements();
     public ValuesPerRarityDef ValuesPerRarity = new ValuesPerRarityDef();
     public float SelectionWeight = 1f;
@@ -97,6 +106,8 @@ public class MagicItemEffectDefinition
 
         MagicEffects.Add(this);
     }
+    
+    public MagicItemEffectDefinition(){}
 
     internal static readonly List<MagicItemEffectDefinition> MagicEffects = new();
     internal static readonly Method API_AddMagicEffect = new("AddMagicEffect");
