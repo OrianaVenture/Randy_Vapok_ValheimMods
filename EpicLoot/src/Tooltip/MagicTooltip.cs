@@ -67,7 +67,6 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
                 Knockback();
                 Backstab();
                 Projectile();
-                Chain();
                 break;
             case ItemDrop.ItemData.ItemType.Shield:
                 BlockArmor();

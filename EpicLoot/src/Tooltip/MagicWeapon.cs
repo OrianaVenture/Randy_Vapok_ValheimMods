@@ -100,7 +100,8 @@ public partial class MagicTooltip
         }
         else
         {
-            if (item.m_shared.m_attack.m_attackHealth > 0.0) {
+            if (item.m_shared.m_attack.m_attackHealth > 0.0) 
+            {
                 float skillmodCost = item.m_shared.m_attack.m_attackHealth - item.m_shared.m_attack.m_attackHealth * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
                 text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealth * healthUsageReduction} ({skillmodCost})</color>");
             }
@@ -130,7 +131,6 @@ public partial class MagicTooltip
             
             text.Append($"\n$item_staminahold: " +
                      $"<color={attackDrawStaminaColor}>{totalAttackDrawStamina:#.#}/s</color>");
-            
         }
     }
     
@@ -171,16 +171,6 @@ public partial class MagicTooltip
         {
             text.Append("\n\n");
             text.Append(projectileTooltip);
-        }
-    }
-
-    private void Chain()
-    {
-        string chainTooltip2 = item.GetChainTooltip(qualityLevel, skillLevel);
-        if (chainTooltip2.Length > 0)
-        {
-            text.Append("\n\n");
-            text.Append(chainTooltip2);
         }
     }
     
