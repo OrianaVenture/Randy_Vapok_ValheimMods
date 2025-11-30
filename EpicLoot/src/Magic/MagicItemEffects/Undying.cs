@@ -18,7 +18,13 @@ namespace EpicLoot.MagicItemEffects
 
         protected override void ActivateCustomAction()
         {
-            _player.GetSEMan().AddStatusEffect(EpicLoot.LoadAsset<StatusEffect>("UndyingStatusEffect"));
+            var statusEffect = ObjectDB.instance.GetStatusEffect("UndyingStatusEffect".GetStableHashCode());
+            if (statusEffect == null)
+            {
+                EpicLoot.LogError("Undying status effect not found.");
+                return;
+            }
+            _player.GetSEMan().AddStatusEffect(statusEffect);
         }
 
         public void Trigger()

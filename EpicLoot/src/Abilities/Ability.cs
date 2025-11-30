@@ -113,8 +113,8 @@ namespace EpicLoot.Abilities
                 EpicLoot.LogError($"Tried to activate a status effect ability ({AbilityDef.ID}) but the status effect name param was missing!");
                 return;
             }
-
-            var statusEffect = EpicLoot.LoadAsset<StatusEffect>(statusEffectName);
+            
+            var statusEffect = ObjectDB.instance.GetStatusEffect(statusEffectName.GetStableHashCode());
             if (statusEffect == null)
             {
                 EpicLoot.LogError($"Tried to activate a status effect ability ({AbilityDef.ID}) but the status effect asset could not be found ({statusEffectName})!");

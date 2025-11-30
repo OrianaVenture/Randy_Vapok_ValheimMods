@@ -56,6 +56,19 @@ namespace EpicLoot
         public GameObject AbilityBar;
         public GameObject WelcomMessagePrefab;
 
+        public SE_Stats BulwarkStatusEffect;
+        public SE_Stats BerserkerStatusEffect;
+        public SE_Stats UndyingStatusEffect;
+        
+        public GameObject BulwarkMagicShieldVFX;
+        public GameObject BulwarkMagicShieldSFX;
+        
+        public GameObject BerserkerVFX;
+        public GameObject BerserkerSFX;
+
+        public GameObject UndyingVFX;
+        public GameObject UndyingSFX;
+
         public const string DummyName = "EL_DummyPrefab";
         public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
@@ -417,12 +430,25 @@ namespace EpicLoot
             Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
-
+            
+            Assets.BulwarkStatusEffect = assetBundle.LoadAsset<SE_Stats>("BulwarkStatusEffect");
+            Assets.BulwarkMagicShieldVFX = assetBundle.LoadAsset<GameObject>("MagicShield");
+            Assets.BulwarkMagicShieldSFX = assetBundle.LoadAsset<GameObject>("sfx_bulwark");
+            
+            Assets.UndyingStatusEffect = assetBundle.LoadAsset<SE_Stats>("UndyingStatusEffect");
+            Assets.UndyingVFX = assetBundle.LoadAsset<GameObject>("Undying");
+            Assets.UndyingSFX = assetBundle.LoadAsset<GameObject>("sfx_undying");
+            
+            Assets.BerserkerStatusEffect = assetBundle.LoadAsset<SE_Stats>("BerserkerStatusEffect");
+            Assets.BerserkerVFX = assetBundle.LoadAsset<GameObject>("Berserker");
+            Assets.BerserkerSFX =  assetBundle.LoadAsset<GameObject>("sfx_berserker");
+            
             LoadCraftingMaterialAssets();
             
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
+            RegisterAbilityStatusEffects();
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
@@ -609,6 +635,34 @@ namespace EpicLoot
                     ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
                 }
             }
+        }
+
+        private static void RegisterAbilityStatusEffects()
+        {
+            RegisterBulwark();
+            RegisterUndying();
+            RegisterBerserker();
+        }
+
+        private static void RegisterBulwark()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldVFX);
+            PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BulwarkStatusEffect);
+        }
+
+        private static void RegisterBerserker()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.BerserkerVFX);
+            PrefabManager.Instance.AddPrefab(Assets.BerserkerSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BerserkerStatusEffect);
+        }
+
+        private static void RegisterUndying()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.UndyingVFX);
+            PrefabManager.Instance.AddPrefab(Assets.UndyingSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.UndyingStatusEffect);
         }
 
         [UsedImplicitly]
