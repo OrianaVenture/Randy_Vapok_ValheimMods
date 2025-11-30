@@ -21,7 +21,7 @@ namespace EpicLoot.MagicItemEffects
             var statusEffect = ObjectDB.instance.GetStatusEffect("UndyingStatusEffect".GetStableHashCode());
             if (statusEffect == null)
             {
-                EpicLoot.LogError($"Tried tro activate a status effect ability {ID} but the status effect is missing from ObjectDB");
+                EpicLoot.LogError($"Tried to activate a status effect ability {ID} but the status effect is missing from ObjectDB");
                 return;
             }
             _player.GetSEMan().AddStatusEffect(statusEffect);
