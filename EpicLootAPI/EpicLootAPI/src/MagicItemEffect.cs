@@ -30,7 +30,7 @@ public enum ItemRarity
 public class MagicItemEffect
 {
     public int Version = 1;
-    public string EffectType;
+    public string EffectType = "";
     public float EffectValue;
 
     public MagicItemEffect(string type, float value = 1)
@@ -38,6 +38,8 @@ public class MagicItemEffect
         EffectType = type;
         EffectValue = value;
     }
+    
+    public MagicItemEffect(){}
 }
 
 [Serializable]
