@@ -18,7 +18,13 @@ namespace EpicLoot.MagicItemEffects
 
         protected override void ActivateCustomAction()
         {
-            _player.GetSEMan().AddStatusEffect(EpicLoot.LoadAsset<StatusEffect>("UndyingStatusEffect"));
+            var statusEffect = ObjectDB.instance.GetStatusEffect(EpicAssets.Undying_SE_Name.GetStableHashCode());
+            if (statusEffect == null)
+            {
+                EpicLoot.LogError($"Tried to activate a status effect ability {ID} but the status effect is missing from ObjectDB");
+                return;
+            }
+            _player.GetSEMan().AddStatusEffect(statusEffect);
         }
 
         public void Trigger()
