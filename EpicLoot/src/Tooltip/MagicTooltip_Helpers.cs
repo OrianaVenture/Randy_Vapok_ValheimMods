@@ -21,7 +21,9 @@ public partial class MagicTooltip
         magicEitrRegen = magicItem?.HasEffect(MagicEffectType.ModifyEitrRegen) ?? false;
         float itemEitrRegenModifier = item.m_shared.m_eitrRegenModifier * 100f;
         if (magicEitrRegen && magicItem != null)
+        {
             itemEitrRegenModifier += magicItem.GetTotalEffectValue(MagicEffectType.ModifyEitrRegen);
+        }
 
         return (itemEitrRegenModifier == 0) ? "0%" : $"{itemEitrRegenModifier:+0;-0}%";
     }
