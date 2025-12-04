@@ -1,11 +1,97 @@
-﻿namespace EpicLoot;
+﻿using UnityEngine;
+
+namespace EpicLoot;
 
 public partial class MagicTooltip
 {
     private void Damage()
     {
-        text.Append(GetDamageTooltipString(magicItem, item.GetDamage(qualityLevel, Game.m_worldLevel),
-            item.m_shared.m_skillType, magicColor));
+        HitData.DamageTypes damages = item.GetDamage(qualityLevel, Game.m_worldLevel);
+        localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, item.m_shared.m_skillType);
+        
+        bool allMagic = magicItem.HasEffect(MagicEffectType.ModifyDamage);
+        bool physMagic = magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage);
+        bool elemMagic = magicItem.HasEffect(MagicEffectType.ModifyElementalDamage);
+        bool bluntMagic = magicItem.HasEffect(MagicEffectType.AddBluntDamage);
+        bool slashMagic = magicItem.HasEffect(MagicEffectType.AddSlashingDamage);
+        bool pierceMagic = magicItem.HasEffect(MagicEffectType.AddPiercingDamage);
+        bool fireMagic = magicItem.HasEffect(MagicEffectType.AddFireDamage);
+        bool frostMagic = magicItem.HasEffect(MagicEffectType.AddFrostDamage);
+        bool lightningMagic = magicItem.HasEffect(MagicEffectType.AddLightningDamage);
+        bool poisonMagic = magicItem.HasEffect(MagicEffectType.AddPoisonDamage);
+        bool spiritMagic = magicItem.HasEffect(MagicEffectType.AddSpiritDamage);
+        bool coinHoarderMagic = localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv);
+        bool spellswordMagic = magicItem.HasEffect(MagicEffectType.SpellSword);
+        
+        if (damages.m_damage != 0.0)
+        {
+            bool isMagic = allMagic || spellswordMagic;
+
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_damage",
+                DamageRange(damages.m_damage, min, max, isMagic, magicColor));
+        }
+
+        if (damages.m_blunt != 0.0)
+        {
+            bool isMagic = allMagic || physMagic || bluntMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_blunt",
+                DamageRange(damages.m_blunt, min, max, isMagic, magicColor));
+        }
+
+        if (damages.m_slash != 0.0)
+        {
+            bool isMagic = allMagic || physMagic || slashMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_slash",
+                DamageRange(damages.m_slash, min, max, isMagic, magicColor));
+        }
+
+        if (damages.m_pierce != 0.0)
+        {
+            bool isMagic = allMagic || physMagic || pierceMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_pierce",
+                DamageRange(damages.m_pierce, min, max, isMagic, magicColor));
+        }
+
+        if (damages.m_fire != 0.0)
+        {
+            bool isMagic = allMagic || elemMagic || fireMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_fire",
+                DamageRange(damages.m_fire, min, max, isMagic, magicColor));
+        }
+        if (damages.m_frost != 0.0)
+        {
+            bool isMagic = allMagic || elemMagic || frostMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_frost",
+                DamageRange(damages.m_frost, min, max, isMagic, magicColor));
+        }
+        if (damages.m_lightning != 0.0)
+        {
+            bool isMagic = allMagic || elemMagic || lightningMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_lightning",
+                DamageRange(damages.m_lightning, min, max, isMagic, magicColor));
+        }
+        if (damages.m_poison != 0.0)
+        {
+            bool isMagic = allMagic || elemMagic || poisonMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_poison",
+                DamageRange(damages.m_poison, min, max, isMagic, magicColor));
+        }
+        
+        if (damages.m_spirit != 0.0)
+        {
+            bool isMagic = allMagic || elemMagic || spiritMagic || coinHoarderMagic || spellswordMagic;
+            text.AppendFormat("\n{0}: {1}", 
+                "$inventory_spirit",
+                DamageRange(damages.m_spirit, min, max, isMagic, magicColor));
+        }
     }
 
     private void AttackStaminaUse()
@@ -79,7 +165,10 @@ public partial class MagicTooltip
         if (item.m_shared.m_attack.m_attackEitr > 0.0 || hasSpellSword)
         {
             float base_cost = item.m_shared.m_attack.m_attackStamina;
-            if (base_cost == 0f) { base_cost = 4; }
+            if (base_cost == 0f)
+            {
+                base_cost = 4;
+            }
             totalEitrUse = totalEitrUse + (base_cost / 2);
             
             text.Append($"\n$item_eitruse: <color={magicAttackEitrColor}>{totalEitrUse:#.#}</color>");

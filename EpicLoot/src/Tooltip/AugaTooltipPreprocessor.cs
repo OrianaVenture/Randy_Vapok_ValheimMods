@@ -12,18 +12,7 @@ public static class AugaTooltipPreprocessor
         if (item.IsMagic(out MagicItem magicItem))
         {
             string magicColor = magicItem.GetColorString();
-
-            bool allMagic = magicItem.HasEffect(MagicEffectType.ModifyDamage);
-            bool physMagic = magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage);
-            bool elemMagic = magicItem.HasEffect(MagicEffectType.ModifyElementalDamage);
-            bool bluntMagic = magicItem.HasEffect(MagicEffectType.AddBluntDamage);
-            bool slashMagic = magicItem.HasEffect(MagicEffectType.AddSlashingDamage);
-            bool pierceMagic = magicItem.HasEffect(MagicEffectType.AddPiercingDamage);
-            bool fireMagic = magicItem.HasEffect(MagicEffectType.AddFireDamage);
-            bool frostMagic = magicItem.HasEffect(MagicEffectType.AddFrostDamage);
-            bool lightningMagic = magicItem.HasEffect(MagicEffectType.AddLightningDamage);
-            bool poisonMagic = magicItem.HasEffect(MagicEffectType.AddPoisonDamage);
-            bool spiritMagic = magicItem.HasEffect(MagicEffectType.AddSpiritDamage);
+            
             switch (label)
             {
                 case "$item_durability":
@@ -46,63 +35,63 @@ public static class AugaTooltipPreprocessor
                     break;
 
                 case "$inventory_damage":
-                    if (allMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_blunt":
-                    if (allMagic || physMagic || bluntMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage) || magicItem.HasEffect(MagicEffectType.AddBluntDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_slash":
-                    if (allMagic || physMagic || slashMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage) || magicItem.HasEffect(MagicEffectType.AddSlashingDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_pierce":
-                    if (allMagic || physMagic || pierceMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage) || magicItem.HasEffect(MagicEffectType.AddPiercingDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_fire":
-                    if (allMagic || elemMagic || fireMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyElementalDamage) || magicItem.HasEffect(MagicEffectType.AddFireDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_frost":
-                    if (allMagic || elemMagic || frostMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyElementalDamage) || magicItem.HasEffect(MagicEffectType.AddFrostDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_lightning":
-                    if (allMagic || elemMagic || lightningMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyElementalDamage) || magicItem.HasEffect(MagicEffectType.AddLightningDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_poison":
-                    if (allMagic || elemMagic || poisonMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyElementalDamage) || magicItem.HasEffect(MagicEffectType.AddPoisonDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }
                     break;
 
                 case "$inventory_spirit":
-                    if (allMagic || elemMagic || spiritMagic)
+                    if (magicItem.HasEffect(MagicEffectType.ModifyDamage) || magicItem.HasEffect(MagicEffectType.ModifyElementalDamage) || magicItem.HasEffect(MagicEffectType.AddSpiritDamage))
                     {
                         value = $"<color={magicColor}>{value}</color>";
                     }

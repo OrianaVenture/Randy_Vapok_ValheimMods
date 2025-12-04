@@ -32,10 +32,6 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         switch (item.m_shared.m_itemType)
         {
             case ItemDrop.ItemData.ItemType.Consumable:
-                //TODO: explain why we have this, else, remove
-                
-                // do we even need this since EpicLoot does not enchant food ??
-                // are there equippable food items ??
                 if (item.m_shared.m_food > 0.0)
                 {
                     FoodHealth();
@@ -81,9 +77,6 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
                 DamageModifiers();
                 break;
             case ItemDrop.ItemData.ItemType.Ammo:
-                //TODO: explain why we have this, else, remove
-                
-                // ammo is not listed as valid magic item type, so this should never run
                 AmmoDamage();
                 Knockback();
                 break;
