@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using static EpicLoot.Magic.AutoAddEnchantableItems;
 
 namespace EpicLoot.Config
 {
@@ -93,6 +94,7 @@ namespace EpicLoot.Config
         private static CustomRPC AbilitiesRPC;
         private static CustomRPC MaterialConversionRPC;
         private static CustomRPC EnchantingUpgradesRPC;
+        private static CustomRPC AutoSorterConfigurationRPC;
 
         private static string LocalizationDir = GetLocalizationDirectoryPath();
         private static readonly List<string> LocalizationLanguages = new List<string>() {
@@ -170,6 +172,8 @@ namespace EpicLoot.Config
                 OnServerRecieveConfigs, OnClientRecieveMaterialConversionConfigs);
             EnchantingUpgradesRPC = NetworkManager.Instance.AddRPC("EnchantingUpgradesRPC",
                 OnServerRecieveConfigs, OnClientRecieveEnchantingUpgradesConfigs);
+            AutoSorterConfigurationRPC = NetworkManager.Instance.AddRPC("AutoSorterConfigurationRPC", 
+                OnServerRecieveConfigs, OnClientRecieveAutoSorterConfigs);
         }
 
         private void CreateConfigValues(ConfigFile Config)
@@ -385,6 +389,8 @@ namespace EpicLoot.Config
                 MaterialConversionRPC, MaterialConversions.GetCFG);
             SychronizeConfig<EnchantingUpgradesConfig>("enchantingupgrades.json", EnchantingTableUpgrades.InitializeConfig,
                 EnchantingUpgradesRPC, EnchantingTableUpgrades.GetCFG);
+            SychronizeConfig<AutoSorterConfiguration>("itemsorter.json", AutoAddEnchantableItems.InitializeConfig,
+                AutoSorterConfigurationRPC, AutoAddEnchantableItems.GetCFG);
             SetupPatchConfigFileWatch(FilePatching.PatchesDirPath);
 
             ItemManager.OnItemsRegistered += InitializeRecipeOnReady;
@@ -687,6 +693,12 @@ namespace EpicLoot.Config
         private static IEnumerator OnClientRecieveEnchantingUpgradesConfigs(long sender, ZPackage package)
         {
             EnchantingTableUpgrades.InitializeConfig(ClientRecieveParseJsonConfig<EnchantingUpgradesConfig>(package.ReadString()));
+            yield return null;
+        }
+
+        private static IEnumerator OnClientRecieveAutoSorterConfigs(long sender, ZPackage package)
+        {
+            AutoAddEnchantableItems.InitializeConfig(ClientRecieveParseJsonConfig<AutoSorterConfiguration>(package.ReadString()));
             yield return null;
         }
 
