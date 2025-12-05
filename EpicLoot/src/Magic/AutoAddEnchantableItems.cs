@@ -18,8 +18,7 @@ namespace EpicLoot.Magic
         public class AutoSorterConfiguration
         {
             public Dictionary<string, List<string>> UncraftableItemsAlwaysAllowed = new Dictionary<string, List<string>>();
-            public Dictionary<string, string> TierToBossKey = new Dictionary<string, string>();
-            public Dictionary<string, List<string>> SetsToCategories = new Dictionary<string, List<string>>();
+            public Dictionary<string, List<string>> LootSetsToItemCategories = new Dictionary<string, List<string>>();
             public Dictionary<string, SortingData> BiomeSorterData = new Dictionary<string, SortingData>();
             public Dictionary<string, List<float>> TierRarityProbabilities = new Dictionary<string, List<float>>();
             public Dictionary<string, int> VendorCostByBiomeKey = new Dictionary<string, int>();
@@ -27,8 +26,9 @@ namespace EpicLoot.Magic
 
         public class SortingData
         {
+            public string Tier { get; set; } = "Tier0";
             public string BossKey { get; set; } = NONE;
-            public List<string> BiomeLevelItems { get; set; } = new List<string>();
+            public List<string> BiomeMaterials { get; set; } = new List<string>();
             public List<string> BiomeSpecificCraftingStations { get; set; } = new List<string>();
 
         }
@@ -178,17 +178,20 @@ namespace EpicLoot.Magic
 
                 if (DetermineTierAndType(lis.Name, out string tier, out string loottype))
                 {
-                    if (!Config.TierToBossKey.ContainsKey(tier))
+                    string bosskey = "none";
+                    foreach (KeyValuePair<string, SortingData> entry in Config.BiomeSorterData)
                     {
-                        EpicLoot.Log($"tierToBoss does not contain {tier}, loot tables for the requested tier and boss will be incorrect.");
-                        continue;
+                        if (entry.Value.Tier == tier)
+                        {
+                            bosskey = entry.Value.BossKey;
+                            break;
+                        }
                     }
 
-                    string bosskey = Config.TierToBossKey[tier];
                     foreach (ItemTypeInfo itemType in newConfig)
                     {
-                        if (!Config.SetsToCategories.ContainsKey(loottype) ||
-                            !Config.SetsToCategories[loottype].Contains(itemType.Type) ||
+                        if (!Config.LootSetsToItemCategories.ContainsKey(loottype) ||
+                            !Config.LootSetsToItemCategories[loottype].Contains(itemType.Type) ||
                             !itemType.ItemsByBoss.ContainsKey(bosskey))
                         {
                             continue;
@@ -694,9 +697,12 @@ namespace EpicLoot.Magic
 
             foreach (Piece.Requirement req in itemRecipe.m_resources)
             {
-                foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData)
+                // This goes through the biome tiers in reverse order, starting from the highest tier and checking if the current item has materials from that biome
+                // if not it goes down a biome until it finds materials required to craft the item
+                // if an item does not require any materials or has no recipe, it should be listed in UncraftableItemsAlwaysAllowed
+                foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData.Reverse())
                 {
-                    if (sortdata.Value.BiomeLevelItems.Contains(req.m_resItem.name))
+                    if (sortdata.Value.BiomeMaterials.Contains(req.m_resItem.name))
                     {
                         return sortdata.Value.BossKey;
                     }

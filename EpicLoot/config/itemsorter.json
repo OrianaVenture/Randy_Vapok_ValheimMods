@@ -1,25 +1,15 @@
 {
-  "UncraftableItemsAlwaysAllowed": [
-    "THSwordWood",
-    "SpearWood",
-    "BattleaxeWood",
-    "KnifeWood",
-    "MaceWood",
-    "AtgeirWood",
-    "AxeWood",
-    "SledgeWood"
-  ],
-  "TierToBossKey": {
-    "Tier0": "none",
-    "Tier1": "defeated_eikthyr",
-    "Tier2": "defeated_gdking",
-    "Tier3": "defeated_bonemass",
-    "Tier4": "defeated_dragon",
-    "Tier5": "defeated_goblinking",
-    "Tier6": "defeated_queen",
-    "Tier7": "defeated_fader"
+  "UncraftableItemsAlwaysAllowed": {
+    "none": [ "THSwordWood", "SpearWood", "BattleaxeWood", "KnifeWood", "MaceWood", "AtgeirWood", "AxeWood", "SledgeWood" ],
+    "defeated_eikthyr": [],
+    "defeated_gdking": [],
+    "defeated_bonemass": [],
+    "defeated_dragon": [],
+    "defeated_goblinking": [],
+    "defeated_queen": [],
+    "defeated_fader": []
   },
-  "SetsToCategories": {
+  "LootSetsToItemCategories": {
     "Weapons": [
       "Swords",
       "Axes",
@@ -51,23 +41,83 @@
     ]
   },
   "BiomeSorterData": {
-    "Ashlands": {
-      "BossKey": "defeated_fader",
-      "BiomeLevelItems": [
-        "FlametalNew",
-        "Blackwood",
-        "CharredBone",
-        "MoltenCore",
-        "GemstoneBlue",
-        "GemstoneGreen",
-        "GemstoneRed",
-        "CelestialFeather"
+    "None": {
+      "Tier": "Tier0",
+      "BossKey": "none",
+      "BiomeMaterials": [
+        "Wood",
+        "Stone"
+      ],
+      "BiomeSpecificCraftingStations": []
+    },
+    "Meadows": {
+      "Tier": "Tier1",
+      "BossKey": "defeated_eikythr",
+      "BiomeMaterials": [
+        "Flint",
+        "LeatherScraps",
+        "DeerHide"
+      ],
+      "BiomeSpecificCraftingStations": []
+    },
+    "Blackforest": {
+      "Tier": "Tier2",
+      "BossKey": "defeated_gdking",
+      "BiomeMaterials": [
+        "Copper",
+        "Tin",
+        "Bronze",
+        "RoundLog",
+        "FineWood",
+        "TrollHide",
+        "BjornHide",
+        "BjornPaw"
+      ],
+      "BiomeSpecificCraftingStations": []
+    },
+    "Swamp": {
+      "Tier": "Tier3",
+      "BossKey": "defeated_bonemass",
+      "BiomeMaterials": [
+        "Iron",
+        "Chain",
+        "ElderBark",
+        "Guck",
+        "Chitin",
+        "SerpentScale"
+      ],
+      "BiomeSpecificCraftingStations": []
+    },
+    "Mountain": {
+      "Tier": "Tier4",
+      "BossKey": "defeated_dragon",
+      "BiomeMaterials": [
+        "Silver",
+        "Obsidian",
+        "WolfHairBundle",
+        "WolfClaw",
+        "WolfFang"
+      ],
+      "BiomeSpecificCraftingStations": [
+        "piece_artisanstation"
+      ]
+    },
+    "Plains": {
+      "Tier": "Tier5",
+      "BossKey": "defeated_bonemass",
+      "BiomeMaterials": [
+        "Needle",
+        "BlackMetal",
+        "LinenThread",
+        "UndeadBjornRibcage",
+        "TrophyBjornUndead"
       ],
       "BiomeSpecificCraftingStations": []
     },
     "Mistlands": {
+      "Tier": "Tier6",
       "BossKey": "defeated_queen",
-      "BiomeLevelItems": [
+      "BiomeMaterials": [
         "YggdrasilWood",
         "BlackMarble",
         "Eitr",
@@ -82,64 +132,18 @@
         "blackforge"
       ]
     },
-    "Plains": {
-      "BossKey": "defeated_bonemass",
-      "BiomeLevelItems": [
-        "Needle",
-        "BlackMetal",
-        "LinenThread",
-        "UndeadBjornRibcage",
-        "TrophyBjornUndead"
-      ],
-      "BiomeSpecificCraftingStations": []
-    },
-    "Mountain": {
-      "BossKey": "defeated_dragon",
-      "BiomeLevelItems": [
-        "Silver",
-        "Obsidian",
-        "WolfHairBundle",
-        "WolfClaw",
-        "WolfFang"
-      ],
-      "BiomeSpecificCraftingStations": [
-        "piece_artisanstation"
-      ]
-    },
-    "Swamp": {
-      "BossKey": "defeated_bonemass",
-      "BiomeLevelItems": [
-        "Iron",
-        "Chain",
-        "ElderBark",
-        "Guck",
-        "Chitin",
-        "SerpentScale"
-      ],
-      "BiomeSpecificCraftingStations": []
-    },
-    "Blackforest": {
-      "BossKey": "defeated_gdking",
-      "BiomeLevelItems": [
-        "Copper",
-        "Tin",
-        "Bronze",
-        "RoundLog",
-        "FineWood",
-        "TrollHide",
-        "BjornHide",
-        "BjornPaw"
-      ],
-      "BiomeSpecificCraftingStations": []
-    },
-    "Meadows": {
-      "BossKey": "defeated_eikythr",
-      "BiomeLevelItems": [
-        "Wood",
-        "Stone",
-        "Flint",
-        "LeatherScraps",
-        "DeerHide"
+    "Ashlands": {
+      "Tier": "Tier7",
+      "BossKey": "defeated_fader",
+      "BiomeMaterials": [
+        "FlametalNew",
+        "Blackwood",
+        "CharredBone",
+        "MoltenCore",
+        "GemstoneBlue",
+        "GemstoneGreen",
+        "GemstoneRed",
+        "CelestialFeather"
       ],
       "BiomeSpecificCraftingStations": []
     }
