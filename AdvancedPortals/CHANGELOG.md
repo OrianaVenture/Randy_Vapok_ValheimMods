@@ -1,3 +1,6 @@
+## 1.1.3
+* Fixed an issue with the AllowEverything config option no longer being used in the teleport check.
+
 ## 1.1.2
 * Changed portals metal check patch to better respect other mods including World Advancement & Progression.
 

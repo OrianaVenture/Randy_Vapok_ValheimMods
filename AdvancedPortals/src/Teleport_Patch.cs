@@ -94,6 +94,12 @@ namespace AdvancedPortals
                 return;
             }
 
+            if (CurrentAdvancedPortal.AllowEverything)
+            {
+                __result = true;
+                return;
+            }
+
             foreach (ItemDrop.ItemData itemData in __instance.GetAllItems())
             {
                 if (itemData.m_dropPrefab == null)

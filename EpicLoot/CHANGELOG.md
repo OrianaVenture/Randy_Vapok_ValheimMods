@@ -1,3 +1,7 @@
+## Version 0.12.4
+
+* Fixed another an issue with MultiShot not resetting weapon attack values properly due to the percent chance to trigger config.
+
 ## Version 0.12.3
 
 * Changed how patches are applied - they will no longer override your baseconfig files on startup! You should be able to generate your baseconfig files once then make changes without them being reverted. See the [wiki for more information](https://thunderstore.io/c/valheim/p/RandyKnapp/EpicLoot/wiki/358-6-config-patching/). We apologize for the confusion around this new feature.
