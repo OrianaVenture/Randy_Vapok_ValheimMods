@@ -405,18 +405,25 @@ namespace EpicLoot.Magic
                     }
                 }
 
+                
                 if (itemfound)
                 {
                     continue;
                 }
 
+                
                 string key = DetermineBossLevelForItem(item.m_itemData);
-
                 bool uncraftable_found = false;
                 foreach(KeyValuePair<string, List<string>> uncraftable in Config.UncraftableItemsAlwaysAllowed)
                 {
+                    if (uncraftable.Value == null || uncraftable.Value.Count == 0) { continue; }
                     if (uncraftable.Value.Contains(itemName)) {
-                        foundByCategory[itemType].ItemsByBoss[uncraftable.Key].Add(itemName);
+                        if (foundByCategory[itemType].ItemsByBoss.ContainsKey(uncraftable.Key))
+                        {
+                            foundByCategory[itemType].ItemsByBoss[uncraftable.Key].Add(itemName);
+                        } else {
+                            foundByCategory[itemType].ItemsByBoss.Add(uncraftable.Key, new List<string>() { itemName });
+                        }
                         uncraftable_found = true;
                         break;
                     }
