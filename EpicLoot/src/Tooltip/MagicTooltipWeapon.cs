@@ -108,7 +108,7 @@ public partial class MagicTooltip
         if (item.m_shared.m_attack.m_damageMultiplierPerMissingHP > 0.0)
         {
             text.Append(
-                $"\n$item_damagemultplierhp: <color=orange>{item.m_shared.m_attack.m_damageMultiplierPerMissingHP * 100}%</color>");
+                $"\n$item_damagemultiplierhp: <color=orange>{item.m_shared.m_attack.m_damageMultiplierPerMissingHP * 100}%</color>");
         }
     }
 
