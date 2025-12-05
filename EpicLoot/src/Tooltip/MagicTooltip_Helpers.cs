@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace EpicLoot;
 
@@ -29,17 +28,17 @@ public partial class MagicTooltip
     }
     
     public static string GetMovementModifier(ItemDrop.ItemData item, MagicItem magicItem,
-        out bool magicMovement, out bool removePenalty)
+        out bool hasMovementModifiers, out bool hasRemoveSpeedPenaltyModifier)
     {
-        magicMovement = magicItem.HasEffect(MagicEffectType.ModifyMovementSpeed);
-        removePenalty = magicItem.HasEffect(MagicEffectType.RemoveSpeedPenalty);
+        hasMovementModifiers = magicItem.HasEffect(MagicEffectType.ModifyMovementSpeed);
+        hasRemoveSpeedPenaltyModifier = magicItem.HasEffect(MagicEffectType.RemoveSpeedPenalty);
 
-        float itemMovementModifier = removePenalty ? 0 : item.m_shared.m_movementModifier * 100f;
-        if (magicMovement)
+        float baseMovementModifierPercentage = hasRemoveSpeedPenaltyModifier ? 0 : item.m_shared.m_movementModifier * 100f;
+        if (hasMovementModifiers)
         {
-            itemMovementModifier += magicItem.GetTotalEffectValue(MagicEffectType.ModifyMovementSpeed);
+            baseMovementModifierPercentage += magicItem.GetTotalEffectValue(MagicEffectType.ModifyMovementSpeed);
         }
 
-        return (itemMovementModifier == 0) ? "0%" : $"{itemMovementModifier:+0;-0}%";
+        return (baseMovementModifierPercentage == 0) ? "0%" : $"{baseMovementModifierPercentage:+0;-0}%";
     }
 }

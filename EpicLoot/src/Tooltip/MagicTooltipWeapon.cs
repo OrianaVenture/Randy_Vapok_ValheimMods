@@ -4,7 +4,7 @@ namespace EpicLoot;
 
 public partial class MagicTooltip
 {
-    private void Damage()
+    private void AddDamages()
     {
         HitData.DamageTypes damages = item.GetDamage(qualityLevel, Game.m_worldLevel);
         localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, item.m_shared.m_skillType);
@@ -94,7 +94,25 @@ public partial class MagicTooltip
         }
     }
 
-    private void AttackStaminaUse()
+    private void AddDamageMultiplierByTotalHealthMissing()
+    {
+        if (item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing > 0.0)
+        {
+            text.Append(
+                $"\n$item_damagemultipliertotal: <color=orange>{item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing * 100}%</color>");
+        }
+    }
+
+    private void AddDamageMultiplierPerMissingHP()
+    {
+        if (item.m_shared.m_attack.m_damageMultiplierPerMissingHP > 0.0)
+        {
+            text.Append(
+                $"\n$item_damagemultplierhp: <color=orange>{item.m_shared.m_attack.m_damageMultiplierPerMissingHP * 100}%</color>");
+        }
+    }
+
+    private void AddAttackStaminaUse()
     {
         bool hasAttackStaminaModifiers = magicItem.HasEffect(MagicEffectType.ModifyAttackStaminaUse) ||
                                   magicItem.HasEffect(MagicEffectType.ModifyBlockStaminaUse);
@@ -107,47 +125,52 @@ public partial class MagicTooltip
         }
     }
 
-    private void Dodge()
+    private void AddDodge()
     {
-        bool DodgeBuff = magicItem.HasEffect(MagicEffectType.DodgeBuff);
-        string DodgeBuffColor = DodgeBuff ? magicColor : "orange";
-        if (DodgeBuff)
+        bool hasDodgeBuff = magicItem.HasEffect(MagicEffectType.DodgeBuff);
+        if (hasDodgeBuff)
         {
             float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 1f);
+            // TODO: if using this tooltip, localize this
+            text.Append($"\n$mod_epicloot_dodge: <color={magicColor}>{dodgeBuffValue:#.#}</color>");
         }
     }
 
-    private void Offset()
+    private void AddOffset()
     {
-        bool OffSetAttack = magicItem.HasEffect(MagicEffectType.OffSetAttack);
-        string OffSetAttackColor = OffSetAttack ? magicColor : "orange";
-        if (OffSetAttack)
+        bool hasOffSetAttack = magicItem.HasEffect(MagicEffectType.OffSetAttack);
+        if (hasOffSetAttack)
         {
             float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.OffSetAttack, 1f);
+            // TODO: if using this tooltip, localize this
+            text.Append($"\n$mod_epicloot_offset: <color={magicColor}>{offSetAttackValue:#.#}</color>");
         }
     }
 
-    private void ChainLightning()
+    private void AddChainLightning()
     {
-        bool ChainLightning = magicItem.HasEffect(MagicEffectType.ChainLightning);
-        string ChainLightningColor = ChainLightning ? magicColor : "orange";
-        if (ChainLightning)
+        bool hasChainLightning = magicItem.HasEffect(MagicEffectType.ChainLightning);
+        if (hasChainLightning)
         {
             float ChainLightningValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
+            // TODO: if using this tooltip, localize this
+            text.Append(
+                $"\n$mod_epicloot_chainlightning: <color={magicColor}>{ChainLightningValue:#.#}</color>");
         }
     }
 
-    private void Apportation()
+    private void AddApportation()
     {
-        bool Apportation = magicItem.HasEffect(MagicEffectType.Apportation);
-        string ApportationColor = Apportation ? magicColor : "orange";
-        if (Apportation)
+        bool hasApportation = magicItem.HasEffect(MagicEffectType.Apportation);
+        if (hasApportation)
         {
             float ApportationValue = magicItem.GetTotalEffectValue(MagicEffectType.Apportation, 1f);
+            // TODO: if adding this tooltip, localize this
+            text.Append($"\n$mod_epicloot_apportation: <color={magicColor}>{ApportationValue:#.#}</color>");
         }
     }
 
-    private void EitrUse()
+    private void AddEitrUse()
     {
         bool hasSpellSword = magicItem.HasEffect(MagicEffectType.SpellSword);
         bool hasDoubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
@@ -175,17 +198,17 @@ public partial class MagicTooltip
         }
     }
 
-    private void HealthUse()
+    private void AddHealthUse()
     {
         bool hasBloodlust = magicItem.HasEffect(MagicEffectType.Bloodlust);
-        string bloodlustColor = hasBloodlust ? magicColor : "orange";
-        float bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
         float healthUsageReduction = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
         
         if (hasBloodlust) 
         {
+            float bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
+
             float skillmodCost = bloodlustStaminaUse - bloodlustStaminaUse * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-            text.Append($"\n$item_healthuse: <color={bloodlustColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmodCost})</color>");
+            text.Append($"\n$item_healthuse: <color={magicColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmodCost})</color>");
         }
         else
         {
@@ -208,7 +231,25 @@ public partial class MagicTooltip
         }
     }
 
-    private void DrawStaminaUse()
+    private void AddHealthHitReturn()
+    {
+        if (item.m_shared.m_attack.m_attackHealthReturnHit > 0.0)
+        {
+            text.Append(
+                $"\n$item_healthhitreturn: <color=orange>{item.m_shared.m_attack.m_attackHealthReturnHit}</color>");
+        }
+    }
+
+    private void AddHealthUsePercentage()
+    {
+        if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0)
+        {
+            text.Append(
+                $"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealthPercentage:0.0}</color>");
+        }
+    }
+
+    private void AddDrawStaminaUse()
     {
         if (item.m_shared.m_attack.m_drawStaminaDrain > 0.0)
         {
@@ -223,8 +264,9 @@ public partial class MagicTooltip
         }
     }
     
-    private void Parry()
+    private void AddParry()
     {
+        // this is the same as add block and parry, except label is $item_deflection vs $item_blockforce
         if (item.m_shared.m_timedBlockBonus > 1.0)
         {
             bool hasParryModifier = magicItem.HasEffect(MagicEffectType.ModifyParry);
@@ -244,7 +286,7 @@ public partial class MagicTooltip
         }
     }
 
-    private void Backstab()
+    private void AddBackstab()
     {
         bool hasBackstabModifier = magicItem.HasEffect(MagicEffectType.ModifyBackstab);
         float totalBackstabBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyBackstab, 0.01f);
@@ -253,7 +295,7 @@ public partial class MagicTooltip
         text.Append($"\n$item_backstab: <color={magicBackstabColor}>{backstabValue:0.#}x</color>");
     }
 
-    private void Projectile()
+    private void AddProjectileTooltip()
     {
         string projectileTooltip = item.GetProjectileTooltip(qualityLevel);
         if (projectileTooltip.Length > 0)
@@ -262,18 +304,26 @@ public partial class MagicTooltip
             text.Append(projectileTooltip);
         }
     }
+
+    private void AddTameOnly()
+    {
+        if (item.m_shared.m_tamedOnly)
+        {
+            text.Append($"\n<color=orange>$item_tameonly</color>");
+        }
+    }
     
-    private void Knockback()
+    private void AddKnockback()
     {
         text.AppendFormat("\n$item_knockback: <color=orange>{0}</color>", item.m_shared.m_attackForce);
     }
 
-    private void MaxAdrenaline()
+    private void AddMaxAdrenaline()
     {
         text.AppendFormat("\n$item_maxadrenaline: <color=orange>{0}</color>", item.m_shared.m_maxAdrenaline);
     }
 
-    private void EitrRegen()
+    private void AddEitrRegen()
     {
         bool hasEitrRegenModifier = magicItem.HasEffect(MagicEffectType.ModifyEitrRegen);
         if ((hasEitrRegenModifier || item.m_shared.m_eitrRegenModifier != 0) && localPlayer != null)
@@ -290,7 +340,7 @@ public partial class MagicTooltip
         }
     }
 
-    private void Movement()
+    private void AddMovement()
     {
         bool hasMovementModifier = magicItem.HasEffect(MagicEffectType.ModifyMovementSpeed);
         if ((hasMovementModifier || item.m_shared.m_movementModifier != 0) && localPlayer != null)

@@ -15,90 +15,104 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
     {
         text.Clear();
 
-        MagicDisplayName();
-        MagicSetLabel();
-        Description();
+        AddMagicDisplayName();
+        AddMagicSetLabel();
+        AddDescription();
         text.Append("\n");
         
-        DLC();
+        AddDLC();
+        AddNewGamePlus();
+        AddSubtitle();
         ItemDrop.ItemData.AddHandedTip(item, text);
-        CrafterID();
-        Teleportable();
-        Valuable();
-        Weight();
-        Quality();
-        Durability();
+        AddCrafterName();
+        AddTeleportable();
+        AddValuable();
+        AddWeight();
+        AddQuality();
+        AddDurability();
         
         switch (item.m_shared.m_itemType)
         {
             case ItemDrop.ItemData.ItemType.Consumable:
                 if (item.m_shared.m_food > 0.0)
                 {
-                    FoodHealth();
-                    FoodStamina();
-                    FoodBurn();
-                    FoodRegen();
+                    AddFoodHealth();
+                    AddFoodStamina();
+                    AddFoodBurn();
+                    AddFoodRegen();
                 }
                 break;
             case ItemDrop.ItemData.ItemType.OneHandedWeapon:
             case ItemDrop.ItemData.ItemType.Bow:
             case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-            case ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft:
             case ItemDrop.ItemData.ItemType.Torch:
-                Damage();
-                AttackStaminaUse();
+            case ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft:
+                AddDamages();
+                AddDamageMultiplierByTotalHealthMissing();
+                AddDamageMultiplierPerMissingHP();
+                AddAttackStaminaUse();
         
-                //TODO: explain why these are here, else, remove
-                Dodge();
-                Offset();
-                ChainLightning();
-                Apportation();
+                //TODO: finish if needed
+                // AddDodge();
+                // AddOffset();
+                // AddChainLightning();
+                // AddApportation();
                 //
         
-                EitrUse();
-                HealthUse();
-                DrawStaminaUse();
-                BlockArmor();
-                Parry();
-                Knockback();
-                Backstab();
-                Projectile();
+                AddEitrUse();
+                AddHealthUse();
+                AddHealthHitReturn();
+                AddHealthUsePercentage();
+                AddDrawStaminaUse();
+                
+                AddBlockArmor();
+                AddBlockAndParry();
+                AddParryAdrenaline();
+                
+                AddKnockback();
+                AddBackstab();
+                AddTameOnly();
+                AddProjectileTooltip();
+                // weapons typically do not have damage modifiers, but perhaps other mods utilize this
+                AddDamageModifiers();
                 break;
             case ItemDrop.ItemData.ItemType.Shield:
-                BlockArmor();
-                ShieldBlockAndParry();
-                DamageModifiers();
+                AddBlockArmor();
+                AddBlockAndParry();
+                AddParryAdrenaline();
+                AddDamageModifiers();
                 break;
             case ItemDrop.ItemData.ItemType.Helmet:
             case ItemDrop.ItemData.ItemType.Chest:
             case ItemDrop.ItemData.ItemType.Legs:
             case ItemDrop.ItemData.ItemType.Shoulder:
-                Armor();
-                DamageModifiers();
+                AddArmor();
+                AddDamageModifiers();
                 break;
             case ItemDrop.ItemData.ItemType.Ammo:
-                AmmoDamage();
-                Knockback();
+            case ItemDrop.ItemData.ItemType.AmmoNonEquipable:
+                AddDamages();
+                AddKnockback();
                 break;
             case ItemDrop.ItemData.ItemType.Trinket:
-                MaxAdrenaline();
+                AddMaxAdrenaline();
                 break;
         }
 
-        StatusEffect();
-        ChainTooltip();
-        EitrRegen();
-        Movement();
+        AddStatusEffectTooltip();
+        AddChainTooltip();
+        AddEitrRegen();
+        AddMovement();
         
         MagicEffects();
         
-        Set();
-        FullAdrenaline();
+        AddSetTooltip();
+        AddAdrenalineStatusEffectTooltip();
         
         return text.ToString();
     }
 
-    private void MagicDisplayName()
+    private void AddMagicDisplayName()
     {
         // removed duplicate display name if it does not have unique name
         if (magicItem.IsUniqueLegendary())
@@ -107,7 +121,7 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
 
-    private void MagicSetLabel()
+    private void AddMagicSetLabel()
     {
         if (item.IsMagicSetItem())
         {
@@ -123,12 +137,12 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
     
-    private void Description()
+    private void AddDescription()
     {
         text.Append(item.GetDescription());
     }
 
-    private void DLC()
+    private void AddDLC()
     {
         if (item.m_shared.m_dlc.Length > 0)
         {
@@ -136,7 +150,25 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
 
-    private void CrafterID()
+    private void AddNewGamePlus()
+    {
+        if (item.m_worldLevel > 0)
+        {
+            string itemWorldLevel = item.m_worldLevel != 1 ? item.m_worldLevel.ToString() : "";
+            text.Append($"\n<color=orange>$item_newgameplusitem {itemWorldLevel}</color>");
+        }
+    }
+
+    private void AddSubtitle()
+    {
+        // this applies to trophies, but perhaps, other mods utilize this to add extra descriptions.
+        if (item.m_shared.m_subtitle.Length > 0)
+        {
+            text.Append($"\n$<color=orange>{item.m_shared.m_subtitle}</color>");
+        }
+    }
+
+    private void AddCrafterName()
     {
         if (item.m_crafterID != 0L)
         {
@@ -144,15 +176,16 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
 
-    private void Teleportable()
+    private void AddTeleportable()
     {
-        if (!item.m_shared.m_teleportable)
+        bool isTeleportable = item.m_shared.m_teleportable || ZoneSystem.instance.GetGlobalKey(GlobalKeys.TeleportAll);
+        if (!isTeleportable)
         {
             text.Append("\n<color=orange>$item_noteleport</color>");
         }
     }
 
-    private void Valuable()
+    private void AddValuable()
     {
         if (item.m_shared.m_value > 0)
         {
@@ -160,15 +193,33 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
 
-    private void Weight()
+    private void AddStackSizeAndWeight(int stackOverride)
+    {
+        if (item.m_shared.m_maxStackSize > 1)
+        {
+            float nonStackedWeight = item.GetNonStackedWeight();
+            float weight = item.GetWeight(stackOverride);
+            bool hasWeightModifier = magicItem.HasEffect(MagicEffectType.ReduceWeight) ||
+                                     magicItem.HasEffect(MagicEffectType.Weightless);
+            string weightColor = hasWeightModifier ? magicColor : "orange";
+            text.Append($"\n$item_weight: <color={weightColor}>{nonStackedWeight:0.0} ({weight:0.0})</color>");
+        }
+        else
+        {
+            AddWeight();
+        }
+    }
+
+    private void AddWeight()
     {
         bool hasWeightModifier = magicItem.HasEffect(MagicEffectType.ReduceWeight) ||
                                  magicItem.HasEffect(MagicEffectType.Weightless);
         string weightColor = hasWeightModifier ? magicColor : "orange";
-        text.Append($"\n$item_weight: <color={weightColor}>{item.GetWeight():0.0}</color>");
+        float weight = item.GetWeight();
+        text.Append($"\n$item_weight: <color={weightColor}>{weight:0.0}</color>");
     }
 
-    private void Quality()
+    private void AddQuality()
     {
         if (item.m_shared.m_maxQuality > 1)
         {
@@ -176,7 +227,7 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
 
-    private void Durability()
+    private void AddDurability()
     {
         bool isIndestructible = magicItem.HasEffect(MagicEffectType.Indestructible);
         if (!isIndestructible && item.m_shared.m_useDurability)
@@ -212,17 +263,17 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         }
     }
     
-    private void StatusEffect()
+    private void AddStatusEffectTooltip()
     {
-        string statusEffectTooltip2 = item.GetStatusEffectTooltip(qualityLevel, skillLevel);
-        if (statusEffectTooltip2.Length > 0)
+        string statusEffectTooltip = item.GetStatusEffectTooltip(qualityLevel, skillLevel);
+        if (statusEffectTooltip.Length > 0)
         {
             text.Append("\n\n");
-            text.Append(statusEffectTooltip2);
+            text.Append(statusEffectTooltip);
         }
     }
 
-    private void ChainTooltip()
+    private void AddChainTooltip()
     {
         string chainTooltip = item.GetChainTooltip(qualityLevel, skillLevel);
         if (chainTooltip.Length > 0)
@@ -237,16 +288,15 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         text.AppendLine(magicItem.GetTooltip());
     }
 
-    private void Set()
+    private void AddSetTooltip()
     {
-        // Either EpicLoot set or base-game set
         if (item.IsSetItem())
         {
             text.Append(item.GetSetTooltip());
         }
     }
 
-    private void FullAdrenaline()
+    private void AddAdrenalineStatusEffectTooltip()
     {
         if (item.m_shared.m_fullAdrenalineSE != null)
         {

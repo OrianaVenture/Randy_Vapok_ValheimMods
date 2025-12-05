@@ -44,10 +44,16 @@ namespace EpicLoot
     public static class MagicItemTooltip_ItemDrop_Patch
     {
         [UsedImplicitly]
-        private static bool Prefix(ref string __result, ItemDrop.ItemData item, int qualityLevel)
+        private static bool Prefix(ref string __result, ItemDrop.ItemData item, int qualityLevel, bool crafting)
         {
             if (item == null)
             {
+                return true;
+            }
+
+            if (crafting)
+            {
+                // since crafting item is never magic, can exit earlier before calling get magic item
                 return true;
             }
             

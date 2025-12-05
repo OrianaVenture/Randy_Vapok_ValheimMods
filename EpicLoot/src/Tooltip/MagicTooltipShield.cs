@@ -2,14 +2,14 @@
 
 public partial class MagicTooltip
 {
-    private void ShieldBlockAndParry()
+    private void AddBlockAndParry()
     {
-        bool hasParryModifier = magicItem.HasEffect(MagicEffectType.ModifyParry);
-        float totalParryBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyParry, 0.01f);
-        string magicParryColor = hasParryModifier ? magicColor : "orange";
-        
         if (item.m_shared.m_timedBlockBonus > 1.0)
         {
+            bool hasParryModifier = magicItem.HasEffect(MagicEffectType.ModifyParry);
+            string magicParryColor = hasParryModifier ? magicColor : "orange";
+
+            float totalParryBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyParry, 0.01f);
             text.Append($"\n$item_blockforce: " +
                         $"<color={magicParryColor}>{item.GetDeflectionForce(qualityLevel)}</color>");
 
@@ -24,7 +24,7 @@ public partial class MagicTooltip
     }
     
     
-    private void BlockArmor()
+    private void AddBlockArmor()
     {
         bool hasMagicBlockPower = magicItem.HasEffect(MagicEffectType.ModifyBlockPower);
         string magicBlockColor1 = hasMagicBlockPower ? magicColor : "orange";
@@ -36,5 +36,13 @@ public partial class MagicTooltip
         
         text.Append($"\n$item_blockarmor: <color={magicBlockColor1}>{baseBlockPower}</color> " +
                     $"<color={magicBlockColor2}>({blockPowerPercentageString})</color>");
+    }
+
+    private void AddParryAdrenaline()
+    {
+        if (item.m_shared.m_perfectBlockAdrenaline > 0.0)
+        {
+            text.Append($"\n$item_parryadrenaline: <color=orange>{item.m_shared.m_perfectBlockAdrenaline}</color>");
+        }
     }
 }
