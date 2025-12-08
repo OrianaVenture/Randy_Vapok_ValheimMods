@@ -1,56 +1,49 @@
-using System;
 using EpicLoot.MagicItemEffects;
 using HarmonyLib;
-using Jotunn.Managers;
-using UnityEngine;
 
 namespace EpicLoot.Magic.MagicItemEffects
 {
-    public class InstantMeads
+    public static class InstantMeads
     {
-        private static bool addingModifiedStatusEffect = false;
-        
-        [HarmonyPatch(typeof(SEMan))]
-        public static class InstantMeads_SEMan_AddStatusEffect_Patch
+        [HarmonyPatch(typeof(SEMan), nameof(SEMan.AddStatusEffect), 
+            typeof(StatusEffect), typeof(bool), typeof(int), typeof(float))]
+        public static class InstantMeads_SEMan_AddStatusEffect
         {
-            [HarmonyPatch(nameof(SEMan.AddStatusEffect), new Type[] {
-                typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
-            })]
-            [HarmonyPrefix]
-            public static bool Prefix(SEMan __instance, ref StatusEffect statusEffect, bool resetTime, int itemLevel, float skillLevel)
+            private static bool Prefix(SEMan __instance, StatusEffect statusEffect, int itemLevel, float skillLevel, ref StatusEffect __result)
             {
-                if (addingModifiedStatusEffect) return true;
-                var player = __instance.m_character as Player;
-                if (player == null || player != Player.m_localPlayer) return true;
+                if (statusEffect == null) return true;
+                if (!DecreaseMeadCooldown.IsMead(statusEffect)) return true;
+                
+                if (__instance.m_character is not Player player) return true;
+                if (player != Player.m_localPlayer) return true;
+                
+                if (!statusEffect.CanAdd(__instance.m_character)) return true;
+                
                 if (!player.HasActiveMagicEffect(MagicEffectType.InstantMead)) return true;
                 if (!ModifyWithLowHealth.PlayerHasLowHealth(player)) return true;
-                if (statusEffect == null) return true;
-
                 
-                StatusEffect existing = ObjectDB.instance.GetStatusEffect(statusEffect.NameHash());
-                
-                if (existing is not SE_Stats seStats) return true;
-                if (!seStats.CanAdd(player)) return true;
+                if (statusEffect is not SE_Stats seStats) return true;
                 if (!CheckStatusEffectFields(seStats)) return true;
-
-                SE_Stats newStatusEffect = (SE_Stats)seStats.Clone();
                 
-                float healthOT = newStatusEffect.m_healthOverTime;
-                float stamOT   = newStatusEffect.m_staminaOverTime;
-                float eitrOT   = newStatusEffect.m_eitrOverTime;
-                
-                newStatusEffect.m_healthOverTime = 0f;
-                newStatusEffect.m_staminaOverTime = 0f;
-                newStatusEffect.m_eitrOverTime = 0f;
-
-                addingModifiedStatusEffect = true;
-                player.GetSEMan().AddStatusEffect(newStatusEffect, false);
-                addingModifiedStatusEffect = false;
+                float healthOT = seStats.m_healthOverTime;
+                float stamOT   = seStats.m_staminaOverTime;
+                float eitrOT   = seStats.m_eitrOverTime;
                 
                 if (healthOT > 0f) player.Heal(healthOT);
                 if (stamOT   > 0f) player.AddStamina(stamOT);
                 if (eitrOT   > 0f) player.AddEitr(eitrOT);
-                
+
+                SE_Stats newStatus = (SE_Stats)seStats.Clone();
+                newStatus.m_healthOverTime = 0f;
+                newStatus.m_staminaOverTime = 0f;
+                newStatus.m_eitrOverTime = 0f;
+
+                __instance.m_statusEffects.Add(newStatus);
+                __instance.m_statusEffectsHashSet.Add(statusEffect.NameHash());
+                newStatus.Setup(__instance.m_character);
+                newStatus.SetLevel(itemLevel, skillLevel);
+                Gogan.LogEvent("Game", "StatusEffect", statusEffect.name, 0L);
+                __result = newStatus;
                 return false;
             }
         }
