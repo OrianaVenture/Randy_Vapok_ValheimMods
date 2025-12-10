@@ -9,7 +9,6 @@ using EpicLoot.GatedItemType;
 using EpicLoot.General;
 using EpicLoot.Magic;
 using EpicLoot.MagicItemEffects;
-using EpicLoot.Patching;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;
@@ -73,7 +72,9 @@ namespace EpicLoot
         public const string Undying_SE_Name = "UndyingStatusEffect";
         public const string Bulwark_SE_Name = "BulwarkStatusEffect";
         public const string Berserker_SE_Name = "BerserkerStatusEffect";
-        
+
+        public const string ExplosiveArrow = "EL_ExplosiveArrow";
+
         public static GameObject DummyPrefab() => PrefabManager.Instance.GetPrefab(DummyName);
     }
 
@@ -434,21 +435,24 @@ namespace EpicLoot
             Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
-            
+
             Assets.BulwarkStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Bulwark_SE_Name);
             Assets.BulwarkMagicShieldVFX = assetBundle.LoadAsset<GameObject>("MagicShield");
             Assets.BulwarkMagicShieldSFX = assetBundle.LoadAsset<GameObject>("sfx_bulwark");
-            
+
             Assets.UndyingStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Undying_SE_Name);
             Assets.UndyingVFX = assetBundle.LoadAsset<GameObject>("Undying");
             Assets.UndyingSFX = assetBundle.LoadAsset<GameObject>("sfx_undying");
-            
+
             Assets.BerserkerStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Berserker_SE_Name);
             Assets.BerserkerVFX = assetBundle.LoadAsset<GameObject>("Berserker");
             Assets.BerserkerSFX =  assetBundle.LoadAsset<GameObject>("sfx_berserker");
-            
+
+            GameObject explosiveArrow = assetBundle.LoadAsset<GameObject>(EpicAssets.ExplosiveArrow);
+            PrefabManager.Instance.AddPrefab(new CustomPrefab(explosiveArrow, true));
+
             LoadCraftingMaterialAssets();
-            
+
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
