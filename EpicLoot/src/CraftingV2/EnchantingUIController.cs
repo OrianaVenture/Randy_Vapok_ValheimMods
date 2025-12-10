@@ -45,6 +45,7 @@ namespace EpicLoot.CraftingV2
             MultiSelectItemList.SortByRarity = SortByRarity;
             MultiSelectItemList.SortByName = SortByName;
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
+            MultiSelectItemListElement.SetItemTooltip = SetItemTooltip;
             SacrificeUI.GetSacrificeItems = GetSacrificeItems;
             SacrificeUI.GetSacrificeProducts = GetSacrificeProducts;
             SacrificeUI.GetIdentifyCost = GetIdentifyCostForCategory;
@@ -195,6 +196,15 @@ namespace EpicLoot.CraftingV2
                     tooltip.m_topic = Localization.instance.Localize(item.GetDecoratedName());
                     tooltip.m_text = Localization.instance.Localize(item.GetTooltip());
                 }
+            }
+        }
+
+        private static void SetItemTooltip(ItemDrop.ItemData item,
+            UITooltip tooltip)
+        {
+            if (EpicLoot.IsAllowedMagicItemType(item.m_shared.m_itemType))
+            {
+                tooltip.Set(item.GetDisplayName(), item.GetTooltip());
             }
         }
 

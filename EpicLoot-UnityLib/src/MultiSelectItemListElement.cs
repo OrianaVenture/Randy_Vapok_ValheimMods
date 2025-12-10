@@ -20,6 +20,7 @@ namespace EpicLoot_UnityLib
         public Button QuantityUpButton;
         public Button QuantityDownButton;
         public UITooltip Tooltip;
+        public UITooltip ItemTooltip;
         public bool ReadOnly;
         public bool CheckPlayerInventory;
         public bool NoMax;
@@ -40,6 +41,10 @@ namespace EpicLoot_UnityLib
         public delegate void SetMagicItemDelegate(MultiSelectItemListElement element, ItemDrop.ItemData item, UITooltip tooltip);
 
         public static SetMagicItemDelegate SetMagicItem;
+        
+        public delegate void SetItemTooltipDelegate(ItemDrop.ItemData item, UITooltip tooltip);
+        
+        public static SetItemTooltipDelegate SetItemTooltip;
 
         private IListElement _item;
         private int _selectedQuantity;
@@ -64,6 +69,11 @@ namespace EpicLoot_UnityLib
             {
                 GameObject storeItemTooltip = StoreGui.instance.m_listElement.GetComponent<UITooltip>().m_tooltipPrefab;
                 Tooltip.m_tooltipPrefab = storeItemTooltip;
+            }
+            else
+            {
+                ItemTooltip = gameObject.AddComponent<UITooltip>();
+                ItemTooltip.m_tooltipPrefab = StoreGui.instance.m_listElement.GetComponent<UITooltip>().m_tooltipPrefab;
             }
 
             if (Audio != null)
@@ -208,6 +218,11 @@ namespace EpicLoot_UnityLib
                     Tooltip.m_topic = string.Empty;
                     Tooltip.m_text = string.Empty;
                 }
+                
+                if (ItemTooltip != null)
+                {
+                    ItemTooltip.Set("", "");
+                }
             }
             else
             {
@@ -241,6 +256,11 @@ namespace EpicLoot_UnityLib
                 {
                     ItemName.text += _item.GetDisplayNameSuffix();
                 }
+
+                if (SetItemTooltip != null)
+                {
+                    SetItemTooltip(_item.GetItem(), ItemTooltip);
+                }
             }
 
             if (!sameItem)
@@ -249,6 +269,8 @@ namespace EpicLoot_UnityLib
             }
 
             RefreshGamepadFocusIndicator();
+
+            
         }
 
         private bool CheckAndSetNameToEnchantingEffects()
