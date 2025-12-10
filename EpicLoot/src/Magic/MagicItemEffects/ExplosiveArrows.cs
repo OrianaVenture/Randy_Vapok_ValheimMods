@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.General;
+using HarmonyLib;
 using Jotunn.Managers;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -88,7 +89,7 @@ namespace EpicLoot.MagicItemEffects
                     return;
                 }
 
-                float explodingArrowStrength = explodingArrowValue * instance.m_damage.GetTotalDamage();
+                float explodingArrowStrength = explodingArrowValue * instance.m_damage.EpicLootGetTotalDamage();
                 aoe.m_damage.m_fire = explodingArrowStrength;
             }
         }

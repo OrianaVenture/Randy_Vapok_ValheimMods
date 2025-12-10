@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.General;
+using HarmonyLib;
 using System;
 
 namespace EpicLoot.MagicItemEffects
@@ -19,7 +20,7 @@ namespace EpicLoot.MagicItemEffects
             if (player != null && player.m_leftItem == null &&
                 MagicEffectsHelper.HasActiveMagicEffectOnWeapon(player, __instance, MagicEffectType.Duelist, out float effectValue, 0.01f))
             {
-                __result += __instance.GetDamage().GetTotalDamage() / 2 * effectValue;
+                __result += __instance.GetDamage().EpicLootGetTotalDamage() / 2 * effectValue;
             }
 
             __result = (float) Math.Round(__result, 1);
