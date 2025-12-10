@@ -735,7 +735,19 @@ namespace EpicLoot
                    && IsPlayerItem(item)
                    && Nonstackable(item)
                    && IsNotRestrictedItem(item)
-                   && item.IsEquipable();
+                   && IsAllowedMagicItemType(item);
+        }
+
+        public static bool IsAllowedMagicItemType(ItemDrop.ItemData item)
+        {
+            switch (item.m_shared.m_itemType)
+            {
+                case ItemDrop.ItemData.ItemType.Ammo:
+                case ItemDrop.ItemData.ItemType.AmmoNonEquipable:
+                        return false;
+                default:
+                    return item.IsEquipable();
+            }
         }
 
         public static Sprite GetMagicItemBgSprite()

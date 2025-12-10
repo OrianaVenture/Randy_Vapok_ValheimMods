@@ -476,7 +476,7 @@ namespace EpicLoot
                         {
                             // If loot table drop is null, or has no item drop component, or is not equippable, then we don't make it unidentified
                             ItemDrop lootItemDrop = lootTableDrop.GetComponent<ItemDrop>();
-                            if (lootItemDrop != null && lootItemDrop.m_itemData.IsEquipable())
+                            if (lootItemDrop != null && EpicLoot.IsAllowedMagicItemType(lootItemDrop.m_itemData))
                             {
                                 var rarity = RollItemRarity(lootDrop, luckFactor);
 
