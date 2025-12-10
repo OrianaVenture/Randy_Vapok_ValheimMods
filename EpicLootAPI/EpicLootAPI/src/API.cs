@@ -278,7 +278,7 @@ public static class EpicLoot
     /// <param name="itemData">The item to get magic item data from.</param>
     /// <returns>The MagicItem if it exists, otherwise null.</returns>
     [PublicAPI]
-    public static MagicItem? GetMagicItem(this ItemDrop.ItemData itemData)
+    public static MagicItem GetMagicItem(this ItemDrop.ItemData itemData)
     {
         object[] result = API_GetMagicItemJson.Invoke(itemData);
         string json = (string)(result[0] ?? "");
