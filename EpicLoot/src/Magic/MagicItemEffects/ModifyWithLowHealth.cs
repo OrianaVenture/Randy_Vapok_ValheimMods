@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EpicLoot.General;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ namespace EpicLoot.MagicItemEffects
 
         public static float GetLowHealthPercentage(Player player)
         {
-            float lowHealthThreshold = LowHealthDefaultThreshold; 
+            float lowHealthThreshold = LowHealthDefaultThreshold;
 
             if (player == null)
             {
@@ -50,6 +51,28 @@ namespace EpicLoot.MagicItemEffects
             }
             
             return lowHealthThreshold;
+        }
+
+        public static bool PlayerWillBecomeHealthCritical(Player player, HitData hit)
+        {
+            if (PlayerHasLowHealth(player))
+            {
+                return true;
+            }
+
+            float lowHealthPercentage = Mathf.Min(ModifyWithLowHealth.GetLowHealthPercentage(player), 1.0f) * player.GetMaxHealth();
+            float currentHealth = player.GetHealth();
+            float hitTotalDamage = hit.m_damage.EpicLootGetTotalDamageAgainstPlayer();
+
+            float armorValue = player.GetBodyArmor();
+            hitTotalDamage = HitData.DamageTypes.ApplyArmor(hitTotalDamage, armorValue);
+
+            if ((currentHealth - hitTotalDamage) < lowHealthPercentage)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

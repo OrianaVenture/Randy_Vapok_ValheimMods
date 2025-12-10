@@ -734,9 +734,9 @@ namespace EpicLoot
             float scale = 1.0f, ItemDrop.ItemData ignoreThisItem = null)
         {
             effectValue = GetTotalActiveMagicEffectValue(player, effectType, scale, ignoreThisItem);
-            return effectValue > 0;
+            return effectValue != 0f;
         }
-        
+
         public static bool HasActiveMagicEffect(this Player player, string effectType)
         {
             if (player == null) return false;
