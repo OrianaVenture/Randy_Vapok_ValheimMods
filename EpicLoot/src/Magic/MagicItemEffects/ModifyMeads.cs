@@ -33,7 +33,6 @@ namespace EpicLoot.Magic.MagicItemEffects
         private static StatusEffect ModifyMead(StatusEffect original)
         {
             SE_Stats dbEffect = (SE_Stats)ObjectDB.instance.GetStatusEffect(original.NameHash());
-            EpicLoot.LogError($"Modify Mead called!");
             if (Player.m_localPlayer == null ||
                 dbEffect is not SE_Stats seStats ||
                 !seStats.CanAdd(Player.m_localPlayer))
@@ -65,8 +64,6 @@ namespace EpicLoot.Magic.MagicItemEffects
             }
 
             SE_Stats newStatusEffect = (SE_Stats)effect.Clone();
-
-            EpicLoot.LogError($"Insta mead before: {newStatusEffect.m_healthUpFront}, {newStatusEffect.m_staminaUpFront}, {newStatusEffect.m_eitrUpFront}");
             newStatusEffect.m_healthUpFront += newStatusEffect.m_healthOverTime;
             newStatusEffect.m_staminaUpFront += newStatusEffect.m_staminaOverTime;
             newStatusEffect.m_eitrUpFront += newStatusEffect.m_eitrOverTime;
@@ -74,18 +71,14 @@ namespace EpicLoot.Magic.MagicItemEffects
             newStatusEffect.m_staminaOverTime = 0f;
             newStatusEffect.m_eitrOverTime = 0f;
 
-            EpicLoot.LogError($"Insta mead: {newStatusEffect.m_healthUpFront}, {newStatusEffect.m_staminaUpFront}, {newStatusEffect.m_eitrUpFront}");
-
             return newStatusEffect;
         }
 
         private static SE_Stats TryCreateDecreasedCooldownMead(SE_Stats effect, float value)
         {
-            EpicLoot.LogError($"Cooldown value before : {effect.m_ttl}");
             SE_Stats newStatusEffect = (SE_Stats)effect.Clone();
             newStatusEffect.m_ttl *= Mathf.Clamp01(1f - value);
 
-            EpicLoot.LogError($"Cooldown value: {newStatusEffect.m_ttl}");
             return newStatusEffect;
         }
 
@@ -94,6 +87,7 @@ namespace EpicLoot.Magic.MagicItemEffects
             bool hasHealth = se.m_healthOverTime > 0f;
             bool hasStamina = se.m_staminaOverTime > 0f;
             bool hasEitr = se.m_eitrOverTime > 0f;
+
             return hasHealth || hasStamina || hasEitr;
         }
     }
