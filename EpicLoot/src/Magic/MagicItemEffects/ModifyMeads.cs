@@ -23,7 +23,10 @@ namespace EpicLoot.Magic.MagicItemEffects
                 new CodeMatch(OpCodes.Ldc_I4_1),
                 new CodeMatch(OpCodes.Ldc_I4_0),
                 new CodeMatch(OpCodes.Ldc_R4),
-                new CodeMatch(OpCodes.Callvirt, AccessTools.Field(typeof(SEMan), nameof(SEMan.AddStatusEffect))))
+                new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(SEMan), nameof(SEMan.AddStatusEffect), new System.Type[]
+                {
+                    typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
+                })))
                 .Advance(1).InsertAndAdvance(
                 Transpilers.EmitDelegate(ModifyMead))
                 .ThrowIfNotMatch("Unable to patch Player.ConsumeItem for Instant Meads.");
