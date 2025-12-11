@@ -43,7 +43,8 @@ namespace EpicLoot.MagicItemEffects
                 return true;
             }
 
-            if (!currentWeapon.IsMagic() || !currentWeapon.GetMagicItem().HasEffect(MagicEffectType.Throwable))
+            if (!currentWeapon.IsMagic() || !currentWeapon.GetMagicItem().HasEffect(MagicEffectType.Throwable) ||
+                currentWeapon.m_shared.m_tamedOnly) // Temporary fix for all powerful butcher knifes
             {
                 return true;
             }

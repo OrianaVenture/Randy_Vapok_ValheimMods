@@ -3721,7 +3721,8 @@
           "Spears"
         ],
         "ExcludedItemNames": [
-          "$item_fishingrod"
+          "$item_fishingrod",
+          "$item_knife_butcher"
         ]
       },
       "SelectionWeight": 2,
