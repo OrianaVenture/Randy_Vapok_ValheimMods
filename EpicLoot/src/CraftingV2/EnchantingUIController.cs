@@ -206,6 +206,10 @@ namespace EpicLoot.CraftingV2
             {
                 tooltip.Set(item.GetDisplayName(), item.GetTooltip());
             }
+            else
+            {
+                tooltip.Set("", "");
+            }
         }
 
         private static List<IListElement> SortByRarity(List<IListElement> items)

@@ -257,9 +257,12 @@ namespace EpicLoot_UnityLib
                     ItemName.text += _item.GetDisplayNameSuffix();
                 }
 
-                if (SetItemTooltip != null)
+                if (ItemTooltip != null)
                 {
-                    SetItemTooltip(_item.GetItem(), ItemTooltip);
+                    if (SetItemTooltip != null)
+                    {
+                        SetItemTooltip(_item.GetItem(), ItemTooltip);
+                    }
                 }
             }
 
