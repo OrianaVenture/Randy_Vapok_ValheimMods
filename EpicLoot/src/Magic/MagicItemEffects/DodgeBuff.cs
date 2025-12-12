@@ -1,19 +1,19 @@
 ﻿using HarmonyLib;
 using Jotunn.Entities;
 using Jotunn.Managers;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+public static class DodgeBuff
 {
     [HarmonyPatch(typeof(Attack), nameof(Attack.DoMeleeAttack))]
-    public class DodgeDetectionandBuffApplicationPatch
+    private static class DodgeBuff_Attack_DoMeleeAttack_Patch
     {
         public static bool DodgeWasDetected = false;
         static int rushHash = "Adrenaline_Rush".GetStableHashCode();
 
-        static void Postfix(Attack __instance)
+        private static void Postfix(Attack __instance)
         {
             if (Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.DodgeBuff, 1f) == 0f) return;
 
@@ -43,7 +43,8 @@ namespace EpicLoot.MagicItemEffects
                 Vector3 finalDir = __instance.m_character.transform.TransformDirection(swingRotation * localDirection);
 
                 RaycastHit[] hits = (__instance.m_attackRayWidth > 0f)
-                    ? Physics.SphereCastAll(attackOrigin, __instance.m_attackRayWidth, finalDir, Mathf.Max(0f, attackRange - __instance.m_attackRayWidth), layerMask, QueryTriggerInteraction.Ignore)
+                    ? Physics.SphereCastAll(attackOrigin, __instance.m_attackRayWidth, finalDir,
+                    Mathf.Max(0f, attackRange - __instance.m_attackRayWidth), layerMask, QueryTriggerInteraction.Ignore)
                     : Physics.RaycastAll(attackOrigin, finalDir, attackRange, layerMask, QueryTriggerInteraction.Ignore);
 
                 foreach (RaycastHit hit in hits)
@@ -67,33 +68,27 @@ namespace EpicLoot.MagicItemEffects
                             return;
                         }
                     }
-
-
                 }
             }
         }
     }
 
-    public class DodgeBuff
+    public static void CreateMyStatusEffect()
     {
-        public static void CreateMyStatusEffect()
-        {
-            SE_Stats myStatusEffect = ScriptableObject.CreateInstance<SE_Stats>(); // create new instance of se_stats
+        SE_Stats myStatusEffect = ScriptableObject.CreateInstance<SE_Stats>(); // create new instance of se_stats
 
-            Sprite iconSprite = EpicLoot.Assets.DodgeBuffSprite;
+        Sprite iconSprite = EpicLoot.Assets.DodgeBuffSprite;
 
-            //fill out fields in se_stats to make the status effect I want
-            myStatusEffect.name = "Adrenaline_Rush";
-            myStatusEffect.m_name = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush");
-            myStatusEffect.m_tooltip = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush_desc");
-            myStatusEffect.m_icon = iconSprite;
-            myStatusEffect.m_ttl = 10f;
+        //fill out fields in se_stats to make the status effect I want
+        myStatusEffect.name = "Adrenaline_Rush";
+        myStatusEffect.m_name = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush");
+        myStatusEffect.m_tooltip = Localization.instance.Localize("$mod_epicloot_me_adrenaline_rush_desc");
+        myStatusEffect.m_icon = iconSprite;
+        myStatusEffect.m_ttl = 10f;
 
-            //Instantiate the effect in code
-            CustomStatusEffect Adrenaline_Rush = new CustomStatusEffect(myStatusEffect, fixReference: false);
-            //Register the status effect into the game
-            ItemManager.Instance.AddStatusEffect(Adrenaline_Rush);
-        }
-
+        //Instantiate the effect in code
+        CustomStatusEffect Adrenaline_Rush = new CustomStatusEffect(myStatusEffect, fixReference: false);
+        //Register the status effect into the game
+        ItemManager.Instance.AddStatusEffect(Adrenaline_Rush);
     }
 }
