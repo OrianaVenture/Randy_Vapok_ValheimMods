@@ -29,7 +29,7 @@ namespace EpicLoot.MagicItemEffects
 
             if (Player.m_localPlayer &&
                 Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.DodgeBuff, out float dodgeBuffValue) &&
-                Player.m_localPlayer.GetSEMan().HaveStatusEffect("Adrenaline_Rush".GetStableHashCode()))
+                Player.m_localPlayer.GetSEMan().HaveStatusEffect(DodgeBuff.AdrenalineRushHash))
             {
                 var modifier = 1f + (dodgeBuffValue * .01f);
                 if (modifier > 0)
@@ -47,6 +47,7 @@ namespace EpicLoot.MagicItemEffects
                     __result.m_spirit *= modifier;
                 }
             }
+
             if (!__instance.IsMagic())
             {
                 return;

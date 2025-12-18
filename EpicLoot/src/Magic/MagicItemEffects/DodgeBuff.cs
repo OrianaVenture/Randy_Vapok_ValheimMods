@@ -7,11 +7,12 @@ namespace EpicLoot.MagicItemEffects;
 
 public static class DodgeBuff
 {
+    public static readonly int AdrenalineRushHash = "Adrenaline_Rush".GetStableHashCode();
+
     [HarmonyPatch(typeof(Attack), nameof(Attack.DoMeleeAttack))]
     private static class DodgeBuff_Attack_DoMeleeAttack_Patch
     {
         public static bool DodgeWasDetected = false;
-        static int rushHash = "Adrenaline_Rush".GetStableHashCode();
 
         private static void Postfix(Attack __instance)
         {
@@ -59,11 +60,11 @@ public static class DodgeBuff
                     Player player = hitCharacter as Player;
                     if (player != null)
                     {
-                        if (player.GetSEMan().GetStatusEffect(rushHash) == null &&
+                        if (player.GetSEMan().GetStatusEffect(AdrenalineRushHash) == null &&
                             player.GetTotalActiveMagicEffectValue(MagicEffectType.DodgeBuff, 1f) > 0f &&
                             dodgedHit)
                         {
-                            player.GetSEMan().AddStatusEffect(rushHash);
+                            player.GetSEMan().AddStatusEffect(AdrenalineRushHash);
                             AudioSource.PlayClipAtPoint(EpicLoot.Assets.DodgeBuffSFX, player.transform.position);
                             return;
                         }
