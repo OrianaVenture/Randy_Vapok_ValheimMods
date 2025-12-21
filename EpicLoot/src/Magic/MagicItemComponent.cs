@@ -762,6 +762,7 @@ namespace EpicLoot
 
         public static Player GetPlayerWithEquippedItem(ItemDrop.ItemData itemData)
         {
+            // TODO: evaluate if this returns magic items of other players correctly
             return Player.s_players.FirstOrDefault(player => player.IsItemEquiped(itemData));
         }
     }
