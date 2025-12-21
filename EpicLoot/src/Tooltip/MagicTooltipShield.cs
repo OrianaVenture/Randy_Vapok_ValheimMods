@@ -2,40 +2,44 @@
 
 public partial class MagicTooltip
 {
-    private void AddBlockAndParry()
+    private void AddBlockForceAndParry()
     {
-        if (item.m_shared.m_timedBlockBonus > 1.0)
+        // TODO fix magic effects not applying to caluclation, like for damages
+        // TODO: apply duelest values here, make a getter
+        float deflectionForce = GetDeflectionForceValue(item, magicItem, qualityLevel, out bool hasModifiers);
+        string magicBlockColor = hasModifiers ? magicColor : "orange";
+
+        if (deflectionForce > 1f)
         {
-            bool hasParryModifier = magicItem.HasEffect(MagicEffectType.ModifyParry);
-            string magicParryColor = hasParryModifier ? magicColor : "orange";
-
-            float totalParryBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyParry, 0.01f);
             text.Append($"\n$item_blockforce: " +
-                        $"<color={magicParryColor}>{item.GetDeflectionForce(qualityLevel)}</color>");
+                $"<color={magicBlockColor}>{deflectionForce:0.#}</color>");
+        }
 
-            float timedBlockBonus = item.m_shared.m_timedBlockBonus;
-            if (hasParryModifier)
-            {
-                timedBlockBonus *= 1.0f + totalParryBonusMod;
-            }
+        if (item.m_shared.m_timedBlockBonus > 1f)
+        {
+            float parryBonus = GetParryBonusValue(item, magicItem, qualityLevel, out hasModifiers);
+            magicBlockColor = hasModifiers ? magicColor : "orange";
 
-            text.Append($"\n$item_parrybonus: <color={magicParryColor}>{timedBlockBonus:0.#}x</color>");
+            text.Append($"\n$item_parrybonus: <color={magicBlockColor}>{parryBonus:0.#}x</color>");
         }
     }
-    
-    
+
     private void AddBlockArmor()
     {
-        bool hasMagicBlockPower = magicItem.HasEffect(MagicEffectType.ModifyBlockPower);
-        string magicBlockColor1 = hasMagicBlockPower ? magicColor : "orange";
-        string magicBlockColor2 = hasMagicBlockPower ? magicColor : "yellow";
-        
-        float baseBlockPower = item.GetBaseBlockPower(qualityLevel);
+        float blockPower = GetBlockPowerValue(item, magicItem, qualityLevel, out bool hasModifiers);
+        if (blockPower <= 1f)
+        {
+            return;
+        }
+
+        string magicBlockColor1 = hasModifiers ? magicColor : "orange";
+        string magicBlockColor2 = hasModifiers ? magicColor : "yellow";
+
         float blockPowerTooltipValue = item.GetBlockPowerTooltip(qualityLevel);
         string blockPowerPercentageString = blockPowerTooltipValue.ToString("0");
-        
-        text.Append($"\n$item_blockarmor: <color={magicBlockColor1}>{baseBlockPower}</color> " +
-                    $"<color={magicBlockColor2}>({blockPowerPercentageString})</color>");
+
+        text.Append($"\n$item_blockarmor: <color={magicBlockColor1}>{blockPower:0.#}</color> " +
+            $"<color={magicBlockColor2}>({blockPowerPercentageString})</color>");
     }
 
     private void AddParryAdrenaline()

@@ -10,16 +10,16 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
     private readonly string magicColor = magicItem.GetColorString();
     private readonly string itemTypeName = magicItem.GetItemTypeName(item.Extended());
     private readonly float skillLevel = localPlayer.GetSkillLevel(item.m_shared.m_skillType);
-    
+
     public string GetTooltip()
     {
         text.Clear();
 
-        AddMagicDisplayName();
+        //AddMagicDisplayName();
         AddMagicSetLabel();
         AddDescription();
         text.Append("\n");
-        
+
         AddDLC();
         AddNewGamePlus();
         AddSubtitle();
@@ -27,17 +27,18 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         AddCrafterName();
         AddTeleportable();
         AddValuable();
-        AddWeight();
+        AddStackSizeAndWeight();
         AddQuality();
         AddDurability();
-        
+
         switch (item.m_shared.m_itemType)
         {
             case ItemDrop.ItemData.ItemType.Consumable:
-                if (item.m_shared.m_food > 0.0)
+                if (item.m_shared.m_food > 0f || item.m_shared.m_foodStamina > 0f || item.m_shared.m_foodEitr > 0f)
                 {
                     AddFoodHealth();
                     AddFoodStamina();
+                    AddFoodEitr();
                     AddFoodBurn();
                     AddFoodRegen();
                 }
@@ -52,33 +53,33 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
                 AddDamageMultiplierPerMissingHP();
                 AddAttackStaminaUse();
         
-                //TODO: finish if needed
+                // TODO: finish if needed
                 // AddDodge();
                 // AddOffset();
                 // AddChainLightning();
                 // AddApportation();
-                //
-        
+
                 AddEitrUse();
                 AddHealthUse();
                 AddHealthHitReturn();
                 AddHealthUsePercentage();
                 AddDrawStaminaUse();
-                
+
                 AddBlockArmor();
-                AddBlockAndParry();
+                AddBlockForceAndParry();
                 AddParryAdrenaline();
-                
+
+                // weapons typically do not have damage modifiers, but perhaps other mods utilize this
+                AddDamageModifiers();
+
                 AddKnockback();
                 AddBackstab();
                 AddTameOnly();
                 AddProjectileTooltip();
-                // weapons typically do not have damage modifiers, but perhaps other mods utilize this
-                AddDamageModifiers();
                 break;
             case ItemDrop.ItemData.ItemType.Shield:
                 AddBlockArmor();
-                AddBlockAndParry();
+                AddBlockForceAndParry();
                 AddParryAdrenaline();
                 AddDamageModifiers();
                 break;
@@ -95,20 +96,19 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
                 AddKnockback();
                 break;
             case ItemDrop.ItemData.ItemType.Trinket:
-                AddMaxAdrenaline();
                 break;
         }
 
         AddStatusEffectTooltip();
         AddChainTooltip();
-        AddEitrRegen();
-        AddMovement();
-        
+
+        AddAllEquipmentModifiers();
+
         MagicEffects();
-        
+
         AddSetTooltip();
         AddAdrenalineStatusEffectTooltip();
-        
+
         return text.ToString();
     }
 
@@ -189,34 +189,27 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
     {
         if (item.m_shared.m_value > 0)
         {
-            text.AppendFormat("\n$item_value: <color=orange>{0} ({1})</color>", item.GetValue(), item.m_shared.m_value);
+            text.AppendFormat("\n$item_value: <color=orange>{0} ({1} $item_total)</color>", item.m_shared.m_value, item.GetValue());
         }
     }
 
-    private void AddStackSizeAndWeight(int stackOverride)
+    private void AddStackSizeAndWeight()
     {
+        bool hasWeightModifier = magicItem.HasEffect(MagicEffectType.ReduceWeight) ||
+            magicItem.HasEffect(MagicEffectType.Weightless);
+        string weightColor = hasWeightModifier ? magicColor : "orange";
+
         if (item.m_shared.m_maxStackSize > 1)
         {
             float nonStackedWeight = item.GetNonStackedWeight();
-            float weight = item.GetWeight(stackOverride);
-            bool hasWeightModifier = magicItem.HasEffect(MagicEffectType.ReduceWeight) ||
-                                     magicItem.HasEffect(MagicEffectType.Weightless);
-            string weightColor = hasWeightModifier ? magicColor : "orange";
-            text.Append($"\n$item_weight: <color={weightColor}>{nonStackedWeight:0.0} ({weight:0.0})</color>");
+            float weight = item.GetWeight(item.m_shared.m_maxStackSize);
+            text.Append($"\n$item_weight: <color={weightColor}>{nonStackedWeight:0.0} ({weight:0.0} $item_total)</color>");
         }
         else
         {
-            AddWeight();
+            float weight = item.GetWeight();
+            text.Append($"\n$item_weight: <color={weightColor}>{weight:0.0}</color>");
         }
-    }
-
-    private void AddWeight()
-    {
-        bool hasWeightModifier = magicItem.HasEffect(MagicEffectType.ReduceWeight) ||
-                                 magicItem.HasEffect(MagicEffectType.Weightless);
-        string weightColor = hasWeightModifier ? magicColor : "orange";
-        float weight = item.GetWeight();
-        text.Append($"\n$item_weight: <color={weightColor}>{weight:0.0}</color>");
     }
 
     private void AddQuality()
@@ -229,11 +222,21 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
 
     private void AddDurability()
     {
+        if (!item.m_shared.m_useDurability)
+        {
+            return;
+        }
+
         bool isIndestructible = magicItem.HasEffect(MagicEffectType.Indestructible);
-        if (!isIndestructible && item.m_shared.m_useDurability)
+
+        if (isIndestructible)
+        {
+            text.Append($"\n$item_durability: <color={magicColor}>$mod_epicloot_me_indestructible_display</color>");
+        }
+        else
         {
             bool hasDurabilityModifier = magicItem.HasEffect(MagicEffectType.ModifyDurability);
-            
+
             string maxDurabilityColor1 = hasDurabilityModifier ? magicColor : "orange";
             string maxDurabilityColor2 = hasDurabilityModifier ? magicColor : "yellow";
 
@@ -243,23 +246,19 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
             string durabilityPercentageString = currentDurabilityPercentage.ToString("0");
             string durabilityValueString = durability.ToString("0");
             string durabilityMaxString = maxDurability.ToString("0");
-            
-            text.Append($"\n$item_durability: <color={maxDurabilityColor1}>{durabilityPercentageString}%</color> " +
-                        $"<color={maxDurabilityColor2}>({durabilityValueString}/{durabilityMaxString})</color>");
 
-            if (item.m_shared.m_canBeReparied)
-            {
-                Recipe recipe = ObjectDB.instance.GetRecipe(item);
-                if (recipe != null)
-                {
-                    int minStationLevel = recipe.m_minStationLevel;
-                    text.AppendFormat("\n$item_repairlevel: <color=orange>{0}</color>", minStationLevel.ToString());
-                }
-            }
+            text.Append($"\n$item_durability: <color={maxDurabilityColor1}>{durabilityPercentageString}%</color> " +
+                $"<color={maxDurabilityColor2}>({durabilityValueString}/{durabilityMaxString})</color>");
         }
-        else if (isIndestructible)
+
+        if (item.m_shared.m_canBeReparied)
         {
-            text.Append($"\n$item_durability: <color={magicColor}>$mod_epicloot_me_indestructible_display</color>");
+            Recipe recipe = ObjectDB.instance.GetRecipe(item);
+            if (recipe != null)
+            {
+                int minStationLevel = recipe.m_minStationLevel;
+                text.AppendFormat("\n$item_repairlevel: <color=orange>{0}</color>", minStationLevel.ToString());
+            }
         }
     }
     
@@ -282,7 +281,7 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
             text.Append(chainTooltip);
         }
     }
-    
+
     private void MagicEffects()
     {
         text.AppendLine(magicItem.GetTooltip());

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using EpicLoot.MagicItemEffects;
 
 namespace EpicLoot;
 
@@ -6,89 +6,85 @@ public partial class MagicTooltip
 {
     private void AddDamages()
     {
-        HitData.DamageTypes damages = item.GetDamage(qualityLevel, Game.m_worldLevel);
-        localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, item.m_shared.m_skillType);
-        
-        bool allMagic = magicItem.HasEffect(MagicEffectType.ModifyDamage);
-        bool physMagic = magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage);
-        bool elemMagic = magicItem.HasEffect(MagicEffectType.ModifyElementalDamage);
-        bool bluntMagic = magicItem.HasEffect(MagicEffectType.AddBluntDamage);
-        bool slashMagic = magicItem.HasEffect(MagicEffectType.AddSlashingDamage);
-        bool pierceMagic = magicItem.HasEffect(MagicEffectType.AddPiercingDamage);
-        bool fireMagic = magicItem.HasEffect(MagicEffectType.AddFireDamage);
-        bool frostMagic = magicItem.HasEffect(MagicEffectType.AddFrostDamage);
-        bool lightningMagic = magicItem.HasEffect(MagicEffectType.AddLightningDamage);
-        bool poisonMagic = magicItem.HasEffect(MagicEffectType.AddPoisonDamage);
-        bool spiritMagic = magicItem.HasEffect(MagicEffectType.AddSpiritDamage);
-        bool coinHoarderMagic = localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv);
-        bool spellswordMagic = magicItem.HasEffect(MagicEffectType.SpellSword);
-        
-        if (damages.m_damage != 0.0)
-        {
-            bool isMagic = allMagic || spellswordMagic;
+        HitData.DamageTypes damages = ModifyDamage.GetDamageWithMagicEffects(item);
 
-            text.AppendFormat("\n{0}: {1}", 
+        localPlayer.GetSkills().GetRandomSkillRange(out float min, out float max, item.m_shared.m_skillType);
+
+        bool allDamage = magicItem.HasEffect(MagicEffectType.ModifyDamage, true);
+        bool physDamage = magicItem.HasEffect(MagicEffectType.ModifyPhysicalDamage);
+        bool elemDamage = magicItem.HasEffect(MagicEffectType.ModifyElementalDamage);
+
+        bool coinHoarderDamage = localPlayer.HasActiveMagicEffect(MagicEffectType.CoinHoarder, out float _cv);
+        bool spellswordDamage = magicItem.HasEffect(MagicEffectType.SpellSword);
+
+        bool allCheck = allDamage || coinHoarderDamage || spellswordDamage;
+
+        if (damages.m_damage != 0f)
+        {
+            bool isMagic = allCheck;
+
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_damage",
                 DamageRange(damages.m_damage, min, max, isMagic, magicColor));
         }
 
-        if (damages.m_blunt != 0.0)
+        if (damages.m_blunt != 0f)
         {
-            bool isMagic = allMagic || physMagic || bluntMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || physDamage || magicItem.HasEffect(MagicEffectType.AddBluntDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_blunt",
                 DamageRange(damages.m_blunt, min, max, isMagic, magicColor));
         }
 
-        if (damages.m_slash != 0.0)
+        if (damages.m_slash != 0f)
         {
-            bool isMagic = allMagic || physMagic || slashMagic || coinHoarderMagic || spellswordMagic;
+            bool isMagic = allCheck || physDamage || magicItem.HasEffect(MagicEffectType.AddSlashingDamage);
             text.AppendFormat("\n{0}: {1}", 
                 "$inventory_slash",
                 DamageRange(damages.m_slash, min, max, isMagic, magicColor));
         }
 
-        if (damages.m_pierce != 0.0)
+        if (damages.m_pierce != 0f)
         {
-            bool isMagic = allMagic || physMagic || pierceMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || physDamage || magicItem.HasEffect(MagicEffectType.AddPiercingDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_pierce",
                 DamageRange(damages.m_pierce, min, max, isMagic, magicColor));
         }
 
-        if (damages.m_fire != 0.0)
+        if (damages.m_fire != 0f)
         {
-            bool isMagic = allMagic || elemMagic || fireMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || elemDamage || magicItem.HasEffect(MagicEffectType.AddFireDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_fire",
                 DamageRange(damages.m_fire, min, max, isMagic, magicColor));
         }
-        if (damages.m_frost != 0.0)
+        if (damages.m_frost != 0f)
         {
-            bool isMagic = allMagic || elemMagic || frostMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || elemDamage || magicItem.HasEffect(MagicEffectType.AddFrostDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_frost",
                 DamageRange(damages.m_frost, min, max, isMagic, magicColor));
         }
-        if (damages.m_lightning != 0.0)
+        if (damages.m_lightning != 0f)
         {
-            bool isMagic = allMagic || elemMagic || lightningMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || elemDamage || magicItem.HasEffect(MagicEffectType.AddLightningDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_lightning",
                 DamageRange(damages.m_lightning, min, max, isMagic, magicColor));
         }
-        if (damages.m_poison != 0.0)
+        if (damages.m_poison != 0f)
         {
-            bool isMagic = allMagic || elemMagic || poisonMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || elemDamage || magicItem.HasEffect(MagicEffectType.AddPoisonDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_poison",
                 DamageRange(damages.m_poison, min, max, isMagic, magicColor));
         }
         
-        if (damages.m_spirit != 0.0)
+        if (damages.m_spirit != 0f)
         {
-            bool isMagic = allMagic || elemMagic || spiritMagic || coinHoarderMagic || spellswordMagic;
-            text.AppendFormat("\n{0}: {1}", 
+            bool isMagic = allCheck || elemDamage || magicItem.HasEffect(MagicEffectType.AddSpiritDamage);
+            text.AppendFormat("\n{0}: {1}",
                 "$inventory_spirit",
                 DamageRange(damages.m_spirit, min, max, isMagic, magicColor));
         }
@@ -96,32 +92,47 @@ public partial class MagicTooltip
 
     private void AddDamageMultiplierByTotalHealthMissing()
     {
-        if (item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing > 0.0)
+        if (item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing > 0f)
         {
             text.Append(
-                $"\n$item_damagemultipliertotal: <color=orange>{item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing * 100}%</color>");
+                $"\n$item_damagemultipliertotal: <color=orange>" +
+                $"{item.m_shared.m_attack.m_damageMultiplierByTotalHealthMissing * 100}%</color>");
         }
     }
 
     private void AddDamageMultiplierPerMissingHP()
     {
-        if (item.m_shared.m_attack.m_damageMultiplierPerMissingHP > 0.0)
+        if (item.m_shared.m_attack.m_damageMultiplierPerMissingHP > 0f)
         {
             text.Append(
-                $"\n$item_damagemultiplierhp: <color=orange>{item.m_shared.m_attack.m_damageMultiplierPerMissingHP * 100}%</color>");
+                $"\n$item_damagemultiplierhp: <color=orange>" +
+                $"{item.m_shared.m_attack.m_damageMultiplierPerMissingHP * 100}%</color>");
         }
     }
 
     private void AddAttackStaminaUse()
     {
-        bool hasAttackStaminaModifiers = magicItem.HasEffect(MagicEffectType.ModifyAttackStaminaUse) ||
-                                  magicItem.HasEffect(MagicEffectType.ModifyBlockStaminaUse);
-        string magicAttackStaminaColor = hasAttackStaminaModifiers ? magicColor : "orange";
-        float staminaUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackStaminaUse, 0.01f);
-        float totalStaminaUse = staminaUsePercentage * item.m_shared.m_attack.m_attackStamina;
-        if (item.m_shared.m_attack.m_attackStamina > 0.0 && !magicItem.HasEffect(MagicEffectType.Bloodlust))
+        // TODO: place logic into helper method
+        if (magicItem.HasEffect(MagicEffectType.Bloodlust))
         {
-            text.Append($"\n$item_staminause: <color={magicAttackStaminaColor}>{totalStaminaUse:#.#}</color>");
+            float stamina = Bloodlust.GetBloodlustStamina();
+            text.Append($"\n$item_staminause: <color=red>{stamina:0.#}</color>");
+        }
+        else if (item.m_shared.m_attack.m_attackStamina > 0f)
+        {
+            bool hasAttackStaminaModifiers = magicItem.HasEffect(MagicEffectType.ModifyAttackStaminaUse) ||
+                magicItem.HasEffect(MagicEffectType.ModifyBlockStaminaUse);
+            string magicAttackStaminaColor = hasAttackStaminaModifiers ? magicColor : "orange";
+            float staminaUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackStaminaUse, 0.01f);
+            float totalStaminaUse = staminaUsePercentage * item.m_shared.m_attack.m_attackStamina;
+
+            bool hasSpellSword = magicItem.HasEffect(MagicEffectType.SpellSword);
+            if (hasSpellSword)
+            {
+                totalStaminaUse = Spellsword.GetSpellswordAttackStamina(totalStaminaUse);
+            }
+
+            text.Append($"\n$item_staminause: <color={magicAttackStaminaColor}>{totalStaminaUse:0.#}</color>");
         }
     }
 
@@ -132,7 +143,7 @@ public partial class MagicTooltip
         {
             float dodgeBuffValue = magicItem.GetTotalEffectValue(MagicEffectType.DodgeBuff, 1f);
             // TODO: if using this tooltip, localize this
-            text.Append($"\n$mod_epicloot_dodge: <color={magicColor}>{dodgeBuffValue:#.#}</color>");
+            text.Append($"\n$mod_epicloot_dodge: <color={magicColor}>{dodgeBuffValue:0.#}</color>");
         }
     }
 
@@ -143,7 +154,7 @@ public partial class MagicTooltip
         {
             float offSetAttackValue = magicItem.GetTotalEffectValue(MagicEffectType.OffSetAttack, 1f);
             // TODO: if using this tooltip, localize this
-            text.Append($"\n$mod_epicloot_offset: <color={magicColor}>{offSetAttackValue:#.#}</color>");
+            text.Append($"\n$mod_epicloot_offset: <color={magicColor}>{offSetAttackValue:0.#}</color>");
         }
     }
 
@@ -155,7 +166,7 @@ public partial class MagicTooltip
             float ChainLightningValue = magicItem.GetTotalEffectValue(MagicEffectType.ChainLightning, 1f);
             // TODO: if using this tooltip, localize this
             text.Append(
-                $"\n$mod_epicloot_chainlightning: <color={magicColor}>{ChainLightningValue:#.#}</color>");
+                $"\n$mod_epicloot_chainlightning: <color={magicColor}>{ChainLightningValue:0.#}</color>");
         }
     }
 
@@ -166,74 +177,76 @@ public partial class MagicTooltip
         {
             float ApportationValue = magicItem.GetTotalEffectValue(MagicEffectType.Apportation, 1f);
             // TODO: if adding this tooltip, localize this
-            text.Append($"\n$mod_epicloot_apportation: <color={magicColor}>{ApportationValue:#.#}</color>");
+            text.Append($"\n$mod_epicloot_apportation: <color={magicColor}>{ApportationValue:0.#}</color>");
         }
     }
 
     private void AddEitrUse()
     {
+        // TODO: place logic into helper method
         bool hasSpellSword = magicItem.HasEffect(MagicEffectType.SpellSword);
+
+        if (item.m_shared.m_attack.m_attackEitr <= 0f || !hasSpellSword)
+        {
+            return;
+        }
+
         bool hasDoubleMagicShot = magicItem.HasEffect(MagicEffectType.DoubleMagicShot);
         bool hasEitrUseModifier = magicItem.HasEffect(MagicEffectType.ModifyAttackEitrUse);
-        
         bool hasAttackEitrModifier = hasEitrUseModifier || hasDoubleMagicShot || hasSpellSword;
-        
-        string magicAttackEitrColor = hasAttackEitrModifier ? magicColor : "orange";
-        
-        float eitrUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackEitrUse, 0.01f);
-        float totalEitrUse = hasDoubleMagicShot
-            ? eitrUsePercentage * (item.m_shared.m_attack.m_attackEitr * 2)
-            : eitrUsePercentage * item.m_shared.m_attack.m_attackEitr;
 
-        if (item.m_shared.m_attack.m_attackEitr > 0.0 || hasSpellSword)
+        string magicAttackEitrColor = hasAttackEitrModifier ? magicColor : "orange";
+
+        float eitrUsePercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackEitrUse, 0.01f);
+        float totalEitrUse = eitrUsePercentage * item.m_shared.m_attack.m_attackEitr;
+
+        // TODO: find an appropriate way to display all the information from multishot.
+        // This is half implemented and untested here.
+        /*string additionalEtir = string.Empty;
+
+        if (hasDoubleMagicShot && MagicItemEffectDefinitions.AllDefinitions != null &&
+            MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.DoubleMagicShot))
         {
-            float base_cost = item.m_shared.m_attack.m_attackStamina;
-            if (base_cost == 0f)
-            {
-                base_cost = 4;
-            }
-            totalEitrUse = totalEitrUse + (base_cost / 2);
-            
-            text.Append($"\n$item_eitruse: <color={magicAttackEitrColor}>{totalEitrUse:#.#}</color>");
+            Dictionary<string, float> configuration = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.DoubleMagicShot].Config;
+            int projectiles = Mathf.RoundToInt(configuration[MultiShot.PROJECTILES_KEY]);
+            additionalEtir = $"/{totalEitrUse * projectiles}:0.#";
+        }*/
+
+        if (hasSpellSword)
+        {
+            totalEitrUse += Spellsword.GetAdditionalSpellswordAttackEitr(totalEitrUse);
         }
+
+        text.Append($"\n$item_eitruse: <color={magicAttackEitrColor}>{totalEitrUse:0.#}</color>");
     }
 
     private void AddHealthUse()
     {
+        // TODO: place logic into helper method
         bool hasBloodlust = magicItem.HasEffect(MagicEffectType.Bloodlust);
-        float healthUsageReduction = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
-        
-        if (hasBloodlust) 
-        {
-            float bloodlustStaminaUse = item.m_shared.m_attack.m_attackStamina;
+        float healthUsage = item.m_shared.m_attack.m_attackHealth;
 
-            float skillmodCost = bloodlustStaminaUse - bloodlustStaminaUse * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-            text.Append($"\n$item_healthuse: <color={magicColor}>{(bloodlustStaminaUse * healthUsageReduction):#.#} ({skillmodCost})</color>");
-        }
-        else
+        if (hasBloodlust)
         {
-            if (item.m_shared.m_attack.m_attackHealth > 0.0) 
-            {
-                float skillmodCost = item.m_shared.m_attack.m_attackHealth - item.m_shared.m_attack.m_attackHealth * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-                text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealth * healthUsageReduction} ({skillmodCost})</color>");
-            }
+            healthUsage = Bloodlust.GetBloodlustHealth(healthUsage, item.m_shared.m_attack.m_attackStamina);
         }
-        
-        if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0) 
+
+        if (item.m_shared.m_attack.m_attackHealth > 0f || hasBloodlust)
         {
             bool magicAttackHealth = magicItem.HasEffect(MagicEffectType.ModifyAttackHealthUse);
             string magicAttackHealthColor = magicAttackHealth ? magicColor : "orange";
-            float totalHealthPercentageUse = healthUsageReduction * item.m_shared.m_attack.m_attackHealthPercentage;
-            
-            float healthCost = totalHealthPercentageUse / 100;
-            float skillmodCost = healthCost - healthCost * 0.33f * Player.m_localPlayer.GetSkillFactor(item.m_shared.m_skillType);
-            text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{healthCost:##.#%} ({skillmodCost})</color>");
+
+            float effectValue = magicItem.GetTotalEffectValue(MagicEffectType.ModifyAttackHealthUse, 0.01f);
+            float healthUsageModifier = ModifyAttackCosts.GetEffectPercentage(effectValue);
+            healthUsage = healthUsageModifier * healthUsage;
+
+            text.Append($"\n$item_healthuse: <color={magicAttackHealthColor}>{healthUsage}</color>");
         }
     }
 
     private void AddHealthHitReturn()
     {
-        if (item.m_shared.m_attack.m_attackHealthReturnHit > 0.0)
+        if (item.m_shared.m_attack.m_attackHealthReturnHit > 0f)
         {
             text.Append(
                 $"\n$item_healthhitreturn: <color=orange>{item.m_shared.m_attack.m_attackHealthReturnHit}</color>");
@@ -242,47 +255,24 @@ public partial class MagicTooltip
 
     private void AddHealthUsePercentage()
     {
-        if (item.m_shared.m_attack.m_attackHealthPercentage > 0.0)
+        if (item.m_shared.m_attack.m_attackHealthPercentage > 0f)
         {
-            text.Append(
-                $"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealthPercentage:0.0}</color>");
+            text.Append($"\n$item_healthuse: <color=orange>{item.m_shared.m_attack.m_attackHealthPercentage:0.#%}</color>");
         }
     }
 
     private void AddDrawStaminaUse()
     {
-        if (item.m_shared.m_attack.m_drawStaminaDrain > 0.0)
+        if (item.m_shared.m_attack.m_drawStaminaDrain > 0f)
         {
             bool hasDrawStaminaUseModifier = magicItem.HasEffect(MagicEffectType.ModifyDrawStaminaUse);
             string attackDrawStaminaColor = hasDrawStaminaUseModifier ? magicColor : "orange";
-            
+
             float attackDrawStaminaPercentage = 1 - magicItem.GetTotalEffectValue(MagicEffectType.ModifyDrawStaminaUse, 0.01f);
             float totalAttackDrawStamina = attackDrawStaminaPercentage * item.m_shared.m_attack.m_drawStaminaDrain;
-            
+
             text.Append($"\n$item_staminahold: " +
-                     $"<color={attackDrawStaminaColor}>{totalAttackDrawStamina:#.#}/s</color>");
-        }
-    }
-    
-    private void AddParry()
-    {
-        // this is the same as add block and parry, except label is $item_deflection vs $item_blockforce
-        if (item.m_shared.m_timedBlockBonus > 1.0)
-        {
-            bool hasParryModifier = magicItem.HasEffect(MagicEffectType.ModifyParry);
-            float totalParryBonusMod = magicItem.GetTotalEffectValue(MagicEffectType.ModifyParry, 0.01f);
-            string magicParryColor = hasParryModifier ? magicColor : "orange";
-            
-            text.Append($"\n$item_deflection: " +
-                        $"<color={magicParryColor}>{item.GetDeflectionForce(qualityLevel)}</color>");
-
-            float timedBlockBonus = item.m_shared.m_timedBlockBonus;
-            if (hasParryModifier)
-            {
-                timedBlockBonus *= 1.0f + totalParryBonusMod;
-            }
-
-            text.Append($"\n$item_parrybonus: <color={magicParryColor}>{timedBlockBonus:0.#}x</color>");
+                $"<color={attackDrawStaminaColor}>{totalAttackDrawStamina:0.#}/s</color>");
         }
     }
 
@@ -298,7 +288,7 @@ public partial class MagicTooltip
     private void AddProjectileTooltip()
     {
         string projectileTooltip = item.GetProjectileTooltip(qualityLevel);
-        if (projectileTooltip.Length > 0)
+        if (projectileTooltip.Length > 0 && item.m_shared.m_projectileToolTip)
         {
             text.Append("\n\n");
             text.Append(projectileTooltip);
@@ -309,49 +299,15 @@ public partial class MagicTooltip
     {
         if (item.m_shared.m_tamedOnly)
         {
-            text.Append($"\n<color=orange>$item_tameonly</color>");
+            text.Append($"\n<color=orange>$item_tamedonly</color>");
         }
     }
     
     private void AddKnockback()
     {
-        text.AppendFormat("\n$item_knockback: <color=orange>{0}</color>", item.m_shared.m_attackForce);
-    }
-
-    private void AddMaxAdrenaline()
-    {
-        text.AppendFormat("\n$item_maxadrenaline: <color=orange>{0}</color>", item.m_shared.m_maxAdrenaline);
-    }
-
-    private void AddEitrRegen()
-    {
-        bool hasEitrRegenModifier = magicItem.HasEffect(MagicEffectType.ModifyEitrRegen);
-        if ((hasEitrRegenModifier || item.m_shared.m_eitrRegenModifier != 0) && localPlayer != null)
+        if (item.m_shared.m_attackForce > 0f)
         {
-            string itemEitrRegenModDisplay = GetEitrRegenModifier(item, magicItem, out _);
-
-            float equipEitrRegenModifier = localPlayer.GetEquipmentEitrRegenModifier() * 100.0f;
-            float equipMagicEitrRegenModifier = localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyEitrRegen);
-            float totalEitrRegenModifier = equipEitrRegenModifier + equipMagicEitrRegenModifier;
-            string color = (hasEitrRegenModifier) ? magicColor : "orange";
-            string totalColor = equipMagicEitrRegenModifier > 0 ? magicColor : "yellow";
-            text.Append($"\n$item_eitrregen_modifier: <color={color}>{itemEitrRegenModDisplay}</color> " +
-                        $"($item_total: <color={totalColor}>{totalEitrRegenModifier:+0;-0}%</color>)");
-        }
-    }
-
-    private void AddMovement()
-    {
-        bool hasMovementModifier = magicItem.HasEffect(MagicEffectType.ModifyMovementSpeed);
-        if ((hasMovementModifier || item.m_shared.m_movementModifier != 0) && localPlayer != null)
-        {
-            string itemMovementModDisplay = GetMovementModifier(item, magicItem, out _, out bool removePenalty);
-
-            float movementModifier = localPlayer.GetEquipmentMovementModifier();
-            float totalMovementModifier = movementModifier * 100f;
-            string color = (removePenalty || hasMovementModifier) ? magicColor : "orange";
-            text.Append($"\n$item_movement_modifier: <color={color}>{itemMovementModDisplay}</color> " +
-                        $"($item_total:<color=yellow>{totalMovementModifier:+0;-0}%</color>)");
+            text.AppendFormat("\n$item_knockback: <color=orange>{0}</color>", item.m_shared.m_attackForce);
         }
     }
 }

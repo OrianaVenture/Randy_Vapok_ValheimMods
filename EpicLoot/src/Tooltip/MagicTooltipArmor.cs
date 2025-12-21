@@ -6,7 +6,7 @@ public partial class MagicTooltip
     {
         string hasArmorModifier = magicItem.HasEffect(MagicEffectType.ModifyArmor) ? magicColor : "orange";
         text.Append($"\n$item_armor: " +
-                    $"<color={hasArmorModifier}>{item.GetArmor(qualityLevel, Game.m_worldLevel):0.#}</color>");
+            $"<color={hasArmorModifier}>{item.GetArmor(qualityLevel, Game.m_worldLevel):0.#}</color>");
     }
 
     private void AddDamageModifiers()
