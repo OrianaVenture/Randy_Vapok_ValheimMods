@@ -87,7 +87,7 @@ namespace EpicLoot.Magic
                 i.m_autoPickup == true &&
                 string.IsNullOrEmpty(i.m_itemData.m_shared.m_dlc) &&
                 !string.IsNullOrEmpty(i.m_itemData.m_shared.m_description) &&
-                EpicLoot.IsAllowedMagicItemType(i.m_itemData.m_shared.m_itemType)).ToList();
+                EpicLoot.IsAllowedMagicItemType(i.m_itemData)).ToList();
 
             EpicLoot.Log($"Checking all equipment in game.");
 

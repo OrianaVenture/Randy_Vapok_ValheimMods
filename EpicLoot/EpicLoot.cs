@@ -791,37 +791,25 @@ namespace EpicLoot
             return resourcenames;
         }
 
-        public static bool IsAllowedMagicItemType(ItemDrop.ItemData.ItemType itemType)
-        {
-            switch (itemType)
-            {
-                case ItemDrop.ItemData.ItemType.Helmet:
-                case ItemDrop.ItemData.ItemType.Chest:
-                case ItemDrop.ItemData.ItemType.Legs:
-                case ItemDrop.ItemData.ItemType.Shoulder:
-                case ItemDrop.ItemData.ItemType.Utility:
-                case ItemDrop.ItemData.ItemType.Bow:
-                case ItemDrop.ItemData.ItemType.OneHandedWeapon:
-                case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-                case ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft:
-                case ItemDrop.ItemData.ItemType.Shield:
-                case ItemDrop.ItemData.ItemType.Tool:
-                case ItemDrop.ItemData.ItemType.Torch:
-                case ItemDrop.ItemData.ItemType.Trinket:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
         public static bool CanBeMagicItem(ItemDrop.ItemData item)
         {
             return item != null
-                && IsPlayerItem(item)
-                && Nonstackable(item)
-                && IsNotRestrictedItem(item)
-                && IsAllowedMagicItemType(item.m_shared.m_itemType);
+                   && IsPlayerItem(item)
+                   && Nonstackable(item)
+                   && IsNotRestrictedItem(item)
+                   && IsAllowedMagicItemType(item);
+        }
+
+        public static bool IsAllowedMagicItemType(ItemDrop.ItemData item)
+        {
+            switch (item.m_shared.m_itemType)
+            {
+                case ItemDrop.ItemData.ItemType.Ammo:
+                case ItemDrop.ItemData.ItemType.AmmoNonEquipable:
+                        return false;
+                default:
+                    return item.IsEquipable();
+            }
         }
 
         public static Sprite GetMagicItemBgSprite()
