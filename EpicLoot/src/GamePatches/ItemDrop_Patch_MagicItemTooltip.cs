@@ -5,8 +5,12 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace EpicLoot
+namespace EpicLoot;
+
+public static class MagicTooltipPatches
 {
+    public static bool TooltipDisable = false;
+
     // Set the topic of the tooltip with the decorated name
     [HarmonyPatch(typeof(InventoryGrid), nameof(InventoryGrid.CreateItemTooltip),
         typeof(ItemDrop.ItemData), typeof(UITooltip))]
@@ -46,17 +50,11 @@ namespace EpicLoot
         [UsedImplicitly]
         private static bool Prefix(ref string __result, ItemDrop.ItemData item, int qualityLevel, bool crafting)
         {
-            if (item == null)
+            if (TooltipDisable == true || item == null || crafting)
             {
                 return true;
             }
 
-            if (crafting)
-            {
-                // since crafting item is never magic, can exit earlier before calling get magic item
-                return true;
-            }
-            
             MagicItem magicItem = item.GetMagicItem();
 
             if (magicItem == null)
