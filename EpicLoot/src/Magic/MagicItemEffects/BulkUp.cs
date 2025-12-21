@@ -1,94 +1,76 @@
 ﻿using HarmonyLib;
-using static Player;
+using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
 {
     [HarmonyPatch]
     public static class BulkupEffect
     {
-        static float HealthBonus= 0f;
+        static float HealthBonus = 0f;
 
+        [HarmonyPriority(Priority.LowerThanNormal)]
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen))]
         public static class ModifyHealthRegen_Patch
         {
             public static void Postfix(SEMan __instance, ref float regenMultiplier)
             {
-                if (__instance.m_character.IsPlayer() && Player.m_localPlayer != null)
+                if (__instance.m_character != Player.m_localPlayer)
                 {
-                    float bulkupValue = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.BulkUp);
-                    if (bulkupValue > 0)
-                    {
-                        // clamp down to 1 for the health regen value, can't remove more than 100% of the regen
-                        float regenPenalty = bulkupValue * 0.1f;
-                        if (regenPenalty > 1) { regenPenalty = 1; }
-                        regenMultiplier = regenMultiplier * (1 - regenPenalty);
-                        DetermineBulkhealthValue(false);
-                    }
+                    return;
                 }
-            }
-        }
 
-        [HarmonyPatch(typeof(Player), nameof(Player.EatFood))]
-        public static class Player_EatFood_Patch
-        {
-            public static void Postfix(Player __instance)
-            {
-                DetermineBulkhealthValue(false);
+                regenMultiplier = GetHealthRegenWithBulkUp(regenMultiplier);
             }
         }
 
         [HarmonyPatch(typeof(Player), nameof(Player.GetTotalFoodValue))]
         public static class Player_GetTotalFoodValue_Patch
         {
-            public static void Postfix(Player __instance, ref float hp)
+            public static void Prefix(Player __instance, ref float hp)
             {
-                DetermineBulkhealthValue(false);
-                hp += HealthBonus;
+                if (__instance != Player.m_localPlayer)
+                {
+                    return;
+                }
+
+                hp += GetAdditionalHealthWithBulkUp(hp);
             }
         }
 
+        /// <summary>
+        /// Sets the hud display to the correct size
+        /// </summary>
         [HarmonyPatch(typeof(Player), nameof(Player.GetBaseFoodHP))]
         public static class Player_GetBaseFoodHP_Patch
         {
             public static void Postfix(Player __instance, ref float __result)
             {
-                DetermineBulkhealthValue(true);
-                __result += HealthBonus;
+                __result += GetAdditionalHealthWithBulkUp(__result);
             }
         }
 
-        private static void DetermineBulkhealthValue(bool skip = false)
+        private static float GetHealthRegenWithBulkUp(float regen)
         {
-            // Skip the details if the value is already set and we arn't updating it.
-            if (skip && HealthBonus > 0)
+            if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.BulkUp, out float bulkupValue, 0.01f))
             {
-                return;
+                bulkupValue = Mathf.Clamp01(bulkupValue);
+                // Reduce regen by bulk up percent
+                regen -= bulkupValue;
             }
 
-            float bulkupValue = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.BulkUp);
-            if (bulkupValue > 0)
-            {
-                float foodHealthRegen = 0f;
-                foreach (Food food2 in Player.m_localPlayer.m_foods)
-                {
-                    foodHealthRegen += food2.m_item.m_shared.m_foodRegen;
-                }
+            return regen;
+        }
 
-                // Include the bonus from the AddHealthRegen effect
-                float regenAmount = Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.AddHealthRegen);
-                if (regenAmount > 0)
-                {
-                    foodHealthRegen += regenAmount;
-                }
-
-                // The bulkup bonus to health
-                float bulkHealthBonus = ((bulkupValue / 30f) * 0.8f) + 1.5f;
-                HealthBonus = bulkHealthBonus * foodHealthRegen;
-            }
-            else
+        private static float GetAdditionalHealthWithBulkUp(float health)
+        {
+            if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.BulkUp, out float bulkupValue, 0.01f))
             {
-                HealthBonus = 0;
+                bulkupValue = Mathf.Clamp01(bulkupValue);
+                // Increase health by bulk up percent
+                return health * bulkupValue;
             }
+
+            return 0f;
         }
     }
 }

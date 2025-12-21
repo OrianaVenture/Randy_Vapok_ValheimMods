@@ -1,35 +1,69 @@
 ﻿using HarmonyLib;
+using System;
+using UnityEngine;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+public static class ModifyMovementSpeed
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.UpdateModifiers))]
-    public static class RemoveSpeedPenalty_Player_UpdateMovementModifier_Patch
+    [HarmonyPatch(typeof(Player), nameof(Player.GetEquipmentMovementModifier))]
+    private static class ModifyMovementSpeed_Player_GetEquipmentMovementModifier_Patch
     {
-        public static void Postfix(Player __instance)
+        private static void Postfix(Player __instance, ref float __result)
         {
-            float penalty = GetSpeedPenalty(__instance);
-
-            __instance.m_equipmentModifierValues[0] -= penalty;
-
-            ModifyWithLowHealth.Apply(__instance, MagicEffectType.ModifyMovementSpeed, effect =>
+            if (__instance == null)
             {
-                __instance.m_equipmentModifierValues[0] += __instance.GetTotalActiveMagicEffectValue(effect, 0.01f);
-            });
-
-        }
-
-        public static float GetSpeedPenalty(Player __instance)
-        {
-            float penalty = 0f;
-            foreach (var itemData in __instance.GetEquipment())
-            {
-                if (itemData != null && itemData.HasMagicEffect(MagicEffectType.RemoveSpeedPenalty))
-                {
-                    penalty += itemData.m_shared.m_movementModifier;
-                }
+                return;
             }
 
-            return penalty;
+            float modify = GetModifyMovementSpeedAmount(__instance);
+            __result += modify;
         }
+    }
+
+    private static float GetModifyMovementSpeedAmount(Player __instance)
+    {
+        float movementSpeed = 0f;
+        foreach (var itemData in __instance.GetEquipment())
+        {
+            // Negate previous penalties
+            movementSpeed -= GetSpeedPenaltyAmount(itemData);
+        }
+
+        ModifyWithLowHealth.Apply(__instance, MagicEffectType.ModifyMovementSpeed, effect =>
+        {
+            movementSpeed += __instance.GetTotalActiveMagicEffectValue(effect, 0.01f);
+        });
+
+        return movementSpeed;
+    }
+
+    private static float GetSpeedPenaltyAmount(ItemDrop.ItemData item)
+    {
+        if (item != null && item.HasMagicEffect(MagicEffectType.RemoveSpeedPenalty))
+        {
+            // Do not return a positve value
+            return Mathf.Clamp(item.m_shared.m_movementModifier, float.MinValue, 0f);
+        }
+
+        return 0f;
+    }
+
+    /// <summary>
+    /// Helper function primarily for the tooltip.
+    /// </summary>
+    public static float GetItemMovementModifier(ItemDrop.ItemData item)
+    {
+        if (item != null && item.HasMagicEffect(MagicEffectType.RemoveSpeedPenalty))
+        {
+            return Mathf.Max(0f, item.m_shared.m_movementModifier);
+        }
+        else if (item.HasMagicEffect(MagicEffectType.ModifyMovementSpeed))
+        {
+            return item.m_shared.m_movementModifier +
+                item.GetMagicItem().GetTotalEffectValue(MagicEffectType.ModifyMovementSpeed, 0.01f);
+        }
+
+        return item.m_shared.m_movementModifier;
     }
 }
