@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Mono.Security.X509.X520;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -14,7 +15,7 @@ namespace EpicLoot.MagicItemEffects
             action(name);
             if (PlayerHasLowHealth(player))
             {
-                action(name + "LowHealth");
+                action(EffectNameWithLowHealth(name));
             }
         }
 
@@ -22,8 +23,13 @@ namespace EpicLoot.MagicItemEffects
         {
             if (PlayerHasLowHealth(player))
             {
-                action(name + "LowHealth");
+                action(EffectNameWithLowHealth(name));
             }
+        }
+
+        public static string EffectNameWithLowHealth(string name)
+        {
+            return name + "LowHealth";
         }
 
         public static bool PlayerHasLowHealth(Player player)

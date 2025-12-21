@@ -1,4 +1,5 @@
 ﻿using EpicLoot.LegendarySystem;
+using EpicLoot.MagicItemEffects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +75,8 @@ namespace EpicLoot
 
             tooltip.Append($"</color>");
             
-            tooltip.AppendLine($"$mod_epicloot_itemtooltip_rarity: {GetRarityDisplay()}<pos=75%>$mod_epicloot_itemtooltip_effects: <color={color}>{Effects.Count}</color>");
+            tooltip.AppendLine($"$mod_epicloot_itemtooltip_rarity: {GetRarityDisplay()}<pos=75%>" +
+                $"$mod_epicloot_itemtooltip_effects: <color={color}>{Effects.Count}</color>");
 
             return tooltip.ToString();
         }
@@ -115,9 +117,10 @@ namespace EpicLoot
             return GetEffects(effectType).Sum(x => x.EffectValue) * scale;
         }
 
-        public bool HasEffect(string effectType)
+        public bool HasEffect(string effectType, bool checkHealthCritical = false)
         {
-            return Effects.Exists(x => x.EffectType == effectType);
+            return Effects.Exists(x => x.EffectType == effectType) ||
+                (checkHealthCritical && Effects.Exists(x => x.EffectType == (ModifyWithLowHealth.EffectNameWithLowHealth(effectType))));
         }
 
         public bool HasAnyEffect(IEnumerable<string> effectTypes)
