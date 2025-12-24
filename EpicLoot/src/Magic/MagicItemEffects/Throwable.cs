@@ -39,7 +39,6 @@ namespace EpicLoot.MagicItemEffects
             var currentWeapon = __instance.GetCurrentWeapon();
             if (currentWeapon == null || currentWeapon.m_dropPrefab == null)
             {
-                EpicLoot.Log("Weapon or weapon's dropPrefab is null");
                 return true;
             }
 
@@ -123,7 +122,6 @@ namespace EpicLoot.MagicItemEffects
                 var weaponMesh = __instance.m_weapon.m_dropPrefab.transform.Find("attach");
                 if (weaponMesh == null)
                 {
-                    EpicLoot.Log("Could not find 'attach' object");
                     return;
                 }
 

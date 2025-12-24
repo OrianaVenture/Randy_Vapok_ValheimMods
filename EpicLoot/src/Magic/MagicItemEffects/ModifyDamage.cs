@@ -137,8 +137,6 @@ public static class ModifyDamage
 
         // Modify all only once
         damages.Modify(modifyAll);
-
-        EpicLoot.Log($"Modify Damage! {originalTotalDamage} -> {damages.EpicLootGetTotalDamage()}");
     }
 
     private static void ModifyPhysicalDamage(ref HitData.DamageTypes damages, float modifier)

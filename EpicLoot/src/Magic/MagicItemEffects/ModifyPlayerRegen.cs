@@ -9,23 +9,23 @@ public static class ModifyPlayerRegen
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen))]
-        private static void ModifyHealthRegen_Postfix(SEMan __instance, ref float __result)
+        private static void ModifyHealthRegen_Postfix(SEMan __instance, ref float regenMultiplier)
         {
-            DoPostfix(__instance, MagicEffectType.ModifyHealthRegen, ref __result);
+            DoPostfix(__instance, MagicEffectType.ModifyHealthRegen, ref regenMultiplier);
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyStaminaRegen))]
-        private static void ModifyStaminaRegen_Postfix(SEMan __instance, ref float __result)
+        private static void ModifyStaminaRegen_Postfix(SEMan __instance, ref float staminaMultiplier)
         {
-            DoPostfix(__instance, MagicEffectType.ModifyStaminaRegen, ref __result);
+            DoPostfix(__instance, MagicEffectType.ModifyStaminaRegen, ref staminaMultiplier);
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyEitrRegen))]
-        private static void ModifyEitrRegen_Postfix(SEMan __instance, ref float __result)
+        private static void ModifyEitrRegen_Postfix(SEMan __instance, ref float eitrMultiplier)
         {
-            DoPostfix(__instance, MagicEffectType.ModifyEitrRegen, ref __result);
+            DoPostfix(__instance, MagicEffectType.ModifyEitrRegen, ref eitrMultiplier);
         }
     }
 

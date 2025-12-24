@@ -17,7 +17,6 @@ public static class ModifyBlock
             }
 
             float modifiedValue = GetDeflectionForceValue(Player.m_localPlayer, __instance, __result, ModifyParryWindow.IsParry());
-            EpicLoot.Log($"GetDeflectionForce, item belongs to local player, calculating bonus: {__result} -> {modifiedValue}");
             __result = modifiedValue;
         }
     }
@@ -33,7 +32,6 @@ public static class ModifyBlock
             }
 
             float modifiedValue = GetBlockPowerValue(Player.m_localPlayer, __instance, __result, ModifyParryWindow.IsParry());
-            EpicLoot.Log($"GetBaseBlockPower, item belongs to local player, calculating bonus: {__result} -> {modifiedValue}");
             __result = modifiedValue;
         }
     }

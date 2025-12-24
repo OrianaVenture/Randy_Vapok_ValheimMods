@@ -15,7 +15,6 @@ public static class ModifyJumpStaminaUsage
             }
 
             __result -= GetModifyJumpStaminaUsageAmount(__instance);
-            EpicLoot.Log($"Jump Stamina Debug: {__result}");
         }
     }
 

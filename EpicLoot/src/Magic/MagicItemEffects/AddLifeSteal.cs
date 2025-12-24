@@ -49,7 +49,6 @@ namespace EpicLoot.MagicItemEffects
 
             var healOn = hit.m_damage.EpicLootGetTotalDamage() * lifeStealMultiplier;
 
-            EpicLoot.Log("lifesteal " + healOn);
             attacker.Heal(healOn);
         }
     }
