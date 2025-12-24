@@ -202,7 +202,7 @@ namespace EpicLoot.CraftingV2
         private static void SetItemTooltip(ItemDrop.ItemData item,
             UITooltip tooltip)
         {
-            if (EpicLoot.IsAllowedMagicItemType(item.m_shared.m_itemType))
+            if (EpicLoot.IsAllowedMagicItemType(item))
             {
                 tooltip.Set(item.GetDisplayName(), item.GetTooltip());
             }

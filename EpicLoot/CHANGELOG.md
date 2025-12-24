@@ -1,5 +1,13 @@
 ## Version 0.12.5
 
+* NEW itemsorter.json configuration file to configure the auto-add behaviors!
+* Tooltips now display on hover in the enchanting table menus.
+* Some minor API updates.
+* Refactored how the tooltip is built, tried to add any missing information.
+* Refactored many magic effects to fix issues including Mead effects, damage effects, block and parry, base player stats and regen, explosive arrows. Some calculations will work slightly different than before.
+* Removed the all powerful throwable butcher knife. If you have one of these already rolled it should be blocked from throwing now.
+* Reworked bulk up enchant to remove X% of health regen and add X% of max health. If you have 50% enchant on an item, 6 regen ticks, and 80 health you should get 3 regen ticks and 120 max health.
+* Band-aid fixed a rare error with offset attack audio clip not existing.
 * Did a QOL pass to clean up the magic effects for each available configuration. There were so many changes that listing them here would be too long. If you need to see the specific changes check the release commit comparison on Github.
   * Normalized some Increments to make more sense. Tried to make the minimum 0.5 when possible.
   * Fixed some item type checks for all configs, majorly for the balanced config.
@@ -7,7 +15,7 @@
   * Added missing rarity values on some effects.
   * Made it so only one form of modify damage can roll on an item for balanced and minimal, and only one of physical and one of elemental on legendary config.
   * Fixes for excluded effects, they must be excluded on both effects to work correctly.
-* Note: If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate! Or grab the changes from github to manually update your files.
+* Note: If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate! Or, if you have made changes, grab the changes from github to manually update your files.
 * Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete to refresh them.
 
 ## Version 0.12.4
