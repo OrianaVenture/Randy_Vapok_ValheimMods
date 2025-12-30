@@ -24,7 +24,7 @@ public static class BulkupEffect
     [HarmonyPatch(typeof(Player), nameof(Player.GetTotalFoodValue))]
     public static class Player_GetTotalFoodValue_Patch
     {
-        public static void Prefix(Player __instance, ref float hp)
+        public static void Postfix(Player __instance, ref float hp)
         {
             if (__instance != Player.m_localPlayer)
             {
