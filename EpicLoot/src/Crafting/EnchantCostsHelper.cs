@@ -22,6 +22,35 @@ namespace EpicLoot.Crafting
         public static void Initialize(EnchantingCostsConfig config)
         {
             Config = config;
+
+            // Debug logging for BiomeLootLists
+            EpicLoot.Log($"[EnchantCostsHelper.Initialize] IdentifyTypes count: {config.IdentifyTypes?.Count ?? 0}");
+            if (config.IdentifyTypes != null)
+            {
+                foreach (var identifyType in config.IdentifyTypes)
+                {
+                    EpicLoot.Log($"[EnchantCostsHelper.Initialize] IdentifyType key: '{identifyType.Key}'");
+                    EpicLoot.Log($"[EnchantCostsHelper.Initialize]   Localization: '{identifyType.Value.Localization}'");
+                    EpicLoot.Log($"[EnchantCostsHelper.Initialize]   BiomeLootLists count: {identifyType.Value.BiomeLootLists?.Count ?? 0}");
+                    if (identifyType.Value.BiomeLootLists != null)
+                    {
+                        foreach (var biomeLootList in identifyType.Value.BiomeLootLists)
+                        {
+                            string lootListsStr = biomeLootList.Value != null ? string.Join(", ", biomeLootList.Value) : "null";
+                            EpicLoot.Log($"[EnchantCostsHelper.Initialize]     Biome '{biomeLootList.Key}': [{lootListsStr}]");
+                        }
+                    }
+                    else
+                    {
+                        EpicLoot.Log($"[EnchantCostsHelper.Initialize]   BiomeLootLists is NULL!");
+                    }
+                }
+            }
+            else
+            {
+                EpicLoot.Log($"[EnchantCostsHelper.Initialize] IdentifyTypes is NULL!");
+            }
+
             OnSetupEnchantingCosts?.Invoke();
         }
 
