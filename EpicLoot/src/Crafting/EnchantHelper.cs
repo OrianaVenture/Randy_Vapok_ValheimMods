@@ -56,17 +56,12 @@ namespace EpicLoot.Crafting
         }
 
         /// <summary>
-        /// Helper to get the biome from custom unidentified items with the format "{biome}_{rarity}_Unidentified"
+        /// Helper to get the biome string from unidentified items with the format "{biome}_{rarity}_Unidentified".
+        /// Returns the raw biome string to support both built-in and user-defined biomes.
         /// </summary>
-        public static Heightmap.Biome GetBiomeFromUnidentifiedItem(ItemDrop.ItemData item)
+        public static string GetBiomeStringFromUnidentifiedItem(ItemDrop.ItemData item)
         {
-            string biomeString = item.m_dropPrefab.name.Split('_')[0];
-            if (!Enum.TryParse<Heightmap.Biome>(biomeString, out Heightmap.Biome biome))
-            {
-                biome = Heightmap.Biome.None;
-            }
-
-            return biome;
+            return item.m_dropPrefab.name.Split('_')[0];
         }
     }
 }
