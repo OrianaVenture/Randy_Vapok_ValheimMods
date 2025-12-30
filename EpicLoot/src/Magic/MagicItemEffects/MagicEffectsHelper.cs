@@ -54,9 +54,14 @@ namespace EpicLoot.MagicItemEffects
         public static float GetTotalActiveMagicEffectValueForWeapon(Player player, ItemDrop.ItemData itemData, string effectType, float scale = 1.0f)
         {
             if (player != null)
+            {
                 return player.GetTotalActiveMagicEffectValue(effectType, scale, GetIgnoreWeapon(player, itemData));
-            if (itemData.IsMagic(out var magicItem))
+            }
+            else if (itemData.IsMagic(out var magicItem))
+            {
                 return magicItem.GetTotalEffectValue(effectType, scale);
+            }
+
             return 0;
         }
 
@@ -89,6 +94,7 @@ namespace EpicLoot.MagicItemEffects
             }
             else if (itemData.IsMagic(out var magicItem))
             {
+                effectValue = magicItem.GetTotalEffectValue(effectType, scale);
                 return magicItem.HasEffect(effectType);
             }
             return false;

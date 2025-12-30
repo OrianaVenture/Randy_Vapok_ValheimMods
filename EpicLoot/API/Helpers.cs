@@ -110,7 +110,8 @@ public static partial class API
     {
         foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
         {
-            var value = field.GetValue(source);
+            object value = field.GetValue(source);
+            if (value == null) continue;
             field.SetValue(target, value);
         }
     }

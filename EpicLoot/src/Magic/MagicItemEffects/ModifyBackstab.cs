@@ -2,6 +2,7 @@
 
 namespace EpicLoot.MagicItemEffects
 {
+    // TODO: Investigate if these patches can be refactored
     [HarmonyPatch(typeof(Attack), nameof(Attack.DoAreaAttack))]
     public static class ModifyBackstab_Attack_DoAreaAttack_Patch
     {

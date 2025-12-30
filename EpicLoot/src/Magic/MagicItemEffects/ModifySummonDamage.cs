@@ -1,3 +1,4 @@
+using EpicLoot.General;
 using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects;
@@ -23,7 +24,7 @@ public static class ModifySummonDamage
 
                     foreach (var item in __instance.m_inventory.GetAllItems())
                     {
-                        if (item.GetDamage().GetTotalDamage() > 0)
+                        if (item.GetDamage().EpicLootGetTotalDamage() > 0)
                         {
                             item.m_shared.m_attack.m_damageMultiplier += effectValue;
                             item.m_shared.m_secondaryAttack.m_damageMultiplier += effectValue;
@@ -51,7 +52,7 @@ public static class ModifySummonDamage
             {
                 foreach (var item in __instance.m_inventory.GetAllItems())
                 {
-                    if (item.GetDamage().GetTotalDamage() > 0)
+                    if (item.GetDamage().EpicLootGetTotalDamage() > 0)
                     {
                         item.m_shared.m_attack.m_damageMultiplier += summonDamageBonus;
                         item.m_shared.m_secondaryAttack.m_damageMultiplier += summonDamageBonus;

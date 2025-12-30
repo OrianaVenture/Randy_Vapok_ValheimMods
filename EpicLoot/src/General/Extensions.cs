@@ -34,5 +34,15 @@ namespace EpicLoot.General
                 item.m_shared.m_damages.m_poison +
                 item.m_shared.m_damages.m_spirit > 0;
         }
+
+        public static float EpicLootGetTotalDamage(this HitData.DamageTypes damage)
+        {
+            return damage.GetTotalDamage() - damage.m_chop - damage.m_pickaxe;
+        }
+
+        public static float EpicLootGetTotalDamageAgainstPlayer(this HitData.DamageTypes damage)
+        {
+            return damage.GetTotalDamage() - damage.m_chop - damage.m_pickaxe - damage.m_spirit;
+        }
     }
 }

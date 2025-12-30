@@ -48,7 +48,6 @@
       "Type": "ChainLightning",
       "DisplayText": "$mod_epicloot_me_chainlightning_display",
       "Description": "$mod_epicloot_me_chainlightning_desc",
-      "CanBeAugmented": true,
       "Requirements": {
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -137,7 +136,6 @@
       "Type": "ModifyDamage",
       "DisplayText": "$mod_epicloot_me_modifydamage_display",
       "Description": "$mod_epicloot_me_modifydamage_desc",
-      "CanBeAugmented": false,
       "Requirements": {
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -146,6 +144,14 @@
           "Bow",
           "Torch",
           "Staff"
+        ],
+        "ExclusiveEffectTypes": [
+          "AddBluntDamage",
+          "AddSlashingDamage",
+          "AddPiercingDamage",
+          "ModifyPhysicalDamage",
+          "ModifyDamage",
+          "ModifyDamageLowHealth"
         ]
       },
       "ValuesPerRarity": {
@@ -175,8 +181,7 @@
           "Increment": 0.1
         }
       },
-      "SelectionWeight": 1,
-      "Comment": "Can't be rolled. Too powerful?"
+      "SelectionWeight": 1
     },
     {
       "Type": "ModifyPhysicalDamage",
@@ -186,7 +191,10 @@
         "ExclusiveEffectTypes": [
           "AddBluntDamage",
           "AddSlashingDamage",
-          "AddPiercingDamage"
+          "AddPiercingDamage",
+          "ModifyPhysicalDamage",
+          "ModifyDamage",
+          "ModifyDamageLowHealth"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -255,7 +263,10 @@
         "ExclusiveEffectTypes": [
           "AddFireDamage",
           "AddFrostDamage",
-          "AddLightningDamage"
+          "AddLightningDamage",
+          "AddPoisonDamage",
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -337,8 +348,7 @@
         ],
         "AllowedRarities": [
           "Magic",
-          "Rare",
-          "Epic"
+          "Rare"
         ],
         "ExcludedItemNames": [
           "$item_fishingrod"
@@ -354,11 +364,6 @@
         "Rare": {
           "MinValue": 50,
           "MaxValue": 100,
-          "Increment": 5
-        },
-        "Epic": {
-          "MinValue": 100,
-          "MaxValue": 200,
           "Increment": 5
         }
       },
@@ -470,7 +475,10 @@
           "TwoHandedWeaponLeft",
           "Staff"
         ],
-        "ItemHasBlockPower": true
+        "ItemHasBlockPower": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
@@ -569,10 +577,12 @@
           "Pickaxes"
         ],
         "ExcludedItemNames": [
-          "$item_shield_serpentscale",
           "$item_fishingrod"
         ],
-        "ItemHasParryPower": true
+        "ItemHasParryPower": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
@@ -674,29 +684,29 @@
       },
       "ValuesPerRarity": {
         "Magic": {
-          "MinValue": 1,
-          "MaxValue": 2,
-          "Increment": 0.25
-        },
-        "Rare": {
           "MinValue": 2,
           "MaxValue": 4,
-          "Increment": 0.25
+          "Increment": 0.5
         },
-        "Epic": {
+        "Rare": {
           "MinValue": 3,
           "MaxValue": 6,
-          "Increment": 0.25
+          "Increment": 0.5
         },
-        "Legendary": {
+        "Epic": {
           "MinValue": 4,
           "MaxValue": 8,
-          "Increment": 0.25
+          "Increment": 0.5
+        },
+        "Legendary": {
+          "MinValue": 5,
+          "MaxValue": 10,
+          "Increment": 0.5
         },
         "Mythic": {
           "MinValue": 6,
           "MaxValue": 12,
-          "Increment": 0.25
+          "Increment": 0.5
         }
       },
       "SelectionWeight": 10,
@@ -1006,6 +1016,7 @@
           "Trinket"
         ],
         "AllowedRarities": [
+          "Magic",
           "Rare",
           "Epic",
           "Legendary",
@@ -1013,6 +1024,11 @@
         ]
       },
       "ValuesPerRarity": {
+        "Magic": {
+          "MinValue": 2,
+          "MaxValue": 10,
+          "Increment": 0.5
+        },
         "Rare": {
           "MinValue": 5,
           "MaxValue": 15,
@@ -1300,230 +1316,6 @@
       ],
       "Suffixes": [
         "$mod_epicloot_me_modifystaminaregen_suffix1"
-      ]
-    },
-    {
-      "Type": "ModifyNoise",
-      "DisplayText": "$mod_epicloot_me_modifynoise_display",
-      "Description": "$mod_epicloot_me_modifynoise_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Shoulder",
-          "Utility",
-          "Trinket"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 15,
-          "MaxValue": 20,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 20,
-          "MaxValue": 25,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 25,
-          "MaxValue": 40,
-          "Increment": 1
-        },
-        "Legendary": {
-          "MinValue": 40,
-          "MaxValue": 50,
-          "Increment": 1
-        },
-        "Mythic": {
-          "MinValue": 50,
-          "MaxValue": 60,
-          "Increment": 1
-        }
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_modifynoise_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_modifynoise_suffix1"
-      ]
-    },
-    {
-      "Type": "ModifyBuildDistance",
-      "DisplayText": "$mod_epicloot_me_modifybuilddistance_display",
-      "Description": "$mod_epicloot_me_modifybuilddistance_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Tool"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 5,
-          "MaxValue": 10,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 10,
-          "MaxValue": 15,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 15,
-          "MaxValue": 20,
-          "Increment": 1
-        },
-        "Legendary": {
-          "MinValue": 25,
-          "MaxValue": 30,
-          "Increment": 1
-        },
-        "Mythic": {
-          "MinValue": 30,
-          "MaxValue": 50,
-          "Increment": 1
-        }
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_modifybuilddistance_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_modifybuilddistance_suffix1"
-      ]
-    },
-    {
-      "Type": "ModifyPickupRange",
-      "DisplayText": "$mod_epicloot_me_modifypickuprange_display",
-      "Description": "$mod_epicloot_me_modifypickuprange_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Utility",
-          "Trinket"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 10,
-          "MaxValue": 20,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 20,
-          "MaxValue": 30,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 30,
-          "MaxValue": 50,
-          "Increment": 5
-        },
-        "Legendary": {
-          "MinValue": 50,
-          "MaxValue": 75,
-          "Increment": 5
-        },
-        "Mythic": {
-          "MinValue": 75,
-          "MaxValue": 100,
-          "Increment": 5
-        }
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_modifypickuprange_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_modifypickuprange_suffix1"
-      ]
-    },
-    {
-      "Type": "ModifyMagicFireRate",
-      "DisplayText": "$mod_epicloot_me_modifymagicfirerate_display",
-      "Description": "$mod_epicloot_me_modifymagicfirerate_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Staff"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 5,
-          "MaxValue": 7,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 7,
-          "MaxValue": 10,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 10,
-          "MaxValue": 15,
-          "Increment": 1
-        },
-        "Legendary": {
-          "MinValue": 15,
-          "MaxValue": 20,
-          "Increment": 1
-        },
-        "Mythic": {
-          "MinValue": 20,
-          "MaxValue": 30,
-          "Increment": 1
-        }
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_modifymagicfirerate_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_modifymagicfirerate_suffix1"
-      ]
-    },
-    {
-      "Type": "ModifyProjectileSpeed",
-      "DisplayText": "$mod_epicloot_me_modifyprojectilespeed_display",
-      "Description": "$mod_epicloot_me_modifyprojectilespeed_desc",
-      "Requirements": {
-        "AllowedItemTypes": [
-          "Staff",
-          "Bow"
-        ]
-      },
-      "ValuesPerRarity": {
-        "Magic": {
-          "MinValue": 5,
-          "MaxValue": 7,
-          "Increment": 1
-        },
-        "Rare": {
-          "MinValue": 7,
-          "MaxValue": 10,
-          "Increment": 1
-        },
-        "Epic": {
-          "MinValue": 10,
-          "MaxValue": 15,
-          "Increment": 1
-        },
-        "Legendary": {
-          "MinValue": 15,
-          "MaxValue": 20,
-          "Increment": 1
-        },
-        "Mythic": {
-          "MinValue": 20,
-          "MaxValue": 30,
-          "Increment": 1
-        }
-      },
-      "SelectionWeight": 1,
-      "Prefixes": [
-        "$mod_epicloot_me_modifyprojectilespeed_prefix1"
-      ],
-      "Suffixes": [
-        "$mod_epicloot_me_modifyprojectilespeed_suffix1"
       ]
     },
     {
@@ -1959,11 +1751,9 @@
           "AddBluntDamage",
           "AddSlashingDamage",
           "AddPiercingDamage",
-          "AddFireDamage",
-          "AddFrostDamage",
-          "AddLightningDamage",
-          "AddPoisonDamage",
-          "AddSpiritDamage"
+          "ModifyPhysicalDamage",
+          "ModifyDamage",
+          "ModifyDamageLowHealth"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2025,11 +1815,9 @@
           "AddBluntDamage",
           "AddSlashingDamage",
           "AddPiercingDamage",
-          "AddFireDamage",
-          "AddFrostDamage",
-          "AddLightningDamage",
-          "AddPoisonDamage",
-          "AddSpiritDamage"
+          "ModifyPhysicalDamage",
+          "ModifyDamage",
+          "ModifyDamageLowHealth"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2093,11 +1881,9 @@
           "AddBluntDamage",
           "AddSlashingDamage",
           "AddPiercingDamage",
-          "AddFireDamage",
-          "AddFrostDamage",
-          "AddLightningDamage",
-          "AddPoisonDamage",
-          "AddSpiritDamage"
+          "ModifyPhysicalDamage",
+          "ModifyDamage",
+          "ModifyDamageLowHealth"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2154,14 +1940,12 @@
       "Description": "$mod_epicloot_me_addfiredamage_desc",
       "Requirements": {
         "ExclusiveEffectTypes": [
-          "AddBluntDamage",
-          "AddSlashingDamage",
-          "AddPiercingDamage",
           "AddFireDamage",
           "AddFrostDamage",
           "AddLightningDamage",
           "AddPoisonDamage",
-          "AddSpiritDamage"
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2220,14 +2004,12 @@
       "Description": "$mod_epicloot_me_addfrostdamage_desc",
       "Requirements": {
         "ExclusiveEffectTypes": [
-          "AddBluntDamage",
-          "AddSlashingDamage",
-          "AddPiercingDamage",
           "AddFireDamage",
           "AddFrostDamage",
           "AddLightningDamage",
           "AddPoisonDamage",
-          "AddSpiritDamage"
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2286,14 +2068,12 @@
       "Description": "$mod_epicloot_me_addlightningdamage_desc",
       "Requirements": {
         "ExclusiveEffectTypes": [
-          "AddBluntDamage",
-          "AddSlashingDamage",
-          "AddPiercingDamage",
           "AddFireDamage",
           "AddFrostDamage",
           "AddLightningDamage",
           "AddPoisonDamage",
-          "AddSpiritDamage"
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2352,14 +2132,12 @@
       "Description": "$mod_epicloot_me_addpoisondamage_desc",
       "Requirements": {
         "ExclusiveEffectTypes": [
-          "AddBluntDamage",
-          "AddSlashingDamage",
-          "AddPiercingDamage",
           "AddFireDamage",
           "AddFrostDamage",
           "AddLightningDamage",
           "AddPoisonDamage",
-          "AddSpiritDamage"
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -2418,14 +2196,12 @@
       "Description": "$mod_epicloot_me_addspiritdamage_desc",
       "Requirements": {
         "ExclusiveEffectTypes": [
-          "AddBluntDamage",
-          "AddSlashingDamage",
-          "AddPiercingDamage",
           "AddFireDamage",
           "AddFrostDamage",
           "AddLightningDamage",
           "AddPoisonDamage",
-          "AddSpiritDamage"
+          "AddSpiritDamage",
+          "ModifyElementalDamage"
         ],
         "AllowedItemTypes": [
           "OneHandedWeapon",
@@ -3786,14 +3562,14 @@
         "AllowedItemTypes": [
           "OneHandedWeapon",
           "TwoHandedWeapon",
-          "TwoHandedWeaponLeft",
+          "Tool",
           "Staff"
         ],
-        "ExcludedSkillTypes": [
-          "BloodMagic"
-        ],
         "ExcludedItemNames": [
-          "$item_fishingrod"
+          "$item_fishingrod",
+          "$item_hammer",
+          "$item_hoe",
+          "$item_cultivator"
         ]
       },
       "ValuesPerRarity": {
@@ -3848,7 +3624,8 @@
           "Spears"
         ],
         "ExcludedItemNames": [
-          "$item_fishingrod"
+          "$item_fishingrod",
+          "$item_knife_butcher"
         ]
       },
       "SelectionWeight": 2,
@@ -5339,7 +5116,9 @@
           "Chest",
           "Legs",
           "Shoulder",
-          "Helmet"
+          "Helmet",
+          "Utility",
+          "Trinket"
         ],
         "AllowedRarities": [
           "Epic",
@@ -5648,13 +5427,10 @@
         "AllowedItemTypes": [
           "OneHandedWeapon",
           "TwoHandedWeapon",
-          "Bow"
-        ],
-        "ExcludedSkillTypes": [
-          "Pickaxes"
-        ],
-        "ExcludedItemNames": [
-          "$item_fishingrod"
+          "TwoHandedWeaponLeft",
+          "Bow",
+          "Torch",
+          "Staff"
         ]
       },
       "ValuesPerRarity": {
@@ -5704,10 +5480,10 @@
           "TwoHandedWeaponLeft",
           "Staff"
         ],
-        "ExcludedSkillTypes": [
-          "Pickaxes"
-        ],
-        "ItemHasBlockPower": true
+        "ItemHasBlockPower": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
@@ -5761,10 +5537,12 @@
           "Pickaxes"
         ],
         "ExcludedItemNames": [
-          "$item_shield_serpentscale",
           "$item_fishingrod"
         ],
-        "ItemHasParryPower": true
+        "ItemHasParryPower": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Magic": {
@@ -5810,19 +5588,14 @@
         "AllowedItemTypes": [
           "OneHandedWeapon",
           "TwoHandedWeapon",
-          "Bow",
           "Tool",
           "Staff"
         ],
-        "ExcludedSkillTypes": [
-          "Pickaxes",
-          "BloodMagic"
-        ],
         "ExcludedItemNames": [
+          "$item_fishingrod",
           "$item_hammer",
           "$item_hoe",
-          "$item_cultivator",
-          "$item_fishingrod"
+          "$item_cultivator"
         ]
       },
       "ValuesPerRarity": {
@@ -5867,10 +5640,7 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Chest",
-          "Shield",
-          "Tool",
-          "TwoHandedWeapon",
-          "TwoHandedWeaponLeft"
+          "Shield"
         ]
       },
       "ValuesPerRarity": {
@@ -5916,8 +5686,8 @@
         "AllowedItemTypes": [
           "OneHandedWeapon",
           "TwoHandedWeapon",
-          "Bow",
-          "Torch"
+          "TwoHandedWeaponLeft",
+          "Bow"
         ],
         "ExcludedSkillTypes": [
           "Pickaxes"
@@ -6139,10 +5909,14 @@
         "AllowedItemTypes": [
           "OneHandedWeapon"
         ],
-        "AllowedSkillTypes": [
-          "Swords",
-          "Knives",
-          "Axes"
+        "ItemUsesStaminaOnAttack": true,
+        "ExclusiveEffectTypes": [
+          "ModifyBlockPower",
+          "ModifyBlockPowerLowHealth",
+          "ModifyParry",
+          "ModifyParryLowHealth",
+          "SpellSword",
+          "EitrWeave"
         ]
       },
       "ValuesPerRarity": {
@@ -6205,7 +5979,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "OneHandedWeapon",
-          "TwoHandedWeapon"
+          "TwoHandedWeapon",
+          "Bow"
         ],
         "ExcludedSkillTypes": [
           "Pickaxes"
@@ -6310,7 +6085,6 @@
           "TwoHandedWeaponLeft"
         ],
         "ExcludedItemNames": [
-          "$item_shield_serpentscale",
           "$item_fishingrod"
         ],
         "ItemHasParryPower": true
@@ -6357,7 +6131,8 @@
       "Requirements": {
         "AllowedItemTypes": [
           "OneHandedWeapon",
-          "TwoHandedWeapon"
+          "TwoHandedWeapon",
+          "Bow"
         ],
         "ExcludedSkillTypes": [
           "Pickaxes"
@@ -6471,19 +6246,23 @@
           "TwoHandedWeaponLeft"
         ],
         "ExcludedSkillTypes": [
-          "Bows",
-          "Crossbows",
           "BloodMagic",
-          "ElementalMagic"
+          "ElementalMagic",
+          "Pickaxes"
         ],
         "AllowedRarities": [
+          "Rare",
+          "Epic",
           "Legendary",
           "Mythic"
         ],
         "ExcludedItemNames": [
           "$item_fishingrod"
         ],
-        "ItemUsesStaminaOnAttack": true
+        "ItemUsesStaminaOnAttack": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Rare": {
@@ -6530,11 +6309,7 @@
           "Epic",
           "Legendary",
           "Mythic"
-        ],
-        "ExcludedItemNames": [
-          "$item_fishingrod"
-        ],
-        "ItemUsesStaminaOnAttack": true
+        ]
       },
       "ValuesPerRarity": {
         "Rare": {
@@ -6573,19 +6348,26 @@
       "Requirements": {
         "AllowedItemTypes": [
           "Shield",
-          "BloodMagic",
-          "ElementalMagic"
+          "OneHandedWeapon",
+          "TwoHandedWeapon",
+          "TwoHandedWeaponLeft"
         ],
-        "ExcludedSkillTypes": [],
-        "AllowedRarities": [
-          "Epic",
-          "Legendary",
-          "Mythic"
+        "ExcludedSkillTypes": [
+          "Pickaxes"
         ],
         "ExcludedItemNames": [
           "$item_fishingrod"
         ],
-        "ItemUsesStaminaOnAttack": true
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ],
+        "ItemHasParryPower": true,
+        "ExclusiveEffectTypes": [
+          "Duelist"
+        ]
       },
       "ValuesPerRarity": {
         "Rare": {
@@ -6625,11 +6407,11 @@
         "AllowedItemTypes": [
           "Helmet",
           "Utility",
-          "Trinket",
-          "ElementalMagic"
+          "Trinket"
         ],
         "ExcludedSkillTypes": [],
         "AllowedRarities": [
+          "Rare",
           "Epic",
           "Legendary",
           "Mythic"

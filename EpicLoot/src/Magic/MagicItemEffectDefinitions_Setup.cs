@@ -142,7 +142,7 @@ namespace EpicLoot
         public static string EitrWeave = nameof(EitrWeave);
         public static string DartingThoughts = nameof(DartingThoughts);
         public static string HeadHunter = nameof(HeadHunter);
-        public static string DodgeBuff = nameof(DodgeBuff);
+        public static string DodgeBuff = nameof(DodgeBuff); // AdrenalineRush
         public static string OffSetAttack = nameof(OffSetAttack);
         public static string ChainLightning = nameof(ChainLightning);
         public static string Apportation = nameof(Apportation);

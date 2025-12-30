@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.General;
+using HarmonyLib;
 using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
@@ -30,7 +31,7 @@ namespace EpicLoot.MagicItemEffects
 
         public static void OnDamaged(Character __instance, HitData hit)
         {
-            if (hit.GetAttacker()?.IsPlayer() != true || hit.GetTotalDamage() <= 0.0)
+            if ((hit.GetAttacker() != null && !hit.GetAttacker().IsPlayer()) || hit.m_damage.EpicLootGetTotalDamage() <= 0.0)
             {
                 return;
             }

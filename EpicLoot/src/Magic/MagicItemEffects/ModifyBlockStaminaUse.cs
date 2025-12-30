@@ -1,41 +1,34 @@
 ﻿using HarmonyLib;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+public static class ModifyBlockStaminaUse
 {
-    [HarmonyPatch(typeof(Humanoid), nameof(Humanoid.BlockAttack))]
-    public static class ModifyBlockStaminaUse_Humanoid_BlockAttack_Patch
+    [HarmonyPatch(typeof(Player), nameof(Player.GetEquipmentBlockStaminaModifier))]
+    private static class ModifyBlockStaminaUse_Player_GetEquipmentBlockStaminaModifier_Patch
     {
-        public static bool Override;
-        public static float OriginalValue;
-
-        public static bool Prefix(Humanoid __instance, HitData hit, Character attacker)
+        private static void Postfix(Player __instance, ref float __result)
         {
-            Override = false;
-            OriginalValue = -1;
-
-            if (__instance.IsPlayer())
+            if (__instance == null)
             {
-                var player = (Player)__instance;
-
-                Override = true;
-                OriginalValue = __instance.m_blockStaminaDrain;
-
-                var totalBlockStaminaUseMod = player.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyBlockStaminaUse, 0.01f);
-                __instance.m_blockStaminaDrain *= 1.0f - totalBlockStaminaUseMod;
+                return;
             }
 
-            return true;
+            __result -= __instance.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyBlockStaminaUse, 0.01f);
         }
+    }
 
-        public static void Postfix(Humanoid __instance, HitData hit, Character attacker)
+    /// <summary>
+    /// Helper function primarily for the tooltip.
+    /// </summary>
+    public static float GetModifyBlockStaminaValue(ItemDrop.ItemData item)
+    {
+        if (item.HasMagicEffect(MagicEffectType.ModifyBlockStaminaUse))
         {
-            if (Override)
-            {
-                __instance.m_blockStaminaDrain = OriginalValue;
-            }
-
-            Override = false;
-            OriginalValue = -1;
+            return item.m_shared.m_blockStaminaModifier -
+                item.GetMagicItem().GetTotalEffectValue(MagicEffectType.ModifyBlockStaminaUse, 0.01f);
         }
+
+        return item.m_shared.m_blockStaminaModifier;
     }
 }

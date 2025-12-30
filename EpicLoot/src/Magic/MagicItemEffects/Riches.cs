@@ -30,8 +30,6 @@ namespace EpicLoot.MagicItemEffects
                 return;
             }
 
-            EpicLoot.Log("Updating riches table.");
-
             if (MagicItemEffectDefinitions.AllDefinitions.Count > 0 && MagicItemEffectDefinitions.AllDefinitions.ContainsKey(MagicEffectType.Riches)) {
                 if (MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config != null && MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config.Count > 0) {
                     var richesConfig = MagicItemEffectDefinitions.AllDefinitions[MagicEffectType.Riches].Config;

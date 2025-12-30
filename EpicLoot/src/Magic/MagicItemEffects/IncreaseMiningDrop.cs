@@ -27,7 +27,6 @@ public class IncreaseMiningDrop : IncreaseDrop
             {
                 if (__instance.m_nview.GetZDO().GetInt(Instance.ZDOVar) != 0)
                 {
-                    EpicLoot.Log("Resetting mining drop variable");
                     __instance.m_nview.GetZDO().Set(Instance.ZDOVar, 0);
                 }
             }
