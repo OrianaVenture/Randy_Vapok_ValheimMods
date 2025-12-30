@@ -1,4 +1,5 @@
 
+using EpicLoot.Adventure;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
@@ -580,34 +581,87 @@ namespace EpicLoot.CraftingV2
             return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
         }
 
-        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, Heightmap.Biome biome)
+        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, string biomeKey)
         {
-            EpicLoot.Log($"Getting loot tables for identify style " +
-                $"{Localization.instance.Localize(cfg.Localization)} in biome {biome} " +
-                $"cfg keys: { string.Join(",", cfg.BiomeLootLists.Keys) }");
-            Heightmap.Biome allowedBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
-                biome, EpicLoot.GetGatedItemTypeMode());
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] START");
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Input biomeKey: {biomeKey}");
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] cfg.Localization: {cfg.Localization}");
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] cfg.BiomeLootLists.Keys: {string.Join(", ", cfg.BiomeLootLists.Keys)}");
+
+            // Apply one-directional gating: we can DOWNGRADE the biome if the player hasn't progressed far enough,
+            // but we NEVER upgrade beyond the biome encoded in the prefab name. This prevents:
+            // - A player who looted a BlackForest unidentified item (from a chest or from monsters killing each other) from getting BlackForest gear before they've progressed
+            // - A Meadows unidentified item from ever identifying to BlackForest+ items (no upgrade)
+            if (Enum.TryParse<Heightmap.Biome>(biomeKey, true, out Heightmap.Biome prefabBiome))
+            {
+                GatedItemTypeMode gatedMode = EpicLoot.GetGatedItemTypeMode();
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] GatedItemTypeMode: {gatedMode}");
+
+                // Get the player's max allowed biome
+                Heightmap.Biome playerMaxBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
+                    prefabBiome, gatedMode);
+
+                // Get friendly names for logging (modded biomes show as numbers otherwise)
+                string prefabBiomeName = AdventureDataManager.GetBiomeName(prefabBiome) ?? prefabBiome.ToString();
+                string playerMaxBiomeName = AdventureDataManager.GetBiomeName(playerMaxBiome) ?? playerMaxBiome.ToString();
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] prefabBiome: {prefabBiomeName}, playerMaxBiome: {playerMaxBiomeName}");
+
+                // Compare biome progression - only downgrade, never upgrade
+                int prefabIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(prefabBiome);
+                int playerIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(playerMaxBiome);
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] prefabIndex: {prefabIndex}, playerIndex: {playerIndex}");
+
+                if (prefabIndex >= 0 && playerIndex >= 0 && playerIndex < prefabIndex)
+                {
+                    // Player hasn't progressed to the prefab's biome yet - downgrade to their max
+                    EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Downgrading from {prefabBiomeName} to {playerMaxBiomeName} (player not progressed enough)");
+                    biomeKey = playerMaxBiomeName;
+                }
+                // else: player has progressed enough, use the prefab's biome (no upgrade beyond prefab)
+            }
+            else
+            {
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Custom biome '{biomeKey}' - skipping gating");
+            }
+
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey (after gating): '{biomeKey}'");
 
             List<LootTable> lootTables = new List<LootTable>() { };
 
-            if (!cfg.BiomeLootLists.ContainsKey(allowedBiome))
+            // Try case-insensitive lookup for the biome key
+            string matchedKey = cfg.BiomeLootLists.Keys.FirstOrDefault(k =>
+                string.Equals(k, biomeKey, StringComparison.OrdinalIgnoreCase));
+
+            if (matchedKey == null)
             {
-                // Fallback to the first defined biome loot list if the biome cannot be found.
-                // This should be set to none in the user configurations for best results.
-                allowedBiome = cfg.BiomeLootLists.First().Key;
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey '{biomeKey}' NOT found in BiomeLootLists, falling back to first key");
+                matchedKey = cfg.BiomeLootLists.First().Key;
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Fallback biomeKey: {matchedKey}");
+            }
+            else
+            {
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey '{biomeKey}' matched to '{matchedKey}' in BiomeLootLists");
             }
 
-            foreach (string lootSetName in cfg.BiomeLootLists[allowedBiome])
+            List<string> lootSetNames = cfg.BiomeLootLists[matchedKey];
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] LootSetNames for biome: {string.Join(", ", lootSetNames)}");
+
+            foreach (string lootSetName in lootSetNames)
             {
-                EpicLoot.Log($" - Checking loot set {lootSetName}");
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Processing lootSetName: '{lootSetName}'");
                 List<LootTable> lootTable = LootRoller.GetFullyResolvedLootTable(lootSetName);
                 if (lootTable != null)
                 {
+                    EpicLoot.Log($"[GetLootTablesForIdentifyStyle]   -> Found {lootTable.Count} tables for '{lootSetName}'");
                     lootTables.AddRange(lootTable);
+                }
+                else
+                {
+                    EpicLoot.Log($"[GetLootTablesForIdentifyStyle]   -> NULL returned for '{lootSetName}'");
                 }
             }
 
-            EpicLoot.Log($"Loot tables for {Localization.instance.Localize(cfg.Localization)} {lootTables.Count}");
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] END - Total loot tables: {lootTables.Count}");
             return lootTables;
         }
 
@@ -625,8 +679,8 @@ namespace EpicLoot.CraftingV2
             List<ItemDrop.ItemData> totalRolledItems = new List<ItemDrop.ItemData>();
             foreach (Tuple<ItemDrop.ItemData, int> itemstack in items)
             {
-                Heightmap.Biome biome = EnchantHelper.GetBiomeFromUnidentifiedItem(itemstack.Item1);
-                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
+                string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(itemstack.Item1);
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biomeKey);
                 List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(
                     player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, powerModifier);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
@@ -652,7 +706,7 @@ namespace EpicLoot.CraftingV2
                 return new List<InventoryItemListElement>();
             }
 
-            List<Heightmap.Biome> biomesCovered = new List<Heightmap.Biome> { };
+            List<string> biomesCovered = new List<string> { };
 
             foreach (ItemDrop.ItemData item in itemsSelected)
             {
@@ -661,14 +715,14 @@ namespace EpicLoot.CraftingV2
                     continue;
                 }
                 
-                Heightmap.Biome biome = EnchantHelper.GetBiomeFromUnidentifiedItem(item);
-                if (biomesCovered.Contains(biome))
+                string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(item);
+                if (biomesCovered.Contains(biomeKey))
                 {
                     continue;
                 }
 
-                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biome);
-                biomesCovered.Add(biome);
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biomeKey);
+                biomesCovered.Add(biomeKey);
                 Dictionary<string, float> itemChances = LootRoller
                     .GetLootTableChances(Player.m_localPlayer.transform.position, selectedLootTables);
                 foreach (KeyValuePair<string, float> entry in itemChances)
@@ -714,6 +768,7 @@ namespace EpicLoot.CraftingV2
                 return new List<InventoryItemListElement>();
             }
 
+            EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
 
@@ -741,6 +796,7 @@ namespace EpicLoot.CraftingV2
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
                 
+                EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{totalStackSize} x modifier:{costModifier} = result:{cost}");
                 itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
                 if (itemData.m_stack <= 0)
                 {
