@@ -504,7 +504,9 @@ namespace EpicLoot
                                     biomes.Add(biome);
                                 }
 
-                                string selectBiome = biomes.First().ToString();
+                            // Get the biome name - use AdventureDataManager for modded biomes, fallback to ToString() for vanilla
+                            Heightmap.Biome selectedBiomeEnum = biomes.First();
+                            string selectBiome = AdventureDataManager.GetBiomeName(selectedBiomeEnum) ?? selectedBiomeEnum.ToString();
                                 GameObject prefab = ObjectDB.instance.GetItemPrefab($"{selectBiome}_{rarity}_Unidentified");
                                 if (prefab == null)
                                 {
