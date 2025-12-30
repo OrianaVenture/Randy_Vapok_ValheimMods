@@ -518,43 +518,62 @@ namespace EpicLoot.GatedItemType
         /// </summary>
         public static Heightmap.Biome GetCurrentOrLowerBiomeByDefeatedBossSettings(Heightmap.Biome biome, GatedItemTypeMode mode)
         {
+            EpicLoot.Log($"GetCurrentOrLowerBiomeByDefeatedBossSettings called with biome={biome}, mode={mode}");
+
             if (!BiomesInOrder.Contains(biome))
             {
                 // TODO: Handle biome definitions user defined lists better.
                 // Configurations can have custom biomes not defined in all configuration locations.
+                EpicLoot.Log($"Biome {biome} not found in BiomesInOrder, returning original biome");
                 return biome;
             }
 
             if (mode == GatedItemTypeMode.Unlimited || mode == GatedItemTypeMode.PlayerMustKnowRecipe)
             {
+                EpicLoot.Log($"Mode is {mode}, returning original biome {biome}");
                 return biome;
             }
 
             Heightmap.Biome resultBiome = GetHighestDefeatedBiome(biome);
+            EpicLoot.Log($"GetHighestDefeatedBiome returned {resultBiome}");
 
             if (mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
             {
                 int index = BiomesInOrder.IndexOf(resultBiome) + 1;
+                EpicLoot.Log($"BossKillUnlocksNextBiomeItems mode: resultBiome index={index - 1}, next index={index}, BiomesInOrder.Count={BiomesInOrder.Count}");
                 if (index < BiomesInOrder.Count)
                 {
                     resultBiome = BiomesInOrder[index];
+                    EpicLoot.Log($"Advanced to next biome: {resultBiome}");
+                }
+                else
+                {
+                    EpicLoot.Log($"Already at highest biome, staying at {resultBiome}");
                 }
             }
 
+            EpicLoot.Log($"GetCurrentOrLowerBiomeByDefeatedBossSettings returning {resultBiome}");
             return resultBiome;
         }
 
         private static Heightmap.Biome GetHighestDefeatedBiome(Heightmap.Biome startBiome)
         {
-            for (int i = BiomesInOrder.IndexOf(startBiome); i >= 0; i--)
+            int startIndex = BiomesInOrder.IndexOf(startBiome);
+            EpicLoot.Log($"GetHighestDefeatedBiome called with startBiome={startBiome}, startIndex={startIndex}");
+
+            for (int i = startIndex; i >= 0; i--)
             {
                 Heightmap.Biome checkBiome = BiomesInOrder[i];
-                if (HasAllBossKeysForBiome(checkBiome))
+                bool hasAllKeys = HasAllBossKeysForBiome(checkBiome);
+                EpicLoot.Log($"  Checking biome {checkBiome} at index {i}: HasAllBossKeysForBiome={hasAllKeys}");
+                if (hasAllKeys)
                 {
+                    EpicLoot.Log($"  Found highest defeated biome: {checkBiome}");
                     return checkBiome;
                 }
             }
 
+            EpicLoot.Log($"  No defeated biome found, returning Biome.None");
             return Heightmap.Biome.None;
         }
 
