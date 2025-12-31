@@ -35,7 +35,7 @@ namespace EpicLoot.Magic.MagicItemEffects
 
         private static StatusEffect ModifyMead(StatusEffect original)
         {
-            SE_Stats dbEffect = (SE_Stats)ObjectDB.instance.GetStatusEffect(original.NameHash());
+            StatusEffect dbEffect = ObjectDB.instance.GetStatusEffect(original.NameHash());
             if (Player.m_localPlayer == null ||
                 dbEffect is not SE_Stats seStats ||
                 !seStats.CanAdd(Player.m_localPlayer))
@@ -43,7 +43,7 @@ namespace EpicLoot.Magic.MagicItemEffects
                 return original;
             }
 
-            SE_Stats returnEffect = dbEffect;
+            SE_Stats returnEffect = seStats;
 
             if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.InstantMead) &&
                 ModifyWithLowHealth.PlayerHasLowHealth(Player.m_localPlayer))
