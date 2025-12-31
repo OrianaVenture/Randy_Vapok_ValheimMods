@@ -316,39 +316,32 @@ namespace EpicLoot.GatedItemType
         /// </summary>
         public static List<string> DetermineValidBosses(GatedItemTypeMode mode, bool lowestFirst = true, List<string> requiredBosses = null)
         {
-            EpicLoot.Log($"DetermineValidBosses called: mode={mode}, lowestFirst={lowestFirst}, requiredBosses=[{(requiredBosses != null ? string.Join(", ", requiredBosses) : "null")}]");
             List<string> validBosses = new List<string>();
 
             if (BiomesInOrder == null || BiomesInOrder.Count == 0)
             {
-                EpicLoot.Log("DetermineValidBosses: BiomesInOrder is null or empty, returning empty list");
                 return validBosses;
             }
 
             // Find index of highest biome allowed
             int highestBiomeIndex = 0;
-            EpicLoot.Log($"DetermineValidBosses: BiomesInOrder.Count={BiomesInOrder.Count}");
 
             if (requiredBosses != null && requiredBosses.Count > 0)
             {
-                EpicLoot.Log("DetermineValidBosses: Searching for highest biome from requiredBosses");
                 for (int i = BiomesInOrder.Count - 1; i >= 0; i--)
                 {
                     Heightmap.Biome biome = BiomesInOrder[i];
                     if (!BiomesToBossKeys.ContainsKey(biome))
                     {
-                        EpicLoot.Log($"DetermineValidBosses: Biome {biome} not in BiomesToBossKeys, skipping");
                         continue;
                     }
 
                     List<string> bossList = BiomesToBossKeys[biome];
-                    EpicLoot.Log($"DetermineValidBosses: Checking biome {biome} (index {i}), bossList=[{string.Join(", ", bossList)}]");
 
                     foreach (string boss in requiredBosses)
                     {
                         if (!boss.IsNullOrWhiteSpace() && bossList.Contains(boss))
                         {
-                            EpicLoot.Log($"DetermineValidBosses: Found required boss '{boss}' in biome {biome}, setting highestBiomeIndex={i}");
                             highestBiomeIndex = i;
                             i = -1;
                         }
@@ -358,34 +351,25 @@ namespace EpicLoot.GatedItemType
             else
             {
                 highestBiomeIndex = BiomesInOrder.Count - 1;
-                EpicLoot.Log($"DetermineValidBosses: No requiredBosses, using highestBiomeIndex={highestBiomeIndex}");
             }
-
-            EpicLoot.Log($"DetermineValidBosses: highestBiomeIndex={highestBiomeIndex}, mode={mode}");
 
             if (mode == GatedItemTypeMode.Unlimited ||
                 mode == GatedItemTypeMode.PlayerMustKnowRecipe ||
                 mode == GatedItemTypeMode.PlayerMustHaveCraftedItem)
             {
-                EpicLoot.Log("DetermineValidBosses: Using Unlimited/PlayerMustKnowRecipe/PlayerMustHaveCraftedItem branch");
                 List<Heightmap.Biome> validBiomes = BiomesInOrder.GetRange(0, highestBiomeIndex + 1);
-                EpicLoot.Log($"DetermineValidBosses: validBiomes=[{string.Join(", ", validBiomes)}]");
 
                 foreach (Heightmap.Biome biome in validBiomes)
                 {
                     if (BiomesToBossKeys.ContainsKey(biome))
                     {
-                        var bossesForBiome = BiomesToBossKeys[biome];
-                        EpicLoot.Log($"DetermineValidBosses: Adding bosses from biome {biome}: [{string.Join(", ", bossesForBiome)}]");
-                        validBosses.AddRange(bossesForBiome);
+                        validBosses.AddRange(BiomesToBossKeys[biome]);
                     }
                 }
             }
             else
             {
-                EpicLoot.Log("DetermineValidBosses: Using BossKill gating branch");
                 bool previousAdded = (mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems);
-                EpicLoot.Log($"DetermineValidBosses: Initial previousAdded={previousAdded}");
 
                 for (int i = 0; i <= highestBiomeIndex; i++)
                 {
@@ -393,27 +377,22 @@ namespace EpicLoot.GatedItemType
                     Heightmap.Biome biome = BiomesInOrder[i];
                     if (!BiomesToBossKeys.ContainsKey(biome))
                     {
-                        EpicLoot.Log($"DetermineValidBosses: Biome {biome} not in BiomesToBossKeys, skipping");
                         continue;
                     }
 
                     List<string> bosses = BiomesToBossKeys[biome];
-                    EpicLoot.Log($"DetermineValidBosses: Processing biome {biome} (index {i}), bosses=[{string.Join(", ", bosses)}]");
 
                     if (previousAdded && mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
                     {
                         add = true;
-                        EpicLoot.Log($"DetermineValidBosses: previousAdded=true, will add all bosses for this biome");
                     }
 
                     bool allKeysPresent = true;
                     foreach (string boss in bosses)
                     {
                         bool hasKey = ZoneSystem.instance.GetGlobalKey(boss);
-                        EpicLoot.Log($"DetermineValidBosses: Boss '{boss}' hasKey={hasKey}, add={add}");
                         if (hasKey || add)
                         {
-                            EpicLoot.Log($"DetermineValidBosses: Adding boss '{boss}' to validBosses");
                             validBosses.Add(boss);
                         }
 
@@ -423,7 +402,6 @@ namespace EpicLoot.GatedItemType
                         }
                     }
 
-                    EpicLoot.Log($"DetermineValidBosses: Biome {biome} allKeysPresent={allKeysPresent}");
                     previousAdded = allKeysPresent;
                 }
             }
@@ -431,16 +409,13 @@ namespace EpicLoot.GatedItemType
             if (validBosses.Count > 0)
             {
                 validBosses = validBosses.Distinct().ToList();
-                EpicLoot.Log($"DetermineValidBosses: After Distinct(), validBosses=[{string.Join(", ", validBosses)}]");
 
                 if (!lowestFirst)
                 {
                     validBosses.Reverse();
-                    EpicLoot.Log("DetermineValidBosses: Reversed list (lowestFirst=false)");
                 }
             }
 
-            EpicLoot.Log($"DetermineValidBosses: Returning {validBosses.Count} bosses: [{string.Join(", ", validBosses)}]");
             return validBosses;
         }
 
