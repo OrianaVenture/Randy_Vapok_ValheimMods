@@ -373,7 +373,6 @@ namespace EpicLoot.Magic
             {
                 string itemType = DetermineItemType(item.m_itemData);
                 string itemName = item.name;
-                bool rune = item.m_itemData.IsRunestone();
                 // Check if the item is already in the config
                 // If it is, add it to the foundBy
                 bool itemfound = false;
@@ -651,6 +650,11 @@ namespace EpicLoot.Magic
                             return "Polearms";
                         case Skills.SkillType.Pickaxes:
                             return "Pickaxes";
+                        
+                            // For bombs
+                        case Skills.SkillType.None:
+                        case Skills.SkillType.Sneak:
+                            return "Torches";
                     }
                     break;
                 case ItemDrop.ItemData.ItemType.Shield:
@@ -685,11 +689,39 @@ namespace EpicLoot.Magic
                     return "Tools";
                 case ItemDrop.ItemData.ItemType.Utility:
                 case ItemDrop.ItemData.ItemType.Trinket:
+                case ItemDrop.ItemData.ItemType.Misc:
                     return "Utility";
-                default:
-                    return itemType.ToString().ToLower();
             }
 
+            // It is possible that the item is not a known skill type
+            // This happens with weapons that use mod skills eg: scythes
+            switch (item.m_shared.m_animationState) {
+                // Its either an axe or a sword, currently this is only therzies throwing axes which get to this point
+                case ItemDrop.ItemData.AnimationState.OneHanded:
+                    return "Axes";
+                case ItemDrop.ItemData.AnimationState.DualAxes:
+                    return "TwoHandAxes";
+                case ItemDrop.ItemData.AnimationState.Unarmed:
+                    return "Fists";
+                case ItemDrop.ItemData.AnimationState.MagicItem:
+                    return "Staffs";
+                case ItemDrop.ItemData.AnimationState.Scythe:
+                case ItemDrop.ItemData.AnimationState.Atgeir:
+                    return "Polearms";
+                case ItemDrop.ItemData.AnimationState.Bow:
+                case ItemDrop.ItemData.AnimationState.Crossbow:
+                    return "Bows";
+                case ItemDrop.ItemData.AnimationState.Feaster:
+                case ItemDrop.ItemData.AnimationState.FishingRod:
+                    return "Tools";
+                case ItemDrop.ItemData.AnimationState.Torch:
+                case ItemDrop.ItemData.AnimationState.LeftTorch:
+                    return "Torches";
+                case ItemDrop.ItemData.AnimationState.Greatsword:
+                    return "Swords";
+                case ItemDrop.ItemData.AnimationState.TwoHandedClub:
+                    return "Sledges";
+            }
 
             EpicLoot.Log($"Unknown item type for item {item.m_shared.m_name}: {itemType}");
             return "Unkown";

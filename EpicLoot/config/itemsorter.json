@@ -52,7 +52,7 @@
     },
     "Meadows": {
       "Tier": "Tier1",
-      "BossKey": "defeated_eikythr",
+      "BossKey": "defeated_eikthyr",
       "BiomeMaterials": [
         "Flint",
         "LeatherScraps",
