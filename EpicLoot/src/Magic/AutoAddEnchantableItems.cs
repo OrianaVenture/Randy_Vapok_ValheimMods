@@ -445,6 +445,11 @@ namespace EpicLoot.Magic
                 }
 
                 EpicLoot.Log($"{itemType} {key} add {itemName}");
+                // Ensure gating required boss keys exist
+                if (!foundByCategory[itemType].ItemsByBoss.ContainsKey(key)) {
+                    foundByCategory[itemType].ItemsByBoss.Add(key, new List<string>() { });
+                }
+
                 foundByCategory[itemType].ItemsByBoss[key].Add(itemName);
             }
             return foundByCategory;
