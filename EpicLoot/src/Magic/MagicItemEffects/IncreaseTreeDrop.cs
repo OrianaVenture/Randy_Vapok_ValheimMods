@@ -24,7 +24,6 @@ public class IncreaseTreeDrop : IncreaseDrop
         {
             if (__instance == Player.m_localPlayer && __instance.m_nview.GetZDO().GetInt(Instance.ZDOVar) != 0)
             {
-                EpicLoot.Log("Resetting tree drop variable");
                 __instance.m_nview.GetZDO().Set(Instance.ZDOVar, 0);
             }
         }

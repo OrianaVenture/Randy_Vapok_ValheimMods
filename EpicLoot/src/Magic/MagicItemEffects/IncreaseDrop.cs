@@ -18,7 +18,6 @@ public abstract class IncreaseDrop
                     MagicEffect, out float effectValue) &&
                 player.m_nview.GetZDO().GetInt(ZDOVar) != (int)effectValue)
             {
-                EpicLoot.Log($"Setting {ZDOVar} from prefix to {(int)effectValue}");
                 player.m_nview.GetZDO().Set(ZDOVar, (int)effectValue);
             }
         }
@@ -39,7 +38,6 @@ public abstract class IncreaseDrop
 
     public void DropExtraItems(List<GameObject> dropList, Vector3 objPosition)
     {
-        EpicLoot.Log($"DropExtraItems!");
         Vector2 vector = UnityEngine.Random.insideUnitCircle * 0.5f;
         Vector3 position = objPosition + Vector3.up + new Vector3(vector.x, 0, vector.y);
         Quaternion rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0, 360), 0f);

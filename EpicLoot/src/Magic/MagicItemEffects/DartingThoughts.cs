@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace EpicLoot.src.Magic.MagicItemEffects
+namespace EpicLoot.Magic.MagicItemEffects
 {
     [HarmonyPatch]
     internal static class DartingThoughts
@@ -10,7 +10,9 @@ namespace EpicLoot.src.Magic.MagicItemEffects
         {
             public static void Postfix(SEMan __instance, ref float eitrMultiplier)
             {
-                if (__instance.m_character.IsPlayer() && Player.m_localPlayer != null && Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.DartingThoughts, out float dartThoughtsValue, 0.01f)) {
+                if (__instance.m_character.IsPlayer() && Player.m_localPlayer != null &&
+                    Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.DartingThoughts, out float dartThoughtsValue, 0.01f))
+                {
                     eitrMultiplier += (1 + (dartThoughtsValue * 2));
                 }
             }
@@ -21,9 +23,14 @@ namespace EpicLoot.src.Magic.MagicItemEffects
         {
             public static void Postfix(Player __instance, ref float eitr)
             {
-                if (__instance.HasActiveMagicEffect(MagicEffectType.DartingThoughts, out float dartThoughtsValue, 0.01f)) {
+                if (__instance.HasActiveMagicEffect(MagicEffectType.DartingThoughts, out float dartThoughtsValue, 0.01f))
+                {
                     eitr *= (1 - (dartThoughtsValue/2));
-                    if (eitr < 0) { eitr = 0; }
+                    
+                    if (eitr < 0)
+                    {
+                        eitr = 0;
+                    }
                 }
             }
         }

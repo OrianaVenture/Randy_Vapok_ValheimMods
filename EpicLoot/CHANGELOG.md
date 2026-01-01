@@ -1,3 +1,23 @@
+## Version 0.12.5
+
+* NEW itemsorter.json configuration file to configure the auto-add behaviors!
+* Tooltips now display on hover in the enchanting table menus.
+* Some minor API updates.
+* Refactored how the tooltip is built, tried to add any missing information.
+* Refactored many magic effects to fix issues including Mead effects, damage effects, block and parry, base player stats and regen, explosive arrows. Some calculations will work slightly different than before.
+* Removed the all powerful throwable butcher knife. If you have one of these already rolled it should be blocked from throwing now.
+* Reworked bulk up enchant to remove X% of health regen and add X% of max health. If you have 50% enchant on an item, 6 regen ticks, and 80 health you should get 3 regen ticks and 120 max health.
+* Band-aid fixed a rare error with offset attack audio clip not existing.
+* Did a QOL pass to clean up the magic effects for each available configuration. There were so many changes that listing them here would be too long. If you need to see the specific changes check the release commit comparison on Github.
+  * Normalized some Increments to make more sense. Tried to make the minimum 0.5 when possible.
+  * Fixed some item type checks for all configs, majorly for the balanced config.
+  * Added missing Trinket type in many places for the minimal config.
+  * Added missing rarity values on some effects.
+  * Made it so only one form of modify damage can roll on an item for balanced and minimal, and only one of physical and one of elemental on legendary config.
+  * Fixes for excluded effects, they must be excluded on both effects to work correctly.
+* Note: If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate! Or, if you have made changes, grab the changes from github to manually update your files.
+* Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete to refresh them.
+
 ## Version 0.12.4
 
 * Fixed another an issue with MultiShot not resetting weapon attack values properly due to the percent chance to trigger config.
@@ -9,10 +29,7 @@
 * Fixed enchanting materials not stacking with "broken" items in containers. (if this is still happening after the update please report the issue)
 * Changed the ..removespeedpenalty_display localization from "Weightless" to "Unhindered". This was a small issue with the 0.12.0 update. Previously this effect was called "No Movement Speed Penalty".
 * Added missing configurations for ModifyMagicFireRate and ModifyFireRate in the magiceffects.json files.
-  * If you used version 0.12.0+ please delete your old BepInEx\config\EpicLoot\baseconfig and let them regenerate! Or grab the changes from github to manually update your files.
 * Reenabled Weightless rolls for the balanced config.
-  * Re: above note
-* Note: If you are NOT making edits to the baseconfig files we highly recommend setting "Debug - Always Refresh Core Configs" to true in your randyknapp.mods.epicloot.cfg file. Then you will not need to manually delete to refresh them.
 
 ## Version 0.12.2
 
@@ -26,7 +43,6 @@
 * Fixed error handling for Multishot magic effects.
 * Fixed modify low health threshold magic effect checking the wrong effect value.
 * Reduced riches value for balanced and minimal configuration options.
-  * Again, need to regenerate baseconfig to see the changes.
 * Fixed an issue with loot rolling creating too many items.
 * Fixed items that cannot be runified showing up in the rune UI menus.
 * Fixed an issue with magic items not initializing correctly after the 11.7 update (attempt to fix another bug made more, fun times).

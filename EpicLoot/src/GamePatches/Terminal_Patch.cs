@@ -201,6 +201,14 @@ namespace EpicLoot
             new Terminal.ConsoleCommand("debugluck", "", (args => {
                 LootRoller.DebugLuckFactor();
             }));
+            new Terminal.ConsoleCommand("tooltipdebug", "", (args => {
+
+                GenerateTooltipTest.GenerateInventoryTooltips(false);
+            }));
+            new Terminal.ConsoleCommand("tooltipdebugvanilla", "", (args => {
+
+                GenerateTooltipTest.GenerateInventoryTooltips(true);
+            }));
         }
 
         private static void ResetMinimap()

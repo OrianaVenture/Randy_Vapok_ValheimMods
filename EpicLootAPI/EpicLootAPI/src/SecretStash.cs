@@ -18,7 +18,7 @@ public enum SecretStashType
 [Serializable][PublicAPI]
 public class SecretStashItem
 {
-    public string Item;
+    public string Item = "";
     public int CoinsCost;
     public int ForestTokenCost;
     public int IronBountyTokenCost;
@@ -30,6 +30,8 @@ public class SecretStashItem
         this.type = type;
         SecretStashes.Add(this);
     }
+    
+    public SecretStashItem(){}
 
     private SecretStashType type;
     internal static readonly List<SecretStashItem> SecretStashes = new();

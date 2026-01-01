@@ -734,9 +734,9 @@ namespace EpicLoot
             float scale = 1.0f, ItemDrop.ItemData ignoreThisItem = null)
         {
             effectValue = GetTotalActiveMagicEffectValue(player, effectType, scale, ignoreThisItem);
-            return effectValue > 0;
+            return effectValue != 0f;
         }
-        
+
         public static bool HasActiveMagicEffect(this Player player, string effectType)
         {
             if (player == null) return false;
@@ -762,6 +762,7 @@ namespace EpicLoot
 
         public static Player GetPlayerWithEquippedItem(ItemDrop.ItemData itemData)
         {
+            // TODO: evaluate if this returns magic items of other players correctly
             return Player.s_players.FirstOrDefault(player => player.IsItemEquiped(itemData));
         }
     }

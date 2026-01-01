@@ -1,27 +1,34 @@
 ﻿using HarmonyLib;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+public static class ModifyDodgeStamina
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.UpdateDodge))]
-    public static class ModifyDodgeStamina_Player_UpdateDodge_Patch
+    [HarmonyPatch(typeof(Player), nameof(Player.GetEquipmentDodgeStaminaModifier))]
+    private static class IncreaseHeatResistance_Player_GetEquipmentDodgeStaminaModifier_Patch
     {
-        public static void Prefix(Player __instance, ref float __state)
+        private static void Postfix(Player __instance, ref float __result)
         {
-            // Store the original dodge stamina usage
-            __state = __instance.m_dodgeStaminaUsage;
-            
-            if (__instance.IsPlayer())
+            if (__instance == null)
             {
-                float modifier = __instance.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyDodgeStaminaUse, 0.01f);
-                
-                __instance.m_dodgeStaminaUsage *= 1.0f - modifier;
+                return;
             }
+
+            __result -= __instance.GetTotalActiveMagicEffectValue(MagicEffectType.ModifyDodgeStaminaUse, 0.01f);
         }
-        
-        public static void Postfix(Player __instance, float __state)
+    }
+
+    /// <summary>
+    /// Helper function primarily for the tooltip.
+    /// </summary>
+    public static float GetModifyDodgeStaminaValue(ItemDrop.ItemData item)
+    {
+        if (item.HasMagicEffect(MagicEffectType.ModifyDodgeStaminaUse))
         {
-            // Restore the original dodge stamina usage after the method is executed
-            __instance.m_dodgeStaminaUsage = __state;
+            return item.m_shared.m_dodgeStaminaModifier -
+                item.GetMagicItem().GetTotalEffectValue(MagicEffectType.ModifyDodgeStaminaUse, 0.01f);
         }
+
+        return item.m_shared.m_dodgeStaminaModifier;
     }
 }
