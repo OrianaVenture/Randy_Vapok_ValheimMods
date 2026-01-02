@@ -54,6 +54,7 @@ namespace EpicLoot.CraftingV2
             SacrificeUI.GetIdentifyStyles = GetIdentifyStyles;
             SacrificeUI.GetRandomFilteredLoot = LootRollSelectedItems;
             SacrificeUI.GetPotentialIdentifications = GetPotentialItemRollsByCategory;
+            SacrificeUI.IsGatingActive = CheckGatingActiveForItems;
             ConvertUI.GetConversionRecipes = GetConversionRecipes;
             SetRarityColor.GetRarityColor = GetRarityColor;
             EnchantUI.GetEnchantableItems = GetEnchantableItems;
@@ -579,6 +580,32 @@ namespace EpicLoot.CraftingV2
             }
 
             return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
+        }
+
+        private static bool CheckGatingActiveForItems(string filterType, List<ItemDrop.ItemData> items)
+        {
+            GatedItemTypeMode gatedMode = EpicLoot.GetGatedItemTypeMode();
+            if (gatedMode == GatedItemTypeMode.Unlimited)
+            {
+                return false;
+            }
+
+            foreach (var item in items)
+            {
+                string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(item);
+                if (Enum.TryParse<Heightmap.Biome>(biomeKey, true, out var prefabBiome))
+                {
+                    var playerMaxBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
+                        prefabBiome, gatedMode);
+                    int prefabIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(prefabBiome);
+                    int playerIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(playerMaxBiome);
+                    if (prefabIndex >= 0 && playerIndex >= 0 && playerIndex < prefabIndex)
+                    {
+                        return true; // At least one item is being gated
+                    }
+                }
+            }
+            return false;
         }
 
         private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, string biomeKey)
