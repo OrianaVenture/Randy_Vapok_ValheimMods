@@ -27,7 +27,7 @@ public enum AbilityAction
 [PublicAPI]
 public class AbilityDefinition
 {
-    public string ID;
+    public string ID = "";
     public string IconAsset = ""; // Will need to tweak EpicLoot class to allow for custom icons to be passed
     public AbilityActivationMode ActivationMode; // Only Activate works, since Triggerable is unique per Ability
     public float Cooldown;
@@ -51,6 +51,8 @@ public class AbilityDefinition
         this.ID = ID;
         ActivationMode = mode;
     }
+    
+    public AbilityDefinition(){}
 
     internal static readonly Method API_AddAbility = new("AddAbility");
     internal static readonly Method API_UpdateAbility = new ("UpdateAbility");

@@ -5,37 +5,38 @@ using UnityEngine;
 
 namespace EpicLoot.MagicItemEffects
 {
-    public class Slow : MonoBehaviour
+    public sealed class Slow : MonoBehaviour
     {
         public const string RPCKey = "epic loot slow";
 
         public float Multiplier;
         public float TimeToLive;
 
+        private Character _character;
+
         public void Start()
         {
-            var character = GetComponent<Character>();
+            _character = GetComponent<Character>();
 
-            character.m_acceleration *= Multiplier;
-            character.m_runSpeed *= Multiplier;
-            character.m_flyFastSpeed *= Multiplier;
-            character.m_swimSpeed *= Multiplier;
+            _character.m_acceleration *= Multiplier;
+            _character.m_runSpeed *= Multiplier;
+            _character.m_flyFastSpeed *= Multiplier;
+            _character.m_swimSpeed *= Multiplier;
         }
 
         public void FixedUpdate()
         {
             TimeToLive -= Time.fixedDeltaTime;
+
             if (TimeToLive > 0)
             {
                 return;
             }
 
-            var character = GetComponent<Character>();
-
-            character.m_acceleration /= Multiplier;
-            character.m_runSpeed /= Multiplier;
-            character.m_flyFastSpeed /= Multiplier;
-            character.m_swimSpeed /= Multiplier;
+            _character.m_acceleration /= Multiplier;
+            _character.m_runSpeed /= Multiplier;
+            _character.m_flyFastSpeed /= Multiplier;
+            _character.m_swimSpeed /= Multiplier;
 
             Destroy(this);
         }
@@ -45,12 +46,14 @@ namespace EpicLoot.MagicItemEffects
     public static class SlowAddRPC_Character_Awake_Patch
     {
         [UsedImplicitly]
-        private static void Postfix(Character __instance) => 
+        private static void Postfix(Character __instance)
+        {
             __instance.m_nview.Register<float>(Slow.RPCKey, (s, multiplier) => RPC_Slow(__instance, multiplier));
+        }
 
         private static void RPC_Slow(Character character, float multiplier)
         {
-            if (!(character.GetComponent<Slow>() is Slow slow))
+            if (!character.TryGetComponent(out Slow slow))
             {
                 slow = character.gameObject.AddComponent<Slow>();
                 slow.Multiplier = multiplier;
@@ -66,10 +69,12 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(Character __instance, HitData hit)
         {
-            if (!__instance.IsBoss() && hit.GetAttacker() is Player player && 
-                player.HasActiveMagicEffect(MagicEffectType.Slow, out float effectValue, 0.01f))
+            if (!__instance.IsBoss()
+                && hit.GetAttacker() is Player player
+                && player.HasActiveMagicEffect(MagicEffectType.Slow, out float effectValue, 0.01f))
             {
-                var slowMultiplier = 1 - effectValue;
+                float slowMultiplier = 1 - effectValue;
+
                 if (!Mathf.Approximately(slowMultiplier, 1))
                 {
                     __instance.m_nview.InvokeRPC(ZRoutedRpc.Everybody, Slow.RPCKey, slowMultiplier);
@@ -83,11 +88,11 @@ namespace EpicLoot.MagicItemEffects
     {
         public static double ModifyAttackSpeed(Character character, double speed)
         {
-            if (character.InAttack() && character.GetComponent<Slow>()?.Multiplier is { } slowMultiplier)
+            if (character.InAttack() && character.TryGetComponent(out Slow slow))
             {
                 if (speed > 0.001f && (speed * 1e4f % 10 > 3 || speed * 1e4f % 10 < 1))
                 {
-                    speed = (float) Math.Round(speed * slowMultiplier, 3) + speed % 1e-4f + 2e-4f;
+                    speed = (float) Math.Round(speed * slow.Multiplier, 3) + speed % 1e-4f + 2e-4f;
                 }
             }
 
@@ -97,7 +102,7 @@ namespace EpicLoot.MagicItemEffects
         [UsedImplicitly]
         private static void Postfix(Game __instance)
         {
-            AnimationSpeedManager.Add((character, speed) => ModifyAttackSpeed(character,speed));
+            AnimationSpeedManager.Add(ModifyAttackSpeed);
         }
     }
 }

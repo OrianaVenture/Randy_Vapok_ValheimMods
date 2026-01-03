@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using Common;
 using EpicLoot.Adventure;
 using EpicLoot.Config;
@@ -9,7 +9,6 @@ using EpicLoot.GatedItemType;
 using EpicLoot.General;
 using EpicLoot.Magic;
 using EpicLoot.MagicItemEffects;
-using EpicLoot.Patching;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Jotunn.Configs;
@@ -37,7 +36,7 @@ namespace EpicLoot
     {
         public const string PluginId = "randyknapp.mods.epicloot";
         public const string DisplayName = "Epic Loot";
-        public const string Version = "0.12.4";
+        public const string Version = "0.12.6";
 
         private static string ConfigFileName = PluginId + ".cfg";
         private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -376,11 +375,27 @@ namespace EpicLoot
             Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
             Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
+            Assets.BulwarkStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Bulwark_SE_Name);
+            Assets.BulwarkMagicShieldVFX = assetBundle.LoadAsset<GameObject>("MagicShield");
+            Assets.BulwarkMagicShieldSFX = assetBundle.LoadAsset<GameObject>("sfx_bulwark");
+
+            Assets.UndyingStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Undying_SE_Name);
+            Assets.UndyingVFX = assetBundle.LoadAsset<GameObject>("Undying");
+            Assets.UndyingSFX = assetBundle.LoadAsset<GameObject>("sfx_undying");
+
+            Assets.BerserkerStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Berserker_SE_Name);
+            Assets.BerserkerVFX = assetBundle.LoadAsset<GameObject>("Berserker");
+            Assets.BerserkerSFX =  assetBundle.LoadAsset<GameObject>("sfx_berserker");
+
+            GameObject explosiveArrow = assetBundle.LoadAsset<GameObject>(EpicAssets.ExplosiveArrow);
+            PrefabManager.Instance.AddPrefab(new CustomPrefab(explosiveArrow, true));
+
             LoadCraftingMaterialAssets();
-            
+
             LoadPieces();
             LoadItems();
             LoadBountySpawner();
+            RegisterAbilityStatusEffects();
 
             PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
             ItemManager.OnItemsRegistered += SetupStatusEffects;
@@ -569,6 +584,34 @@ namespace EpicLoot
             }
         }
 
+        private static void RegisterAbilityStatusEffects()
+        {
+            RegisterBulwark();
+            RegisterUndying();
+            RegisterBerserker();
+        }
+
+        private static void RegisterBulwark()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldVFX);
+            PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BulwarkStatusEffect);
+        }
+
+        private static void RegisterBerserker()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.BerserkerVFX);
+            PrefabManager.Instance.AddPrefab(Assets.BerserkerSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BerserkerStatusEffect);
+        }
+
+        private static void RegisterUndying()
+        {
+            PrefabManager.Instance.AddPrefab(Assets.UndyingVFX);
+            PrefabManager.Instance.AddPrefab(Assets.UndyingSFX);
+            ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.UndyingStatusEffect);
+        }
+
         [UsedImplicitly]
         void OnDestroy()
         {
@@ -687,37 +730,25 @@ namespace EpicLoot
             return resourcenames;
         }
 
-        public static bool IsAllowedMagicItemType(ItemDrop.ItemData.ItemType itemType)
-        {
-            switch (itemType)
-            {
-                case ItemDrop.ItemData.ItemType.Helmet:
-                case ItemDrop.ItemData.ItemType.Chest:
-                case ItemDrop.ItemData.ItemType.Legs:
-                case ItemDrop.ItemData.ItemType.Shoulder:
-                case ItemDrop.ItemData.ItemType.Utility:
-                case ItemDrop.ItemData.ItemType.Bow:
-                case ItemDrop.ItemData.ItemType.OneHandedWeapon:
-                case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-                case ItemDrop.ItemData.ItemType.TwoHandedWeaponLeft:
-                case ItemDrop.ItemData.ItemType.Shield:
-                case ItemDrop.ItemData.ItemType.Tool:
-                case ItemDrop.ItemData.ItemType.Torch:
-                case ItemDrop.ItemData.ItemType.Trinket:
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
         public static bool CanBeMagicItem(ItemDrop.ItemData item)
         {
             return item != null
-                && IsPlayerItem(item)
-                && Nonstackable(item)
-                && IsNotRestrictedItem(item)
-                && IsAllowedMagicItemType(item.m_shared.m_itemType);
+                   && IsPlayerItem(item)
+                   && Nonstackable(item)
+                   && IsNotRestrictedItem(item)
+                   && IsAllowedMagicItemType(item);
+        }
+
+        public static bool IsAllowedMagicItemType(ItemDrop.ItemData item)
+        {
+            switch (item.m_shared.m_itemType)
+            {
+                case ItemDrop.ItemData.ItemType.Ammo:
+                case ItemDrop.ItemData.ItemType.AmmoNonEquipable:
+                        return false;
+                default:
+                    return item.IsEquipable();
+            }
         }
 
         public static Sprite GetMagicItemBgSprite()

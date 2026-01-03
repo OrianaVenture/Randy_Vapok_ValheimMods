@@ -45,6 +45,7 @@ namespace EpicLoot.CraftingV2
             MultiSelectItemList.SortByRarity = SortByRarity;
             MultiSelectItemList.SortByName = SortByName;
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
+            MultiSelectItemListElement.SetItemTooltip = SetItemTooltip;
             SacrificeUI.GetSacrificeItems = GetSacrificeItems;
             SacrificeUI.GetSacrificeProducts = GetSacrificeProducts;
             SacrificeUI.GetIdentifyCost = GetIdentifyCostForCategory;
@@ -195,6 +196,19 @@ namespace EpicLoot.CraftingV2
                     tooltip.m_topic = Localization.instance.Localize(item.GetDecoratedName());
                     tooltip.m_text = Localization.instance.Localize(item.GetTooltip());
                 }
+            }
+        }
+
+        private static void SetItemTooltip(ItemDrop.ItemData item,
+            UITooltip tooltip)
+        {
+            if (EpicLoot.IsAllowedMagicItemType(item))
+            {
+                tooltip.Set(item.GetDisplayName(), item.GetTooltip());
+            }
+            else
+            {
+                tooltip.Set("", "");
             }
         }
 
@@ -700,7 +714,6 @@ namespace EpicLoot.CraftingV2
                 return new List<InventoryItemListElement>();
             }
 
-            EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
             List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
 
@@ -728,7 +741,6 @@ namespace EpicLoot.CraftingV2
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
                 
-                EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{totalStackSize} x modifier:{costModifier} = result:{cost}");
                 itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
                 if (itemData.m_stack <= 0)
                 {
@@ -1063,7 +1075,6 @@ namespace EpicLoot.CraftingV2
         private static List<Tuple<string, bool>> GetEnchantmentEffects(ItemDrop.ItemData item, bool runecheck = false)
         {
             List<Tuple<string, bool>> result = new List<Tuple<string, bool>>();
-            EpicLoot.Log($"Checking for {item} potential enchantments");
             MagicItem magicItem = item?.GetMagicItem();
             if (magicItem != null)
             {

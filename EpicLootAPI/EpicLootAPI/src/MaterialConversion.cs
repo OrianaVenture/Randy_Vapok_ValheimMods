@@ -17,7 +17,7 @@ public enum MaterialConversionType
 [Serializable][PublicAPI]
 public class MaterialConversionRequirement
 {
-    public string Item;
+    public string Item = "";
     public int Amount;
 
     public MaterialConversionRequirement(string item, int amount = 1)
@@ -25,13 +25,15 @@ public class MaterialConversionRequirement
         Item = item;
         Amount = amount;
     }
+    
+    public MaterialConversionRequirement(){}
 }
 
 [Serializable][PublicAPI]
 public class MaterialConversion
 {
-    public string Name;
-    public string Product;
+    public string Name = "";
+    public string Product = "";
     public int Amount;
     public MaterialConversionType Type;
     public List<MaterialConversionRequirement> Resources = new();
@@ -46,6 +48,8 @@ public class MaterialConversion
 
         MaterialConversions.Add(this);
     }
+    
+    public MaterialConversion(){}
     
     internal static readonly Method API_AddMaterialConversion = new("AddMaterialConversion");
     internal static readonly Method API_UpdateMaterialConversion = new ("UpdateMaterialConversion");

@@ -107,7 +107,11 @@ namespace EpicLoot.MagicItemEffects
                 hit.m_damage.Modify(DamageReductionMultiplier); // DR
                 hit.m_pushForce = 0f; // knock back immunity
                 hit.m_staggerMultiplier = 0f;
-                AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, player.transform.position);
+
+                if (EpicLoot.Assets.OffSetSFX != null)
+                {
+                    AudioSource.PlayClipAtPoint(EpicLoot.Assets.OffSetSFX, player.transform.position);
+                }
             }
 
             foreach (var kvp in new List<KeyValuePair<Player, float>>(ActiveOffSetTimers))

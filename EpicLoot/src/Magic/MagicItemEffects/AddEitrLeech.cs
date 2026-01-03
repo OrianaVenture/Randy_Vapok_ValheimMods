@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.General;
+using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -33,7 +34,7 @@ namespace EpicLoot.MagicItemEffects
                 if (MagicEffectsHelper.HasActiveMagicEffectOnWeapon(
                     player, weapon, MagicEffectType.EitrLeech, out float eitrleechMultiplier, 0.01f))
                 {
-                    player.AddEitr(hit.m_damage.GetTotalDamage() * eitrleechMultiplier);
+                    player.AddEitr(hit.m_damage.EpicLootGetTotalDamage() * eitrleechMultiplier);
                 }
             }
         }

@@ -1,17 +1,34 @@
 ﻿using HarmonyLib;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+public static class ModifyRunStaminaDrain
 {
-    [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyRunStaminaDrain))]
-    public static class ModifySprintStaminaUse_SEMan_ModifyRunStaminaDrain_Patch
+    [HarmonyPatch(typeof(Player), nameof(Player.GetEquipmentRunStaminaModifier))]
+    private static class ModifyRunStaminaDrain_Player_GetEquipmentDodgeStaminaModifier_Patch
     {
-        public static void Postfix(SEMan __instance, float baseDrain, ref float drain)
+        private static void Postfix(Player __instance, ref float __result)
         {
-            if (__instance.m_character.IsPlayer())
+            if (__instance == null)
             {
-                var player = (Player)__instance.m_character;
-                drain *= 1 - player.GetTotalActiveMagicEffectValue(MagicEffectType.ModifySprintStaminaUse, 0.01f);
+                return;
             }
+
+            __result -= __instance.GetTotalActiveMagicEffectValue(MagicEffectType.ModifySprintStaminaUse, 0.01f);
         }
+    }
+
+    /// <summary>
+    /// Helper function primarily for the tooltip.
+    /// </summary>
+    public static float GetModifySprintStaminaValue(ItemDrop.ItemData item)
+    {
+        if (item.HasMagicEffect(MagicEffectType.ModifySprintStaminaUse))
+        {
+            return item.m_shared.m_runStaminaModifier -
+                item.GetMagicItem().GetTotalEffectValue(MagicEffectType.ModifySprintStaminaUse, 0.01f);
+        }
+
+        return item.m_shared.m_runStaminaModifier;
     }
 }

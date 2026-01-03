@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.General;
+using HarmonyLib;
 
 namespace EpicLoot.MagicItemEffects
 {
@@ -46,9 +47,8 @@ namespace EpicLoot.MagicItemEffects
                 return;
             }
 
-            var healOn = hit.m_damage.GetTotalDamage() * lifeStealMultiplier;
+            var healOn = hit.m_damage.EpicLootGetTotalDamage() * lifeStealMultiplier;
 
-            EpicLoot.Log("lifesteal " + healOn);
             attacker.Heal(healOn);
         }
     }
