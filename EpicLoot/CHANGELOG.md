@@ -1,3 +1,11 @@
+## Version 0.12.6
+
+* Fixed AddHealthRegen not applying after the 12.5 update.
+* Fixed typo for defeated_eikthyr key in new itemsorter.json file.
+  * Delete and regenerate this file in your baseconfig folder or grab the fix manually if you have made changes.
+* More edge case detection for the automatic item sorting logic.
+* Added some null reference exceptions safeguards in different places in code.
+
 ## Version 0.12.5
 
 * NEW itemsorter.json configuration file to configure the auto-add behaviors!
