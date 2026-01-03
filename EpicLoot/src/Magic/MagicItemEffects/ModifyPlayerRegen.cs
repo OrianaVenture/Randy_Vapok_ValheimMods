@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace EpicLoot.MagicItemEffects;
 
@@ -7,6 +9,31 @@ public static class ModifyPlayerRegen
     [HarmonyPatch]
     private static class SEMan_ModifyRegen_Patches
     {
+        [HarmonyTranspiler]
+        [HarmonyPatch(typeof(Player), nameof(Player.UpdateFood))]
+        private static IEnumerable<CodeInstruction> ModifyHealthRegen_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher codeMatcher = new CodeMatcher(instructions);
+            codeMatcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Mul),
+                new CodeMatch(OpCodes.Stloc_S),
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Ldc_I4_1),
+                new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Character), nameof(Character.Heal))))
+                .Advance(1).InsertAndAdvance(
+                Transpilers.EmitDelegate(AddHealthTicks))
+                .ThrowIfNotMatch("Unable to patch Player.UpdateFood for AddHealthRegen effect.");
+            return codeMatcher.Instructions();
+        }
+
+        private static float AddHealthTicks(float value)
+        {
+            return value + Player.m_localPlayer.GetTotalActiveMagicEffectValue(MagicEffectType.AddHealthRegen);
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(SEMan), nameof(SEMan.ModifyHealthRegen))]
         private static void ModifyHealthRegen_Postfix(SEMan __instance, ref float regenMultiplier)
