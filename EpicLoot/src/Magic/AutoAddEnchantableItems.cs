@@ -1,5 +1,4 @@
-﻿using BepInEx;
-using EpicLoot.Adventure;
+﻿using EpicLoot.Adventure;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.GatedItemType;
@@ -94,7 +93,6 @@ namespace EpicLoot.Magic
             EpicLoot.Log($"Checking all equipment in game.");
             foundByCategory = EnsureItemsInConfigMutating(foundByCategory, itemsByCategory, allEquipment);
 
-
             // Compare the found items with the current config, if enabled add items, if enabled remove missing items
             if (ELConfig.AutoRemoveEquipmentNotFound.Value)
             {
@@ -114,9 +112,8 @@ namespace EpicLoot.Magic
             // Add/remove items from vendor if enabled.
             AddRemoveItemsFromVendor(newConfig);
 
-
             List<string> magicMats = allItems.Where(i => i.m_itemData != null &&
-            (i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()))
+                (i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()))
                 .Select(x => x.m_itemData.m_dropPrefab.name).ToList();
             AddRemoveItemsFromLootLists(magicMats, foundByCategory, newConfig);
 
@@ -134,7 +131,9 @@ namespace EpicLoot.Magic
             }
         }
 
-        private static void AddRemoveItemsFromLootLists(List<string> magicMats, Dictionary<string, ItemTypeInfo> foundByCategory, List<ItemTypeInfo> newConfig)
+        private static void AddRemoveItemsFromLootLists(List<string> magicMats,
+            Dictionary<string, ItemTypeInfo> foundByCategory,
+            List<ItemTypeInfo> newConfig)
         {
             if (!ELConfig.AutoAddRemoveEquipmentFromLootLists.Value)
             {
@@ -150,9 +149,9 @@ namespace EpicLoot.Magic
             List<string> metaItemSetNames = LootRoller.Config.ItemSets.Select(x => x.Name).ToList();
             // List of all of the currently valid items so we can always determine if its at least valid
             List<string> validItems = [];
-            foreach (var entry in foundByCategory.Values)
+            foreach (ItemTypeInfo entry in foundByCategory.Values)
             {
-                foreach (var iteme in entry.ItemsByBoss)
+                foreach (KeyValuePair<string, List<string>> iteme in entry.ItemsByBoss)
                 {
                     validItems.AddRange(iteme.Value);
                 }
@@ -164,7 +163,7 @@ namespace EpicLoot.Magic
                 List<string> addedItems = new List<string>();
                 // Validate existing entries in the lootset
                 EpicLoot.Log($"Checking LootSet entry: {lis.Name}");
-                foreach (var loot in lis.Loot)
+                foreach (LootDrop loot in lis.Loot)
                 {
                     if (validItems.Contains(loot.Item) || metaItemSetNames.Contains(loot.Item) || magicMats.Contains(loot.Item))
                     {
@@ -197,7 +196,7 @@ namespace EpicLoot.Magic
                             continue;
                         }
 
-                        foreach (var gateditem in itemType.ItemsByBoss[bosskey])
+                        foreach (string gateditem in itemType.ItemsByBoss[bosskey])
                         {
                             if (addedItems.Contains(gateditem))
                             {
@@ -209,7 +208,10 @@ namespace EpicLoot.Magic
                     }
                 }
 
-                if (entries.Count > 0) { updatedItemSets.Add(new LootItemSet { Name = lis.Name, Loot = entries.ToArray() }); }
+                if (entries.Count > 0)
+                {
+                    updatedItemSets.Add(new LootItemSet { Name = lis.Name, Loot = entries.ToArray() });
+                }
             }
 
             EpicLoot.Log($"Checking loot tables for invalid entries.");
@@ -229,10 +231,10 @@ namespace EpicLoot.Magic
                 // Validate existing entries in the leveled loot drops
                 if (lt.LeveledLoot != null)
                 {
-                    foreach (var lloot in lt.LeveledLoot)
+                    foreach (LeveledLootDef lloot in lt.LeveledLoot)
                     {
                         List<LootDrop> updatedLootTableLL = new List<LootDrop>();
-                        foreach (var ld in lloot.Loot)
+                        foreach (LootDrop ld in lloot.Loot)
                         {
                             if (validItems.Contains(ld.Item) || metaItemSetNames.Contains(ld.Item))
                             {
@@ -250,6 +252,7 @@ namespace EpicLoot.Magic
                 updatedLootTables.Add(ltc);
                 metaLootTables.Add(lt.Object);
             }
+
             EpicLoot.Log($"Finished Validating loottable.");
             // Write out the new config, which will trigger a reload of the config
             try
@@ -343,12 +346,12 @@ namespace EpicLoot.Magic
         private static List<ItemTypeInfo> MergeItemsByBossConfig(Dictionary<string, ItemTypeInfo> itemsByCategory)
         {
             List<ItemTypeInfo> newConfig = new List<ItemTypeInfo>();
-            foreach (var item in itemsByCategory)
+            foreach (KeyValuePair<string, ItemTypeInfo> item in itemsByCategory)
             {
                 if (item.Value.ItemsByBoss.Count > 0 || item.Value.IgnoredItems.Count > 0)
                 {
                     Dictionary<string, List<string>> itemsByBossUniques = new();
-                    foreach (var entry in item.Value.ItemsByBoss)
+                    foreach (KeyValuePair<string, List<string>> entry in item.Value.ItemsByBoss)
                     {
                         itemsByBossUniques.Add(entry.Key, entry.Value.Distinct().ToList());
                     }
@@ -364,10 +367,14 @@ namespace EpicLoot.Magic
                     newConfig.Add(uniqueItems);
                 }
             }
+
             return newConfig;
         }
 
-        private static Dictionary<string, ItemTypeInfo> EnsureItemsInConfigMutating(Dictionary<string, ItemTypeInfo> foundByCategory, Dictionary<string, ItemTypeInfo> itemsByCategory, List<ItemDrop> allEquipment)
+        private static Dictionary<string, ItemTypeInfo> EnsureItemsInConfigMutating(
+            Dictionary<string, ItemTypeInfo> foundByCategory,
+            Dictionary<string, ItemTypeInfo> itemsByCategory,
+            List<ItemDrop> allEquipment)
         {
             foreach (ItemDrop item in allEquipment)
             {
@@ -386,9 +393,9 @@ namespace EpicLoot.Magic
                     }
                     else
                     {
-                        foreach (var entry in itemsByCategory[itemType].ItemsByBoss)
+                        foreach (KeyValuePair<string, List<string>> entry in itemsByCategory[itemType].ItemsByBoss)
                         {
-                            var catEntry = foundByCategory[itemType].ItemsByBoss;
+                            Dictionary<string, List<string>> catEntry = foundByCategory[itemType].ItemsByBoss;
                             if (entry.Value.Contains(itemName))
                             {
                                 if (!catEntry.ContainsKey(entry.Key))
@@ -404,31 +411,37 @@ namespace EpicLoot.Magic
                     }
                 }
 
-                
                 if (itemfound)
                 {
                     continue;
                 }
 
-                
                 string key = DetermineBossLevelForItem(item.m_itemData);
-                bool uncraftable_found = false;
+                bool uncraftableFound = false;
                 foreach(KeyValuePair<string, List<string>> uncraftable in Config.UncraftableItemsAlwaysAllowed)
                 {
-                    if (uncraftable.Value == null || uncraftable.Value.Count == 0) { continue; }
-                    if (uncraftable.Value.Contains(itemName)) {
+                    if (uncraftable.Value == null || uncraftable.Value.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    if (uncraftable.Value.Contains(itemName))
+                    {
                         if (foundByCategory[itemType].ItemsByBoss.ContainsKey(uncraftable.Key))
                         {
                             foundByCategory[itemType].ItemsByBoss[uncraftable.Key].Add(itemName);
-                        } else {
+                        }
+                        else
+                        {
                             foundByCategory[itemType].ItemsByBoss.Add(uncraftable.Key, new List<string>() { itemName });
                         }
-                        uncraftable_found = true;
+
+                        uncraftableFound = true;
                         break;
                     }
                 }
 
-                if (uncraftable_found)
+                if (uncraftableFound)
                 {
                     continue;
                 }
@@ -446,7 +459,8 @@ namespace EpicLoot.Magic
 
                 EpicLoot.Log($"{itemType} {key} add {itemName}");
                 // Ensure gating required boss keys exist
-                if (!foundByCategory[itemType].ItemsByBoss.ContainsKey(key)) {
+                if (!foundByCategory[itemType].ItemsByBoss.ContainsKey(key))
+                {
                     foundByCategory[itemType].ItemsByBoss.Add(key, new List<string>() { });
                 }
 
@@ -455,7 +469,9 @@ namespace EpicLoot.Magic
             return foundByCategory;
         }
 
-        private static Dictionary<string, ItemTypeInfo> AddMissingItemsInConfigMutating(Dictionary<string, ItemTypeInfo> foundByCategory, Dictionary<string, ItemTypeInfo> itemsByCategory)
+        private static Dictionary<string, ItemTypeInfo> AddMissingItemsInConfigMutating(
+            Dictionary<string, ItemTypeInfo> foundByCategory,
+            Dictionary<string, ItemTypeInfo> itemsByCategory)
         {
             // Just add found items, dont remove missing items
             foreach (KeyValuePair<string, ItemTypeInfo> fbc in foundByCategory)
@@ -486,7 +502,9 @@ namespace EpicLoot.Magic
             return itemsByCategory;
         }
 
-        private static Dictionary<string, ItemTypeInfo> AddRemoveMissingItemsInConfigMutating(Dictionary<string, ItemTypeInfo> foundByCategory, Dictionary<string, ItemTypeInfo> itemsByCategory)
+        private static Dictionary<string, ItemTypeInfo> AddRemoveMissingItemsInConfigMutating(
+            Dictionary<string, ItemTypeInfo> foundByCategory,
+            Dictionary<string, ItemTypeInfo> itemsByCategory)
         {
             foreach (KeyValuePair<string, ItemTypeInfo> fbc in foundByCategory)
             {
@@ -509,10 +527,12 @@ namespace EpicLoot.Magic
                                 .Except(itemsByCategory[fbc.Key].ItemsByBoss[key]).ToList();
                             List<string> toremovelist = itemsByCategory[fbc.Key].ItemsByBoss[key]
                                 .Except(foundByCategory[fbc.Key].ItemsByBoss[key]).ToList();
+
                             if (toaddlist.Count > 0)
                             {
                                 EpicLoot.Log($"Adding entries in {key} that are not found in the config: {string.Join(", ", toaddlist)}");
                             }
+
                             if (toremovelist.Count > 0)
                             {
                                 EpicLoot.Log($"Removing entries in {key} that are not found in the config: {string.Join(", ", toremovelist)}");
@@ -537,6 +557,7 @@ namespace EpicLoot.Magic
 
                         List<string> reducedItems = itemsByCategory[fbc.Key].ItemsByBoss[entry.Key]
                             .Where(e => entry.Value.Contains(e)).ToList();
+
                         if (reducedItems.Count != itemsByCategory[fbc.Key].ItemsByBoss[entry.Key].Count)
                         {
                             EpicLoot.Log($"Removing items from {fbc.Key} {entry.Key} that are not found in the config: " +
@@ -550,14 +571,15 @@ namespace EpicLoot.Magic
             return itemsByCategory;
         }
 
-        private static List<LootDrop> ValidateLootList(LootTable lt, List<string> metaLootTables, List<string> metaItemSetNames, List<string> validItems)
+        private static List<LootDrop> ValidateLootList(LootTable lt,
+            List<string> metaLootTables, List<string> metaItemSetNames, List<string> validItems)
         {
             List<LootDrop> updatedLootDrop = new List<LootDrop>();
-            foreach (var loot in lt.Loot)
+            foreach (LootDrop loot in lt.Loot)
             {
                 if (loot.Item.Contains("."))
                 {
-                    var referenceAndIndex = loot.Item.Split('.');
+                    string[] referenceAndIndex = loot.Item.Split('.');
                     EpicLoot.Log($"Validating meta reference {loot.Item} {referenceAndIndex[0]}");
                     if (metaItemSetNames.Contains(referenceAndIndex[0]) || metaLootTables.Contains(referenceAndIndex[0]))
                     {
@@ -582,6 +604,7 @@ namespace EpicLoot.Magic
             {
                 return Config.VendorCostByBiomeKey[bosskey];
             }
+
             return 999;
         }
 
@@ -589,6 +612,7 @@ namespace EpicLoot.Magic
         {
             tier = null;
             type = null;
+
             if (!name.Contains("Tier"))
             {
                 EpicLoot.Log("Non Tiered entry");
@@ -598,7 +622,11 @@ namespace EpicLoot.Magic
             tier = name.Substring(0, 5);
             type = name.Substring(5);
             // Maybe we want to ensure the everything groups are properly setup? How much loot table validation should we do?
-            if (type == "Tier" || type == "Everything") { return false; }
+            if (type == "Tier" || type == "Everything")
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -608,12 +636,13 @@ namespace EpicLoot.Magic
             {
                 return Config.TierRarityProbabilities[tier].ToArray();
             }
+
             return [97, 2, 1, 0, 0];
         }
 
         private static string DetermineItemType(ItemDrop.ItemData item)
         {
-            var itemType = item.m_shared.m_itemType;
+            ItemDrop.ItemData.ItemType itemType = item.m_shared.m_itemType;
             switch (itemType)
             {
                 case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
@@ -627,23 +656,9 @@ namespace EpicLoot.Magic
                         case Skills.SkillType.Swords:
                             return "Swords";
                         case Skills.SkillType.Clubs:
-                            if (itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon)
-                            {
-                                return "Clubs";
-                            }
-                            else
-                            {
-                                return "Sledges";
-                            }
+                            return (itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon) ? "Clubs" : "Sledges";
                         case Skills.SkillType.Axes:
-                            if (itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon)
-                            {
-                                return "Axes";
-                            }
-                            else
-                            {
-                                return "TwoHandAxes";
-                            }
+                            return (itemType == ItemDrop.ItemData.ItemType.OneHandedWeapon) ? "Axes" : "TwoHandAxes";
                         case Skills.SkillType.Knives:
                             return "Knives";
                         case Skills.SkillType.Unarmed:
@@ -655,9 +670,7 @@ namespace EpicLoot.Magic
                             return "Polearms";
                         case Skills.SkillType.Pickaxes:
                             return "Pickaxes";
-                        
-                            // For bombs
-                        case Skills.SkillType.None:
+                        case Skills.SkillType.None: // For bombs
                         case Skills.SkillType.Sneak:
                             return "Torches";
                     }
@@ -665,14 +678,7 @@ namespace EpicLoot.Magic
                 case ItemDrop.ItemData.ItemType.Shield:
                     if (item.m_shared.m_timedBlockBonus > 0)
                     {
-                        if (item.m_shared.m_timedBlockBonus >= 2.5f)
-                        {
-                            return "Bucklers";
-                        }
-                        else
-                        {
-                            return "RoundShields";
-                        }
+                        return (item.m_shared.m_timedBlockBonus >= 2.5f) ? "Bucklers" : "RoundShields";
                     }
                     else
                     {
@@ -700,7 +706,8 @@ namespace EpicLoot.Magic
 
             // It is possible that the item is not a known skill type
             // This happens with weapons that use mod skills eg: scythes
-            switch (item.m_shared.m_animationState) {
+            switch (item.m_shared.m_animationState)
+            {
                 // Its either an axe or a sword, currently this is only therzies throwing axes which get to this point
                 case ItemDrop.ItemData.AnimationState.OneHanded:
                     return "Axes";
@@ -735,13 +742,17 @@ namespace EpicLoot.Magic
         public static string DetermineBossLevelForItem(ItemDrop.ItemData item)
         {
             Recipe itemRecipe = ObjectDB.instance.GetRecipe(item);
-            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) { return NONE; }
+            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null)
+            {
+                return NONE;
+            }
 
             // We need to completely evaluate each tier until we find a match, so that we only match the highest tier for the selected item.
 
             foreach (Piece.Requirement req in itemRecipe.m_resources)
             {
-                // This goes through the biome tiers in reverse order, starting from the highest tier and checking if the current item has materials from that biome
+                // This goes through the biome tiers in reverse order, starting from the highest tier
+                // and checking if the current item has materials from that biome
                 // if not it goes down a biome until it finds materials required to craft the item
                 // if an item does not require any materials or has no recipe, it should be listed in UncraftableItemsAlwaysAllowed
                 foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData.Reverse())
@@ -750,6 +761,7 @@ namespace EpicLoot.Magic
                     {
                         return sortdata.Value.BossKey;
                     }
+
                     if (sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
                     {
                         return sortdata.Value.BossKey;
