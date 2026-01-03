@@ -1,10 +1,10 @@
-﻿namespace EpicLoot;
-
-using Config;
+﻿using EpicLoot.Config;
 using HarmonyLib;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+
+namespace EpicLoot;
 
 public sealed class WelcomeMessage : MonoBehaviour
 {
