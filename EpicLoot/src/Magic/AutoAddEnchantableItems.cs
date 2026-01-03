@@ -741,6 +741,11 @@ namespace EpicLoot.Magic
 
         public static string DetermineBossLevelForItem(ItemDrop.ItemData item)
         {
+            if (item == null || ObjectDB.instance == null)
+            {
+                return NONE;
+            }
+
             Recipe itemRecipe = ObjectDB.instance.GetRecipe(item);
             if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null)
             {
@@ -757,12 +762,13 @@ namespace EpicLoot.Magic
                 // if an item does not require any materials or has no recipe, it should be listed in UncraftableItemsAlwaysAllowed
                 foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData.Reverse())
                 {
-                    if (sortdata.Value.BiomeMaterials.Contains(req.m_resItem.name))
+                    if (req.m_resItem != null && sortdata.Value.BiomeMaterials.Contains(req.m_resItem.name))
                     {
                         return sortdata.Value.BossKey;
                     }
 
-                    if (sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
+                    if (itemRecipe.m_craftingStation != null &&
+                        sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
                     {
                         return sortdata.Value.BossKey;
                     }
