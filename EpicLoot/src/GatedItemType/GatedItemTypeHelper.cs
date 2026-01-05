@@ -1,6 +1,6 @@
 ﻿using BepInEx;
-using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
+using EpicLoot.Biome;
 using EpicLoot.General;
 using Jotunn.Managers;
 using System.Collections.Generic;
@@ -116,24 +116,44 @@ namespace EpicLoot.GatedItemType
             BiomesInOrder.Add(Heightmap.Biome.None);
             BiomesToBossKeys.Add(Heightmap.Biome.None, new List<string> { });
 
-            foreach (BountyBossConfig boss in AdventureDataManager.Config.Bounties.Bosses)
+            // Build BiomesInOrder and BiomesToBossKeys from BiomeDataManager
+            // Biomes are already sorted by Order in BiomeDataManager
+            foreach (var biomeName in BiomeDataManager.GetBiomesInOrder())
             {
-                if (!BiomesToBossKeys.ContainsKey(boss.Biome))
+                var biomeConfig = BiomeDataManager.GetBiomeDefinition(biomeName);
+                if (biomeConfig == null)
                 {
-                    BiomesToBossKeys.Add(boss.Biome, new List<string> { boss.BossDefeatedKey });
+                    continue;
+                }
+
+                // Skip biomes without a boss defined
+                if (string.IsNullOrEmpty(biomeConfig.BossDefeatedKey))
+                {
+                    continue;
+                }
+
+                // Try to convert the biome string to Heightmap.Biome enum
+                if (!biomeConfig.TryGetBiomeEnum(out var biomeEnum))
+                {
+                    EpicLoot.LogWarning($"[GatedItemTypeHelper] Could not parse biome '{biomeName}' as Heightmap.Biome enum");
+                    continue;
+                }
+
+                if (!BiomesToBossKeys.ContainsKey(biomeEnum))
+                {
+                    BiomesToBossKeys.Add(biomeEnum, new List<string> { biomeConfig.BossDefeatedKey });
                 }
                 else
                 {
-                    if (!BiomesToBossKeys[boss.Biome].Contains(boss.BossDefeatedKey))
+                    if (!BiomesToBossKeys[biomeEnum].Contains(biomeConfig.BossDefeatedKey))
                     {
-                        BiomesToBossKeys[boss.Biome].Add(boss.BossDefeatedKey);
+                        BiomesToBossKeys[biomeEnum].Add(biomeConfig.BossDefeatedKey);
                     }
                 }
 
-                // TODO: make a new user defined data structure to control biome order
-                if (!BiomesInOrder.Contains(boss.Biome))
+                if (!BiomesInOrder.Contains(biomeEnum))
                 {
-                    BiomesInOrder.Add(boss.Biome);
+                    BiomesInOrder.Add(biomeEnum);
                 }
             }
 
