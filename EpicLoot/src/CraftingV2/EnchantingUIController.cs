@@ -1,5 +1,6 @@
 
 using EpicLoot.Adventure;
+using EpicLoot.Biome;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.Data;
@@ -563,23 +564,24 @@ namespace EpicLoot.CraftingV2
             return successDialog.gameObject;
         }
 
-        private static IdentifyTypeConfig SelectLootIdentifyDetails(string filter)
+        private static (string identifyType, IdentifyTypeConfig config) SelectLootIdentifyDetails(string filter)
         {
             if (EnchantCostsHelper.Config.IdentifyTypes.Count == 0)
             {
-                EpicLoot.LogWarning("IdentifyTypes is not defined in the configurations! Cannot select loot.");
-                return null;
+                EpicLoot.LogWarning("IdentifyTypes is not defined in the enchantcosts configurations! Cannot select loot.");
+                return (null, null);
             }
 
             foreach (KeyValuePair<string, IdentifyTypeConfig> identifyStyle in EnchantCostsHelper.Config.IdentifyTypes)
             {
                 if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter)
                 {
-                    return identifyStyle.Value;
+                    return (identifyStyle.Key, identifyStyle.Value);
                 }
             }
 
-            return EnchantCostsHelper.Config.IdentifyTypes.First().Value;
+            var first = EnchantCostsHelper.Config.IdentifyTypes.First();
+            return (first.Key, first.Value);
         }
 
         private static bool CheckGatingActiveForItems(string filterType, List<ItemDrop.ItemData> items)
@@ -608,12 +610,10 @@ namespace EpicLoot.CraftingV2
             return false;
         }
 
-        private static List<LootTable> GetLootTablesForIdentifyStyle(IdentifyTypeConfig cfg, string biomeKey)
+        private static List<LootTable> GetLootTablesForIdentifyStyle(string identifyType, string biomeKey)
         {
             EpicLoot.Log($"[GetLootTablesForIdentifyStyle] START");
-            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Input biomeKey: {biomeKey}");
-            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] cfg.Localization: {cfg.Localization}");
-            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] cfg.BiomeLootLists.Keys: {string.Join(", ", cfg.BiomeLootLists.Keys)}");
+            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Input biomeKey: {biomeKey}, identifyType: {identifyType}");
 
             // Apply one-directional gating: we can DOWNGRADE the biome if the player hasn't progressed far enough,
             // but we NEVER upgrade beyond the biome encoded in the prefab name. This prevents:
@@ -628,9 +628,9 @@ namespace EpicLoot.CraftingV2
                 Heightmap.Biome playerMaxBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
                     prefabBiome, gatedMode);
 
-                // Get friendly names for logging (modded biomes show as numbers otherwise)
-                string prefabBiomeName = AdventureDataManager.GetBiomeName(prefabBiome) ?? prefabBiome.ToString();
-                string playerMaxBiomeName = AdventureDataManager.GetBiomeName(playerMaxBiome) ?? playerMaxBiome.ToString();
+                // Get biome names for logging
+                string prefabBiomeName = BiomeDataManager.GetBiomeDefinition(prefabBiome)?.Biome ?? prefabBiome.ToString();
+                string playerMaxBiomeName = BiomeDataManager.GetBiomeDefinition(playerMaxBiome)?.Biome ?? playerMaxBiome.ToString();
                 EpicLoot.Log($"[GetLootTablesForIdentifyStyle] prefabBiome: {prefabBiomeName}, playerMaxBiome: {playerMaxBiomeName}");
 
                 // Compare biome progression - only downgrade, never upgrade
@@ -655,23 +655,23 @@ namespace EpicLoot.CraftingV2
 
             List<LootTable> lootTables = new List<LootTable>() { };
 
-            // Try case-insensitive lookup for the biome key
-            string matchedKey = cfg.BiomeLootLists.Keys.FirstOrDefault(k =>
-                string.Equals(k, biomeKey, StringComparison.OrdinalIgnoreCase));
+            // Get loot set names from BiomeDataManager
+            List<string> lootSetNames = BiomeDataManager.GetIdentifyLootListByType(biomeKey, identifyType);
 
-            if (matchedKey == null)
+            if (lootSetNames.Count == 0)
             {
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey '{biomeKey}' NOT found in BiomeLootLists, falling back to first key");
-                matchedKey = cfg.BiomeLootLists.First().Key;
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Fallback biomeKey: {matchedKey}");
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] No loot lists found for biome '{biomeKey}' and type '{identifyType}', falling back to first biome");
+                var firstBiome = BiomeDataManager.GetBiomesInOrder().FirstOrDefault();
+                if (firstBiome != null)
+                {
+                    lootSetNames = BiomeDataManager.GetIdentifyLootListByType(firstBiome, identifyType);
+                    EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Fallback to biome '{firstBiome}': {string.Join(", ", lootSetNames)}");
+                }
             }
             else
             {
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey '{biomeKey}' matched to '{matchedKey}' in BiomeLootLists");
+                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] LootSetNames for biome '{biomeKey}': {string.Join(", ", lootSetNames)}");
             }
-
-            List<string> lootSetNames = cfg.BiomeLootLists[matchedKey];
-            EpicLoot.Log($"[GetLootTablesForIdentifyStyle] LootSetNames for biome: {string.Join(", ", lootSetNames)}");
 
             foreach (string lootSetName in lootSetNames)
             {
@@ -695,7 +695,7 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> LootRollSelectedItems(
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float powerModifier)
         {
-            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+            var (identifyType, category) = SelectLootIdentifyDetails(filter);
 
             if (category == null)
             {
@@ -707,7 +707,7 @@ namespace EpicLoot.CraftingV2
             foreach (Tuple<ItemDrop.ItemData, int> itemstack in items)
             {
                 string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(itemstack.Item1);
-                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biomeKey);
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(identifyType, biomeKey);
                 List<ItemDrop.ItemData> rolledItems = LootRoller.RollLootNoTableWithSpecifics(
                     player.transform.position, selectedLootTables, itemstack.Item2, itemstack.Item1.GetRarity(), true, 2, powerModifier);
                 InventoryManagement.Instance.RemoveExactItem(itemstack.Item1, itemstack.Item2);
@@ -718,14 +718,14 @@ namespace EpicLoot.CraftingV2
                     InventoryManagement.Instance.GiveItem(item);
                 }
             }
-            
+
             EquipmentEffectCache.Reset(player);
             return totalRolledItems.Select(item => new InventoryItemListElement() { Item = item }).ToList();
         }
 
         private static List<InventoryItemListElement> GetPotentialItemRollsByCategory(string filter, List<ItemDrop.ItemData> itemsSelected)
         {
-            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+            var (identifyType, category) = SelectLootIdentifyDetails(filter);
             List<string> resultItemNames = new List<string>();
 
             if (category == null || Player.m_localPlayer == null)
@@ -741,14 +741,14 @@ namespace EpicLoot.CraftingV2
                 {
                     continue;
                 }
-                
+
                 string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(item);
                 if (biomesCovered.Contains(biomeKey))
                 {
                     continue;
                 }
 
-                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(category, biomeKey);
+                List<LootTable> selectedLootTables = GetLootTablesForIdentifyStyle(identifyType, biomeKey);
                 biomesCovered.Add(biomeKey);
                 Dictionary<string, float> itemChances = LootRoller
                     .GetLootTableChances(Player.m_localPlayer.transform.position, selectedLootTables);
@@ -788,14 +788,14 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetIdentifyCostForCategory(
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float costModifier = 1.0f)
         {
-            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
+            var (identifyType, category) = SelectLootIdentifyDetails(filter);
 
             if (category == null)
             {
                 return new List<InventoryItemListElement>();
             }
 
-            EpicLoot.Log($"Getting identify cost for category {category} with {items.Count} items");
+            EpicLoot.Log($"Getting identify cost for category {identifyType} with {items.Count} items");
             List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
 
