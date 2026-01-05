@@ -1,5 +1,4 @@
 
-using EpicLoot.Adventure;
 using EpicLoot.Biome;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
@@ -595,16 +594,12 @@ namespace EpicLoot.CraftingV2
             foreach (var item in items)
             {
                 string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(item);
-                if (Enum.TryParse<Heightmap.Biome>(biomeKey, true, out var prefabBiome))
+                string gatedBiome = BiomeDataManager.GetGatedBiome(biomeKey, gatedMode);
+
+                // If the gated biome differs from the item's biome, gating is active
+                if (!string.Equals(biomeKey, gatedBiome, StringComparison.OrdinalIgnoreCase))
                 {
-                    var playerMaxBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
-                        prefabBiome, gatedMode);
-                    int prefabIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(prefabBiome);
-                    int playerIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(playerMaxBiome);
-                    if (prefabIndex >= 0 && playerIndex >= 0 && playerIndex < prefabIndex)
-                    {
-                        return true; // At least one item is being gated
-                    }
+                    return true;
                 }
             }
             return false;
@@ -616,40 +611,9 @@ namespace EpicLoot.CraftingV2
             EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Input biomeKey: {biomeKey}, identifyType: {identifyType}");
 
             // Apply one-directional gating: we can DOWNGRADE the biome if the player hasn't progressed far enough,
-            // but we NEVER upgrade beyond the biome encoded in the prefab name. This prevents:
-            // - A player who looted a BlackForest unidentified item (from a chest or from monsters killing each other) from getting BlackForest gear before they've progressed
-            // - A Meadows unidentified item from ever identifying to BlackForest+ items (no upgrade)
-            if (Enum.TryParse<Heightmap.Biome>(biomeKey, true, out Heightmap.Biome prefabBiome))
-            {
-                GatedItemTypeMode gatedMode = EpicLoot.GetGatedItemTypeMode();
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] GatedItemTypeMode: {gatedMode}");
-
-                // Get the player's max allowed biome
-                Heightmap.Biome playerMaxBiome = GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings(
-                    prefabBiome, gatedMode);
-
-                // Get biome names for logging
-                string prefabBiomeName = BiomeDataManager.GetBiomeDefinition(prefabBiome)?.Biome ?? prefabBiome.ToString();
-                string playerMaxBiomeName = BiomeDataManager.GetBiomeDefinition(playerMaxBiome)?.Biome ?? playerMaxBiome.ToString();
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] prefabBiome: {prefabBiomeName}, playerMaxBiome: {playerMaxBiomeName}");
-
-                // Compare biome progression - only downgrade, never upgrade
-                int prefabIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(prefabBiome);
-                int playerIndex = GatedItemTypeHelper.BiomesInOrder.IndexOf(playerMaxBiome);
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] prefabIndex: {prefabIndex}, playerIndex: {playerIndex}");
-
-                if (prefabIndex >= 0 && playerIndex >= 0 && playerIndex < prefabIndex)
-                {
-                    // Player hasn't progressed to the prefab's biome yet - downgrade to their max
-                    EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Downgrading from {prefabBiomeName} to {playerMaxBiomeName} (player not progressed enough)");
-                    biomeKey = playerMaxBiomeName;
-                }
-                // else: player has progressed enough, use the prefab's biome (no upgrade beyond prefab)
-            }
-            else
-            {
-                EpicLoot.Log($"[GetLootTablesForIdentifyStyle] Custom biome '{biomeKey}' - skipping gating");
-            }
+            // but we NEVER upgrade beyond the biome encoded in the prefab name.
+            GatedItemTypeMode gatedMode = EpicLoot.GetGatedItemTypeMode();
+            biomeKey = BiomeDataManager.GetGatedBiome(biomeKey, gatedMode);
 
             EpicLoot.Log($"[GetLootTablesForIdentifyStyle] biomeKey (after gating): '{biomeKey}'");
 

@@ -354,5 +354,97 @@ namespace EpicLoot.Biome
         {
             return _biomeEnumLookup?.ContainsKey(biome) ?? false;
         }
+
+        /// <summary>
+        /// Checks if the player has defeated the boss for a given biome.
+        /// </summary>
+        public static bool HasDefeatedBossForBiome(string biome)
+        {
+            var bossKey = GetBossDefeatedKey(biome);
+            if (string.IsNullOrEmpty(bossKey))
+            {
+                return false;
+            }
+            return ZoneSystem.instance != null && ZoneSystem.instance.GetGlobalKey(bossKey);
+        }
+
+        /// <summary>
+        /// Gets the highest defeated biome up to and including the given biome.
+        /// Returns null if no bosses have been defeated.
+        /// </summary>
+        public static string GetHighestDefeatedBiome(string maxBiome)
+        {
+            var biomesInOrder = GetBiomesInOrder();
+            int maxIndex = biomesInOrder.IndexOf(maxBiome);
+            if (maxIndex < 0) maxIndex = biomesInOrder.Count - 1;
+
+            for (int i = maxIndex; i >= 0; i--)
+            {
+                string checkBiome = biomesInOrder[i];
+                if (HasDefeatedBossForBiome(checkBiome))
+                {
+                    return checkBiome;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the player's max allowed biome based on gating mode.
+        /// This is the string-based equivalent of GatedItemTypeHelper.GetCurrentOrLowerBiomeByDefeatedBossSettings.
+        /// </summary>
+        /// <param name="itemBiome">The biome the item belongs to</param>
+        /// <param name="mode">The gating mode</param>
+        /// <returns>The biome string to use for loot tables</returns>
+        public static string GetGatedBiome(string itemBiome, GatedItemType.GatedItemTypeMode mode)
+        {
+            if (!HasBiome(itemBiome))
+            {
+                EpicLoot.Log($"[GetGatedBiome] Biome '{itemBiome}' not in BiomeDataManager, returning as-is");
+                return itemBiome;
+            }
+
+            if (mode == GatedItemType.GatedItemTypeMode.Unlimited ||
+                mode == GatedItemType.GatedItemTypeMode.PlayerMustKnowRecipe)
+            {
+                EpicLoot.Log($"[GetGatedBiome] Mode is {mode}, returning original biome '{itemBiome}'");
+                return itemBiome;
+            }
+
+            string highestDefeated = GetHighestDefeatedBiome(itemBiome);
+            if (highestDefeated == null)
+            {
+                // No bosses defeated, use first biome
+                var firstBiome = GetBiomesInOrder().FirstOrDefault();
+                EpicLoot.Log($"[GetGatedBiome] No bosses defeated, returning first biome '{firstBiome}'");
+                return firstBiome ?? itemBiome;
+            }
+
+            string resultBiome = highestDefeated;
+
+            if (mode == GatedItemType.GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
+            {
+                var biomesInOrder = GetBiomesInOrder();
+                int index = biomesInOrder.IndexOf(highestDefeated) + 1;
+                if (index < biomesInOrder.Count)
+                {
+                    resultBiome = biomesInOrder[index];
+                    EpicLoot.Log($"[GetGatedBiome] BossKillUnlocksNextBiomeItems: advanced from '{highestDefeated}' to '{resultBiome}'");
+                }
+            }
+
+            // Never return a biome higher than the item's biome (no upgrades)
+            int resultOrder = GetBiomeOrder(resultBiome);
+            int itemOrder = GetBiomeOrder(itemBiome);
+            if (resultOrder > itemOrder)
+            {
+                EpicLoot.Log($"[GetGatedBiome] Result biome '{resultBiome}' (order {resultOrder}) exceeds item biome '{itemBiome}' (order {itemOrder}), capping to item biome");
+                return itemBiome;
+            }
+
+            EpicLoot.Log($"[GetGatedBiome] Returning '{resultBiome}' for item biome '{itemBiome}'");
+            return resultBiome;
+        }
     }
 }
