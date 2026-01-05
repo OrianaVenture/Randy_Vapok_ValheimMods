@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using Common;
 using EpicLoot.Adventure;
+using EpicLoot.Biome;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
@@ -610,17 +611,17 @@ namespace EpicLoot
                 CreateUnidentifiedItemsForBiome(genericPrefab, biome);
             }
 
-            // Create unidentified items for user-defined biomes (from adventuredata.json)
-            foreach (string customBiomeName in AdventureDataManager.GetCustomBiomeNames())
+            // Create unidentified items for user-defined biomes (from biomedata.json)
+            foreach (string biomeName in BiomeDataManager.GetBiomesInOrder())
             {
                 // Skip if this matches a built-in biome name (already created above)
-                if (Enum.TryParse<Heightmap.Biome>(customBiomeName, true, out _))
+                if (Enum.TryParse<Heightmap.Biome>(biomeName, true, out _))
                 {
                     continue;
                 }
 
-                Log($"Creating unidentified items for custom biome: {customBiomeName}");
-                CreateUnidentifiedItemsForBiome(genericPrefab, customBiomeName);
+                Log($"Creating unidentified items for custom biome: {biomeName}");
+                CreateUnidentifiedItemsForBiome(genericPrefab, biomeName);
             }
         }
 
