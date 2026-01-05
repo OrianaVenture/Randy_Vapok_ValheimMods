@@ -224,6 +224,30 @@ namespace EpicLoot.Biome
         }
 
         /// <summary>
+        /// Gets the identify loot list for a specific biome and identify type.
+        /// </summary>
+        /// <param name="biome">The biome string (e.g., "Meadows", "BlackForest")</param>
+        /// <param name="identifyType">The identify type (e.g., "Random", "Weapon", "Armor", "Utility")</param>
+        /// <returns>List of loot table names for the specified biome and type</returns>
+        public static List<string> GetIdentifyLootListByType(string biome, string identifyType)
+        {
+            var lootLists = GetIdentifyLootLists(biome);
+            if (lootLists == null)
+            {
+                return new List<string>();
+            }
+
+            return identifyType?.ToLower() switch
+            {
+                "random" => lootLists.Random ?? new List<string>(),
+                "weapon" => lootLists.Weapon ?? new List<string>(),
+                "armor" => lootLists.Armor ?? new List<string>(),
+                "utility" => lootLists.Utility ?? new List<string>(),
+                _ => lootLists.Random ?? new List<string>()
+            };
+        }
+
+        /// <summary>
         /// Gets the identify cost config for a biome.
         /// </summary>
         public static BiomeIdentifyCostConfig GetIdentifyCost(string biome)
