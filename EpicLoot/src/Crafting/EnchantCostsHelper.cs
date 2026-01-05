@@ -110,15 +110,27 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetIdentifyCosts(string category, ItemRarity rarity, Heightmap.Biome biome)
         {
-            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>() { };
-            if (Config.IdentifyCosts.ContainsKey(biome))
+            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>();
+
+            // Add biome-specific costs by rarity if configured
+            if (Config.IdentifyCosts.TryGetValue(biome, out var biomeConfig) &&
+                biomeConfig.CostByRarity.TryGetValue(rarity, out var rarityCosts))
             {
-                totalCost.AddRange(Config.IdentifyCosts[biome].CostByRarity[rarity]);
-                totalCost.AddRange(Config.IdentifyTypes[category].Costs);
+                totalCost.AddRange(rarityCosts);
             }
             else
             {
-                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
+                EpicLoot.LogWarning($"No identify costs configured for biome {biome} and rarity {rarity}.");
+            }
+
+            // Add category-specific costs
+            if (Config.IdentifyTypes.TryGetValue(category, out var typeConfig))
+            {
+                totalCost.AddRange(typeConfig.Costs);
+            }
+            else
+            {
+                EpicLoot.LogWarning($"No identify type configured for category {category}.");
             }
 
             return totalCost;
