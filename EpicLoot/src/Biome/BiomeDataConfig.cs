@@ -8,6 +8,9 @@ namespace EpicLoot.Biome
     {
         public int Cost;
         public int ForestTokens;
+        public int IronTokens;
+        public int GoldTokens;
+        public int Coins;
         public float MinRadius;
         public float MaxRadius;
     }
@@ -52,10 +55,17 @@ namespace EpicLoot.Biome
     public class BiomeDefinitionConfig
     {
         /// <summary>
-        /// Biome identifier. Can be a vanilla biome name (e.g., "Meadows", "BlackForest")
-        /// or a numeric string for modded biomes (e.g., "8192").
+        /// Biome identifier/friendly name (e.g., "Meadows", "BlackForest").
+        /// This is the primary key used for lookups.
         /// </summary>
         public string Biome;
+
+        /// <summary>
+        /// The Heightmap.Biome enum value as an integer.
+        /// Vanilla biomes use their standard values (e.g., Meadows=1, BlackForest=8).
+        /// Modded biomes extend the enum with their own values (e.g., 8192).
+        /// </summary>
+        public int BiomeID;
 
         /// <summary>
         /// Sort order for biome progression. Lower values appear first.
@@ -83,26 +93,9 @@ namespace EpicLoot.Biome
         public List<BiomeBountyTargetConfig> BountyTargets = new List<BiomeBountyTargetConfig>();
 
         /// <summary>
-        /// Attempts to parse the Biome string as a Heightmap.Biome enum.
-        /// Returns true if successful, false if it's a custom/modded biome.
+        /// Gets the Heightmap.Biome enum value from the BiomeID.
         /// </summary>
-        public bool TryGetBiomeEnum(out Heightmap.Biome biomeEnum)
-        {
-            if (Enum.TryParse(Biome, true, out biomeEnum))
-            {
-                return true;
-            }
-
-            // Try parsing as integer (for modded biomes like "8192")
-            if (int.TryParse(Biome, out int biomeInt))
-            {
-                biomeEnum = (Heightmap.Biome)biomeInt;
-                return true;
-            }
-
-            biomeEnum = Heightmap.Biome.None;
-            return false;
-        }
+        public Heightmap.Biome GetBiomeEnum() => (Heightmap.Biome)BiomeID;
     }
 
     [Serializable]
