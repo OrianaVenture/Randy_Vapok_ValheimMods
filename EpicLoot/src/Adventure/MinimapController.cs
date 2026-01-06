@@ -66,11 +66,11 @@ namespace EpicLoot.Adventure
             
             if (!_minimap.m_icons.Exists(x => x.m_name == EpicLoot.TreasureMapPinType))
             {
-                _minimap.m_icons.Add(new Minimap.SpriteData { m_name = EpicLoot.TreasureMapPinType, m_icon = EpicLoot.Assets.MapIconTreasureMap });
+                _minimap.m_icons.Add(new Minimap.SpriteData { m_name = EpicLoot.TreasureMapPinType, m_icon = EpicAssets.MapIconTreasureMap });
             }
             if (!_minimap.m_icons.Exists(x => x.m_name == EpicLoot.BountyPinType))
             {
-                _minimap.m_icons.Add(new Minimap.SpriteData { m_name = EpicLoot.BountyPinType, m_icon = EpicLoot.Assets.MapIconBounty });
+                _minimap.m_icons.Add(new Minimap.SpriteData { m_name = EpicLoot.BountyPinType, m_icon = EpicAssets.MapIconBounty });
             }
         }
 

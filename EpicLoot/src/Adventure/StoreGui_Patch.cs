@@ -30,7 +30,7 @@ namespace EpicLoot.Adventure
                     Object.Destroy(MerchantPanel);
                 }
 
-                MerchantPanel = Object.Instantiate(EpicLoot.Assets.MerchantPanel, __instance.transform, false);
+                MerchantPanel = Object.Instantiate(EpicAssets.MerchantPanel, __instance.transform, false);
                 MerchantPanel.AddComponent<MerchantPanel>();
             }
 

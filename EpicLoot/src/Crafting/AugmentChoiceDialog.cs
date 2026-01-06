@@ -101,7 +101,7 @@ namespace EpicLoot.Crafting
             gameObject.SetActive(true);
 
             _audioSource.loop = true;
-            _audioSource.clip = EpicLoot.Assets.ItemLoopSFX;
+            _audioSource.clip = EpicAssets.ItemLoopSFX;
             _audioSource.volume = 0.5f;
             _audioSource.Play();
 
@@ -182,7 +182,7 @@ namespace EpicLoot.Crafting
         {
             _audioSource.loop = false;
             _audioSource.Stop();
-            _audioSource.PlayOneShot(EpicLoot.Assets.AugmentItemSFX, _audioSource.volume);
+            _audioSource.PlayOneShot(EpicAssets.AugmentItemSFX, _audioSource.volume);
             gameObject.SetActive(false);
         }
     }

@@ -35,7 +35,7 @@ namespace EpicLoot.LootBeams
                     return;
                 }
 
-                _beam = Instantiate(EpicLoot.Assets.MagicItemLootBeamPrefabs[(int) _magicItem.Rarity], transform);
+                _beam = Instantiate(EpicAssets.MagicItemLootBeamPrefabs[(int) _magicItem.Rarity], transform);
                 _beam.transform.localPosition = Vector3.up * HeightOffset;
                 var beamColorSetter = _beam.AddComponent<BeamColorSetter>();
                 beamColorSetter.SetColor(_magicItem.GetColor());
