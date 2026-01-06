@@ -8,7 +8,7 @@ public static class PlayerExtensions
 {
     public static List<ItemDrop.ItemData> GetEquipment(this Player player)
     {
-        List<ItemDrop.ItemData> items = Player.m_localPlayer.GetInventory().GetEquippedItems()
+        List<ItemDrop.ItemData> items = player.GetInventory().GetEquippedItems()
             .Where(x => x.IsMagic()).ToList();
         return items;
     }
