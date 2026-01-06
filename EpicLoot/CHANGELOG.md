@@ -1,3 +1,10 @@
+## Version 0.12.7
+
+* Reworked magic effects OffSet Attack and DodgeBuff to fix bugs including missing assets (sound and visuals).
+* Normalized OffSet Attack values in magiceffects.json, this value represents the percentage of damage reduction (15-40%).
+  * Delete and regenerate this file in your baseconfig folder or grab the fix manually if you have made changes.
+* Bug fix for enchanting table identify costs not applying for more than one cost item.
+
 ## Version 0.12.6
 
 * Fixed AddHealthRegen not applying after the 12.5 update.
