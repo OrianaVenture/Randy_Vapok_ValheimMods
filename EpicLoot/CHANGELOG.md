@@ -4,6 +4,7 @@
 * Normalized OffSet Attack values in magiceffects.json, this value represents the percentage of damage reduction (15-40%).
   * Delete and regenerate this file in your baseconfig folder or grab the fix manually if you have made changes.
 * Bug fix for enchanting table identify costs not applying for more than one cost item.
+* Compatibility improvement for other inventory mods, should recognize magic items in additional slots.
 
 ## Version 0.12.6
 

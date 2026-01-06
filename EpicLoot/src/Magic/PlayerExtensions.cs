@@ -8,24 +8,9 @@ public static class PlayerExtensions
 {
     public static List<ItemDrop.ItemData> GetEquipment(this Player player)
     {
-        List<ItemDrop.ItemData> results = new List<ItemDrop.ItemData>();
-        if (player.m_rightItem != null)
-            results.Add(player.m_rightItem);
-        if (player.m_leftItem != null)
-            results.Add(player.m_leftItem);
-        if (player.m_chestItem != null)
-            results.Add(player.m_chestItem);
-        if (player.m_legItem != null)
-            results.Add(player.m_legItem);
-        if (player.m_helmetItem != null)
-            results.Add(player.m_helmetItem);
-        if (player.m_shoulderItem != null)
-            results.Add(player.m_shoulderItem);
-        if (player.m_utilityItem != null)
-            results.Add(player.m_utilityItem);
-        if (player.m_trinketItem != null)
-            results.Add(player.m_trinketItem);
-        return results;
+        List<ItemDrop.ItemData> items = Player.m_localPlayer.GetInventory().GetEquippedItems()
+            .Where(x => x.IsMagic()).ToList();
+        return items;
     }
 
     public static List<MagicItemEffect> GetAllActiveMagicEffects(this Player player, string effectType = null)
