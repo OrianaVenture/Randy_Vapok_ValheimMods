@@ -2,6 +2,7 @@
   "BiomeDefinitions": [
     {
       "Biome": "None",
+      "BiomeID": 0,
       "Order": 0,
       "DisplayColor": "#ffffff",
       "BossPrefab": null,
@@ -9,6 +10,9 @@
       "TreasureMap": {
         "Cost": -1,
         "ForestTokens": 0,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 0,
         "MaxRadius": 0
       },
@@ -26,6 +30,7 @@
     },
     {
       "Biome": "Meadows",
+      "BiomeID": 1,
       "Order": 1,
       "DisplayColor": "#75d966",
       "BossPrefab": "Eikthyr",
@@ -33,6 +38,9 @@
       "TreasureMap": {
         "Cost": 100,
         "ForestTokens": 5,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 0,
         "MaxRadius": 3000
       },
@@ -56,6 +64,7 @@
     },
     {
       "Biome": "BlackForest",
+      "BiomeID": 8,
       "Order": 2,
       "DisplayColor": "#72a178",
       "BossPrefab": "gd_king",
@@ -63,6 +72,9 @@
       "TreasureMap": {
         "Cost": 200,
         "ForestTokens": 10,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 500,
         "MaxRadius": 6000
       },
@@ -91,6 +103,7 @@
     },
     {
       "Biome": "Ocean",
+      "BiomeID": 256,
       "Order": 3,
       "DisplayColor": "#4a90d9",
       "BossPrefab": "gd_king",
@@ -98,6 +111,9 @@
       "TreasureMap": {
         "Cost": -1,
         "ForestTokens": 0,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 500,
         "MaxRadius": 8000
       },
@@ -117,6 +133,7 @@
     },
     {
       "Biome": "Swamp",
+      "BiomeID": 2,
       "Order": 4,
       "DisplayColor": "#a88a6f",
       "BossPrefab": "Bonemass",
@@ -124,6 +141,9 @@
       "TreasureMap": {
         "Cost": 300,
         "ForestTokens": 15,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 2000,
         "MaxRadius": 6000
       },
@@ -152,6 +172,7 @@
     },
     {
       "Biome": "Mountain",
+      "BiomeID": 4,
       "Order": 5,
       "DisplayColor": "#a3bcd6",
       "BossPrefab": "Dragon",
@@ -159,6 +180,9 @@
       "TreasureMap": {
         "Cost": 400,
         "ForestTokens": 20,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 2000,
         "MaxRadius": 6000
       },
@@ -187,6 +211,7 @@
     },
     {
       "Biome": "Plains",
+      "BiomeID": 16,
       "Order": 6,
       "DisplayColor": "#d6cea3",
       "BossPrefab": "GoblinKing",
@@ -194,6 +219,9 @@
       "TreasureMap": {
         "Cost": 500,
         "ForestTokens": 25,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 3000,
         "MaxRadius": 6000
       },
@@ -228,6 +256,7 @@
     },
     {
       "Biome": "Mistlands",
+      "BiomeID": 512,
       "Order": 7,
       "DisplayColor": "#8b7cb3",
       "BossPrefab": "SeekerQueen",
@@ -235,6 +264,9 @@
       "TreasureMap": {
         "Cost": 600,
         "ForestTokens": 30,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 5000,
         "MaxRadius": 9000
       },
@@ -258,6 +290,7 @@
     },
     {
       "Biome": "AshLands",
+      "BiomeID": 32,
       "Order": 8,
       "DisplayColor": "#d94a4a",
       "BossPrefab": "Fader",
@@ -265,6 +298,9 @@
       "TreasureMap": {
         "Cost": 700,
         "ForestTokens": 35,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 8000,
         "MaxRadius": 10500
       },
@@ -287,6 +323,7 @@
     },
     {
       "Biome": "DeepNorth",
+      "BiomeID": 64,
       "Order": 9,
       "DisplayColor": "#a3d6d6",
       "BossPrefab": null,
@@ -294,6 +331,9 @@
       "TreasureMap": {
         "Cost": -1,
         "ForestTokens": 0,
+        "IronTokens": 0,
+        "GoldTokens": 0,
+        "Coins": 0,
         "MinRadius": 0,
         "MaxRadius": 0
       },
