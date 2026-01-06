@@ -36,7 +36,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 {
     public const string PluginId = "randyknapp.mods.epicloot";
     public const string DisplayName = "Epic Loot";
-    public const string Version = "0.12.6";
+    public const string Version = "0.12.7";
 
     private static string ConfigFileName = PluginId + ".cfg";
     private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -75,7 +75,6 @@ public sealed class EpicLoot : BaseUnityPlugin
         "GoldBountyToken"
     };
 
-    public static EpicAssets Assets = new EpicAssets();
     public static bool AlwaysDropCheat = false;
     public const Minimap.PinType BountyPinType = (Minimap.PinType) 800;
     public const Minimap.PinType TreasureMapPinType = (Minimap.PinType) 801;
@@ -330,62 +329,63 @@ public sealed class EpicLoot : BaseUnityPlugin
         _instance.Logger.LogError(message);
     }
 
-    private void LoadAssets()
+    private static void LoadAssets()
     {
         var assetBundle = LoadAssetBundle("epicloot");
 
-        if (assetBundle == null || Assets == null)
+        if (assetBundle == null)
         {
             LogErrorForce("Unable to load asset bundle! This mod will not behave as expected!");
             return;
         }
 
-        Assets.AssetBundle = assetBundle;
-        Assets.EquippedSprite = assetBundle.LoadAsset<Sprite>("Equipped");
-        Assets.AugaEquippedSprite = assetBundle.LoadAsset<Sprite>("AugaEquipped");
-        Assets.GenericSetItemSprite = assetBundle.LoadAsset<Sprite>("GenericSetItemMarker");
-        Assets.AugaSetItemSprite = assetBundle.LoadAsset<Sprite>("AugaSetItem");
-        Assets.GenericItemBgSprite = assetBundle.LoadAsset<Sprite>("GenericItemBg");
-        Assets.AugaItemBgSprite = assetBundle.LoadAsset<Sprite>("AugaItemBG");
-        Assets.EnchantmentSparkle = assetBundle.LoadAsset<Sprite>("sparkle");
-        Assets.SmallButtonEnchantOverlay = assetBundle.LoadAsset<Sprite>("SmallButtonEnchantOverlay");
-        Assets.DodgeBuffSprite = assetBundle.LoadAsset<Sprite>("DodgeBuff");
-        Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Magic] = assetBundle.LoadAsset<GameObject>("MagicLootBeam");
-        Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Rare] = assetBundle.LoadAsset<GameObject>("RareLootBeam");
-        Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Epic] = assetBundle.LoadAsset<GameObject>("EpicLootBeam");
-        Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Legendary] = assetBundle.LoadAsset<GameObject>("LegendaryLootBeam");
-        Assets.MagicItemLootBeamPrefabs[(int)ItemRarity.Mythic] = assetBundle.LoadAsset<GameObject>("MythicLootBeam");
+        EpicAssets.AssetBundle = assetBundle;
+        EpicAssets.EquippedSprite = assetBundle.LoadAsset<Sprite>("Equipped");
+        EpicAssets.AugaEquippedSprite = assetBundle.LoadAsset<Sprite>("AugaEquipped");
+        EpicAssets.GenericSetItemSprite = assetBundle.LoadAsset<Sprite>("GenericSetItemMarker");
+        EpicAssets.AugaSetItemSprite = assetBundle.LoadAsset<Sprite>("AugaSetItem");
+        EpicAssets.GenericItemBgSprite = assetBundle.LoadAsset<Sprite>("GenericItemBg");
+        EpicAssets.AugaItemBgSprite = assetBundle.LoadAsset<Sprite>("AugaItemBG");
+        EpicAssets.SmallButtonEnchantOverlay = assetBundle.LoadAsset<Sprite>("SmallButtonEnchantOverlay");
+        EpicAssets.DodgeBuffSprite = assetBundle.LoadAsset<Sprite>("DodgeBuff");
+        EpicAssets.MagicItemLootBeamPrefabs[(int)ItemRarity.Magic] = assetBundle.LoadAsset<GameObject>("MagicLootBeam");
+        EpicAssets.MagicItemLootBeamPrefabs[(int)ItemRarity.Rare] = assetBundle.LoadAsset<GameObject>("RareLootBeam");
+        EpicAssets.MagicItemLootBeamPrefabs[(int)ItemRarity.Epic] = assetBundle.LoadAsset<GameObject>("EpicLootBeam");
+        EpicAssets.MagicItemLootBeamPrefabs[(int)ItemRarity.Legendary] = assetBundle.LoadAsset<GameObject>("LegendaryLootBeam");
+        EpicAssets.MagicItemLootBeamPrefabs[(int)ItemRarity.Mythic] = assetBundle.LoadAsset<GameObject>("MythicLootBeam");
 
-        Assets.MagicItemDropSFX[(int)ItemRarity.Magic] = assetBundle.LoadAsset<AudioClip>("MagicItemDrop");
-        Assets.MagicItemDropSFX[(int)ItemRarity.Rare] = assetBundle.LoadAsset<AudioClip>("RareItemDrop");
-        Assets.MagicItemDropSFX[(int)ItemRarity.Epic] = assetBundle.LoadAsset<AudioClip>("EpicItemDrop");
-        Assets.MagicItemDropSFX[(int)ItemRarity.Legendary] = assetBundle.LoadAsset<AudioClip>("LegendaryItemDrop");
-        Assets.MagicItemDropSFX[(int)ItemRarity.Mythic] = assetBundle.LoadAsset<AudioClip>("MythicItemDrop");
-        Assets.ItemLoopSFX = assetBundle.LoadAsset<AudioClip>("ItemLoop");
-        Assets.AugmentItemSFX = assetBundle.LoadAsset<AudioClip>("AugmentItem");
+        EpicAssets.MagicItemDropSFX[(int)ItemRarity.Magic] = assetBundle.LoadAsset<AudioClip>("MagicItemDrop");
+        EpicAssets.MagicItemDropSFX[(int)ItemRarity.Rare] = assetBundle.LoadAsset<AudioClip>("RareItemDrop");
+        EpicAssets.MagicItemDropSFX[(int)ItemRarity.Epic] = assetBundle.LoadAsset<AudioClip>("EpicItemDrop");
+        EpicAssets.MagicItemDropSFX[(int)ItemRarity.Legendary] = assetBundle.LoadAsset<AudioClip>("LegendaryItemDrop");
+        EpicAssets.MagicItemDropSFX[(int)ItemRarity.Mythic] = assetBundle.LoadAsset<AudioClip>("MythicItemDrop");
+        EpicAssets.ItemLoopSFX = assetBundle.LoadAsset<AudioClip>("ItemLoop");
+        EpicAssets.AugmentItemSFX = assetBundle.LoadAsset<AudioClip>("AugmentItem");
 
-        Assets.MerchantPanel = assetBundle.LoadAsset<GameObject>("MerchantPanel");
-        Assets.MapIconTreasureMap = assetBundle.LoadAsset<Sprite>("TreasureMapIcon");
-        Assets.MapIconBounty = assetBundle.LoadAsset<Sprite>("MapIconBounty");
-        Assets.AbandonBountySFX = assetBundle.LoadAsset<AudioClip>("AbandonBounty");
-        Assets.DoubleJumpSFX = assetBundle.LoadAsset<AudioClip>("DoubleJump");
-        Assets.DodgeBuffSFX = assetBundle.LoadAsset<AudioClip>("evasionbuff");
-        Assets.OffSetSFX = assetBundle.LoadAsset<AudioClip>("offset");
-        Assets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
-        Assets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
-        Assets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
+        EpicAssets.MerchantPanel = assetBundle.LoadAsset<GameObject>("MerchantPanel");
+        EpicAssets.MapIconTreasureMap = assetBundle.LoadAsset<Sprite>("TreasureMapIcon");
+        EpicAssets.MapIconBounty = assetBundle.LoadAsset<Sprite>("MapIconBounty");
+        EpicAssets.AbandonBountySFX = assetBundle.LoadAsset<AudioClip>("AbandonBounty");
+        EpicAssets.DoubleJumpSFX = assetBundle.LoadAsset<AudioClip>("DoubleJump");
+        EpicAssets.OffSetSFX = assetBundle.LoadAsset<AudioClip>("sfx_offset");
+        EpicAssets.DebugTextPrefab = assetBundle.LoadAsset<GameObject>("DebugText");
+        EpicAssets.AbilityBar = assetBundle.LoadAsset<GameObject>("AbilityBar");
+        EpicAssets.WelcomMessagePrefab = assetBundle.LoadAsset<GameObject>("WelcomeMessage");
 
-        Assets.BulwarkStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Bulwark_SE_Name);
-        Assets.BulwarkMagicShieldVFX = assetBundle.LoadAsset<GameObject>("MagicShield");
-        Assets.BulwarkMagicShieldSFX = assetBundle.LoadAsset<GameObject>("sfx_bulwark");
+        EpicAssets.BulwarkStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Bulwark_SE_Name);
+        EpicAssets.BulwarkMagicShieldVFX = assetBundle.LoadAsset<GameObject>("MagicShield");
+        EpicAssets.BulwarkMagicShieldSFX = assetBundle.LoadAsset<GameObject>("sfx_bulwark");
 
-        Assets.UndyingStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Undying_SE_Name);
-        Assets.UndyingVFX = assetBundle.LoadAsset<GameObject>("Undying");
-        Assets.UndyingSFX = assetBundle.LoadAsset<GameObject>("sfx_undying");
+        EpicAssets.UndyingStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Undying_SE_Name);
+        EpicAssets.UndyingVFX = assetBundle.LoadAsset<GameObject>("Undying");
+        EpicAssets.UndyingSFX = assetBundle.LoadAsset<GameObject>("sfx_undying");
 
-        Assets.BerserkerStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Berserker_SE_Name);
-        Assets.BerserkerVFX = assetBundle.LoadAsset<GameObject>("Berserker");
-        Assets.BerserkerSFX =  assetBundle.LoadAsset<GameObject>("sfx_berserker");
+        EpicAssets.BerserkerStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.Berserker_SE_Name);
+        EpicAssets.BerserkerVFX = assetBundle.LoadAsset<GameObject>("Berserker");
+        EpicAssets.BerserkerSFX =  assetBundle.LoadAsset<GameObject>("sfx_berserker");
+
+        EpicAssets.DodgeBuffStatusEffect = assetBundle.LoadAsset<SE_Stats>(EpicAssets.DodgeBuff_SE_Name);
+        EpicAssets.DodgeBuffSFX = assetBundle.LoadAsset<GameObject>("sfx_dodgebuff");
 
         GameObject explosiveArrow = assetBundle.LoadAsset<GameObject>(EpicAssets.ExplosiveArrow);
         PrefabManager.Instance.AddPrefab(new CustomPrefab(explosiveArrow, true));
@@ -395,14 +395,15 @@ public sealed class EpicLoot : BaseUnityPlugin
         LoadPieces();
         LoadItems();
         LoadBountySpawner();
-        RegisterAbilityStatusEffects();
+        RegisterStatusEffects();
 
         PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
         ItemManager.OnItemsRegistered += SetupStatusEffects;
         LoadUnidentifiedItems();
         // Needs to trigger late in order to get all potentially added items by other mods
         MinimapManager.OnVanillaMapDataLoaded += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
-        DodgeBuff.CreateMyStatusEffect();
+
+        EpicAssets.AssertAssetIntegrety();
     }
 
     public static T LoadAsset<T>(string assetName) where T : Object
@@ -414,7 +415,7 @@ public sealed class EpicLoot : BaseUnityPlugin
                 return (T)EpicAssets.AssetCache[assetName];
             }
 
-            var asset = Assets.AssetBundle.LoadAsset<T>(assetName);
+            var asset = EpicAssets.AssetBundle.LoadAsset<T>(assetName);
             EpicAssets.AssetCache.Add(assetName, asset);
             return asset;
         }
@@ -427,7 +428,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
     private static void LoadPieces()
     {
-        GameObject enchanter = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchanter");
+        GameObject enchanter = EpicAssets.AssetBundle.LoadAsset<GameObject>("piece_enchanter");
         PieceConfig enchanterPC = new PieceConfig();
         enchanterPC.PieceTable = "Hammer";
         enchanterPC.Category = PieceCategories.Misc;
@@ -441,7 +442,7 @@ public sealed class EpicLoot : BaseUnityPlugin
         };
         PieceManager.Instance.AddPiece(new CustomPiece(enchanter, true, enchanterPC));
 
-        GameObject augmenter = Assets.AssetBundle.LoadAsset<GameObject>("piece_augmenter");
+        GameObject augmenter = EpicAssets.AssetBundle.LoadAsset<GameObject>("piece_augmenter");
         PieceConfig augmenterPC = new PieceConfig();
         augmenterPC.PieceTable = "Hammer";
         augmenterPC.Category = PieceCategories.Misc;
@@ -455,7 +456,7 @@ public sealed class EpicLoot : BaseUnityPlugin
         };
         PieceManager.Instance.AddPiece(new CustomPiece(augmenter, true, augmenterPC));
 
-        GameObject table = Assets.AssetBundle.LoadAsset<GameObject>("piece_enchantingtable");
+        GameObject table = EpicAssets.AssetBundle.LoadAsset<GameObject>("piece_enchantingtable");
         PieceConfig tablePC = new PieceConfig();
         tablePC.PieceTable = "Hammer";
         tablePC.Category = PieceCategories.Crafting;
@@ -471,7 +472,7 @@ public sealed class EpicLoot : BaseUnityPlugin
     {
         foreach (var item in ItemNames)
         {
-            var go = Assets.AssetBundle.LoadAsset<GameObject>(item);
+            var go = EpicAssets.AssetBundle.LoadAsset<GameObject>(item);
             var customItem = new CustomItem(go, false);
             ItemManager.Instance.AddItem(customItem);
         }
@@ -487,7 +488,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
     private static void LoadBountySpawner()
     {
-        GameObject bounty_spawner = Assets.AssetBundle.LoadAsset<GameObject>("EL_SpawnController");
+        GameObject bounty_spawner = EpicAssets.AssetBundle.LoadAsset<GameObject>("EL_SpawnController");
 
         if (bounty_spawner == null)
         {
@@ -508,7 +509,7 @@ public sealed class EpicLoot : BaseUnityPlugin
             foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
             {
                 var assetName = $"{type}{rarity}";
-                var prefab = Assets.AssetBundle.LoadAsset<GameObject>(assetName);
+                var prefab = EpicAssets.AssetBundle.LoadAsset<GameObject>(assetName);
                 if (prefab == null)
                 {
                     LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
@@ -534,7 +535,7 @@ public sealed class EpicLoot : BaseUnityPlugin
     private static void LoadUnidentifiedItems()
     {
         // TODO: Add support for biomes added by other mods as needed.
-        GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+        GameObject genericPrefab = EpicAssets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
         CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
         ItemManager.Instance.AddItem(genericUnidentified);
         genericPrefab.SetActive(false);
@@ -584,32 +585,39 @@ public sealed class EpicLoot : BaseUnityPlugin
         }
     }
 
-    private static void RegisterAbilityStatusEffects()
+    private static void RegisterStatusEffects()
     {
         RegisterBulwark();
         RegisterUndying();
         RegisterBerserker();
+        RegisterAdrenalineRush();
     }
 
     private static void RegisterBulwark()
     {
-        PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldVFX);
-        PrefabManager.Instance.AddPrefab(Assets.BulwarkMagicShieldSFX);
-        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BulwarkStatusEffect);
+        PrefabManager.Instance.AddPrefab(EpicAssets.BulwarkMagicShieldVFX);
+        PrefabManager.Instance.AddPrefab(EpicAssets.BulwarkMagicShieldSFX);
+        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(EpicAssets.BulwarkStatusEffect);
     }
 
     private static void RegisterBerserker()
     {
-        PrefabManager.Instance.AddPrefab(Assets.BerserkerVFX);
-        PrefabManager.Instance.AddPrefab(Assets.BerserkerSFX);
-        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.BerserkerStatusEffect);
+        PrefabManager.Instance.AddPrefab(EpicAssets.BerserkerVFX);
+        PrefabManager.Instance.AddPrefab(EpicAssets.BerserkerSFX);
+        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(EpicAssets.BerserkerStatusEffect);
     }
 
     private static void RegisterUndying()
     {
-        PrefabManager.Instance.AddPrefab(Assets.UndyingVFX);
-        PrefabManager.Instance.AddPrefab(Assets.UndyingSFX);
-        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(Assets.UndyingStatusEffect);
+        PrefabManager.Instance.AddPrefab(EpicAssets.UndyingVFX);
+        PrefabManager.Instance.AddPrefab(EpicAssets.UndyingSFX);
+        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(EpicAssets.UndyingStatusEffect);
+    }
+
+    private static void RegisterAdrenalineRush()
+    {
+        PrefabManager.Instance.AddPrefab(EpicAssets.DodgeBuffSFX);
+        ItemManager.OnItemsRegistered += () => ObjectDB.instance.m_StatusEffects.Add(EpicAssets.DodgeBuffStatusEffect);
     }
 
     [UsedImplicitly]
@@ -628,7 +636,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
     private static void SetupAndvaranaut()
     {
-        var go = Assets.AssetBundle.LoadAsset<GameObject>("Andvaranaut");
+        var go = EpicAssets.AssetBundle.LoadAsset<GameObject>("Andvaranaut");
         ItemDrop prefab = go.GetComponent<ItemDrop>();
 
         var andvaranaut = prefab.m_itemData;
@@ -753,17 +761,17 @@ public sealed class EpicLoot : BaseUnityPlugin
 
     public static Sprite GetMagicItemBgSprite()
     {
-        return HasAuga ? Assets.AugaItemBgSprite : Assets.GenericItemBgSprite;
+        return HasAuga ? EpicAssets.AugaItemBgSprite : EpicAssets.GenericItemBgSprite;
     }
 
     public static Sprite GetEquippedSprite()
     {
-        return HasAuga ? Assets.AugaEquippedSprite : Assets.EquippedSprite;
+        return HasAuga ? EpicAssets.AugaEquippedSprite : EpicAssets.EquippedSprite;
     }
 
     public static Sprite GetSetItemSprite()
     {
-        return HasAuga ? Assets.AugaSetItemSprite : Assets.GenericSetItemSprite;
+        return HasAuga ? EpicAssets.AugaSetItemSprite : EpicAssets.GenericSetItemSprite;
     }
 
     public static string GetMagicEffectPip(bool hasBeenAugmented)
@@ -883,7 +891,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
     public static AudioClip GetMagicItemDropSFX(ItemRarity rarity)
     {
-        return Assets.MagicItemDropSFX[(int) rarity];
+        return EpicAssets.MagicItemDropSFX[(int) rarity];
     }
 
     public static GatedItemTypeMode GetGatedItemTypeMode()

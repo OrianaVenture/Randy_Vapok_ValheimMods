@@ -707,49 +707,90 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetIdentifyCostForCategory(
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float costModifier = 1.0f)
         {
-            IdentifyTypeConfig category = SelectLootIdentifyDetails(filter);
-
-            if (category == null)
+            if (items == null || items.Count == 0)
             {
                 return new List<InventoryItemListElement>();
             }
 
-            List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
-            int totalStackSize = 0;
-
-            foreach(Tuple<ItemDrop.ItemData, int> it in items)
+            // Find category key from localized filter
+            string categoryKey = null;
+            foreach (KeyValuePair<string, IdentifyTypeConfig> identifyStyle in EnchantCostsHelper.Config.IdentifyTypes)
             {
-                totalStackSize += it.Item2;
+                if (Localization.instance.Localize(identifyStyle.Value.Localization) == filter)
+                {
+                    categoryKey = identifyStyle.Key;
+                    break;
+                }
             }
 
-            foreach (ItemAmountConfig entry in category.Costs)
+            if (categoryKey == null)
             {
-                GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
+                // Fall back to first category
+                categoryKey = EnchantCostsHelper.Config.IdentifyTypes.FirstOrDefault().Key;
+                if (categoryKey == null)
+                {
+                    EpicLoot.LogWarning("IdentifyTypes is not defined in the configurations!");
+                    return new List<InventoryItemListElement>();
+                }
+            }
+
+            // Aggregate costs from all items based on their biome and rarity
+            Dictionary<string, int> aggregatedCosts = new Dictionary<string, int>();
+
+            foreach (Tuple<ItemDrop.ItemData, int> itemTuple in items)
+            {
+                ItemDrop.ItemData item = itemTuple.Item1;
+                int quantity = itemTuple.Item2;
+
+                Heightmap.Biome biome = EnchantHelper.GetBiomeFromUnidentifiedItem(item);
+                ItemRarity rarity = item.GetRarity();
+
+                List<ItemAmountConfig> costs = EnchantCostsHelper.GetIdentifyCosts(categoryKey, rarity, biome);
+
+                foreach (ItemAmountConfig costConfig in costs)
+                {
+                    if (aggregatedCosts.ContainsKey(costConfig.Item))
+                    {
+                        aggregatedCosts[costConfig.Item] += costConfig.Amount * quantity;
+                    }
+                    else
+                    {
+                        aggregatedCosts[costConfig.Item] = costConfig.Amount * quantity;
+                    }
+                }
+            }
+
+            // Convert to InventoryItemListElement
+            List<InventoryItemListElement> results = new List<InventoryItemListElement>();
+
+            foreach (KeyValuePair<string, int> costEntry in aggregatedCosts)
+            {
+                GameObject costGo = PrefabManager.Instance.GetPrefab(costEntry.Key);
                 if (costGo == null)
                 {
-                    EpicLoot.LogWarning($"Could not find identify cost item {entry.Item} in ObjectDB");
+                    EpicLoot.LogWarning($"Could not find identify cost item {costEntry.Key} in ObjectDB");
                     continue;
                 }
 
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
                 ItemDrop.ItemData itemData = id.m_itemData;
                 itemData.m_dropPrefab = costGo.gameObject;
-                int cost = entry.Amount;
-                cost *= totalStackSize;
-                if (costModifier != float.NaN)
+
+                int cost = costEntry.Value;
+                if (!float.IsNaN(costModifier))
                 {
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
-                
-                itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
-                if (itemData.m_stack <= 0)
+
+                if (cost <= 0)
                 {
-                    // skip costs that are zero
                     continue;
                 }
 
+                itemData.m_stack = cost;
                 results.Add(new InventoryItemListElement() { Item = itemData });
             }
+
             return results;
         }
 

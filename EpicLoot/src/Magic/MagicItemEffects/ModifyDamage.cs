@@ -57,8 +57,8 @@ public static class ModifyDamage
                 modifyAll += CoinHoarder.GetCoinHoarderValue(player, coinHoarderEffectValue);
             }
 
-            if (player.HasActiveMagicEffect(MagicEffectType.DodgeBuff, out float dodgeBuffValue, 0.01f) &&
-                player.GetSEMan().HaveStatusEffect(DodgeBuff.AdrenalineRushHash))
+            if (player.GetSEMan().HaveStatusEffect(EpicAssets.DodgeBuff_SE_Name.GetStableHashCode()) &&
+                player.HasActiveMagicEffect(MagicEffectType.DodgeBuff, out float dodgeBuffValue, 0.01f))
             {
                 modifyAll += dodgeBuffValue;
             }

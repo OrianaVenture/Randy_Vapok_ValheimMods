@@ -66,20 +66,33 @@ namespace EpicLoot.Magic
 
             foreach (ItemTypeInfo currentConfig in currentConfigs)
             {
-                itemsByCategory.Add(currentConfig.Type, currentConfig);
-                foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
+                if (!itemsByCategory.ContainsKey(currentConfig.Type))
                 {
-                    ItemsByBoss = new Dictionary<string, List<string>>() {
-                        { NONE, new List<string>() },
-                        { "defeated_eikthyr", new List<string>() },
-                        { "defeated_gdking", new List<string>() },
-                        { "defeated_bonemass", new List<string>() },
-                        { "defeated_dragon", new List<string>() },
-                        { "defeated_goblinking", new List<string>() },
-                        { "defeated_queen", new List<string>() },
-                        { "defeated_fader", new List<string>() }
-                    },
-                });
+                    itemsByCategory.Add(currentConfig.Type, currentConfig);
+                }
+                else
+                {
+                    // Only need to print the error once
+                    EpicLoot.LogWarning($"Duplicate Type keys found for {currentConfig.Type}. " +
+                        $"Please check your iteminfo.json file and patches for conflicts.");
+                }
+
+                if (!foundByCategory.ContainsKey(currentConfig.Type))
+                {
+                    foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
+                    {
+                        ItemsByBoss = new Dictionary<string, List<string>>() {
+                            { NONE, new List<string>() },
+                            { "defeated_eikthyr", new List<string>() },
+                            { "defeated_gdking", new List<string>() },
+                            { "defeated_bonemass", new List<string>() },
+                            { "defeated_dragon", new List<string>() },
+                            { "defeated_goblinking", new List<string>() },
+                            { "defeated_queen", new List<string>() },
+                            { "defeated_fader", new List<string>() }
+                        },
+                    });
+                }
             }
 
             List<ItemDrop> allItems = Resources.FindObjectsOfTypeAll<ItemDrop>().ToList();
@@ -113,6 +126,7 @@ namespace EpicLoot.Magic
             AddRemoveItemsFromVendor(newConfig);
 
             List<string> magicMats = allItems.Where(i => i.m_itemData != null &&
+                i.m_itemData.m_dropPrefab != null &&
                 (i.m_itemData.IsMagicCraftingMaterial() || i.m_itemData.IsRunestone()))
                 .Select(x => x.m_itemData.m_dropPrefab.name).ToList();
             AddRemoveItemsFromLootLists(magicMats, foundByCategory, newConfig);

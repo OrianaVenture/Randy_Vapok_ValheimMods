@@ -146,7 +146,7 @@ namespace EpicLoot.Abilities
     {
         public static void Postfix(Hud __instance)
         {
-            var abilityBar = Object.Instantiate(EpicLoot.Assets.AbilityBar, __instance.m_rootObject.transform, false);
+            var abilityBar = Object.Instantiate(EpicAssets.AbilityBar, __instance.m_rootObject.transform, false);
             abilityBar.AddComponent<AbilityBar>();
         }
     }

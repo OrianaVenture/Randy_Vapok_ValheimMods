@@ -132,7 +132,7 @@ static class WelcomeMessage_FejdStartup_Start_Patch
 
     static void ShowWelcomeMessage(Transform parentTransform)
     {
-        GameObject welcomeMessage = Object.Instantiate(EpicLoot.Assets.WelcomMessagePrefab, parentTransform, false);
+        GameObject welcomeMessage = Object.Instantiate(EpicAssets.WelcomMessagePrefab, parentTransform, false);
         welcomeMessage.name = "WelcomeMessage";
         welcomeMessage.AddComponent<WelcomeMessage>();
     
