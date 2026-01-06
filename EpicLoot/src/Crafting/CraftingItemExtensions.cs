@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 
 namespace EpicLoot.Crafting
 {
@@ -9,19 +10,34 @@ namespace EpicLoot.Crafting
 
         public static bool IsMagicCraftingMaterial(this ItemDrop.ItemData item)
         {
+            if (item.m_shared == null)
+            {
+                return false;
+            }
+
             return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material &&
                 item.m_shared.m_ammoType.EndsWith(magicMat);
         }
 
         public static bool IsUnidentified(this ItemDrop.ItemData item)
         {
+            if (item.m_shared == null)
+            {
+                return false;
+            }
+
             return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material &&
                 item.m_shared.m_ammoType.EndsWith(magicUnidentified);
         }
 
         public static ItemRarity GetCraftingMaterialRarity(this ItemDrop.ItemData item)
         {
-            var typeParts = item.m_shared.m_ammoType.Split(new [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            if (item.m_shared == null || item.m_shared.m_ammoType.IsNullOrWhiteSpace())
+            {
+                return ItemRarity.Magic;
+            }
+
+            string[] typeParts = item.m_shared.m_ammoType.Split(new [] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             if (typeParts.Length == 0 || typeParts.Length > 2)
             {
                 return ItemRarity.Magic;
@@ -43,6 +59,11 @@ namespace EpicLoot.Crafting
 
         public static bool IsRunestone(this ItemDrop.ItemData item)
         {
+            if (item.m_shared == null)
+            {
+                return false;
+            }
+
             return item.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Material &&
                 item.m_shared.m_ammoType.EndsWith("Runestone");
         }
