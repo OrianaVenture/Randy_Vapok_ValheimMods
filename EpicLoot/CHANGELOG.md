@@ -6,6 +6,7 @@
 * Bug fix for enchanting table identify costs not applying for more than one cost item.
 * Compatibility improvement for other inventory mods, should recognize magic items in additional slots when equipped.
 * Bug fix for spam accepting bounties at the merchant and fixed errors when closing the store UI before completed.
+* More edge case safeguards for misconfigured files and unexpected game items.
 
 ## Version 0.12.6
 
