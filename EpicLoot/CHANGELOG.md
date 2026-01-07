@@ -1,8 +1,21 @@
+## Version 0.12.8
+
+* Many configuration tweaks. Delete and regenerate the json files specified to get the changes for each or grab the fixes manually if you have made changes:
+* adventuredata.json, enchantcosts.json: Added default configurations for "None" and "Misc" item types. This will fix support for some modded items like "Bows Before Hoes" quivers.
+  * If you see other items with no costs in the enchanting table it is related to this issue. Please report issues only after refreshing your base configurations.
+* enchantcosts.json: 
+  * New field IsUnidentified for DisenchantProducts to better distinguish the configuration for these items with the previous change.
+  * Changed identify CostByRarity blackforest cost to Bronze to match other items.
+* loottables.json: Fixed a bug with the auto sorter misclassifying items if their first crafting material was lower tier than the rest.
+* itemsorter.json:
+  * Added Ooze to Swamp BiomeMaterials.
+  * Fixed Plains having the bonemass boss key rather than defeated_goblinking.
+* Removed throwable bombs showing up as a possible unidentifiable item roll.
+
 ## Version 0.12.7
 
 * Reworked magic effects OffSet Attack and DodgeBuff to fix bugs including missing assets (sound and visuals).
 * Normalized OffSet Attack values in magiceffects.json, this value represents the percentage of damage reduction (15-40%).
-  * Delete and regenerate this file in your baseconfig folder or grab the fix manually if you have made changes.
 * Bug fix for enchanting table identify costs not applying for more than one cost item.
 * Compatibility improvement for other inventory mods, should recognize magic items in additional slots when equipped.
 * Bug fix for spam accepting bounties at the merchant and fixed errors when closing the store UI before completed.
