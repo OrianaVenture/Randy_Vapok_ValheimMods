@@ -772,20 +772,69 @@ namespace EpicLoot.CraftingV2
                 }
             }
 
-            List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
+            // Use a dictionary to aggregate costs by item name
+            Dictionary<string, int> aggregatedCosts = new Dictionary<string, int>();
             int totalStackSize = 0;
 
-            foreach(Tuple<ItemDrop.ItemData, int> it in items)
+            foreach (Tuple<ItemDrop.ItemData, int> it in items)
             {
                 EpicLoot.Log($"  Item: {it.Item1?.m_shared?.m_name ?? "null"}, stackCount: {it.Item2}");
                 totalStackSize += it.Item2;
+
+                // Get biome-specific per-rarity costs from BiomeDataManager
+                string biomeKey = EnchantHelper.GetBiomeStringFromUnidentifiedItem(it.Item1);
+                ItemRarity rarity = it.Item1.GetRarity();
+                var biomeCost = BiomeDataManager.GetIdentifyCost(biomeKey);
+
+                if (biomeCost != null && !string.IsNullOrEmpty(biomeCost.Item) && biomeCost.AmountPerRarity != null)
+                {
+                    int rarityIndex = (int)rarity;
+                    if (rarityIndex >= 0 && rarityIndex < biomeCost.AmountPerRarity.Count)
+                    {
+                        int biomeCostAmount = biomeCost.AmountPerRarity[rarityIndex] * it.Item2;
+                        EpicLoot.Log($"  Biome cost for {biomeKey}/{rarity}: {biomeCost.Item} x {biomeCostAmount}");
+
+                        if (!aggregatedCosts.ContainsKey(biomeCost.Item))
+                        {
+                            aggregatedCosts[biomeCost.Item] = 0;
+                        }
+                        aggregatedCosts[biomeCost.Item] += biomeCostAmount;
+                    }
+                    else
+                    {
+                        EpicLoot.LogWarning($"Rarity index {rarityIndex} out of range for biome {biomeKey} AmountPerRarity (count: {biomeCost.AmountPerRarity.Count})");
+                    }
+                }
+                else
+                {
+                    EpicLoot.Log($"  No biome cost configured for biome '{biomeKey}'");
+                }
             }
             EpicLoot.Log($"Total stack size: {totalStackSize}");
 
-            foreach (ItemAmountConfig entry in category.Costs)
+            // Add category costs (e.g., Coins, GoldBountyToken) multiplied by total stack size
+            if (category.Costs != null)
             {
-                EpicLoot.Log($"Processing cost entry: Item={entry.Item}, Amount={entry.Amount}");
-                GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
+                foreach (ItemAmountConfig entry in category.Costs)
+                {
+                    int categoryCostAmount = entry.Amount * totalStackSize;
+                    EpicLoot.Log($"  Category cost: {entry.Item} x {categoryCostAmount}");
+
+                    if (!aggregatedCosts.ContainsKey(entry.Item))
+                    {
+                        aggregatedCosts[entry.Item] = 0;
+                    }
+                    aggregatedCosts[entry.Item] += categoryCostAmount;
+                }
+            }
+
+            // Convert aggregated costs to result list
+            List<InventoryItemListElement> results = new List<InventoryItemListElement>();
+
+            foreach (var costEntry in aggregatedCosts)
+            {
+                EpicLoot.Log($"Processing aggregated cost: Item={costEntry.Key}, Amount={costEntry.Value}");
+                GameObject costGo = PrefabManager.Instance.GetPrefab(costEntry.Key);
                 if (costGo == null)
                 {
                     EpicLoot.LogWarning($"Could not find identify cost item {costEntry.Key} in ObjectDB");
@@ -793,7 +842,7 @@ namespace EpicLoot.CraftingV2
                 }
 
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
-                ItemDrop.ItemData itemData = id.m_itemData;
+                ItemDrop.ItemData itemData = id.m_itemData.Clone();
                 itemData.m_dropPrefab = costGo.gameObject;
 
                 int cost = costEntry.Value;
@@ -802,17 +851,16 @@ namespace EpicLoot.CraftingV2
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
 
-                EpicLoot.Log($"Cost calculation: {entry.Amount} x {totalStackSize} x {costModifier} = {cost}");
-                itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
-                if (itemData.m_stack <= 0)
+                EpicLoot.Log($"Final cost after modifier: {costEntry.Key} x {cost}");
+                if (cost <= 0)
                 {
-                    EpicLoot.Log($"Skipping cost entry {entry.Item} - stack is <= 0");
+                    EpicLoot.Log($"Skipping cost entry {costEntry.Key} - cost is <= 0");
                     continue;
                 }
 
                 itemData.m_stack = cost;
                 results.Add(new InventoryItemListElement() { Item = itemData });
-                EpicLoot.Log($"Added cost to results: {entry.Item} x {cost}");
+                EpicLoot.Log($"Added cost to results: {costEntry.Key} x {cost}");
             }
 
             EpicLoot.Log($"GetIdentifyCostForCategory returning {results.Count} cost items");
