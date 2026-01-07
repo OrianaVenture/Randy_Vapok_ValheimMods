@@ -8,10 +8,10 @@ namespace EpicLoot.Biome
     {
         public static BiomeDataConfig Config;
 
-        // Primary lookup by biome string (e.g., "Meadows", "BlackForest", "8192")
+        // Primary lookup by biome string (e.g., "Meadows", "BlackForest")
         private static Dictionary<string, BiomeDefinitionConfig> _biomeDefinitionLookup;
 
-        // Secondary lookup by Heightmap.Biome enum value for backward compatibility
+        // Secondary lookup by Heightmap.Biome enum
         private static Dictionary<Heightmap.Biome, BiomeDefinitionConfig> _biomeEnumLookup;
 
         private static List<string> _biomesInOrder;
@@ -55,15 +55,14 @@ namespace EpicLoot.Biome
                 {
                     _biomeDefinitionLookup[biomeConfig.Biome] = biomeConfig;
                     _biomesInOrder.Add(biomeConfig.Biome);
-                    EpicLoot.Log($"[BiomeDataManager] Registered biome: {biomeConfig.Biome} (Order={biomeConfig.Order})");
 
-                    // Secondary lookup by enum (if parseable)
-                    if (biomeConfig.TryGetBiomeEnum(out var biomeEnum))
+                    var biomeEnum = biomeConfig.GetBiomeEnum();
+                    EpicLoot.Log($"[BiomeDataManager] Registered biome: {biomeConfig.Biome} (enum={biomeEnum}, Order={biomeConfig.Order})");
+
+                    // Secondary lookup by enum
+                    if (!_biomeEnumLookup.ContainsKey(biomeEnum))
                     {
-                        if (!_biomeEnumLookup.ContainsKey(biomeEnum))
-                        {
-                            _biomeEnumLookup[biomeEnum] = biomeConfig;
-                        }
+                        _biomeEnumLookup[biomeEnum] = biomeConfig;
                     }
                 }
                 else
@@ -74,11 +73,23 @@ namespace EpicLoot.Biome
         }
 
         /// <summary>
-        /// Converts a Heightmap.Biome enum to its string representation for lookup.
+        /// Converts a Heightmap.Biome enum to its friendly biome name.
+        /// Falls back to enum.ToString() if not found in config.
         /// </summary>
-        public static string BiomeToString(Heightmap.Biome biome)
+        public static string GetBiomeName(Heightmap.Biome biome)
         {
-            return biome.ToString();
+            var config = GetBiomeDefinition(biome);
+            return config?.Biome ?? biome.ToString();
+        }
+
+        /// <summary>
+        /// Gets the Heightmap.Biome enum for a biome name.
+        /// Returns Heightmap.Biome.None if not found.
+        /// </summary>
+        public static Heightmap.Biome GetBiomeEnum(string biomeName)
+        {
+            var config = GetBiomeDefinition(biomeName);
+            return config?.GetBiomeEnum() ?? Heightmap.Biome.None;
         }
 
         /// <summary>
