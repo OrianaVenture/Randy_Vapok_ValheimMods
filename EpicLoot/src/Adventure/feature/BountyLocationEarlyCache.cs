@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EpicLoot.Biome;
 using UnityEngine;
 
 namespace EpicLoot.Adventure.Feature
@@ -18,20 +19,24 @@ namespace EpicLoot.Adventure.Feature
 
         private static Dictionary<Heightmap.Biome, Tuple<float, float>> GetRadiusRanges()
         {
-            var adventureSave = Player.m_localPlayer.GetAdventureSaveData();
             Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = new();
-            Heightmap.Biome[] biomeList = AdventureDataManager.Config.TreasureMap.GetBiomeList();
+            List<string> biomeNames = BiomeDataManager.GetTreasureMapBiomes();
 
-            for (int i = 0; i < biomeList.Length; i++)
+            EpicLoot.Log($"[TreasureMap] GetRadiusRanges: Processing {biomeNames.Count} biomes from config");
+            for (int i = 0; i < biomeNames.Count; i++)
             {
-                if (!radiusRanges.ContainsKey(biomeList[i]))
+                var biomeEnum = BiomeDataManager.GetBiomeEnum(biomeNames[i]);
+                EpicLoot.Log($"[TreasureMap] GetRadiusRanges: biomeList[{i}]={biomeNames[i]} (enum={biomeEnum}, value={(int)biomeEnum})");
+                if (!radiusRanges.ContainsKey(biomeEnum))
                 {
-                    var biomeConfig = GetBiomeInfoConfig(biomeList[i]);
-                    radiusRanges.Add(biomeList[i],
+                    var biomeConfig = BiomeDataManager.GetTreasureMapConfig(biomeNames[i]);
+                    EpicLoot.Log($"[TreasureMap] GetRadiusRanges: biomeConfig found={biomeConfig != null} for {biomeNames[i]}");
+                    radiusRanges.Add(biomeEnum,
                         new Tuple<float, float>(biomeConfig.MinRadius, biomeConfig.MaxRadius));
                 }
             }
 
+            EpicLoot.Log($"[TreasureMap] GetRadiusRanges: Built {radiusRanges.Count} radius ranges");
             return radiusRanges;
         }
 
@@ -52,15 +57,21 @@ namespace EpicLoot.Adventure.Feature
         public static IEnumerator TryGetBiomePoint(
             Heightmap.Biome biome, AdventureSaveData saveData, Action<bool, Vector3> onComplete)
         {
+            EpicLoot.Log($"[TreasureMap] TryGetBiomePoint: Looking for biome={biome} (value={(int)biome})");
             Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = GetRadiusRanges();
 
             // Check if any valid cached
-            if (PotentialBiomeLocations.ContainsKey(biome) && PotentialBiomeLocations[biome].Count > 1)
+            var hasCached = PotentialBiomeLocations.ContainsKey(biome);
+            var cachedCount = hasCached ? PotentialBiomeLocations[biome].Count : 0;
+            EpicLoot.Log($"[TreasureMap] TryGetBiomePoint: biome={biome}, hasCached={hasCached}, cachedCount={cachedCount}");
+            if (hasCached && cachedCount > 1)
             {
+                EpicLoot.Log($"[TreasureMap] TryGetBiomePoint: Using cached location for biome={biome}");
                 SelectSpawnPoint(biome, onComplete);
                 yield break;
             }
 
+            EpicLoot.Log($"[TreasureMap] TryGetBiomePoint: No cached location, calling AddBiomePointLazyCache for biome={biome}");
             yield return AddBiomePointLazyCache(radiusRanges, biome, true, onComplete);
         }
 
@@ -77,13 +88,11 @@ namespace EpicLoot.Adventure.Feature
             Dictionary<Heightmap.Biome, Tuple<float, float>> radiusRanges = GetRadiusRanges();
 
             int index = 0;
-            Heightmap.Biome[] biomeList = AdventureDataManager.Config.TreasureMap.GetBiomeList();
+            List<string> biomeNames = BiomeDataManager.GetTreasureMapBiomes();
 
-            while (index < biomeList.Length)
+            while (index < biomeNames.Count)
             {
-                Heightmap.Biome targetBiome = biomeList[index];
-
-                Tuple<float, float> radiusRange = radiusRanges[targetBiome];
+                Heightmap.Biome targetBiome = BiomeDataManager.GetBiomeEnum(biomeNames[index]);
 
                 yield return AddBiomePointLazyCache(radiusRanges, targetBiome);
 
@@ -91,8 +100,9 @@ namespace EpicLoot.Adventure.Feature
 
                 // Check if all biomes have the required number of keys
                 bool isReady = true;
-                foreach (var biome in biomeList)
+                foreach (var biomeName in biomeNames)
                 {
+                    var biome = BiomeDataManager.GetBiomeEnum(biomeName);
                     if (biome == Heightmap.Biome.None || biome == Heightmap.Biome.All)
                     {
                         continue;

@@ -50,7 +50,10 @@ namespace EpicLoot.Adventure
             CanAfford = Price <= currentCoins || Player.m_localPlayer.NoCostCheat();
             AlreadyPurchased = itemInfo.AlreadyPurchased;
 
-            var displayName = Localization.instance.Localize("$mod_epicloot_treasuremap_name", $"$biome_{Biome.ToString().ToLower()}", (itemInfo.Interval + 1).ToString());
+            var biomeLocKey = $"$biome_{Biome.ToString().ToLower()}";
+            EpicLoot.Log($"[TreasureMap] TreasureMapListElement.SetItem: biome={Biome} (value={(int)Biome}), biomeLocKey={biomeLocKey}");
+            var displayName = Localization.instance.Localize("$mod_epicloot_treasuremap_name", biomeLocKey, (itemInfo.Interval + 1).ToString());
+            EpicLoot.Log($"[TreasureMap] TreasureMapListElement.SetItem: displayName={displayName}");
 
             Icon.color = (CanAfford && !AlreadyPurchased) ? Color.white : new Color(1.0f, 0.0f, 1.0f, 0.0f);
             NameText.text = Localization.instance.Localize(displayName);
