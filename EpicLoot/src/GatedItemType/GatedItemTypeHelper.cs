@@ -132,12 +132,7 @@ namespace EpicLoot.GatedItemType
                     continue;
                 }
 
-                // Try to convert the biome string to Heightmap.Biome enum
-                if (!biomeConfig.TryGetBiomeEnum(out var biomeEnum))
-                {
-                    EpicLoot.LogWarning($"[GatedItemTypeHelper] Could not parse biome '{biomeName}' as Heightmap.Biome enum");
-                    continue;
-                }
+                var biomeEnum = biomeConfig.GetBiomeEnum();
 
                 if (!BiomesToBossKeys.ContainsKey(biomeEnum))
                 {
