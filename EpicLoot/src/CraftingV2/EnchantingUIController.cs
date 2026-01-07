@@ -1296,7 +1296,7 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetDisenchantCost(ItemDrop.ItemData item)
         {
             List<InventoryItemListElement> result = new List<InventoryItemListElement>();
-            if (item == null || !item.IsMagic())
+            if (item == null || !item.IsMagic() || item.IsUnidentified())
             {
                 return result;
             }
