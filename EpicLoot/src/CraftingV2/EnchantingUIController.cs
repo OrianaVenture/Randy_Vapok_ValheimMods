@@ -752,24 +752,39 @@ namespace EpicLoot.CraftingV2
         private static List<InventoryItemListElement> GetIdentifyCostForCategory(
             string filter, List<Tuple<ItemDrop.ItemData, int>> items, float costModifier = 1.0f)
         {
+            EpicLoot.Log($"GetIdentifyCostForCategory called - filter: {filter}, items.Count: {items.Count}, costModifier: {costModifier}");
+
             var (identifyType, category) = SelectLootIdentifyDetails(filter);
+            EpicLoot.Log($"SelectLootIdentifyDetails returned - identifyType: {identifyType}, category: {(category != null ? "not null" : "null")}");
 
             if (category == null)
             {
+                EpicLoot.LogWarning($"Category is null for filter '{filter}', returning empty list");
                 return new List<InventoryItemListElement>();
             }
 
-            EpicLoot.Log($"Getting identify cost for category {identifyType} with {items.Count} items");
+            EpicLoot.Log($"Category.Costs count: {category.Costs?.Count ?? 0}");
+            if (category.Costs != null)
+            {
+                foreach (var c in category.Costs)
+                {
+                    EpicLoot.Log($"  Category cost entry: Item={c.Item}, Amount={c.Amount}");
+                }
+            }
+
             List<InventoryItemListElement> results = new List<InventoryItemListElement>() { };
             int totalStackSize = 0;
 
             foreach(Tuple<ItemDrop.ItemData, int> it in items)
             {
+                EpicLoot.Log($"  Item: {it.Item1?.m_shared?.m_name ?? "null"}, stackCount: {it.Item2}");
                 totalStackSize += it.Item2;
             }
+            EpicLoot.Log($"Total stack size: {totalStackSize}");
 
             foreach (ItemAmountConfig entry in category.Costs)
             {
+                EpicLoot.Log($"Processing cost entry: Item={entry.Item}, Amount={entry.Amount}");
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
                 if (costGo == null)
                 {
@@ -786,17 +801,20 @@ namespace EpicLoot.CraftingV2
                 {
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
-                
-                EpicLoot.Log($"Cost settings: E:{entry.Amount} x S:{totalStackSize} x modifier:{costModifier} = result:{cost}");
+
+                EpicLoot.Log($"Cost calculation: {entry.Amount} x {totalStackSize} x {costModifier} = {cost}");
                 itemData.m_stack = cost; // Doesn't actually matter if we overstack the size here- because these items are just reprentations of the cost
                 if (itemData.m_stack <= 0)
                 {
-                    // skip costs that are zero
+                    EpicLoot.Log($"Skipping cost entry {entry.Item} - stack is <= 0");
                     continue;
                 }
 
                 results.Add(new InventoryItemListElement() { Item = itemData });
+                EpicLoot.Log($"Added cost to results: {entry.Item} x {cost}");
             }
+
+            EpicLoot.Log($"GetIdentifyCostForCategory returning {results.Count} cost items");
             return results;
         }
 
