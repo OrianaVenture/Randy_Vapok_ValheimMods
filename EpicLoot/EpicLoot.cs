@@ -535,7 +535,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
         private static void LoadUnidentifiedItems()
         {
-            GameObject genericPrefab = Assets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            GameObject genericPrefab = EpicAssets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
             CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
             ItemManager.Instance.AddItem(genericUnidentified);
             genericPrefab.SetActive(false);
