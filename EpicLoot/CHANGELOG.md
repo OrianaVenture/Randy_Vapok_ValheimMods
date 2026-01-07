@@ -1,3 +1,20 @@
+## Version 0.12.7
+
+* Reworked magic effects OffSet Attack and DodgeBuff to fix bugs including missing assets (sound and visuals).
+* Normalized OffSet Attack values in magiceffects.json, this value represents the percentage of damage reduction (15-40%).
+  * Delete and regenerate this file in your baseconfig folder or grab the fix manually if you have made changes.
+* Bug fix for enchanting table identify costs not applying for more than one cost item.
+* Compatibility improvement for other inventory mods, should recognize magic items in additional slots when equipped.
+* Bug fix for spam accepting bounties at the merchant and fixed errors when closing the store UI before completed.
+* More edge case safeguards for misconfigured files and unexpected game items.
+
+## Version 0.12.6
+
+* Fixed AddHealthRegen not applying after the 12.5 update.
+* Fixed typo for defeated_eikthyr key in new itemsorter.json file.
+* More edge case detection for the automatic item sorting logic.
+* Added some null reference exceptions safeguards in different places in code.
+
 ## Version 0.12.5
 
 * NEW itemsorter.json configuration file to configure the auto-add behaviors!

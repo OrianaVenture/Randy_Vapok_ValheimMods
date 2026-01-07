@@ -788,16 +788,16 @@ namespace EpicLoot.CraftingV2
                 GameObject costGo = PrefabManager.Instance.GetPrefab(entry.Item);
                 if (costGo == null)
                 {
-                    EpicLoot.LogWarning($"Could not find identify cost item {entry.Item} in ObjectDB");
+                    EpicLoot.LogWarning($"Could not find identify cost item {costEntry.Key} in ObjectDB");
                     continue;
                 }
 
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
                 ItemDrop.ItemData itemData = id.m_itemData;
                 itemData.m_dropPrefab = costGo.gameObject;
-                int cost = entry.Amount;
-                cost *= totalStackSize;
-                if (costModifier != float.NaN)
+
+                int cost = costEntry.Value;
+                if (!float.IsNaN(costModifier))
                 {
                     cost = Mathf.RoundToInt(cost * costModifier);
                 }
@@ -810,6 +810,7 @@ namespace EpicLoot.CraftingV2
                     continue;
                 }
 
+                itemData.m_stack = cost;
                 results.Add(new InventoryItemListElement() { Item = itemData });
                 EpicLoot.Log($"Added cost to results: {entry.Item} x {cost}");
             }

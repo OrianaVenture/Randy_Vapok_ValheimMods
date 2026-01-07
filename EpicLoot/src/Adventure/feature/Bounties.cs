@@ -227,12 +227,8 @@ namespace EpicLoot.Adventure.Feature
                     // Spawn monster initializer
                     SpawnBountyInitilizer(bounty, spawnPoint, Vector3.zero);
                 }
-                else
-                {
-                    // Sleep for a tiny bit before trying again
-                    // we also want to consider if this has failed repeatedly we should give up or reset parameters of the scan to get a new location
-                    callback?.Invoke(false, Vector3.zero);
-                }
+
+                callback?.Invoke(success, spawnPoint);
             });
         }
 
