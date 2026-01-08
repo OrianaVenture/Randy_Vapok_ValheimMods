@@ -11,6 +11,7 @@
   * Added Ooze to Swamp BiomeMaterials.
   * Fixed Plains having the bonemass boss key rather than defeated_goblinking.
 * Removed throwable bombs showing up as a possible unidentifiable item roll.
+* Added mod compatibility for Steady Regeneration (broke in 0.12.6).
 
 ## Version 0.12.7
 
