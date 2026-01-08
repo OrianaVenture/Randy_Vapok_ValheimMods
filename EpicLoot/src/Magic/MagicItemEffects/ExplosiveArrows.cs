@@ -19,11 +19,11 @@ namespace EpicLoot.MagicItemEffects
                 new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Attack), nameof(Attack.m_weapon))),
                 new CodeMatch(OpCodes.Ldloc_S),
                 new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.m_lastProjectile))))
+                .ThrowIfNotMatch("Unable to patch FireProjectileBurst for Exploding Arrows.")
                 .Advance(3).InsertAndAdvance(
                 new CodeInstruction(OpCodes.Ldloc_S, (byte)20),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                Transpilers.EmitDelegate(UpdateProjectileHit))
-                .ThrowIfNotMatch("Unable to patch FireProjectileBurst for Exploding Arrows.");
+                Transpilers.EmitDelegate(UpdateProjectileHit));
             return codeMatcher.Instructions();
         }
 
@@ -49,14 +49,15 @@ namespace EpicLoot.MagicItemEffects
         {
             CodeMatcher codeMatcher = new CodeMatcher(instructions);
             codeMatcher.MatchStartForward(
-                new CodeMatch(OpCodes.Ldarg_0), // Projectile instance
-                new CodeMatch(OpCodes.Ldc_I4_1),
-                new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(Projectile), nameof(Projectile.m_didHit))))
-                .Advance(3).InsertAndAdvance(
-                new CodeInstruction(OpCodes.Ldarg_2), // Vector3 hitPoint
-                new CodeInstruction(OpCodes.Ldarg_0), // Projectile instance
-                Transpilers.EmitDelegate(SpawnExplosiveArrowOnHit))
-                .ThrowIfNotMatch("Unable to patch OnHit for Exploding Arrows.");
+                    new CodeMatch(OpCodes.Ldarg_0), // Projectile instance
+                    new CodeMatch(OpCodes.Ldc_I4_1),
+                    new CodeMatch(OpCodes.Stfld, AccessTools.Field(typeof(Projectile), nameof(Projectile.m_didHit))))
+                .ThrowIfNotMatch("Unable to patch OnHit for Exploding Arrows.")
+                .Advance(3)
+                .InsertAndAdvance(
+                    new CodeInstruction(OpCodes.Ldarg_2), // Vector3 hitPoint
+                    new CodeInstruction(OpCodes.Ldarg_0), // Projectile instance
+                    Transpilers.EmitDelegate(SpawnExplosiveArrowOnHit));
             return codeMatcher.Instructions();
         }
 

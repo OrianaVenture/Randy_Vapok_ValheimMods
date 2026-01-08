@@ -684,7 +684,6 @@ namespace EpicLoot.Magic
                             return "Polearms";
                         case Skills.SkillType.Pickaxes:
                             return "Pickaxes";
-                        case Skills.SkillType.None: // For bombs
                         case Skills.SkillType.Sneak:
                             return "Torches";
                     }
@@ -728,6 +727,11 @@ namespace EpicLoot.Magic
                 case ItemDrop.ItemData.AnimationState.DualAxes:
                     return "TwoHandAxes";
                 case ItemDrop.ItemData.AnimationState.Unarmed:
+                    if (item.m_shared.m_skillType == Skills.SkillType.None)
+                    {
+                        // This is likely a throwable bomb, make sure it remains unknown
+                        break;
+                    }
                     return "Fists";
                 case ItemDrop.ItemData.AnimationState.MagicItem:
                     return "Staffs";
@@ -766,23 +770,22 @@ namespace EpicLoot.Magic
                 return NONE;
             }
 
-            // We need to completely evaluate each tier until we find a match, so that we only match the highest tier for the selected item.
-
-            foreach (Piece.Requirement req in itemRecipe.m_resources)
+            // This goes through the biome tiers in reverse order, starting from the highest tier
+            // and checking if the current item has materials from that biome
+            // if not it goes down a biome until it finds materials required to craft the item
+            // if an item does not require any materials or has no recipe, it should be listed in UncraftableItemsAlwaysAllowed
+            foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData.Reverse())
             {
-                // This goes through the biome tiers in reverse order, starting from the highest tier
-                // and checking if the current item has materials from that biome
-                // if not it goes down a biome until it finds materials required to craft the item
-                // if an item does not require any materials or has no recipe, it should be listed in UncraftableItemsAlwaysAllowed
-                foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData.Reverse())
+                // TODO: Update this logic to use a more concrete biome order list
+                if (itemRecipe.m_craftingStation != null &&
+                    sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
+                {
+                    return sortdata.Value.BossKey;
+                }
+
+                foreach (Piece.Requirement req in itemRecipe.m_resources)
                 {
                     if (req.m_resItem != null && sortdata.Value.BiomeMaterials.Contains(req.m_resItem.name))
-                    {
-                        return sortdata.Value.BossKey;
-                    }
-
-                    if (itemRecipe.m_craftingStation != null &&
-                        sortdata.Value.BiomeSpecificCraftingStations.Contains(itemRecipe.m_craftingStation.name))
                     {
                         return sortdata.Value.BossKey;
                     }

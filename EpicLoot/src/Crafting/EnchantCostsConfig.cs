@@ -23,6 +23,7 @@ namespace EpicLoot.Crafting
     [Serializable]
     public class DisenchantProductsConfig
     {
+        public bool IsUnidentified;
         public bool IsMagic;
         public ItemRarity Rarity;
         public List<string> ItemTypes = new List<string>();

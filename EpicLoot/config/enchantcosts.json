@@ -151,7 +151,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Magic",
       "Products": [
@@ -174,7 +176,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Rare",
       "Products": [
@@ -197,7 +201,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Epic",
       "Products": [
@@ -220,7 +226,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Products": [
@@ -243,7 +251,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Products": [
@@ -799,10 +809,7 @@
       ]
     },
     {
-      "IsMagic": true,
-      "ItemTypes": [
-        "Misc"
-      ],
+      "IsUnidentified": true,
       "Rarity": "Magic",
       "Products": [
         {
@@ -820,10 +827,7 @@
       ]
     },
     {
-      "IsMagic": true,
-      "ItemTypes": [
-        "Misc"
-      ],
+      "IsUnidentified": true,
       "Rarity": "Rare",
       "Products": [
         {
@@ -841,10 +845,7 @@
       ]
     },
     {
-      "IsMagic": true,
-      "ItemTypes": [
-        "Misc"
-      ],
+      "IsUnidentified": true,
       "Rarity": "Epic",
       "Products": [
         {
@@ -862,10 +863,7 @@
       ]
     },
     {
-      "IsMagic": true,
-      "ItemTypes": [
-        "Misc"
-      ],
+      "IsUnidentified": true,
       "Rarity": "Legendary",
       "Products": [
         {
@@ -883,10 +881,7 @@
       ]
     },
     {
-      "IsMagic": true,
-      "ItemTypes": [
-        "Misc"
-      ],
+      "IsUnidentified": true,
       "Rarity": "Mythic",
       "Products": [
         {
@@ -1038,7 +1033,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Magic",
       "Cost": [
@@ -1064,7 +1061,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1090,7 +1089,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Epic",
       "Cost": [
@@ -1116,7 +1117,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Cost": [
@@ -1142,7 +1145,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Cost": [
@@ -1295,7 +1300,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Magic",
       "Cost": [
@@ -1321,7 +1328,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1347,7 +1356,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Epic",
       "Cost": [
@@ -1373,7 +1384,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Cost": [
@@ -1399,7 +1412,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Cost": [
@@ -1475,7 +1490,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Magic",
       "Cost": [
@@ -1499,7 +1516,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1523,7 +1542,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Epic",
       "Cost": [
@@ -1547,7 +1568,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Cost": [
@@ -1571,7 +1594,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Cost": [
@@ -1597,7 +1622,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Magic",
       "Cost": [
@@ -1621,7 +1648,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Rare",
       "Cost": [
@@ -1645,7 +1674,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Epic",
       "Cost": [
@@ -1669,7 +1700,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Legendary",
       "Cost": [
@@ -1693,7 +1726,9 @@
         "Legs",
         "Shoulder",
         "Utility",
-        "Trinket"
+        "Trinket",
+        "None",
+        "Misc"
       ],
       "Rarity": "Mythic",
       "Cost": [
@@ -1900,32 +1935,32 @@
       "CostByRarity": {
         "Magic": [
           {
-            "Item": "GreydwarfEye",
-            "Amount": 5
+            "Item": "Bronze",
+            "Amount": 1
           }
         ],
         "Rare": [
           {
-            "Item": "GreydwarfEye",
-            "Amount": 10
+            "Item": "Bronze",
+            "Amount": 2
           }
         ],
         "Epic": [
           {
-            "Item": "GreydwarfEye",
-            "Amount": 15
+            "Item": "Bronze",
+            "Amount": 3
           }
         ],
         "Legendary": [
           {
-            "Item": "GreydwarfEye",
-            "Amount": 20
+            "Item": "Bronze",
+            "Amount": 4
           }
         ],
         "Mythic": [
           {
-            "Item": "GreydwarfEye",
-            "Amount": 25
+            "Item": "Bronze",
+            "Amount": 5
           }
         ]
       }

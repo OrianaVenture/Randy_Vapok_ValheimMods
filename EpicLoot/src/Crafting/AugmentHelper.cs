@@ -2,7 +2,6 @@
 using EpicLoot_UnityLib;
 using Jotunn.Managers;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -19,15 +18,17 @@ namespace EpicLoot.Crafting
 
         public static AugmentChoiceDialog CreateAugmentChoiceDialog(bool useEnchantingUpgrades)
         {
-            var augmentChoices = 3;
+            int augmentChoices = 3;
             if (useEnchantingUpgrades && EnchantingTableUI.instance && EnchantingTableUI.instance.SourceTable)
             {
-                var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
+                System.Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
                 if (!float.IsNaN(featureValues.Item1))
+                {
                     augmentChoices = (int)featureValues.Item1 + 1;
+                }
             }
 
-            var inventoryGui = InventoryGui.instance;
+            InventoryGui inventoryGui = InventoryGui.instance;
             AugmentChoiceDialog choiceDialog;
             //if (EpicLoot.HasAuga)
             //{
@@ -83,17 +84,19 @@ namespace EpicLoot.Crafting
             //}
             //else
             //{
-                
+
             //}
-            var height = 550.0f;
+
+            float height = 550.0f;
             if (augmentChoices > 3)
             {
-                var extra = augmentChoices - 3;
+                int extra = augmentChoices - 3;
                 height += extra * 45;
             }
+
             choiceDialog = CreateDialog<AugmentChoiceDialog>(inventoryGui, "AugmentChoiceDialog", height);
 
-            var background = choiceDialog.gameObject.transform.Find("Frame").gameObject.RectTransform();
+            RectTransform background = choiceDialog.gameObject.transform.Find("Frame").gameObject.RectTransform();
             choiceDialog.MagicBG = Object.Instantiate(inventoryGui.m_recipeIcon, background);
             choiceDialog.MagicBG.name = "MagicItemBG";
             choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
@@ -105,8 +108,8 @@ namespace EpicLoot.Crafting
             choiceDialog.Description.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 340);
             choiceDialog.Icon = Object.Instantiate(inventoryGui.m_recipeIcon, background);
 
-            var scrollview = CraftSuccessDialog.ConvertToScrollingDescription(choiceDialog.Description, background);
-            var svrt = (RectTransform)scrollview.transform;
+            ScrollRect scrollview = CraftSuccessDialog.ConvertToScrollingDescription(choiceDialog.Description, background);
+            RectTransform svrt = (RectTransform)scrollview.transform;
             svrt.SetSiblingIndex(1);
             svrt.anchorMin = new Vector2(0, 0);
             svrt.anchorMax = new Vector2(1, 1);
@@ -115,10 +118,10 @@ namespace EpicLoot.Crafting
             svrt.sizeDelta = new Vector2(-20, -300);
             svrt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 74, 300);
 
-            var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
+            Button closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
             Object.Destroy(closeButton.gameObject);
 
-            for (var i = 0; i < augmentChoices; i++)
+            for (int i = 0; i < augmentChoices; i++)
             {
                 Button button = GUIManager.Instance.CreateButton(
                     text: "Augment",
@@ -129,10 +132,10 @@ namespace EpicLoot.Crafting
                     width: 300f,
                     height: 40f).GetComponent<Button>();
                 button.interactable = true;
-                var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocus"), button.transform);
+                GameObject focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocus"), button.transform);
                 focus.SetActive(false);
                 focus.name = "ButtonFocus";
-                var rt = button.gameObject.RectTransform();
+                RectTransform rt = button.gameObject.RectTransform();
                 rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300);
                 rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 40);
                 choiceDialog.EffectChoiceButtons.Add(button);
@@ -143,18 +146,19 @@ namespace EpicLoot.Crafting
 
         public static T CreateDialog<T>(InventoryGui inventoryGui, string name, float height = 550) where T : Component
         {
-            var newDialog = Object.Instantiate(inventoryGui.m_variantDialog, inventoryGui.m_variantDialog.transform.parent);
+            VariantDialog newDialog = Object.Instantiate(inventoryGui.m_variantDialog, inventoryGui.m_variantDialog.transform.parent);
             T newDialogT = newDialog.gameObject.AddComponent<T>();
             Object.Destroy(newDialog);
             newDialogT.gameObject.name = name;
 
-            var background = newDialogT.gameObject.transform.Find("VariantFrame").gameObject.RectTransform();
+            RectTransform background = newDialogT.gameObject.transform.Find("VariantFrame").gameObject.RectTransform();
             background.gameObject.name = "Frame";
             for (int i = 1; i < background.transform.childCount; ++i)
             {
-                var child = background.transform.GetChild(i);
+                Transform child = background.transform.GetChild(i);
                 Object.Destroy(child.gameObject);
             }
+
             background.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 380);
             background.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
             background.anchoredPosition += new Vector2(20, -270);
@@ -165,10 +169,10 @@ namespace EpicLoot.Crafting
         public static List<MagicItemEffectDefinition> GetAvailableAugments(
             AugmentRecipe recipe, ItemDrop.ItemData item, MagicItem magicItem, ItemRarity rarity)
         {
-            var valuelessEffect = false;
+            bool valuelessEffect = false;
             if (recipe.EffectIndex >= 0 && recipe.EffectIndex < magicItem.Effects.Count)
             {
-                var currentEffectDef = MagicItemEffectDefinitions.Get(magicItem.Effects[recipe.EffectIndex].EffectType);
+                MagicItemEffectDefinition currentEffectDef = MagicItemEffectDefinitions.Get(magicItem.Effects[recipe.EffectIndex].EffectType);
                 valuelessEffect = currentEffectDef.GetValuesForRarity(rarity) == null;
             }
 
@@ -176,39 +180,42 @@ namespace EpicLoot.Crafting
                 item.Extended(), item.GetMagicItem(), valuelessEffect ? -1 : recipe.EffectIndex, checkaugment: true);
         }
 
-        public static string GetAugmentSelectorText(MagicItem magicItem, int i, IReadOnlyList<MagicItemEffect> augmentableEffects, ItemRarity rarity)
+        public static string GetAugmentSelectorText(MagicItem magicItem, int i,
+            IReadOnlyList<MagicItemEffect> augmentableEffects, ItemRarity rarity)
         {
-            var pip = EpicLoot.GetMagicEffectPip(magicItem.IsEffectAugmented(i));
+            string pip = EpicLoot.GetMagicEffectPip(magicItem.IsEffectAugmented(i));
             bool free = EnchantCostsHelper.EffectIsDeprecated(augmentableEffects[i].EffectType);
+
             return $"{pip} {Localization.instance.Localize(MagicItem.GetEffectText(augmentableEffects[i], rarity, true))}" +
                 $"{(free ? " [<color=yellow>*FREE</color>]" : "")}";
         }
 
         public static List<KeyValuePair<ItemDrop, int>> GetAugmentCosts(ItemDrop.ItemData item, int recipeEffectIndex)
         {
-            var rarity = item.GetRarity();
+            List<KeyValuePair<ItemDrop, int>> costList = new List<KeyValuePair<ItemDrop, int>>();
+            ItemRarity rarity = item.GetRarity();
 
-            var augmentCostDef = EnchantCostsHelper.GetAugmentCost(item, rarity, recipeEffectIndex);
+            List<ItemAmountConfig> augmentCostDef = EnchantCostsHelper.GetAugmentCost(item, rarity, recipeEffectIndex);
             if (augmentCostDef == null)
             {
-                return null;
+                return costList;
             }
 
-            var costList = new List<KeyValuePair<ItemDrop, int>>();
-
-            foreach (var itemAmountConfig in augmentCostDef)
+            foreach (ItemAmountConfig itemAmountConfig in augmentCostDef)
             {
-                var prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
+                GameObject prefab = ObjectDB.instance.GetItemPrefab(itemAmountConfig.Item);
                 if (prefab == null)
                 {
-                    EpicLoot.LogWarning($"Tried to add unknown item ({itemAmountConfig.Item}) to augment cost for item ({item.m_shared.m_name})");
+                    EpicLoot.LogWarning($"Tried to add unknown item ({itemAmountConfig.Item}) " +
+                        $"to augment cost for item ({item.m_shared.m_name})");
                     continue;
                 }
 
-                var itemDrop = prefab.GetComponent<ItemDrop>();
+                ItemDrop itemDrop = prefab.GetComponent<ItemDrop>();
                 if (itemDrop == null)
                 {
-                    EpicLoot.LogWarning($"Tried to add item without ItemDrop ({itemAmountConfig.Item}) to augment cost for item ({item.m_shared.m_name})");
+                    EpicLoot.LogWarning($"Tried to add item without ItemDrop ({itemAmountConfig.Item}) " +
+                        $"to augment cost for item ({item.m_shared.m_name})");
                     continue;
                 }
 
