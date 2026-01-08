@@ -32,6 +32,7 @@ namespace EpicLoot;
 [BepInDependency("randyknapp.mods.auga", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("vapok.mods.adventurebackpacks", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("kg.ValheimEnchantmentSystem", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("org.bepinex.plugins.steadyregeneration", BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class EpicLoot : BaseUnityPlugin
 {
     public const string PluginId = "randyknapp.mods.epicloot";
