@@ -32,55 +32,55 @@ namespace EpicLoot.Crafting
             AugmentChoiceDialog choiceDialog;
             //if (EpicLoot.HasAuga)
             //{
-            //var resultDialog = Auga.API.Workbench_CreateNewResultsPanel();
-            //resultDialog.SetActive(false);
+                //var resultDialog = Auga.API.Workbench_CreateNewResultsPanel();
+                //resultDialog.SetActive(false);
 
-            //choiceDialog = resultDialog.AddComponent<AugmentChoiceDialog>();
+                //choiceDialog = resultDialog.AddComponent<AugmentChoiceDialog>();
 
-            //var icon = choiceDialog.transform.Find("InventoryElement/icon").GetComponent<Image>();
-            //choiceDialog.MagicBG = Object.Instantiate(icon, icon.transform.parent);
-            //choiceDialog.MagicBG.name = "MagicItemBG";
-            //choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
-            //choiceDialog.MagicBG.color = Color.white;
-            //choiceDialog.MagicBG.rectTransform.anchorMin = new Vector2(0, 0);
-            //choiceDialog.MagicBG.rectTransform.anchorMax = new Vector2(1, 1);
-            //choiceDialog.MagicBG.rectTransform.sizeDelta = new Vector2(0, 0);
-            //choiceDialog.MagicBG.rectTransform.anchoredPosition = new Vector2(0, 0);
+                //var icon = choiceDialog.transform.Find("InventoryElement/icon").GetComponent<Image>();
+                //choiceDialog.MagicBG = Object.Instantiate(icon, icon.transform.parent);
+                //choiceDialog.MagicBG.name = "MagicItemBG";
+                //choiceDialog.MagicBG.sprite = EpicLoot.GetMagicItemBgSprite();
+                //choiceDialog.MagicBG.color = Color.white;
+                //choiceDialog.MagicBG.rectTransform.anchorMin = new Vector2(0, 0);
+                //choiceDialog.MagicBG.rectTransform.anchorMax = new Vector2(1, 1);
+                //choiceDialog.MagicBG.rectTransform.sizeDelta = new Vector2(0, 0);
+                //choiceDialog.MagicBG.rectTransform.anchoredPosition = new Vector2(0, 0);
 
-            //choiceDialog.NameText = choiceDialog.transform.Find("Topic").GetComponent<TMP_Text>();
+                //choiceDialog.NameText = choiceDialog.transform.Find("Topic").GetComponent<TMP_Text>();
 
-            //var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
-            //Object.Destroy(closeButton.gameObject);
+                //var closeButton = choiceDialog.gameObject.GetComponentInChildren<Button>();
+                //Object.Destroy(closeButton.gameObject);
 
-            //var tooltipHeight = 360;
-            //var buttonStart = -220;
-            //if (augmentChoices > 3)
-            //{
-            //    var extra = augmentChoices - 3;
-            //    tooltipHeight -= extra * 40;
-            //    buttonStart += extra * 40;
-            //}
+                //var tooltipHeight = 360;
+                //var buttonStart = -220;
+                //if (augmentChoices > 3)
+                //{
+                //    var extra = augmentChoices - 3;
+                //    tooltipHeight -= extra * 40;
+                //    buttonStart += extra * 40;
+                //}
 
-            //var tooltip = (RectTransform)choiceDialog.transform.Find("TooltipScrollContainer");
-            //tooltip.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
-            //var scrollbar = (RectTransform)choiceDialog.transform.Find("ScrollBar");
-            //scrollbar.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
+                //var tooltip = (RectTransform)choiceDialog.transform.Find("TooltipScrollContainer");
+                //tooltip.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
+                //var scrollbar = (RectTransform)choiceDialog.transform.Find("ScrollBar");
+                //scrollbar.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tooltipHeight);
 
-            //for (var i = 0; i < augmentChoices; i++)
-            //{
-            //    //var button = Auga.API.MediumButton_Create(resultDialog.transform, $"AugmentButton{i}", string.Empty);
-            //    //Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, Color.white);
-            //    //button.navigation = new Navigation { mode = Navigation.Mode.None };
+                //for (var i = 0; i < augmentChoices; i++)
+                //{
+                //    //var button = Auga.API.MediumButton_Create(resultDialog.transform, $"AugmentButton{i}", string.Empty);
+                //    //Auga.API.Button_SetTextColors(button, Color.white, Color.white, Color.white, Color.white, Color.white, Color.white);
+                //    //button.navigation = new Navigation { mode = Navigation.Mode.None };
 
-            //    //var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga"), button.transform);
-            //    //focus.SetActive(false);
-            //    //focus.name = "ButtonFocus";
+                //    //var focus = Object.Instantiate(EpicLoot.LoadAsset<GameObject>("ButtonFocusAuga"), button.transform);
+                //    //focus.SetActive(false);
+                //    //focus.name = "ButtonFocus";
 
-            //    //var rt = (RectTransform)button.transform;
-            //    //rt.anchoredPosition = new Vector2(0, buttonStart - (i * 40));
-            //    //rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 295);
-            //    //choiceDialog.EffectChoiceButtons.Add(button);
-            //}
+                //    //var rt = (RectTransform)button.transform;
+                //    //rt.anchoredPosition = new Vector2(0, buttonStart - (i * 40));
+                //    //rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 295);
+                //    //choiceDialog.EffectChoiceButtons.Add(button);
+                //}
             //}
             //else
             //{
