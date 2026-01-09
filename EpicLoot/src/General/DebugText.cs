@@ -9,7 +9,7 @@ namespace EpicLoot
     {
         public static void Postfix(Hud __instance)
         {
-            var debugTextObject = Object.Instantiate(EpicLoot.Assets.DebugTextPrefab, __instance.m_rootObject.transform, false);
+            var debugTextObject = Object.Instantiate(EpicAssets.DebugTextPrefab, __instance.m_rootObject.transform, false);
             debugTextObject.AddComponent<DebugText>();
         }
     }

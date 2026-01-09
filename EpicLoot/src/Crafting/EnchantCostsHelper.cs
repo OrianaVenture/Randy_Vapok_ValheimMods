@@ -32,17 +32,23 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetSacrificeProducts(ItemDrop.ItemData item)
         {
-            var isMagic = item.IsMagic();
-            var type = item.m_shared.m_itemType;
-            var name = item.m_shared.m_name;
+            bool isMagic = item.IsMagic();
+            bool isUnidentified = item.IsUnidentified();
+            ItemDrop.ItemData.ItemType type = item.m_shared.m_itemType;
+            string name = item.m_shared.m_name;
 
-            var configEntry = Config.DisenchantProducts.Find(x => {
-                if (x.IsMagic && !isMagic)
+            DisenchantProductsConfig configEntry = Config.DisenchantProducts.Find(x => {
+                if (x.IsMagic != (isMagic || isUnidentified))
                 {
                     return false;
                 }
 
-                if (isMagic && x.Rarity != item.GetRarity())
+                if (x.IsUnidentified != isUnidentified)
+                {
+                    return false;
+                }
+
+                if ((isUnidentified || isMagic) && x.Rarity != item.GetRarity())
                 {
                     return false;
                 }
@@ -65,7 +71,7 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetSacrificeProducts(bool isMagic, ItemDrop.ItemData.ItemType type, ItemRarity rarity )
         {
-            var configEntry = Config.DisenchantProducts.Find(x => {
+            DisenchantProductsConfig configEntry = Config.DisenchantProducts.Find(x => {
                 if (x.IsMagic && !isMagic)
                 {
                     return false;
@@ -89,9 +95,9 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetEnchantCost(ItemDrop.ItemData item, ItemRarity rarity)
         {
-            var type = item.m_shared.m_itemType;
+            ItemDrop.ItemData.ItemType type = item.m_shared.m_itemType;
 
-            var configEntry = Config.EnchantCosts.Find(x => {
+            EnchantCostConfig configEntry = Config.EnchantCosts.Find(x => {
                 if (x.Rarity != rarity)
                 {
                     return false;
@@ -110,15 +116,28 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetIdentifyCosts(string category, ItemRarity rarity, Heightmap.Biome biome)
         {
-            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>() { };
-            if (Config.IdentifyCosts.ContainsKey(biome))
+            List<ItemAmountConfig> totalCost = new List<ItemAmountConfig>();
+
+            // Add biome-specific costs by rarity if configured
+            if (Config.IdentifyCosts.TryGetValue(biome, out IdentifyCostConfig biomeConfig) &&
+                biomeConfig.CostByRarity.TryGetValue(rarity, out List<ItemAmountConfig> rarityCosts))
             {
-                totalCost.AddRange(Config.IdentifyCosts[biome].CostByRarity[rarity]);
-                totalCost.AddRange(Config.IdentifyTypes[category].Costs);
+                EpicLoot.Log($"The {rarityCosts[0].Item} amount is {rarityCosts[0].Amount}");
+                totalCost.AddRange(rarityCosts);
             }
             else
             {
-                EpicLoot.LogWarning($"No identify costs configured for biome {biome}. Using default costs.");
+                EpicLoot.LogWarning($"No identify costs configured for biome {biome} and rarity {rarity}.");
+            }
+
+            // Add category-specific costs
+            if (Config.IdentifyTypes.TryGetValue(category, out IdentifyTypeConfig typeConfig))
+            {
+                totalCost.AddRange(typeConfig.Costs);
+            }
+            else
+            {
+                EpicLoot.LogWarning($"No identify type configured for category {category}.");
             }
 
             return totalCost;
@@ -127,7 +146,7 @@ namespace EpicLoot.Crafting
         public static Dictionary<string, string> GetIdentificationCategories()
         {
             Dictionary<string, string> categories = new Dictionary<string, string>();
-            foreach(var identifyStyle in Config.IdentifyTypes)
+            foreach(KeyValuePair<string, IdentifyTypeConfig> identifyStyle in Config.IdentifyTypes)
             {
                 categories.Add(identifyStyle.Key, identifyStyle.Value.Localization);
             }
@@ -156,7 +175,7 @@ namespace EpicLoot.Crafting
                     break;
             }
 
-            var configEntry = cfg.Find(x =>
+            RuneCostConfig configEntry = cfg.Find(x =>
             {
                 if (x.Rarity != rarity)
                 {
@@ -181,9 +200,14 @@ namespace EpicLoot.Crafting
 
         public static List<ItemAmountConfig> GetAugmentCost(ItemDrop.ItemData item, ItemRarity rarity, int recipeEffectIndex)
         {
-            var type = item.m_shared.m_itemType;
+            if (EffectIsDeprecated(item, recipeEffectIndex))
+            {
+                return new List<ItemAmountConfig>();
+            }
 
-            var configEntry = Config.AugmentCosts.Find(x => {
+            ItemDrop.ItemData.ItemType type = item.m_shared.m_itemType;
+
+            AugmentCostConfig configEntry = Config.AugmentCosts.Find(x => {
                 if (x.Rarity != rarity)
                 {
                     return false;
@@ -197,15 +221,10 @@ namespace EpicLoot.Crafting
                 return true;
             });
 
-            if (EffectIsDeprecated(item, recipeEffectIndex))
-            {
-                return new List<ItemAmountConfig>();
-            }
-
             if (configEntry != null && !item.GetMagicItem().IsEffectAugmented(recipeEffectIndex))
             {
-                var cost = configEntry.Cost.ToList();
-                var reaugmentCost = GetReAugmentCost(item, recipeEffectIndex);
+                List<ItemAmountConfig> cost = configEntry.Cost.ToList();
+                ItemAmountConfig reaugmentCost = GetReAugmentCost(item, recipeEffectIndex);
                 if (reaugmentCost != null)
                 {
                     cost.Add(reaugmentCost);
@@ -223,23 +242,23 @@ namespace EpicLoot.Crafting
                 return null;
             }
 
-            var magicItem = item.GetMagicItem();
+            MagicItem magicItem = item.GetMagicItem();
             if (magicItem == null)
             {
                 return null;
             }
 
-            var totalAugments = magicItem.GetAugmentCount();
+            int totalAugments = magicItem.GetAugmentCount();
             if (totalAugments == 0)
             {
                 return null;
             }
 
-            var featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
-            var reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : (featureValues.Item2 / 100.0f);
+            Tuple<float, float> featureValues = EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Augment);
+            float reenchantCostReduction = float.IsNaN(featureValues.Item2) ? 0 : (featureValues.Item2 / 100.0f);
 
-            var reaugmentCostIndex = Mathf.Clamp(totalAugments - 1, 0, Config.ReAugmentCosts.Count - 1);
-            var baseCost = Config.ReAugmentCosts[reaugmentCostIndex];
+            int reaugmentCostIndex = Mathf.Clamp(totalAugments - 1, 0, Config.ReAugmentCosts.Count - 1);
+            ItemAmountConfig baseCost = Config.ReAugmentCosts[reaugmentCostIndex];
             return new ItemAmountConfig()
             {
                 Item = baseCost.Item,
@@ -249,13 +268,13 @@ namespace EpicLoot.Crafting
 
         public static bool EffectIsDeprecated(ItemDrop.ItemData item, int effectIndex)
         {
-            var effects = item?.GetMagicItem()?.GetEffects();
+            List<MagicItemEffect> effects = item?.GetMagicItem()?.GetEffects();
             return (effects != null && effectIndex >= 0 && effectIndex < effects.Count && EffectIsDeprecated(effects[effectIndex].EffectType));
         }
 
         public static bool ItemHasDeprecatedEffect(ItemDrop.ItemData item)
         {
-            var effects = item?.GetMagicItem()?.GetEffects();
+            List<MagicItemEffect> effects = item?.GetMagicItem()?.GetEffects();
             if (effects != null)
             {
                 for (int index = 0; index < effects.Count; index++)

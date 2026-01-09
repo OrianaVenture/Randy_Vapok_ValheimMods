@@ -18,24 +18,24 @@ namespace EpicLoot.Magic.MagicItemEffects
         {
             CodeMatcher codeMatcher = new CodeMatcher(instructions);
             codeMatcher.MatchStartForward(
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ItemDrop.ItemData.SharedData),
-                    nameof(ItemDrop.ItemData.m_shared.m_consumeStatusEffect))),
-                new CodeMatch(OpCodes.Ldc_I4_1),
-                new CodeMatch(OpCodes.Ldc_I4_0),
-                new CodeMatch(OpCodes.Ldc_R4),
-                new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(SEMan), nameof(SEMan.AddStatusEffect), new System.Type[]
-                {
-                    typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
-                })))
-                .Advance(1).InsertAndAdvance(
-                Transpilers.EmitDelegate(ModifyMead))
-                .ThrowIfNotMatch("Unable to patch Player.ConsumeItem for Instant Meads.");
+                    new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ItemDrop.ItemData.SharedData),
+                        nameof(ItemDrop.ItemData.m_shared.m_consumeStatusEffect))),
+                    new CodeMatch(OpCodes.Ldc_I4_1),
+                    new CodeMatch(OpCodes.Ldc_I4_0),
+                    new CodeMatch(OpCodes.Ldc_R4),
+                    new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(SEMan), nameof(SEMan.AddStatusEffect), new System.Type[]
+                    {
+                        typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
+                    })))
+                .ThrowIfNotMatch("Unable to patch Player.ConsumeItem for Instant Meads.")
+                .Advance(1)
+                .InsertAndAdvance(Transpilers.EmitDelegate(ModifyMead));
             return codeMatcher.Instructions();
         }
 
         private static StatusEffect ModifyMead(StatusEffect original)
         {
-            SE_Stats dbEffect = (SE_Stats)ObjectDB.instance.GetStatusEffect(original.NameHash());
+            StatusEffect dbEffect = ObjectDB.instance.GetStatusEffect(original.NameHash());
             if (Player.m_localPlayer == null ||
                 dbEffect is not SE_Stats seStats ||
                 !seStats.CanAdd(Player.m_localPlayer))
@@ -43,7 +43,7 @@ namespace EpicLoot.Magic.MagicItemEffects
                 return original;
             }
 
-            SE_Stats returnEffect = dbEffect;
+            SE_Stats returnEffect = seStats;
 
             if (Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.InstantMead) &&
                 ModifyWithLowHealth.PlayerHasLowHealth(Player.m_localPlayer))
