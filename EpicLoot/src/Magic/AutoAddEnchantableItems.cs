@@ -677,8 +677,6 @@ namespace EpicLoot.Magic
                             return "Polearms";
                         case Skills.SkillType.Pickaxes:
                             return "Pickaxes";
-                        // For bombs
-                        case Skills.SkillType.None:
                         case Skills.SkillType.Sneak:
                             return "Torches";
                     }
