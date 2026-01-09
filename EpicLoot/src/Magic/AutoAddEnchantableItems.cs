@@ -64,8 +64,10 @@ namespace EpicLoot.Magic
             Dictionary<string, ItemTypeInfo> itemsByCategory = new Dictionary<string, ItemTypeInfo>();
             Dictionary<string, ItemTypeInfo> foundByCategory = new Dictionary<string, ItemTypeInfo>();
 
-            foreach (ItemTypeInfo currentConfig in currentConfigs) {
-                if (!itemsByCategory.ContainsKey(currentConfig.Type)) {
+            foreach (ItemTypeInfo currentConfig in currentConfigs)
+            {
+                if (!itemsByCategory.ContainsKey(currentConfig.Type)) 
+                {
                     itemsByCategory.Add(currentConfig.Type, currentConfig);
                 } else {
                     // Only need to print the error once
@@ -73,8 +75,10 @@ namespace EpicLoot.Magic
                         $"Please check your iteminfo.json file and patches for conflicts.");
                 }
 
-                if (!foundByCategory.ContainsKey(currentConfig.Type)) {
-                    foundByCategory.Add(currentConfig.Type, new ItemTypeInfo() {
+                if (!foundByCategory.ContainsKey(currentConfig.Type))
+                {
+                    foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
+                    {
                         ItemsByBoss = new Dictionary<string, List<string>>() {
                             { NONE, new List<string>() },
                         },
@@ -748,7 +752,7 @@ namespace EpicLoot.Magic
 
         public static string DetermineBossLevelForItem(ItemDrop.ItemData item)
         {
-            if (item == null || ObjectDB.instance == null) 
+            if (item == null || ObjectDB.instance == null)
             {
                 return NONE;
             }
