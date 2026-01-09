@@ -9,6 +9,8 @@ namespace EpicLoot.Adventure.Feature
     {
         private readonly MerchantPanel _merchantPanel;
 
+        private static bool _generatingBounty = false; // Flag to prevent spam accepting multiple bounties
+
         public AvailableBountiesListPanel(MerchantPanel merchantPanel, BountyListElement elementPrefab)
             : base(
                 merchantPanel.transform.Find("Bounties/AvailableBountiesPanel/ItemList") as RectTransform,
@@ -52,19 +54,27 @@ namespace EpicLoot.Adventure.Feature
             }
 
             var bounty = GetSelectedItem();
-            if (bounty != null && bounty.BountyInfo.State == BountyState.Available)
+            if (!_generatingBounty && bounty != null && bounty.BountyInfo.State == BountyState.Available)
             {
+                _generatingBounty = true;
                 EpicLoot.Log("Trying to accept bounty...");
-                player.StartCoroutine(
-                    AdventureDataManager.Bounties.AcceptBounty(player, bounty.BountyInfo, (success, position) =>
+                player.StartCoroutine(AdventureDataManager.Bounties.AcceptBounty(
+                    player, bounty.BountyInfo, (success, position) =>
                 {
-                    if (success)
+                    if (success && StoreGui.instance != null && _merchantPanel != null)
                     {
                         RefreshItems(_merchantPanel.GetPlayerCurrencies());
 
-                        StoreGui.instance.m_trader.OnBought(null);
-                        StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
+                        if (StoreGui.instance.m_trader != null)
+                        {
+                            StoreGui.instance.m_trader.OnBought(null);
+                        }
+
+                        StoreGui.instance.m_buyEffects?.Create(player.transform.position, Quaternion.identity);
                     }
+
+                    _generatingBounty = false;
+                    EpicLoot.Log($"Done trying to accept bounty. Success: {success}");
                 }));
             }
         }

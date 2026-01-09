@@ -52,7 +52,7 @@
     },
     "Meadows": {
       "Tier": "Tier1",
-      "BossKey": "defeated_eikythr",
+      "BossKey": "defeated_eikthyr",
       "BiomeMaterials": [
         "Flint",
         "LeatherScraps",
@@ -84,7 +84,8 @@
         "ElderBark",
         "Guck",
         "Chitin",
-        "SerpentScale"
+        "SerpentScale",
+        "Ooze"
       ],
       "BiomeSpecificCraftingStations": []
     },
@@ -104,7 +105,7 @@
     },
     "Plains": {
       "Tier": "Tier5",
-      "BossKey": "defeated_bonemass",
+      "BossKey": "defeated_goblinking",
       "BiomeMaterials": [
         "Needle",
         "BlackMetal",

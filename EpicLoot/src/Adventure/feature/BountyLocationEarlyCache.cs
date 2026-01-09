@@ -124,6 +124,7 @@ namespace EpicLoot.Adventure.Feature
                 // Fail safe, exit coroutine.
                 if ((!requireSelection && tries > _cacheTriesPerBiome) || tries > _maximumTries)
                 {
+                    onComplete?.Invoke(false, Vector3.zero);
                     yield break;
                 }
 

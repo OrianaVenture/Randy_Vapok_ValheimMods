@@ -13,10 +13,9 @@ namespace EpicLoot.Crafting
             bool isMagic = __instance.m_itemData.IsMagicCraftingMaterial();
             bool isRunestone = __instance.m_itemData.IsRunestone();
             bool isUnidentified = __instance.m_itemData.IsUnidentified();
+
             if (isMagic || isRunestone || isUnidentified)
             {
-
-
                 var particleContainer = __instance.transform.Find("Particles");
                 if (particleContainer != null)
                 {
@@ -30,12 +29,14 @@ namespace EpicLoot.Crafting
 
                 // Ensure unidenfitied items are loaded back up if they somehow become non-magical
                 MagicItemComponent mi = __instance.m_itemData.Data().GetOrCreate<MagicItemComponent>();
-                if (isUnidentified && mi.MagicItem == null) {
+                if (isUnidentified && mi.MagicItem == null)
+                {
                     mi.SetMagicItem(new MagicItem
                     {
                         Rarity = rarity,
                         IsUnidentified = true,
                     });
+
                     mi.Save();
                 }
 
@@ -43,7 +44,12 @@ namespace EpicLoot.Crafting
                 {
                     __instance.gameObject.AddComponent<BeamColorSetter>().SetColor(rgbaColor);
                 }
-                if (isUnidentified) { variant = 0; }
+
+                if (isUnidentified)
+                {
+                    variant = 0;
+                }
+
                 __instance.m_itemData.m_variant = variant;
             }
         }

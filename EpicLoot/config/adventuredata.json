@@ -55,7 +55,9 @@
       "HeadArmor",
       "ShouldersArmor",
       "Utility",
-      "Trinket"
+      "Trinket",
+      "None",
+      "Misc"
     ],
     "GamblesCount": 4,
     "GambleRarityChance": [ 10, 68, 15, 4, 2, 1 ],
