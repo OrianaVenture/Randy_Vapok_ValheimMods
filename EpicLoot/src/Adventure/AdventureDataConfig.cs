@@ -134,6 +134,12 @@ namespace EpicLoot.Adventure
     public class BountyBossConfig
     {
         public Heightmap.Biome Biome;
+        /// <summary>
+        /// Optional friendly name for the biome. Used to create BiomeAliases for modded biomes.
+        /// Example: For Biome 8192, set BiomeName to "cursedmountain" so config files can use
+        /// "cursedmountain" instead of "8192".
+        /// </summary>
+        public string BiomeName;
         public string BossPrefab;
         public string BossDefeatedKey;
     }

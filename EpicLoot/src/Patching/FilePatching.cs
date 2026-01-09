@@ -58,6 +58,7 @@ namespace EpicLoot.Patching
         public static string PatchesDirPath = GetPatchesDirectoryPath();
         public static List<string> ConfigFileNames = [
             "loottables",
+            "biomedata",
             "magiceffects",
             "iteminfo",
             "recipes",

@@ -10,6 +10,7 @@ namespace EpicLoot.Adventure
     {
         public static AdventureDataConfig Config;
         private static readonly Dictionary<string, Sprite> _cachedTrophySprites = new Dictionary<string, Sprite>();
+        private static Dictionary<string, string> _biomeNameLookup;
 
         public static SecretStashAdventureFeature SecretStash;
         public static GambleAdventureFeature Gamble;
@@ -22,6 +23,9 @@ namespace EpicLoot.Adventure
         public static void Initialize(AdventureDataConfig config)
         {
             Config = config;
+
+            // Build biome name lookup from Bosses config
+            BuildBiomeNameLookup();
             
             OnSetupAdventureData?.Invoke();
 
@@ -32,6 +36,82 @@ namespace EpicLoot.Adventure
 
             Config.TreasureMap.UpdateBiomeList();
             EpicLoot.Log($"Updated/setup Adventure Data");
+        }
+
+        /// <summary>
+        /// Builds a lookup dictionary from biome numbers to friendly names using the Bosses config.
+        /// </summary>
+        private static void BuildBiomeNameLookup()
+        {
+            _biomeNameLookup = new Dictionary<string, string>();
+
+            if (Config?.Bounties?.Bosses == null)
+            {
+                EpicLoot.Log($"[AdventureDataManager] BuildBiomeNameLookup: No Bosses config found");
+                return;
+            }
+
+            EpicLoot.Log($"[AdventureDataManager] BuildBiomeNameLookup: Processing {Config.Bounties.Bosses.Count} boss entries");
+
+            foreach (var boss in Config.Bounties.Bosses)
+            {
+                string biomeValue = ((int)boss.Biome).ToString();
+                EpicLoot.Log($"[AdventureDataManager] Boss entry: Biome={boss.Biome} ({biomeValue}), BiomeName='{boss.BiomeName ?? "null"}', BossPrefab={boss.BossPrefab}");
+
+                if (!string.IsNullOrEmpty(boss.BiomeName))
+                {
+                    if (!_biomeNameLookup.ContainsKey(biomeValue))
+                    {
+                        _biomeNameLookup[biomeValue] = boss.BiomeName;
+                        EpicLoot.Log($"[AdventureDataManager] Registered biome alias: {biomeValue} -> {boss.BiomeName}");
+                    }
+                }
+            }
+
+            EpicLoot.Log($"[AdventureDataManager] Built biome name lookup with {_biomeNameLookup.Count} entries");
+        }
+
+        /// <summary>
+        /// Gets the friendly name for a biome, if one was defined in the Bosses config.
+        /// Returns null if no name mapping exists.
+        /// </summary>
+        public static string GetBiomeName(Heightmap.Biome biome)
+        {
+            if (_biomeNameLookup == null)
+            {
+                return null;
+            }
+
+            string biomeKey = ((int)biome).ToString();
+            return _biomeNameLookup.TryGetValue(biomeKey, out string name) ? name : null;
+        }
+
+        /// <summary>
+        /// Gets the friendly name for a biome by its numeric string key.
+        /// Returns null if no name mapping exists.
+        /// </summary>
+        public static string GetBiomeName(string biomeKey)
+        {
+            if (_biomeNameLookup == null)
+            {
+                return null;
+            }
+
+            return _biomeNameLookup.TryGetValue(biomeKey, out string name) ? name : null;
+        }
+
+        /// <summary>
+        /// Gets all custom biome names defined in the Bosses config.
+        /// Used to create unidentified item prefabs for user-defined biomes.
+        /// </summary>
+        public static IEnumerable<string> GetCustomBiomeNames()
+        {
+            if (_biomeNameLookup == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            return _biomeNameLookup.Values.Distinct();
         }
 
         public static AdventureDataConfig GetCFG()
@@ -62,7 +142,9 @@ namespace EpicLoot.Adventure
                     var characterDrop = prefab.GetComponent<CharacterDrop>();
                     if (characterDrop != null)
                     {
-                        var drops = characterDrop.m_drops.Select(x => x.m_prefab.GetComponent<ItemDrop>());
+                        var drops = characterDrop.m_drops
+                            .Select(x => x.m_prefab?.GetComponent<ItemDrop>())
+                            .Where(x => x != null);
                         var trophyPrefab = drops.FirstOrDefault(x => x.m_itemData.m_shared.m_itemType == ItemDrop.ItemData.ItemType.Trophy);
                         if (trophyPrefab != null)
                         {

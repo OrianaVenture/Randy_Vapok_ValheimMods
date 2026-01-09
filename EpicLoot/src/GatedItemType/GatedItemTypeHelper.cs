@@ -1,6 +1,6 @@
 ﻿using BepInEx;
-using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
+using EpicLoot.Biome;
 using EpicLoot.General;
 using Jotunn.Managers;
 using System.Collections.Generic;
@@ -116,24 +116,39 @@ namespace EpicLoot.GatedItemType
             BiomesInOrder.Add(Heightmap.Biome.None);
             BiomesToBossKeys.Add(Heightmap.Biome.None, new List<string> { });
 
-            foreach (BountyBossConfig boss in AdventureDataManager.Config.Bounties.Bosses)
+            // Build BiomesInOrder and BiomesToBossKeys from BiomeDataManager
+            // Biomes are already sorted by Order in BiomeDataManager
+            foreach (var biomeName in BiomeDataManager.GetBiomesInOrder())
             {
-                if (!BiomesToBossKeys.ContainsKey(boss.Biome))
+                var biomeConfig = BiomeDataManager.GetBiomeDefinition(biomeName);
+                if (biomeConfig == null)
                 {
-                    BiomesToBossKeys.Add(boss.Biome, new List<string> { boss.BossDefeatedKey });
+                    continue;
+                }
+
+                // Skip biomes without a boss defined
+                if (string.IsNullOrEmpty(biomeConfig.BossDefeatedKey))
+                {
+                    continue;
+                }
+
+                var biomeEnum = biomeConfig.GetBiomeEnum();
+
+                if (!BiomesToBossKeys.ContainsKey(biomeEnum))
+                {
+                    BiomesToBossKeys.Add(biomeEnum, new List<string> { biomeConfig.BossDefeatedKey });
                 }
                 else
                 {
-                    if (!BiomesToBossKeys[boss.Biome].Contains(boss.BossDefeatedKey))
+                    if (!BiomesToBossKeys[biomeEnum].Contains(biomeConfig.BossDefeatedKey))
                     {
-                        BiomesToBossKeys[boss.Biome].Add(boss.BossDefeatedKey);
+                        BiomesToBossKeys[biomeEnum].Add(biomeConfig.BossDefeatedKey);
                     }
                 }
 
-                // TODO: make a new user defined data structure to control biome order
-                if (!BiomesInOrder.Contains(boss.Biome))
+                if (!BiomesInOrder.Contains(biomeEnum))
                 {
-                    BiomesInOrder.Add(boss.Biome);
+                    BiomesInOrder.Add(biomeEnum);
                 }
             }
 
@@ -197,14 +212,20 @@ namespace EpicLoot.GatedItemType
             if (ItemsByTypeAndBoss[itemType].ContainsKey(boss))
             {
                 List<string> items = ItemsByTypeAndBoss[itemType][boss];
-                bool gated = true;
 
                 foreach (string item in items.shuffleList())
                 {
-                    gated = CheckIfItemNeedsGate(mode, item);
-                    if (gated)
+                    // For boss-kill modes, skip the gate check since the boss tier was already
+                    // validated by DetermineValidBosses. For other modes (PlayerMustKnowRecipe,
+                    // PlayerMustHaveCraftedItem), we still need to check player-specific state.
+                    if (mode != GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems &&
+                        mode != GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
                     {
-                        continue;
+                        bool gated = CheckIfItemNeedsGate(mode, item);
+                        if (gated)
+                        {
+                            continue;
+                        }
                     }
 
                     if (!allowDuplicate && currentSelected.Contains(item))
@@ -373,7 +394,7 @@ namespace EpicLoot.GatedItemType
                     {
                         continue;
                     }
-                    
+
                     List<string> bosses = BiomesToBossKeys[biome];
 
                     if (previousAdded && mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
@@ -518,43 +539,62 @@ namespace EpicLoot.GatedItemType
         /// </summary>
         public static Heightmap.Biome GetCurrentOrLowerBiomeByDefeatedBossSettings(Heightmap.Biome biome, GatedItemTypeMode mode)
         {
+            EpicLoot.Log($"GetCurrentOrLowerBiomeByDefeatedBossSettings called with biome={biome}, mode={mode}");
+
             if (!BiomesInOrder.Contains(biome))
             {
                 // TODO: Handle biome definitions user defined lists better.
                 // Configurations can have custom biomes not defined in all configuration locations.
+                EpicLoot.Log($"Biome {biome} not found in BiomesInOrder, returning original biome");
                 return biome;
             }
 
             if (mode == GatedItemTypeMode.Unlimited || mode == GatedItemTypeMode.PlayerMustKnowRecipe)
             {
+                EpicLoot.Log($"Mode is {mode}, returning original biome {biome}");
                 return biome;
             }
 
             Heightmap.Biome resultBiome = GetHighestDefeatedBiome(biome);
+            EpicLoot.Log($"GetHighestDefeatedBiome returned {resultBiome}");
 
             if (mode == GatedItemTypeMode.BossKillUnlocksNextBiomeItems)
             {
                 int index = BiomesInOrder.IndexOf(resultBiome) + 1;
+                EpicLoot.Log($"BossKillUnlocksNextBiomeItems mode: resultBiome index={index - 1}, next index={index}, BiomesInOrder.Count={BiomesInOrder.Count}");
                 if (index < BiomesInOrder.Count)
                 {
                     resultBiome = BiomesInOrder[index];
+                    EpicLoot.Log($"Advanced to next biome: {resultBiome}");
+                }
+                else
+                {
+                    EpicLoot.Log($"Already at highest biome, staying at {resultBiome}");
                 }
             }
 
+            EpicLoot.Log($"GetCurrentOrLowerBiomeByDefeatedBossSettings returning {resultBiome}");
             return resultBiome;
         }
 
         private static Heightmap.Biome GetHighestDefeatedBiome(Heightmap.Biome startBiome)
         {
-            for (int i = BiomesInOrder.IndexOf(startBiome); i >= 0; i--)
+            int startIndex = BiomesInOrder.IndexOf(startBiome);
+            EpicLoot.Log($"GetHighestDefeatedBiome called with startBiome={startBiome}, startIndex={startIndex}");
+
+            for (int i = startIndex; i >= 0; i--)
             {
                 Heightmap.Biome checkBiome = BiomesInOrder[i];
-                if (HasAllBossKeysForBiome(checkBiome))
+                bool hasAllKeys = HasAllBossKeysForBiome(checkBiome);
+                EpicLoot.Log($"  Checking biome {checkBiome} at index {i}: HasAllBossKeysForBiome={hasAllKeys}");
+                if (hasAllKeys)
                 {
+                    EpicLoot.Log($"  Found highest defeated biome: {checkBiome}");
                     return checkBiome;
                 }
             }
 
+            EpicLoot.Log($"  No defeated biome found, returning Biome.None");
             return Heightmap.Biome.None;
         }
 

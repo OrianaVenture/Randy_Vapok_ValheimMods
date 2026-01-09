@@ -1,6 +1,7 @@
 using BepInEx;
 using Common;
 using EpicLoot.Adventure;
+using EpicLoot.Biome;
 using EpicLoot.Config;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
@@ -533,21 +534,40 @@ public sealed class EpicLoot : BaseUnityPlugin
         }
     }
 
-    private static void LoadUnidentifiedItems()
-    {
-        // TODO: Add support for biomes added by other mods as needed.
-        GameObject genericPrefab = EpicAssets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
-        CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
-        ItemManager.Instance.AddItem(genericUnidentified);
-        genericPrefab.SetActive(false);
-
-        foreach (string biome in Enum.GetNames(typeof(Heightmap.Biome)))
+        private static void LoadUnidentifiedItems()
         {
-            if (biome == "None" || biome == "All")
+            GameObject genericPrefab = EpicAssets.AssetBundle.LoadAsset<GameObject>("_Unidentified");
+            CustomItem genericUnidentified = new CustomItem(genericPrefab, false);
+            ItemManager.Instance.AddItem(genericUnidentified);
+            genericPrefab.SetActive(false);
+
+            // Create unidentified items for built-in biomes
+            foreach (string biome in Enum.GetNames(typeof(Heightmap.Biome)))
             {
-                continue;
+                if (biome == "None" || biome == "All")
+                {
+                    continue;
+                }
+
+                CreateUnidentifiedItemsForBiome(genericPrefab, biome);
             }
 
+            // Create unidentified items for user-defined biomes (from biomedata.json)
+            foreach (string biomeName in BiomeDataManager.GetBiomesInOrder())
+            {
+                // Skip if this matches a built-in biome name (already created above)
+                if (Enum.TryParse<Heightmap.Biome>(biomeName, true, out _))
+                {
+                    continue;
+                }
+
+                Log($"Creating unidentified items for custom biome: {biomeName}");
+                CreateUnidentifiedItemsForBiome(genericPrefab, biomeName);
+            }
+        }
+
+        private static void CreateUnidentifiedItemsForBiome(GameObject genericPrefab, string biome)
+        {
             foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
             {
                 var prefab = Object.Instantiate(genericPrefab);
@@ -584,7 +604,6 @@ public sealed class EpicLoot : BaseUnityPlugin
                 ItemManager.OnItemsRegistered += () => EnableUnidentified(prefabName);
             }
         }
-    }
 
     private static void RegisterStatusEffects()
     {

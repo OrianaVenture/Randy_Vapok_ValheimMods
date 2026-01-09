@@ -88,12 +88,15 @@ namespace EpicLoot.Adventure.Feature
         public override void RefreshItems(Currencies currencies)
         {
             _currentInterval = AdventureDataManager.TreasureMaps.GetCurrentInterval();
+            EpicLoot.Log($"[TreasureMap] RefreshItems: Starting panel refresh, interval={_currentInterval}");
 
             DestroyAllListElementsInList();
             var allItems = AdventureDataManager.TreasureMaps.GetTreasureMaps();
+            EpicLoot.Log($"[TreasureMap] RefreshItems: Got {allItems.Count} treasure maps to display");
             for (var index = 0; index < allItems.Count; index++)
             {
                 var itemInfo = allItems[index];
+                EpicLoot.Log($"[TreasureMap] RefreshItems: Creating UI element for biome={itemInfo.Biome} (value={(int)itemInfo.Biome}), cost={itemInfo.Cost}");
                 var itemElement = Object.Instantiate(ElementPrefab, List);
                 itemElement.gameObject.SetActive(true);
                 itemElement.SetItem(itemInfo, currencies.Coins);
@@ -101,6 +104,7 @@ namespace EpicLoot.Adventure.Feature
                 itemElement.OnSelected += (x) => OnItemSelected(i);
                 itemElement.SetSelected(i == _selectedItemIndex);
             }
+            EpicLoot.Log($"[TreasureMap] RefreshItems: Panel refresh complete");
         }
 
         public override void UpdateRefreshTime()
