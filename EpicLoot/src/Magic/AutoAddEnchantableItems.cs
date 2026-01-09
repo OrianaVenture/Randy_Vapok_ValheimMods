@@ -723,7 +723,7 @@ namespace EpicLoot.Magic
                     if (item.m_shared.m_skillType == Skills.SkillType.None)
                     {
                         // This is likely a throwable bomb, make sure it remains unknown
-                        return "Torches";
+                        break;
                     }
                     return "Fists";
                 case ItemDrop.ItemData.AnimationState.MagicItem:
