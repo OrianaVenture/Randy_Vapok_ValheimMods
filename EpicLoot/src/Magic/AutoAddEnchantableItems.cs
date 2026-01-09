@@ -66,10 +66,12 @@ namespace EpicLoot.Magic
 
             foreach (ItemTypeInfo currentConfig in currentConfigs)
             {
-                if (!itemsByCategory.ContainsKey(currentConfig.Type)) 
+                if (!itemsByCategory.ContainsKey(currentConfig.Type))
                 {
                     itemsByCategory.Add(currentConfig.Type, currentConfig);
-                } else {
+                }
+                else
+                {
                     // Only need to print the error once
                     EpicLoot.LogWarning($"Duplicate Type keys found for {currentConfig.Type}. " +
                         $"Please check your iteminfo.json file and patches for conflicts.");
@@ -756,8 +758,9 @@ namespace EpicLoot.Magic
             {
                 return NONE;
             }
+
             Recipe itemRecipe = ObjectDB.instance.GetRecipe(item);
-            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) 
+            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null)
             {
                 return NONE;
             }
