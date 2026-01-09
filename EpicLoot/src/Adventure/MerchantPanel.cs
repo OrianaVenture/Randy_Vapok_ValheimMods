@@ -310,7 +310,7 @@ namespace EpicLoot.Adventure
         private static string GetRefreshTimeTooltip(int refreshInterval)
         {
             var message = refreshInterval > 1 ?
-                Localization.instance.Localize("$mod_epicloot_merchant_refreshdays", refreshInterval.ToString()) : 
+                Localization.instance.Localize("$mod_epicloot_merchant_refreshdays", refreshInterval.ToString()) :
                 "$mod_epicloot_merchant_refreshday";
             return $"<color=#add8e6ff>{message}</color>";
         }

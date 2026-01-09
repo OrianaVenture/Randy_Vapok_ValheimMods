@@ -122,7 +122,6 @@ namespace EpicLoot.Crafting
             if (Config.IdentifyCosts.TryGetValue(biome, out IdentifyCostConfig biomeConfig) &&
                 biomeConfig.CostByRarity.TryGetValue(rarity, out List<ItemAmountConfig> rarityCosts))
             {
-                EpicLoot.Log($"The {rarityCosts[0].Item} amount is {rarityCosts[0].Amount}");
                 totalCost.AddRange(rarityCosts);
             }
             else
