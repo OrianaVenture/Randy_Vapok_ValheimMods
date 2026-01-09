@@ -64,15 +64,22 @@ namespace EpicLoot.Magic
             Dictionary<string, ItemTypeInfo> itemsByCategory = new Dictionary<string, ItemTypeInfo>();
             Dictionary<string, ItemTypeInfo> foundByCategory = new Dictionary<string, ItemTypeInfo>();
 
-            foreach (ItemTypeInfo currentConfig in currentConfigs)
-            {
-                itemsByCategory.Add(currentConfig.Type, currentConfig);
-                foundByCategory.Add(currentConfig.Type, new ItemTypeInfo()
-                {
-                    ItemsByBoss = new Dictionary<string, List<string>>() {
-                        { NONE, new List<string>() },
-                    },
-                });
+            foreach (ItemTypeInfo currentConfig in currentConfigs) {
+                if (!itemsByCategory.ContainsKey(currentConfig.Type)) {
+                    itemsByCategory.Add(currentConfig.Type, currentConfig);
+                } else {
+                    // Only need to print the error once
+                    EpicLoot.LogWarning($"Duplicate Type keys found for {currentConfig.Type}. " +
+                        $"Please check your iteminfo.json file and patches for conflicts.");
+                }
+
+                if (!foundByCategory.ContainsKey(currentConfig.Type)) {
+                    foundByCategory.Add(currentConfig.Type, new ItemTypeInfo() {
+                        ItemsByBoss = new Dictionary<string, List<string>>() {
+                            { NONE, new List<string>() },
+                        },
+                    });
+                }
             }
 
             List<ItemDrop> allItems = Resources.FindObjectsOfTypeAll<ItemDrop>().ToList();
@@ -741,11 +748,15 @@ namespace EpicLoot.Magic
 
         public static string DetermineBossLevelForItem(ItemDrop.ItemData item)
         {
-            if (item == null || ObjectDB.instance == null) {
+            if (item == null || ObjectDB.instance == null) 
+            {
                 return NONE;
             }
             Recipe itemRecipe = ObjectDB.instance.GetRecipe(item);
-            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) { return NONE; }
+            if (itemRecipe == null || itemRecipe.m_enabled == false || itemRecipe.m_resources == null) 
+            {
+                return NONE;
+            }
 
             // We need to completely evaluate each tier until we find a match, so that we only match the highest tier for the selected item.
 
@@ -753,7 +764,7 @@ namespace EpicLoot.Magic
             int currentMaterialReq = 0;
             string highestRequirement = NONE;
             foreach (Piece.Requirement req in itemRecipe.m_resources)
-{
+            {
                 // Walks through the materials required for an item and assigns the highest materials level
                 tier = 0;
                 foreach (KeyValuePair<string, SortingData> sortdata in Config.BiomeSorterData)
