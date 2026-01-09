@@ -76,7 +76,7 @@ namespace EpicLoot.Adventure.Feature
                 
                 if (StoreGui.instance.m_trader != null)
                 {
-                    StoreGui.instance.m_trader.OnBought(null);
+                    StoreGui.instance.m_trader.OnBought(new Trader.TradeItem { m_price = 0 });
                 }
 
                 StoreGui.instance.m_buyEffects?.Create(Player.m_localPlayer.transform.position, Quaternion.identity);

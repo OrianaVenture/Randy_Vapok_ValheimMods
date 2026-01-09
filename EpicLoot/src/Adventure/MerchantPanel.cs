@@ -303,7 +303,7 @@ namespace EpicLoot.Adventure
                 InventoryManagement.Instance.RemoveItem(GetGoldBountyTokenName(), listItem.ItemInfo.Cost.GoldBountyTokens);
             }
 
-            StoreGui.instance.m_trader.OnBought(null);
+            StoreGui.instance.m_trader.OnBought(new Trader.TradeItem { m_price = 0 });
             StoreGui.instance.m_buyEffects.Create(player.transform.position, Quaternion.identity);
         }
 
