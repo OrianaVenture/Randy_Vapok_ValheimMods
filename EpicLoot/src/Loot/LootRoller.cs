@@ -196,12 +196,11 @@ namespace EpicLoot
         public static Dictionary<string,float> GetLootTableChances(Vector3 location, List<LootTable> LootTables)
         {
             Dictionary<string, float> results = new Dictionary<string, float>();
-            EpicLoot.Log($"Checking {LootTables.Count} loot tables");
+
             foreach(LootTable lt in LootTables)
             {
                 foreach(LootDrop ld in lt.Loot)
                 {
-                    EpicLoot.Log($"Checking {ld.Item} is itemset? {ItemSets.ContainsKey(ld.Item)}");
                     if (ItemSets.ContainsKey(ld.Item))
                     {
                         ItemSets[ld.Item].Loot.ToList().ForEach(x =>
@@ -227,7 +226,7 @@ namespace EpicLoot
                     }
                 }
             }
-            EpicLoot.Log($"Loot table contains {results.Count} items");
+
             return results;
         }
 
