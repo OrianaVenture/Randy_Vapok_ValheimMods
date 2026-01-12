@@ -370,7 +370,7 @@ namespace EpicLoot_UnityLib
                 if (destroyExtractedItem)
                 {
                     // Destroy the item
-                    InventoryManagement.Instance.RemoveItem(item);
+                    InventoryManagement.Instance.RemoveExactItem(item, 1);
                 }
 
                 InventoryManagement.Instance.GiveItem(RuneWithEnchant);
