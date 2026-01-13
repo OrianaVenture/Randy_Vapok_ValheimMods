@@ -3,94 +3,11 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace EpicLoot.Adventure
 {
-    public enum MinimapPinQueueTask
-    {
-        AddTreasurePin,
-        AddBountyPin,
-        RemoveTreasurePin,
-        RemoveBountyPin,
-        RefreshAll
-    }
-    public class PinJob
-    {
-        public MinimapPinQueueTask Task { get; set; }
-        public KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> TreasurePin { get; set; }
-        public KeyValuePair<string, AreaPinInfo> BountyPin { get; set; }
-        public bool DebugMode { get; set; }
-    }
-    public class AreaPinInfo
-    {
-        public Minimap.PinData Pin { get; set; }
-        public Minimap.PinData Area { get; set; }
-        public Minimap.PinData DebugPin { get; set; }
-        
-        //Pin Data
-        public Vector3 Position { get; set; }
-        public Minimap.PinType Type { get; set; }
-        public string Name { get; set; }
-        public bool Save { get; set; }
-        public bool Checked { get; set; }
-        public long OwnerId { get; set; }
-
-        public AreaPinInfo()
-        {
-            Name = string.Empty;
-            Save = false;
-            Checked = false;
-            OwnerId = 0L;
-        }
-    }
-    public class AdventureToggle
-    {
-        public readonly GameObject instance;
-        public readonly Toggle toggle;
-        public readonly TextMeshProUGUI label;
-        public readonly RectTransform rect;
-        public readonly Image checkbox;
-        public readonly Image checkmark;
-        public readonly Image darken;
-        public readonly UIGamePad gamepad;
-        public readonly TextMeshProUGUI inputKey;
-
-        public AdventureToggle(GameObject source, Transform parent, string name, UnityAction<bool> onToggle)
-        {
-            instance = UnityEngine.Object.Instantiate(source, parent);
-            instance.name = name;
-            rect = instance.GetComponent<RectTransform>();
-            toggle = instance.GetComponentInChildren<Toggle>();
-            toggle.onValueChanged.RemoveAllListeners();
-            toggle.onValueChanged.AddListener(onToggle);
-            label = Utils.FindChild(instance.transform, "Label").GetComponent<TextMeshProUGUI>();
-            label.text = name;
-            checkbox = Utils.FindChild(instance.transform, "Background").GetComponent<Image>();
-            checkmark = Utils.FindChild(checkbox.transform, "Checkmark").GetComponent<Image>();
-            darken = instance.GetComponent<Image>();
-            gamepad = instance.GetComponentInChildren<UIGamePad>();
-            inputKey = Utils.FindChild(instance.transform, "Key").GetComponent<TextMeshProUGUI>();
-            ButtonSfx sfx = instance.GetComponentInChildren<ButtonSfx>();
-            sfx.Start();
-        }
-
-        public void SetGamepadKey(string key)
-        {
-            gamepad.m_zinputKey = key;
-            inputKey.text = Localization.instance.Localize(ZInput.instance.GetBoundKeyString(key, true));
-        }
-
-        public void SetLabel(string text) => label.text = Localization.instance.Localize(text);
-        
-        public void SetIcon(Sprite icon) => checkmark.sprite = icon;
-        
-        public void SetBackground(float transparency) => darken.color = new Color(darken.color.r, darken.color.g, darken.color.b, transparency);
-    }
-
     [RequireComponent(typeof(Minimap))]
     public class MinimapController : MonoBehaviour
     {
@@ -174,7 +91,8 @@ namespace EpicLoot.Adventure
             rect.anchorMax = new Vector2(0f, 0f);
             rect.pivot = new Vector2(0f, 1f);
             rect.sizeDelta = new Vector2(250f, 42f);
-            rect.anchoredPosition = new Vector2(20f, 60f); //TODO: figure out how to programmatically set position to avoid screen size difference moving container, if it is a problem
+            rect.anchoredPosition = new Vector2(20f, 60f);
+            // figure out how to programmatically set this position, if needed
             
             HorizontalLayoutGroup layout = container.AddComponent<HorizontalLayoutGroup>();
             layout.childForceExpandWidth = false;
