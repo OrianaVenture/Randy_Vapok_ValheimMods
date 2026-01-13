@@ -45,7 +45,6 @@ public class MagicSearchField
 
         GameObject placeholderObj = new GameObject("Placeholder");
         _placeholderRect = placeholderObj.AddComponent<RectTransform>();
-        _placeholderRect.localScale = Vector3.one;
         placeholderObj.transform.SetParent(_obj.transform);
         _placeholder = placeholderObj.AddComponent<Text>();
         //TODO: localize search text

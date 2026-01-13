@@ -45,6 +45,7 @@ namespace EpicLoot.CraftingV2
             MultiSelectItemList.SortByRarity = SortByRarity;
             MultiSelectItemList.SortByName = SortByName;
             MultiSelectItemListElement.SetMagicItem = SetMagicItem;
+            MultiSelectItemListElement.SetItemTooltip = SetItemTooltip;
             SacrificeUI.GetSacrificeItems = GetSacrificeItems;
             SacrificeUI.GetSacrificeProducts = GetSacrificeProducts;
             SacrificeUI.GetIdentifyCost = GetIdentifyCostForCategory;

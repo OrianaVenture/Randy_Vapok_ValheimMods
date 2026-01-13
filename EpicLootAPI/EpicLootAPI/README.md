@@ -50,13 +50,6 @@ public void Awake()
     Definition.Requirements.AllowedSkillTypes.Add(Skills.SkillType.Bows, Skills.SkillType.Spears);
     Definition.Requirements.AllowedRarities.Add(ItemRarity.Epic, ItemRarity.Legendary, ItemRarity.Mythic);
     Definition.SelectionWeight = 1;
-    
-    // example updating
-    Terminal.ConsoleCommand update = new("Blink_Update", "Updates blink magic effect", _ => 
-    {
-        Definition.DisplayText = "TEST BLINK";
-        Defintion.Update();
-    })
 }
 
 [HarmonyPatch(typeof(Projectile), nameof(Projectile.OnHit))]
