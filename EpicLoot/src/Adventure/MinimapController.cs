@@ -3,7 +3,10 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace EpicLoot.Adventure
 {
@@ -44,7 +47,50 @@ namespace EpicLoot.Adventure
             OwnerId = 0L;
         }
     }
-    
+    public class AdventureToggle
+    {
+        public readonly GameObject instance;
+        public readonly Toggle toggle;
+        public readonly TextMeshProUGUI label;
+        public readonly RectTransform rect;
+        public readonly Image checkbox;
+        public readonly Image checkmark;
+        public readonly Image darken;
+        public readonly UIGamePad gamepad;
+        public readonly TextMeshProUGUI inputKey;
+
+        public AdventureToggle(GameObject source, Transform parent, string name, UnityAction<bool> onToggle)
+        {
+            instance = UnityEngine.Object.Instantiate(source, parent);
+            instance.name = name;
+            rect = instance.GetComponent<RectTransform>();
+            toggle = instance.GetComponentInChildren<Toggle>();
+            toggle.onValueChanged.RemoveAllListeners();
+            toggle.onValueChanged.AddListener(onToggle);
+            label = Utils.FindChild(instance.transform, "Label").GetComponent<TextMeshProUGUI>();
+            label.text = name;
+            checkbox = Utils.FindChild(instance.transform, "Background").GetComponent<Image>();
+            checkmark = Utils.FindChild(checkbox.transform, "Checkmark").GetComponent<Image>();
+            darken = instance.GetComponent<Image>();
+            gamepad = instance.GetComponentInChildren<UIGamePad>();
+            inputKey = Utils.FindChild(instance.transform, "Key").GetComponent<TextMeshProUGUI>();
+            ButtonSfx sfx = instance.GetComponentInChildren<ButtonSfx>();
+            sfx.Start();
+        }
+
+        public void SetGamepadKey(string key)
+        {
+            gamepad.m_zinputKey = key;
+            inputKey.text = Localization.instance.Localize(ZInput.instance.GetBoundKeyString(key, true));
+        }
+
+        public void SetLabel(string text) => label.text = Localization.instance.Localize(text);
+        
+        public void SetIcon(Sprite icon) => checkmark.sprite = icon;
+        
+        public void SetBackground(float transparency) => darken.color = new Color(darken.color.r, darken.color.g, darken.color.b, transparency);
+    }
+
     [RequireComponent(typeof(Minimap))]
     public class MinimapController : MonoBehaviour
     {
@@ -59,7 +105,7 @@ namespace EpicLoot.Adventure
         public static readonly Dictionary<string, AreaPinInfo> BountyPins = new();
         public static bool DebugMode;
         private static bool _enabled;
-
+        
         public virtual void Awake()
         {
             _minimap = GetComponent<Minimap>();
@@ -72,6 +118,8 @@ namespace EpicLoot.Adventure
             {
                 _minimap.m_icons.Add(new Minimap.SpriteData { m_name = EpicLoot.BountyPinType, m_icon = EpicAssets.MapIconBounty });
             }
+            
+            SetupToggles();
         }
 
         private void Start()
@@ -113,6 +161,136 @@ namespace EpicLoot.Adventure
 
             _enabled = false;
         }
+
+        private void SetupToggles()
+        {
+            GameObject original = Utils.FindChild(_minimap.transform, "SharedPanel").gameObject;
+            
+            GameObject container = new GameObject("EpicLoot Toggle Container");
+            RectTransform rect = container.AddComponent<RectTransform>();
+            rect.SetParent(original.transform.parent);
+
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 0f);
+            rect.pivot = new Vector2(0f, 1f);
+            rect.sizeDelta = new Vector2(250f, 42f);
+            rect.anchoredPosition = new Vector2(20f, 60f); //TODO: figure out how to programmatically set position to avoid screen size difference moving container, if it is a problem
+            
+            HorizontalLayoutGroup layout = container.AddComponent<HorizontalLayoutGroup>();
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.spacing = 5f;
+            
+            AdventureToggle bountyToggle = new AdventureToggle(original, rect, "Bounty", ToggleBounties);
+            bountyToggle.SetIcon(EpicAssets.MapIconBounty);
+            bountyToggle.SetGamepadKey("JoyLTrigger");
+            bountyToggle.SetLabel("$mod_epicloot_merchant_bounties");
+
+            AdventureToggle treasureToggle = new AdventureToggle(original, rect, "Treasure", ToggleTreasureMaps);
+            treasureToggle.SetIcon(EpicAssets.MapIconTreasureMap);
+            treasureToggle.SetGamepadKey("JoyRTrigger");
+            treasureToggle.SetLabel("$mod_epicloot_merchant_treasuremaps");
+        }
+
+        private static void ToggleBounties(bool show)
+        {
+            if (_player == null) return;
+                
+                if (show)
+                {
+                    AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
+                    if (adventureSaveData == null) return;
+                    List<BountyInfo> currentBounties = adventureSaveData.GetInProgressBounties();
+                    foreach (BountyInfo bounty in currentBounties)
+                    {
+                        string key = bounty.ID;
+                        if (!BountyPins.ContainsKey(key))
+                        {
+                            AreaPinInfo pinInfo = new AreaPinInfo
+                            {
+                                Position = bounty.Position + bounty.MinimapCircleOffset,
+                                Type = EpicLoot.BountyPinType,
+                                Name = Localization.instance.Localize("$mod_epicloot_bounties_minimappin", AdventureDataManager.GetBountyName(bounty))
+                            };
+
+                            PinJob pinJob = new PinJob
+                            {
+                                Task = MinimapPinQueueTask.AddBountyPin,
+                                DebugMode = DebugMode,
+                                BountyPin = new KeyValuePair<string, AreaPinInfo>(key, pinInfo)
+                            };
+
+                            AddPinJobToQueue(pinJob);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, AreaPinInfo> pinEntry in BountyPins)
+                    {
+                        PinJob pinJob = new PinJob()
+                        {
+                            Task = MinimapPinQueueTask.RemoveBountyPin,
+                            DebugMode = DebugMode,
+                            BountyPin = new KeyValuePair<string, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                        };
+                        AddPinJobToQueue(pinJob);
+                    }
+                }
+        }
+
+        private static void ToggleTreasureMaps(bool show)
+        {
+            if (_player == null) return;
+
+                if (show)
+                {
+                    AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
+                    if (adventureSaveData == null) return;
+                    List<TreasureMapChestInfo> unfoundTreasureChests = adventureSaveData.GetUnfoundTreasureChests();
+
+                    foreach (TreasureMapChestInfo chestInfo in unfoundTreasureChests)
+                    {
+                        Tuple<int, Heightmap.Biome> key = new Tuple<int, Heightmap.Biome>(chestInfo.Interval, chestInfo.Biome);
+                        if (!TreasureMapPins.ContainsKey(key))
+                        {
+                            AreaPinInfo pinInfo = new AreaPinInfo
+                            {
+                                Position = chestInfo.Position + chestInfo.MinimapCircleOffset,
+                                Type = EpicLoot.TreasureMapPinType,
+                                Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin",
+                                    Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"),
+                                    (chestInfo.Interval + 1).ToString())
+                            };
+
+                            PinJob pinJob = new PinJob
+                            {
+                                Task = MinimapPinQueueTask.AddTreasurePin,
+                                DebugMode = DebugMode,
+                                TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(key, pinInfo)
+                            };
+
+                            AddPinJobToQueue(pinJob);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> pinEntry in TreasureMapPins)
+                    {
+                        PinJob pinJob = new PinJob()
+                        {
+                            Task = MinimapPinQueueTask.RemoveTreasurePin,
+                            DebugMode = DebugMode,
+                            TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                        };
+                        AddPinJobToQueue(pinJob);
+                    }
+                }
+        }
+        
         
         //Static Methods
         public static void AddPinJobToQueue(PinJob pinJob)
