@@ -243,7 +243,7 @@ public class Proxy
 
         return Player.m_nview.GetZDO().GetFloat(CooldownEndKey, 0);
     }
-    
+
     public virtual void OnRemoved()
     {
         

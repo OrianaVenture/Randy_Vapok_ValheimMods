@@ -105,7 +105,7 @@ namespace EpicLoot.Adventure
         public static readonly Dictionary<string, AreaPinInfo> BountyPins = new();
         public static bool DebugMode;
         private static bool _enabled;
-        
+
         public virtual void Awake()
         {
             _minimap = GetComponent<Minimap>();
