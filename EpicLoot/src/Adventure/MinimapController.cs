@@ -174,7 +174,8 @@ namespace EpicLoot.Adventure
             rect.anchorMax = new Vector2(0f, 0f);
             rect.pivot = new Vector2(0f, 1f);
             rect.sizeDelta = new Vector2(250f, 42f);
-            rect.anchoredPosition = new Vector2(20f, 60f); //TODO: figure out how to programmatically set position to avoid screen size difference moving container, if it is a problem
+            rect.anchoredPosition = new Vector2(20f, 60f);
+            // figure out how to programmatically set this position, if needed
             
             HorizontalLayoutGroup layout = container.AddComponent<HorizontalLayoutGroup>();
             layout.childForceExpandWidth = false;
