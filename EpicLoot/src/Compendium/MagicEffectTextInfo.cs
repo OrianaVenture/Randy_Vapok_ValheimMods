@@ -48,7 +48,7 @@ public class MagicEffectTextInfo(string topic) : MagicTextInfo(topic)
                 MagicItemEffect effect = entry2.Key;
                 ItemDrop.ItemData item = entry2.Value;
                 content.Add($" <color=#c0c0c0ff>- {MagicItem.GetEffectText(effect, item.GetRarity(), false)} " + 
-                    $"({item.GetDecoratedName()})</color>");            
+                    $"({item.GetDecoratedName()})</color>");
             }
 
             instance.MagicPagesTextArea.Add($"<size={MagicPages.MEDIUM_FONT_SIZE}>" +
