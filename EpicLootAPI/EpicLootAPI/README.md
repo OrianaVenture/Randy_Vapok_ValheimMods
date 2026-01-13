@@ -32,7 +32,7 @@ Include `EpicLootAPI.dll` into your project and bundle it into your plugin using
 ```
 ### 2. Source Files
 
-Copy all the files in the project.
+Copy API.cs and EffectTypes.cs into your plugin project.
 ⚠️ Do not modify the provided methods unless you know what you are doing.
 
 ### Using API

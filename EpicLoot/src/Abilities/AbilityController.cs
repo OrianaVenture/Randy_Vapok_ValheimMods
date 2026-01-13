@@ -83,7 +83,6 @@ namespace EpicLoot.Abilities
         {
             UpdatePlayerAbilities();
         }
-        
         public void UpdatePlayerAbilities()
         {
             List<AbilityDefinition> availableAbilities = GetAvailableAbilities();

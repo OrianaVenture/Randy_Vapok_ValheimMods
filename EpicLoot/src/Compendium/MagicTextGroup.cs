@@ -2,10 +2,17 @@
 
 namespace EpicLoot.Compendium;
 
-public class MagicTextGroup(MagicTextElement title, params MagicTextElement[] content)
+public class MagicTextGroup
 {
-    public readonly MagicTextElement Title = title;
-    public readonly MagicTextElement[] Content = content;
+    public MagicTextGroup(MagicTextElement title, params MagicTextElement[] content)
+    {
+        Title = title;
+        Content = content;
+    }
+
+    public readonly MagicTextElement Title;
+    public readonly MagicTextElement[] Content;
+
     public bool IsMatch(string query) => Title.IsMatch(query) || Content.Any(x => x.IsMatch(query));
     public void Enable(bool enable)
     {

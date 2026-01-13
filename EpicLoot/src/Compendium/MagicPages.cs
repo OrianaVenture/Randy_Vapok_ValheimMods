@@ -51,7 +51,7 @@ public class MagicPages : MonoBehaviour
         MinHeight = textAreaRect.rect.height;
         Search = new MagicSearchField(frame);
 
-        // Calculate the Search bar position
+        // Calculate the Seach bar position
         float spacing = 30f;
         float buttonEdge = closeButtonRect.position.x + (closeButtonRect.rect.width / 2); // Button is centered
         float boxEdge = textAreaRect.position.x; // Box is anchored to the bottom right

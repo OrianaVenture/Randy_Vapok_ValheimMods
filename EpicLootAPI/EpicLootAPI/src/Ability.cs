@@ -56,7 +56,6 @@ public class AbilityDefinition
 
     internal static readonly Method API_AddAbility = new("AddAbility");
     internal static readonly Method API_UpdateAbility = new ("UpdateAbility");
-    internal static readonly Method API_HasCurrentAbility = new ("HasCurrentAbility");
     internal static List<AbilityDefinition> Abilities = new();
 
     public static void RegisterAll()
@@ -102,17 +101,6 @@ public class AbilityDefinition
         object[] result = API_UpdateAbility.Invoke(key, data);
         bool output = (bool)(result[0] ?? false);
         EpicLoot.logger.LogDebug($"Updated ability {ID}: {output}");
-        return output;
-    }
-
-    public bool HasCurrentAbility(Player player)
-    {
-        if (!RunTimeRegistry.TryGetValue(this, out string key))
-        {
-            return false;
-        }
-        object[] result = API_HasCurrentAbility.Invoke(player, key);
-        bool output = (bool)(result[0] ?? false);
         return output;
     }
 }

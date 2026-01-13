@@ -198,99 +198,98 @@ namespace EpicLoot.Adventure
         {
             if (_player == null) return;
                 
-                if (show)
+            if (show)
+            {
+                AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
+                if (adventureSaveData == null) return;
+                List<BountyInfo> currentBounties = adventureSaveData.GetInProgressBounties();
+                foreach (BountyInfo bounty in currentBounties)
                 {
-                    AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
-                    if (adventureSaveData == null) return;
-                    List<BountyInfo> currentBounties = adventureSaveData.GetInProgressBounties();
-                    foreach (BountyInfo bounty in currentBounties)
+                    string key = bounty.ID;
+                    if (!BountyPins.ContainsKey(key))
                     {
-                        string key = bounty.ID;
-                        if (!BountyPins.ContainsKey(key))
+                        AreaPinInfo pinInfo = new AreaPinInfo
                         {
-                            AreaPinInfo pinInfo = new AreaPinInfo
-                            {
-                                Position = bounty.Position + bounty.MinimapCircleOffset,
-                                Type = EpicLoot.BountyPinType,
-                                Name = Localization.instance.Localize("$mod_epicloot_bounties_minimappin", AdventureDataManager.GetBountyName(bounty))
-                            };
-
-                            PinJob pinJob = new PinJob
-                            {
-                                Task = MinimapPinQueueTask.AddBountyPin,
-                                DebugMode = DebugMode,
-                                BountyPin = new KeyValuePair<string, AreaPinInfo>(key, pinInfo)
-                            };
-
-                            AddPinJobToQueue(pinJob);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (KeyValuePair<string, AreaPinInfo> pinEntry in BountyPins)
-                    {
-                        PinJob pinJob = new PinJob()
-                        {
-                            Task = MinimapPinQueueTask.RemoveBountyPin,
-                            DebugMode = DebugMode,
-                            BountyPin = new KeyValuePair<string, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                            Position = bounty.Position + bounty.MinimapCircleOffset,
+                            Type = EpicLoot.BountyPinType,
+                            Name = Localization.instance.Localize("$mod_epicloot_bounties_minimappin", AdventureDataManager.GetBountyName(bounty))
                         };
+
+                        PinJob pinJob = new PinJob
+                        {
+                            Task = MinimapPinQueueTask.AddBountyPin,
+                            DebugMode = DebugMode,
+                            BountyPin = new KeyValuePair<string, AreaPinInfo>(key, pinInfo)
+                        };
+
                         AddPinJobToQueue(pinJob);
                     }
                 }
+            }
+            else
+            {
+                foreach (KeyValuePair<string, AreaPinInfo> pinEntry in BountyPins)
+                {
+                    PinJob pinJob = new PinJob()
+                    {
+                        Task = MinimapPinQueueTask.RemoveBountyPin,
+                        DebugMode = DebugMode,
+                        BountyPin = new KeyValuePair<string, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                    };
+                    AddPinJobToQueue(pinJob);
+                }
+            }
         }
 
         private static void ToggleTreasureMaps(bool show)
         {
             if (_player == null) return;
 
-                if (show)
+            if (show)
+            {
+                AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
+                if (adventureSaveData == null) return;
+                List<TreasureMapChestInfo> unfoundTreasureChests = adventureSaveData.GetUnfoundTreasureChests();
+
+                foreach (TreasureMapChestInfo chestInfo in unfoundTreasureChests)
                 {
-                    AdventureSaveData adventureSaveData = _player.GetAdventureSaveData();
-                    if (adventureSaveData == null) return;
-                    List<TreasureMapChestInfo> unfoundTreasureChests = adventureSaveData.GetUnfoundTreasureChests();
-
-                    foreach (TreasureMapChestInfo chestInfo in unfoundTreasureChests)
+                    Tuple<int, Heightmap.Biome> key = new Tuple<int, Heightmap.Biome>(chestInfo.Interval, chestInfo.Biome);
+                    if (!TreasureMapPins.ContainsKey(key))
                     {
-                        Tuple<int, Heightmap.Biome> key = new Tuple<int, Heightmap.Biome>(chestInfo.Interval, chestInfo.Biome);
-                        if (!TreasureMapPins.ContainsKey(key))
+                        AreaPinInfo pinInfo = new AreaPinInfo
                         {
-                            AreaPinInfo pinInfo = new AreaPinInfo
-                            {
-                                Position = chestInfo.Position + chestInfo.MinimapCircleOffset,
-                                Type = EpicLoot.TreasureMapPinType,
-                                Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin",
-                                    Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"),
-                                    (chestInfo.Interval + 1).ToString())
-                            };
-
-                            PinJob pinJob = new PinJob
-                            {
-                                Task = MinimapPinQueueTask.AddTreasurePin,
-                                DebugMode = DebugMode,
-                                TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(key, pinInfo)
-                            };
-
-                            AddPinJobToQueue(pinJob);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> pinEntry in TreasureMapPins)
-                    {
-                        PinJob pinJob = new PinJob()
-                        {
-                            Task = MinimapPinQueueTask.RemoveTreasurePin,
-                            DebugMode = DebugMode,
-                            TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                            Position = chestInfo.Position + chestInfo.MinimapCircleOffset,
+                            Type = EpicLoot.TreasureMapPinType,
+                            Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin",
+                                Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"),
+                                (chestInfo.Interval + 1).ToString())
                         };
+
+                        PinJob pinJob = new PinJob
+                        {
+                            Task = MinimapPinQueueTask.AddTreasurePin,
+                            DebugMode = DebugMode,
+                            TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(key, pinInfo)
+                        };
+
                         AddPinJobToQueue(pinJob);
                     }
                 }
+            }
+            else
+            {
+                foreach (KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> pinEntry in TreasureMapPins)
+                {
+                    PinJob pinJob = new PinJob()
+                    {
+                        Task = MinimapPinQueueTask.RemoveTreasurePin,
+                        DebugMode = DebugMode,
+                        TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+                    };
+                    AddPinJobToQueue(pinJob);
+                }
+            }
         }
-        
         
         //Static Methods
         public static void AddPinJobToQueue(PinJob pinJob)

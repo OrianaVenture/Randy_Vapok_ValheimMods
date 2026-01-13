@@ -15,7 +15,7 @@ public class MagicSearchField
 
     public readonly InputField Input;
 
-    private const float WIDTH_PADDING = 30f;
+    private const float WIDTH_PADDING = 20f;
 
     public MagicSearchField(Transform parent)
     {
@@ -28,7 +28,7 @@ public class MagicSearchField
         Input.targetGraphic = _background;
 
         _glow = new GameObject("glow").AddComponent<Image>();
-        Image craftGlow = InventoryGui.instance.m_crafting.Find("RepairButton/Glow").GetComponent<Image>();
+        var craftGlow = InventoryGui.instance.m_crafting.Find("RepairButton/Glow").GetComponent<Image>();
         _glow.sprite = craftGlow.sprite;
         _glow.type = craftGlow.type;
         _glow.color = craftGlow.color;
@@ -39,9 +39,8 @@ public class MagicSearchField
 
         GameObject text = new GameObject("Text");
         _textRect = text.AddComponent<RectTransform>();
-        _textRect.localScale = Vector3.one;
         text.transform.SetParent(_obj.transform);
-        Input.textComponent = text.AddComponent<Text>();
+        Input.textComponent = text.AddComponent<Text>(); ;
         Input.textComponent.alignment = TextAnchor.MiddleLeft;
 
         GameObject placeholderObj = new GameObject("Placeholder");
@@ -49,7 +48,8 @@ public class MagicSearchField
         _placeholderRect.localScale = Vector3.one;
         placeholderObj.transform.SetParent(_obj.transform);
         _placeholder = placeholderObj.AddComponent<Text>();
-        _placeholder.text = Localization.instance.Localize("$mod_epicloot_search_placeholder");
+        //TODO: localize search text
+        _placeholder.text = "Search...";
         _placeholder.color = Color.gray;
         Input.placeholder = _placeholder;
         _placeholder.alignment = TextAnchor.MiddleLeft;
