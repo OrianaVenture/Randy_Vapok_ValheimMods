@@ -1,3 +1,13 @@
+## Version 0.12.10
+
+* Fixed an issue with enchanting table identifying unknown magic items changing the stack size of the original item (coins and other costs).
+* Fixed formatting error with minimal configuration that would not load the mod properly when used.
+* Fixed formatting issue with the Turkish localization.
+* Fixed enchanting table rune extraction not always destroying the correct inventory item.
+* Minor spelling fixes for English localization.
+* Added missing localizations for ModifyFireRate magic effect for all other languages (existed for English).
+* Added missing localization for key mod_epicloot_me_modifydamage_desc.
+
 ## Version 0.12.9
 
 * Fixed issue with empty IdentifyCosts throwing an error.
