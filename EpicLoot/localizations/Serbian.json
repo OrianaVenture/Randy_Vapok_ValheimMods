@@ -1447,6 +1447,7 @@
   "mod_epicloot_legendary_sets": "Легендарни сетови",
   "mod_epicloot_me_modifyfirerate_display": "Brzina paljenja +{0:0.#}%",
   "mod_epicloot_me_modifyfirerate_desc": "Povećajte brzinu ispucavanja projektila za +<b><color=yellow>X</color></b>%.",
-  "mod_epicloot_me_modifyfirerate_prefix1": "Brzo",
+  "mod_epicloot_me_modifydamage_desc": "Povećajte ukupnu štetu koju nanosi čarobno oružje za +<b><color=yellow>X</color></b>%, uključujući štetu od drugih očaranja.Thank you for the translation.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Brz",
   "mod_epicloot_me_modifyfirerate_suffix1": "Brzina"
 }
