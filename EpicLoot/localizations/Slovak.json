@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Hľadať...",
   "mod_epicloot_no_active_adventures": "Žiadne aktívne dobrodružstvá",
   "mod_epicloot_set_bonuses": "Bonusy setu",
-  "mod_epicloot_legendary_sets": "Legendárne sady"
+  "mod_epicloot_legendary_sets": "Legendárne sady",
+  "mod_epicloot_me_modifyfirerate_display": "Rýchlosť ohňa +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Zvýšte rýchlosť streľby projektilov o +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Rýchly",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Rýchlosť",
+  "mod_epicloot_me_modifydamage_desc": "Zvýšte celkové poškodenie spôsobené kúzelnou zbraňou o +<b><color=yellow>X</color></b>%, vrátane poškodenia z iných kúziel."
 }

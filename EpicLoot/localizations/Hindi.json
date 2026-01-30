@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "खोजें...",
   "mod_epicloot_no_active_adventures": "कोई सक्रिय रोमांच नहीं",
   "mod_epicloot_set_bonuses": "सेट बोनस",
-  "mod_epicloot_legendary_sets": "पौराणिक सेट"
+  "mod_epicloot_legendary_sets": "पौराणिक सेट",
+  "mod_epicloot_me_modifyfirerate_display": "आग दर +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "प्रोजेक्टाइल्स की फायरिंग की दर को +<b><color=yellow>X</color></b>% बढ़ाएं।",
+  "mod_epicloot_me_modifyfirerate_prefix1": "तेज़",
+  "mod_epicloot_me_modifyfirerate_suffix1": "तेज़ी",
+  "mod_epicloot_me_modifydamage_desc": "जादuई वस्त्र द्वारा किये गये कुल हानि को +<b><color=yellow>X</color></b>% तक बढ़ाएँ, इसमें अन्य आकर्षणों के कारण हानि भी शामिल है।"
 }

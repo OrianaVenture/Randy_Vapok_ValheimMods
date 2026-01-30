@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Cerca...",
   "mod_epicloot_no_active_adventures": "Nessuna avventura attiva",
   "mod_epicloot_set_bonuses": "Bonus set",
-  "mod_epicloot_legendary_sets": "Set Leggendari"
+  "mod_epicloot_legendary_sets": "Set Leggendari",
+  "mod_epicloot_me_modifyfirerate_display": "Tasso di fuoco +{0:0.#}%Tasso di fuoco +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Aumenta la velocità con cui i proiettili vengono sparati di +<b><color=yellow>X</color></b>%.Grazie!",
+  "mod_epicloot_me_modifyfirerate_prefix1": "o",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Velocità",
+  "mod_epicloot_me_modifydamage_desc": "Aumentare il danno totale causato dall'arma magica del +%<b><color=yellow>X</color></b>, compreso il danno degli altri incantesimi."
 }

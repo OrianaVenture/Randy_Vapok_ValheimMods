@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Pretraži...",
   "mod_epicloot_no_active_adventures": "Nema aktivnih avantura",
   "mod_epicloot_set_bonuses": "Set bonusi",
-  "mod_epicloot_legendary_sets": "Legendarni setovi"
+  "mod_epicloot_legendary_sets": "Legendarni setovi",
+  "mod_epicloot_me_modifyfirerate_display": "Stopa vatre +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Povećajte brzinu ispaljivanja projektila za +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Brzi",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Brzina",
+  "mod_epicloot_me_modifydamage_desc": "Povećajte ukupnu štetu učinjenu magičnim oružjem za +<b><color=yellow>X</color></b>%, uključujući štetu od drugih očaranja."
 }

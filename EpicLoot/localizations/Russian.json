@@ -1439,9 +1439,14 @@
   "mod_epicloot_Rare": "Редк.",
   "mod_epicloot_Epic": "Эпическ.",
   "mod_epicloot_Legendary": "Легендарн.",
-  "mod_epicloot_Mythic": "Мифическ."
+  "mod_epicloot_Mythic": "Мифическ.",
   "mod_epicloot_search_placeholder": "Поиск...",
   "mod_epicloot_no_active_adventures": "Активных приключений нет",
   "mod_epicloot_set_bonuses": "Бонусы комплекта",
-  "mod_epicloot_legendary_sets": "Легендарные наборы"
+  "mod_epicloot_legendary_sets": "Легендарные наборы",
+  "mod_epicloot_me_modifyfirerate_display": "Скорость стрельбы +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Увеличьте скорость стрельбы снарядов на +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Быстрый",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Скорость",
+  "mod_epicloot_me_modifydamage_desc": "Увеличьте общий урон, наносимый магическим оружием, на +<b><color=yellow>X</color></b>%, включая урон от других чар."
 }

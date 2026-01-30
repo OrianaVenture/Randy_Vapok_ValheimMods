@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Leita...",
   "mod_epicloot_no_active_adventures": "Engar virkar ævintýri",
   "mod_epicloot_set_bonuses": "Settafbótir",
-  "mod_epicloot_legendary_sets": "Goðsagnakennd sett"
+  "mod_epicloot_legendary_sets": "Goðsagnakennd sett",
+  "mod_epicloot_me_modifyfirerate_display": "Eldshraði +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Aukiðið hraða sem áhrifin skjótast út um +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Snöggur",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Hraði",
+  "mod_epicloot_me_modifydamage_desc": "Aukið heildarskemmdir sem valdaðar eru af galdra vopninu um +<b><color=yellow>X</color></b>%, þar á meðal skemmdir af öðrum galdra."
 }

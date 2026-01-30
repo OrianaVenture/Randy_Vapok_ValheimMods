@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Keresés...",
   "mod_epicloot_no_active_adventures": "Nincs aktív kaland",
   "mod_epicloot_set_bonuses": "Szett bónuszok",
-  "mod_epicloot_legendary_sets": "Legendás készletek"
+  "mod_epicloot_legendary_sets": "Legendás készletek",
+  "mod_epicloot_me_modifyfirerate_display": "Tűzgyorsaság +{0:0.#}%(Ez egy játékbeli statisztika, amely azt mutatja, hogy mennyivel nő a fegyver tűzgyorsasága a játékban.)",
+  "mod_epicloot_me_modifyfirerate_desc": "Növeld meg a lövedékek tüzelési sebességét +<b><color=yellow>X</color></b>%-kal. ",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Gyors",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Sebesség",
+  "mod_epicloot_me_modifydamage_desc": "Növeld meg a varázsfegyver által okozott összes kárt +<b><color=yellow>X</color></b>%-kal, beleértve más varázslatok okozta kárt is."
 }

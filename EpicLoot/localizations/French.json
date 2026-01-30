@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Rechercher...",
   "mod_epicloot_no_active_adventures": "Aucune aventure en cours",
   "mod_epicloot_set_bonuses": "Bonus de set",
-  "mod_epicloot_legendary_sets": "Ensembles légendaires"
+  "mod_epicloot_legendary_sets": "Ensembles légendaires",
+  "mod_epicloot_me_modifyfirerate_display": "Taux de tir +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Augmentez le taux de tir des projectiles de +<b><color=yellow>X</color></b>%.(Translation)",
+  "mod_epicloot_me_modifyfirerate_prefix1": "e",
+  "mod_epicloot_me_modifyfirerate_suffix1": "La vitesse",
+  "mod_epicloot_me_modifydamage_desc": "Augmentez les dégâts totaux infligés par l'arme magique de +<b><color=yellow>X</color></b>%, y compris les dégâts des autres enchantements."
 }
