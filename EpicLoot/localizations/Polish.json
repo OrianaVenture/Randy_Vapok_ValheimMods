@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Szukaj...",
   "mod_epicloot_no_active_adventures": "Brak aktywnych przygód",
   "mod_epicloot_set_bonuses": "Bonusy zestawu",
-  "mod_epicloot_legendary_sets": "Legendarne zestawy"
+  "mod_epicloot_legendary_sets": "Legendarne zestawy",
+  "mod_epicloot_me_modifyfirerate_display": "Szybkość ognia +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Zwiększ szybkość wystrzału pocisków o +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Szybki",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Szybkość",
+  "mod_epicloot_me_modifydamage_desc": "Zwiększ całkowite zadane obrażenia przez magiczną broń o +<b><color=yellow>X</color></b>%, wliczając w to obrażenia od innych zaklęć."
 }

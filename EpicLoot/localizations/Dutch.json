@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Zoeken...",
   "mod_epicloot_no_active_adventures": "Geen actieve avonturen",
   "mod_epicloot_set_bonuses": "Setbonussen",
-  "mod_epicloot_legendary_sets": "Legendarische sets"
+  "mod_epicloot_legendary_sets": "Legendarische sets",
+  "mod_epicloot_me_modifyfirerate_display": "Vuur snelheid +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Verhoog de snelheid waarmee projectielen worden afgevuurd met +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Snel",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Snelheid",
+  "mod_epicloot_me_modifydamage_desc": "Verhoog de totale schade veroorzaakt door het magische wapen met +<b><color=yellow>X</color></b>%, inclusief schade van andere betoveringen."
 }

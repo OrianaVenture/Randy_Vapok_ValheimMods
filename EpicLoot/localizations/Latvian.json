@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Meklēt...",
   "mod_epicloot_no_active_adventures": "Nav aktīvu piedzīvojumu",
   "mod_epicloot_set_bonuses": "Komplekta bonusi",
-  "mod_epicloot_legendary_sets": "Leģendārās komplekti"
+  "mod_epicloot_legendary_sets": "Leģendārās komplekti",
+  "mod_epicloot_me_modifyfirerate_display": "Degošais ātrums +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Palieliniet projektilu uguns ātrumu par +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Ātrs",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Ātrums",
+  "mod_epicloot_me_modifydamage_desc": "Palieliniet maģiskā ieroča kopējo nodarīto kaitējumu par +<b><color=yellow>X</color></b>%, iekļaujot kaitējumu no citiem burvju uzburumiem."
 }

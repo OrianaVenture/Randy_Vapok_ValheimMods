@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Søk...",
   "mod_epicloot_no_active_adventures": "Ingen aktive eventyr",
   "mod_epicloot_set_bonuses": "Settbonuser",
-  "mod_epicloot_legendary_sets": "Legendariske sett"
+  "mod_epicloot_legendary_sets": "Legendariske sett",
+  "mod_epicloot_me_modifyfirerate_display": "Skytehastighet +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Øk frekvensen på hvilken prosjektiler avfyres med +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Hurtig",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Hastighet",
+  "mod_epicloot_me_modifydamage_desc": "Øk den totale skaden gjort av det magiske våpenet med +<b><color=yellow>X</color></b>%, inkludert skade fra andre fortryllelser."
 }

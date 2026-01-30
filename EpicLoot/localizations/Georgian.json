@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "ძიება...",
   "mod_epicloot_no_active_adventures": "მოქმედი თავგადასავალი არ არის",
   "mod_epicloot_set_bonuses": "ჯგუფური ბონუსები",
-  "mod_epicloot_legendary_sets": "ლეგენდარული სეტები"
+  "mod_epicloot_legendary_sets": "ლეგენდარული სეტები",
+  "mod_epicloot_me_modifyfirerate_display": "ცეცხლის ტაქტი + {0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "გაზიარეთ პროექტილების გაფეხვევის სიხშირი +X%",
+  "mod_epicloot_me_modifyfirerate_prefix1": "სწრაფი",
+  "mod_epicloot_me_modifyfirerate_suffix1": "სიჩქარე",
+  "mod_epicloot_me_modifydamage_desc": "შემთხვევით +<b><color=yellow>X</color></b>% იზრუნე შესაძლო დანიშნულებები მაგიკურ ინსტრუმენტის სულ დაზიანება, შემდეგი დანიშნულებების დაზიანებითაც."
 }

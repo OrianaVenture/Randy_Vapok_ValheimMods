@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Buscar...",
   "mod_epicloot_no_active_adventures": "No hay aventuras activas",
   "mod_epicloot_set_bonuses": "Bonos de conjunto",
-  "mod_epicloot_legendary_sets": "Conjuntos legendarios"
+  "mod_epicloot_legendary_sets": "Conjuntos legendarios",
+  "mod_epicloot_me_modifyfirerate_display": "Tasa de fuego +{0:0.#}%Tasa de fuego +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Aumenta la velocidad a la que los proyectiles disparan en +<b><color=yellow>X</color></b>%.Entendido, aumentaré la velocidad de disparo de los proyectiles en un X por ciento.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Rápido",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Velocidad",
+  "mod_epicloot_me_modifydamage_desc": "Aumenta el daño total hecho por el arma mágica en +<b><color=yellow>X</color></b>%, incluyendo el daño de otros encantamientos."
 }

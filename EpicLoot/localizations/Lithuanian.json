@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Ieškoti...",
   "mod_epicloot_no_active_adventures": "Nėra aktyvių nuotykių",
   "mod_epicloot_set_bonuses": "Rinkinys premijos",
-  "mod_epicloot_legendary_sets": "Legendinės rinkiniai"
+  "mod_epicloot_legendary_sets": "Legendinės rinkiniai",
+  "mod_epicloot_me_modifyfirerate_display": "Ugnies greitis +{0:0.#}% (Duplicate)",
+  "mod_epicloot_me_modifyfirerate_desc": "Padidinti projektilų šaudymo greitį +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Gylio",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Greitis",
+  "mod_epicloot_me_modifydamage_desc": "Padauginkite magiško ginklo padarytą bendrą žalą +<b><color=yellow>X</color></b>%, įskaitant žalą nuo kitų užkeikimų."
 }

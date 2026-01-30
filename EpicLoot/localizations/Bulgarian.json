@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Търсене...",
   "mod_epicloot_no_active_adventures": "Няма активни приключения",
   "mod_epicloot_set_bonuses": "Комплектни бонуси",
-  "mod_epicloot_legendary_sets": "Легендарни сетове"
+  "mod_epicloot_legendary_sets": "Легендарни сетове",
+  "mod_epicloot_me_modifyfirerate_display": "Скорост на огън +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Увеличете скоростта, с която снарядите се изстрелват с +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Бърз",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Скорост",
+  "mod_epicloot_me_modifydamage_desc": "Увеличете общия урон, нанесен от магическото оръжие с +<b><color=yellow>X</color></b>%, включително урона от други омагьосвания."
 }

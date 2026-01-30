@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Αναζήτηση...",
   "mod_epicloot_no_active_adventures": "Δεν υπάρχουν ενεργές περιπέτειες",
   "mod_epicloot_set_bonuses": "Μπόνους σετ",
-  "mod_epicloot_legendary_sets": "Θρυλικά Σετ"
+  "mod_epicloot_legendary_sets": "Θρυλικά Σετ",
+  "mod_epicloot_me_modifyfirerate_display": "Ρυθμός Πυρκαγιάς +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Αυξήστε το ρυθμό με τον οποίο τα βλήματα πυροβολούν κατά +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Γρήγορο",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Ταχύτητα",
+  "mod_epicloot_me_modifydamage_desc": "Αυξήστε τη συνολική ζημιά που προκαλεί το μαγικό όπλο κατά +<b><color=yellow>X</color></b>%, συμπεριλαμβανομένης της ζημιάς από άλλες επιγονώσεις."
 }

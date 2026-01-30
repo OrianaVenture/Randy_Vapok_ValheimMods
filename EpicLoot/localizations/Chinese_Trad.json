@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "搜尋...",
   "mod_epicloot_no_active_adventures": "沒有進行中的冒險",
   "mod_epicloot_set_bonuses": "套裝加成",
-  "mod_epicloot_legendary_sets": "傳奇套裝"
+  "mod_epicloot_legendary_sets": "傳奇套裝",
+  "mod_epicloot_me_modifyfirerate_display": "射速 +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "將彈射物的射速提高 +<b><color=yellow>X</color></b>%。",
+  "mod_epicloot_me_modifyfirerate_prefix1": "迅速",
+  "mod_epicloot_me_modifyfirerate_suffix1": "速度",
+  "mod_epicloot_me_modifydamage_desc": "將魔法武器造成的總傷害增加<b><color=yellow>X</color></b>%，包括其他附魔所造成的傷害。"
 }

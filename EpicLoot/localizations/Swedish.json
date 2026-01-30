@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Sök...",
   "mod_epicloot_no_active_adventures": "Inga aktiva äventyr",
   "mod_epicloot_set_bonuses": "Setbonusar",
-  "mod_epicloot_legendary_sets": "Legendariska set"
+  "mod_epicloot_legendary_sets": "Legendariska set",
+  "mod_epicloot_me_modifyfirerate_display": "Eldhastighet +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Öka hastigheten på vilken projektiler avfyras med +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Snabb",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Hastighet.",
+  "mod_epicloot_me_modifydamage_desc": "Öka det totala skadorna som orsakas av den magiska vapnet med +<b><color=yellow>X</color></b>%, inklusive skador från andra förtrollningar."
 }

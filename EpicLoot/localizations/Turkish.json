@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Ara...",
   "mod_epicloot_no_active_adventures": "Aktif macera yok",
   "mod_epicloot_set_bonuses": "Set Bonusları",
-  "mod_epicloot_legendary_sets": "Efsanevi Setler"
+  "mod_epicloot_legendary_sets": "Efsanevi Setler",
+  "mod_epicloot_me_modifyfirerate_display": "Ateşleme Hızı +{0:0.#}% Teşekkür ederim.",
+  "mod_epicloot_me_modifyfirerate_desc": "Projektillerin ateş hızını +%<b><color=yellow>X</color></b> artırın.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Hızlı",
+  "mod_epicloot_me_modifyfirerate_suffix1": " Hız",
+  "mod_epicloot_me_modifydamage_desc": "Büyülü silahın toplam verdiği hasarı +%<b><color=yellow>X</color></b> artırın, diğer büyülerden gelen hasar da dahil olmak üzere."
 }

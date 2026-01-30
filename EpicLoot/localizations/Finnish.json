@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Haku...",
   "mod_epicloot_no_active_adventures": "Ei aktiivisia seikkailuja",
   "mod_epicloot_set_bonuses": "Settiponukset",
-  "mod_epicloot_legendary_sets": "Legendaariset setit"
+  "mod_epicloot_legendary_sets": "Legendaariset setit",
+  "mod_epicloot_me_modifyfirerate_display": "Tulitaajuus +{0:0.#}% Kiitos!",
+  "mod_epicloot_me_modifyfirerate_desc": "Kasvata ammusten ammusnopeutta +<b><color=yellow>X</color></b>%.Kiitos!",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Nopea",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Nopeus",
+  "mod_epicloot_me_modifydamage_desc": "Lisää taikatyökalun tekemää kokonaissätevää vahinkoa +<b><color=yellow>X</color></b>%, mukaan lukien vahingot muista loitsuista."
 }

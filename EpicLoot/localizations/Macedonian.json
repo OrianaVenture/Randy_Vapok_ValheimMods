@@ -1443,5 +1443,10 @@
   "mod_epicloot_search_placeholder": "Пребарај...",
   "mod_epicloot_no_active_adventures": "Нема активни авантури",
   "mod_epicloot_set_bonuses": "Бонуси од сет",
-  "mod_epicloot_legendary_sets": "Легендарни сетови"
+  "mod_epicloot_legendary_sets": "Легендарни сетови",
+  "mod_epicloot_me_modifyfirerate_display": "Брзина на палење +{0:0.#}%",
+  "mod_epicloot_me_modifyfirerate_desc": "Зголемете го ритамот на пукање на проектили за +<b><color=yellow>X</color></b>%.",
+  "mod_epicloot_me_modifyfirerate_prefix1": "Брзо",
+  "mod_epicloot_me_modifyfirerate_suffix1": "Брзина",
+  "mod_epicloot_me_modifydamage_desc": "Зголемете го вкупното нанесено штето од магичното оружје за +<b><color=yellow>X</color></b>%, вклучувајќи го штетата од другите заклинувања."
 }
