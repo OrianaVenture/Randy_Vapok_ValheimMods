@@ -773,7 +773,7 @@ namespace EpicLoot.CraftingV2
                 }
 
                 ItemDrop id = costGo.GetComponent<ItemDrop>();
-                ItemDrop.ItemData itemData = id.m_itemData;
+                ItemDrop.ItemData itemData = id.m_itemData.Clone();
                 itemData.m_dropPrefab = costGo.gameObject;
 
                 int cost = costEntry.Value;
