@@ -20,7 +20,7 @@ public static partial class MagicCommands
             args.Context.AddString("> No Available Bounties");
             return;
         }
-        string result = BountiesAdventureFeature.PrintBounties($"Bounties for Interval {interval}:", availableBounties);
+        string result = BountiesAdventureFeature.PrintBounties($"> Bounties for Interval {interval}:", availableBounties);
         args.Context.AddString(result);
     }
 
@@ -38,7 +38,7 @@ public static partial class MagicCommands
             args.Context.AddString("> No Active Bounties");
             return;
         }
-        string result = BountiesAdventureFeature.PrintBounties("Player Bounties:", availableBounties);
+        string result = BountiesAdventureFeature.PrintBounties("> Player Bounties:", availableBounties);
         args.Context.AddString(result);
     }
 }

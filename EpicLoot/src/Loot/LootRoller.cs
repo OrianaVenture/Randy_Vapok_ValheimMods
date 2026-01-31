@@ -1209,18 +1209,27 @@ namespace EpicLoot
             return luckFactor;
         }
 
-        public static void DebugLuckFactor()
+        public static string DebugLuckFactor()
         {
-            var players = Player.s_players;
+            StringBuilder sb = new  StringBuilder();
+            List<Player> players = Player.s_players;
             if (players != null)
             {
-                Debug.LogWarning($"DebugLuckFactor ({players.Count} players)");
-                var index = 0;
-                foreach (var player in players)
+                sb.AppendLine($"> DebugLuckFactor ({players.Count} players)");
+                int index = 0;
+                foreach (Player player in players)
                 {
-                    Debug.LogWarning($"{index++}: {player?.m_name}: {player?.m_nview?.GetZDO()?.GetInt("el-luk")}");
+                    if (player == null || player.m_nview == null || !player.m_nview.IsValid()) continue;
+                    
+                    sb.AppendLine($"{++index}: {player.GetPlayerName()}, luck factor: {player.m_nview.GetZDO().GetInt("el-luk")}");
                 }
             }
+            else
+            {
+                sb.Append("> No players");
+            }
+
+            return sb.ToString();
         }
 
         public static Dictionary<ItemRarity, float> ModifyRarityByLuck(
