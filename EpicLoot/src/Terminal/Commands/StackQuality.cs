@@ -15,10 +15,10 @@ public static partial class MagicCommands
         }
 
         int count = 0;
-        foreach (GameObject itemObject in ObjectDB.instance.m_items)
+        for (var i = 0; i < ObjectDB.instance.m_items.Count; ++i)
         {
-            ItemDrop itemDrop = itemObject.GetComponent<ItemDrop>();
-            if (itemDrop == null)
+            GameObject itemPrefab = ObjectDB.instance.m_items[i];
+            if (!itemPrefab.TryGetComponent(out ItemDrop itemDrop))
             {
                 continue;
             }

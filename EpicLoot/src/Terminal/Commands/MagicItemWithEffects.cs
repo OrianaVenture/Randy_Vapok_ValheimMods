@@ -8,10 +8,20 @@ public static partial class MagicCommands
 {
     private static void SpawnMagicItemWithEffects(Terminal.ConsoleEventArgs args)
     {
-        if (Player.m_localPlayer == null) return;
+        if (Player.m_localPlayer == null)
+        {
+            args.Context.AddString("> Local Player is null");
+            return;
+        }
         string effectArg = args.GetString(2);
         string itemPrefabNameArg = args.GetString(3);
-        if (string.IsNullOrEmpty(effectArg) || string.IsNullOrEmpty(itemPrefabNameArg)) return;
+        
+        if (string.IsNullOrEmpty(effectArg) ||
+            string.IsNullOrEmpty(itemPrefabNameArg))
+        {
+            args.Context.AddString("> Specify effectType, itemID");
+            return;
+        }
         
         args.Context.AddString($"magicitem - {itemPrefabNameArg} with effect: {effectArg}");
         
@@ -52,9 +62,7 @@ public static partial class MagicCommands
             ]
         };
         
-        Vector3 randomOffset = UnityEngine.Random.insideUnitSphere;
-        Vector3 dropPoint = Player.m_localPlayer.transform.position +
-                            Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+        Vector3 dropPoint = GetItemSpawnPosition(Player.m_localPlayer);
         LootRoller.CheatRollingItem = true;
         LootRoller.CheatForceMagicEffect = true;
         LootRoller.ForcedMagicEffect = effectArg;

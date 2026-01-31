@@ -11,7 +11,6 @@ public static partial class MagicCommands
         for (var i = 0; i < EpicLoot.MagicMaterials.Length; ++i)
         {
             string type = EpicLoot.MagicMaterials[i];
-            
             foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
             {
                 string assetName = $"{type}{rarity}";
@@ -23,5 +22,5 @@ public static partial class MagicCommands
                 itemDrop.m_itemData.m_stack = itemDrop.m_itemData.m_shared.m_maxStackSize / 2;
             }
         }
-    }    
+    }
 }

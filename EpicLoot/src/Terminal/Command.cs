@@ -13,19 +13,30 @@ public class Command
 
     public bool Run(Terminal.ConsoleEventArgs args)
     {
-        if (!IsAdmin()) return true;
+        if (!IsAdmin())
+        {
+            return true;
+        }
         command(args);
         return true;
     }
     private bool IsAdmin()
     {
-        if (!ZNet.m_instance) return true;
-        if (!adminOnly || ZNet.m_instance.LocalPlayerIsAdminOrHost()) return true;
-        Console.instance.AddString("Admin Only");
+        if (!ZNet.m_instance)
+        {
+            return true;
+        }
+        if (!adminOnly || ZNet.m_instance.LocalPlayerIsAdminOrHost())
+        {
+            return true;
+        }
+        Console.instance.AddString("<color=red>Admin Only</color>");
         return false;
     }
     public bool IsSecret() => isSecret;
-    public List<string> GetTabOptions(int i) => tabOptions == null ? [] : tabOptions(i);
+    public List<string> GetTabOptions(int indexOfLastWord) => tabOptions == null ? 
+        [] : 
+        tabOptions(indexOfLastWord);
     public bool HasOptions() => tabOptions != null;
         
     public Command(string input, string description, Action<Terminal.ConsoleEventArgs> command, Func<int, List<string>> optionsFetcher = null, bool adminOnly = false, bool isSecret = false)

@@ -10,8 +10,10 @@ namespace EpicLoot;
 [UsedImplicitly]
 public static partial class MagicCommands
 {
-    private static List<string> GetCreatureNames(int i) => ZNetScene.instance
-        ? ZNetScene.instance.m_prefabs
+    public const string HEX_Gray = "#B2BEB5";
+    public const string HEX_LightRed = "#ff8080ff";
+    private static List<string> GetCreatureNames(int i) => 
+        ZNetScene.instance ? ZNetScene.instance.m_prefabs
             .Where(p => p.GetComponent<Character>())
             .Select(c => c.name)
             .ToList()
@@ -28,8 +30,8 @@ public static partial class MagicCommands
 
     private static List<string> GetRarityOptions() => ["random", "magic", "rare", "epic", "legendary", "mythic"];
 
-    private static List<string> GetItemOptions() => ObjectDB.instance ? 
-        ObjectDB.instance.m_items
+    private static List<string> GetItemOptions() => 
+        ObjectDB.instance ? ObjectDB.instance.m_items
         .Where(x => EpicLoot.CanBeMagicItem(x.GetComponent<ItemDrop>().m_itemData))
         .Where(x => x.name != "HelmetDverger" && x.name != "BeltStrength" && x.name != "Wishbone")
         .Select(x => x.name)

@@ -7,7 +7,11 @@ public static partial class MagicCommands
     private static void ResetTreasureMap(Terminal.ConsoleEventArgs args)
     {
         Player player = Player.m_localPlayer;
-        if (player == null) return;
+        if (player == null)
+        {
+            args.Context.AddString("> Local Player is null");
+            return;
+        }
         
         AdventureSaveData saveData = player.GetAdventureSaveData();
         saveData.TreasureMaps.Clear();

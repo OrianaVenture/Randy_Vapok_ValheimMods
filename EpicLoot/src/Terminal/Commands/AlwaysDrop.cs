@@ -6,6 +6,6 @@ public static partial class MagicCommands
     {
         Terminal context = args.Context;
         EpicLoot.AlwaysDropCheat = !EpicLoot.AlwaysDropCheat;
-        context.AddString($"> Always Drop: {EpicLoot.AlwaysDropCheat}");
+        context.AddString($"> Always Drop: <color={HEX_LightRed}>{EpicLoot.AlwaysDropCheat}</color>");
     }    
 }

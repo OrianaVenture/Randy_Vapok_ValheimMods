@@ -8,14 +8,18 @@ public static partial class MagicCommands
 {
     private static void SpawnMagicItem(Terminal.ConsoleEventArgs args)
     {
-        if (Player.m_localPlayer == null) return ;
+        if (Player.m_localPlayer == null)
+        {
+            args.Context.AddString("> Local player is null");
+            return;
+        }
             
         string rarity = args.GetString(2, "random");
-        string item = args.GetString(3, "random");
+        string itemPrefabName = args.GetString(3, "random");
         int count = args.GetInt(4, 1);
         int effectCount = args.GetInt(5, -1);
         
-        args.Context.AddString($"{TerminalManager.START_COMMAND} magicitem - rarity: {rarity}, item: {item}, count: {count}, count: {effectCount}");
+        args.Context.AddString($"> magicitem: rarity: {rarity}, item: {itemPrefabName}, count: {count}, effects: {effectCount}");
 
         List<string> allItemNames = null;
         
@@ -25,26 +29,22 @@ public static partial class MagicCommands
         {
             float[] rarityTable = GetRarityTable(rarity);
 
-            if (item == "random")
+            if (itemPrefabName == "random")
             {
-                allItemNames ??= ObjectDB.instance.m_items
-                    .Where(x => EpicLoot.CanBeMagicItem(x.GetComponent<ItemDrop>().m_itemData))
-                    .Where(x => x.name != "HelmetDverger" && x.name != "BeltStrength" && x.name != "Wishbone")
-                    .Select(x => x.name)
-                    .ToList();
+                allItemNames ??= GetEnchantableItemNames();
                 
                 WeightedRandomCollection<string> weightedRandomTable =
                     new WeightedRandomCollection<string>(allItemNames, _ => 1);
-                item = weightedRandomTable.Roll();
+                itemPrefabName = weightedRandomTable.Roll();
             }
 
-            if (ObjectDB.instance.GetItemPrefab(item) == null)
+            if (ObjectDB.instance.GetItemPrefab(itemPrefabName) == null)
             {
-                args.Context.AddString($"> Could not find item: {item}");
+                args.Context.AddString($"> Could not find item: {itemPrefabName}");
                 break;
             }
 
-            args.Context.AddString($">  {i + 1} - rarity: [{string.Join(", ", rarityTable)}], item: {item}");
+            args.Context.AddString($">  {i + 1} - rarity: [{string.Join(", ", rarityTable)}], item: {itemPrefabName}");
 
             LootTable loot = new LootTable()
             {
@@ -54,15 +54,13 @@ public static partial class MagicCommands
                 [
                     new LootDrop()
                     {
-                        Item = item,
+                        Item = itemPrefabName,
                         Rarity = rarityTable
                     }
                 ]
             };
 
-            Vector3 randomOffset = UnityEngine.Random.insideUnitSphere;
-            Vector3 dropPoint = Player.m_localPlayer.transform.position +
-                                Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+            Vector3 dropPoint = GetItemSpawnPosition(Player.m_localPlayer);
             LootRoller.CheatRollingItem = true;
             LootRoller.RollLootTableAndSpawnObjects(loot, 1, loot.Object, dropPoint);
             LootRoller.CheatRollingItem = false;
@@ -77,4 +75,20 @@ public static partial class MagicCommands
             3 => GetItemOptions(),
             _ => [],
         };
+
+    private static List<string> GetEnchantableItemNames() => ObjectDB.instance ? 
+        ObjectDB.instance.m_items
+        .Where(x => EpicLoot.CanBeMagicItem(x.GetComponent<ItemDrop>().m_itemData))
+        .Where(x => x.name != "HelmetDverger" && x.name != "BeltStrength" && x.name != "Wishbone")
+        .Select(x => x.name)
+        .ToList() : 
+        [];
+
+    private static Vector3 GetItemSpawnPosition(Player player)
+    {
+        Vector3 randomOffset = UnityEngine.Random.insideUnitSphere;
+        Vector3 dropPoint = player.transform.position +
+                            player.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+        return dropPoint;
+    }
 }

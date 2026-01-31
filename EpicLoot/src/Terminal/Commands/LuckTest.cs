@@ -9,10 +9,10 @@ public static partial class MagicCommands
 {
     private static void PrintLuckTable(Terminal.ConsoleEventArgs args)
     {
-        string lootTable = args.GetString(2, "Greydwarf");
+        string creatureName = args.GetString(2, "Greydwarf");
         float luckFactor = args.GetFloat(3);
-        Console.instance.Print($"Using Lucktest Defaults: lucktest {lootTable} {luckFactor}");
-        PrintLuckTest(lootTable, luckFactor);
+        args.Context.AddString($"> LuckTest: creature: {creatureName}, luck factor: {luckFactor}");
+        PrintLuckTest(creatureName, luckFactor);
     }
     
     private static void PrintLuckTest(string lootTableName, float luckFactor)
@@ -75,6 +75,12 @@ public static partial class MagicCommands
 
         Console.instance.Print(sb.ToString());
     }
+
+    private static List<string> GetLuckTestOptions(int i) => i switch
+    {
+        2 => GetCreatureNames(i),
+        _ => []
+    };
 
     private static string Normalize(this string input, int desiredLength)
     {

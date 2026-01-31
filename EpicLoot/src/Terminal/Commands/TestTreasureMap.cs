@@ -12,6 +12,12 @@ public static partial class MagicCommands
     {
         Player player = Player.m_localPlayer;
 
+        if (player == null)
+        {
+            args.Context.AddString("> Local Player is null");
+            return;
+        }
+        
         int count = args.GetInt(2, 1);
         Heightmap.Biome biome = Heightmap.Biome.None;
         string land = args.GetString(3);

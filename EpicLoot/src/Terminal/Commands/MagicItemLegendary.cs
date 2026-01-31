@@ -9,12 +9,19 @@ namespace EpicLoot;
 
 public static partial class MagicCommands
 {
+    private static readonly List<string> LegendaryRarities = ["Legendary", "Mythic"];
     private static void SpawnLegendaryMagicItem(Terminal.ConsoleEventArgs args)
     {
+        if (Player.m_localPlayer == null)
+        {
+            args.Context.AddString("> Local player is null");
+            return;
+        }
+        
         string legendaryID = args.GetString(2);
         if (string.IsNullOrEmpty(legendaryID))
         {
-            args.Context.AddString("> Specify legendaryID, itemID (optional)");
+            args.Context.AddString($"> Specify legendaryID, itemID <color={HEX_Gray}>(optional)</color>");
             return;
         }
         if (!UniqueLegendaryHelper.TryGetLegendaryInfo(legendaryID, out LegendaryInfo itemInfo))
@@ -76,9 +83,7 @@ public static partial class MagicCommands
         bool previousDisableGatingState = LootRoller.CheatDisableGating;
         LootRoller.CheatDisableGating = true;
 
-        Vector3 randomOffset = UnityEngine.Random.insideUnitSphere;
-        Vector3 dropPoint = Player.m_localPlayer.transform.position +
-                            Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+        Vector3 dropPoint = GetItemSpawnPosition(Player.m_localPlayer);
         LootRoller.CheatRollingItem = true;
         LootRoller.RollLootTableAndSpawnObjects(loot, 1, loot.Object, dropPoint);
 
@@ -90,11 +95,14 @@ public static partial class MagicCommands
 
     private static List<string> GetMagicItemLegendaryOptions(int i) => i switch
     {
-        2 => UniqueLegendaryHelper.LegendaryInfo.Keys
-            .Union(UniqueLegendaryHelper.MythicInfo.Keys)
-            .ToList(),
-        3 => ["Legendary", "Mythic"],
+        2 => GetLegendaryMythicIDs(),
+        3 => LegendaryRarities,
         4 => GetItemOptions(),
         _ => []
     };
+
+    private static List<string> GetLegendaryMythicIDs() => 
+        UniqueLegendaryHelper.LegendaryInfo.Keys
+        .Union(UniqueLegendaryHelper.MythicInfo.Keys)
+        .ToList();
 }

@@ -50,5 +50,6 @@ public static partial class MagicCommands
                 EpicLoot.LogWarningForce(JsonConvert.SerializeObject(RecipesHelper.Config, Formatting.Indented));
                 break;
         }
+        args.Context.AddString("> Check Console");
     }
 }

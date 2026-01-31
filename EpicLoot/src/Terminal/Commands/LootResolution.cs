@@ -1,4 +1,6 @@
-﻿namespace EpicLoot;
+﻿using System.Collections.Generic;
+
+namespace EpicLoot;
 
 public static partial class MagicCommands
 {
@@ -8,5 +10,11 @@ public static partial class MagicCommands
         int level = args.GetInt(3, 1);
         int itemIndex = args.GetInt(4);
         LootRoller.PrintLootResolutionTest(lootTable, level, itemIndex);
-    }    
+    }
+
+    private static List<string> GetLootResolutionOptions(int i) => i switch
+    {
+        2 => GetCreatureNames(i),
+        _ => [],
+    };
 }

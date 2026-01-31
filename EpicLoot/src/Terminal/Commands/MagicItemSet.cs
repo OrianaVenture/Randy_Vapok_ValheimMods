@@ -9,6 +9,12 @@ public static partial class MagicCommands
 {
     private static void SpawnMagicItemSet(Terminal.ConsoleEventArgs args)
     {
+        if (Player.m_localPlayer == null)
+        {
+            args.Context.AddString("> Local player is null");
+            return;
+        }
+        
         string setID = args.GetString(2);
         if (string.IsNullOrEmpty(setID))
         {
@@ -73,9 +79,7 @@ public static partial class MagicCommands
             bool previousDisableGatingState = LootRoller.CheatDisableGating;
             LootRoller.CheatDisableGating = true;
 
-            Vector3 randomOffset = UnityEngine.Random.insideUnitSphere;
-            Vector3 dropPoint = Player.m_localPlayer.transform.position +
-                Player.m_localPlayer.transform.forward * 3 + Vector3.up * 1.5f + randomOffset;
+            Vector3 dropPoint = GetItemSpawnPosition(Player.m_localPlayer);
             LootRoller.CheatRollingItem = true;
             LootRoller.RollLootTableAndSpawnObjects(loot, 1, loot.Object, dropPoint);
 
@@ -88,10 +92,13 @@ public static partial class MagicCommands
 
     private static List<string> GetMagicItemSetOptions(int i) => i switch
     {
-        2 => UniqueLegendaryHelper.LegendarySets.Keys
-            .Union(UniqueLegendaryHelper.MythicSets.Keys)
-            .ToList(),
+        2 => GetLegendaryMythicSetIDs(),
         3 => GetItemOptions(),
         _ => []
     };
+
+    private static List<string> GetLegendaryMythicSetIDs() => 
+        UniqueLegendaryHelper.LegendarySets.Keys
+        .Union(UniqueLegendaryHelper.MythicSets.Keys)
+        .ToList();
 }

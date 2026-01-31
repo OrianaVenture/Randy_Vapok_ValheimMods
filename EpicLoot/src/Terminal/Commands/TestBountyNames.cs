@@ -12,7 +12,7 @@ public static partial class MagicCommands
         for (int i = 0; i < count; ++i)
         {
             string name = BountiesAdventureFeature.GenerateTargetName(random);
-            args.Context.AddString(name);
+            args.Context.AddString($"> {name}");
         }
     }    
 }
