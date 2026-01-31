@@ -149,7 +149,7 @@ public static partial class MagicCommands
             PrintGlobalKeys);
 
         _ = new Command("lootres",
-            $"<color={HEX_Gray}>[CreatureID]</color> Print loot resolution test",
+            $"<color={HEX_Gray}>[CreatureID][Level][Index]</color> Print loot resolution test",
             PrintLootResolution, 
             GetLootResolutionOptions);
         

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using EpicLoot.Adventure;
 using EpicLoot.Adventure.Feature;
 
@@ -20,7 +21,7 @@ public static partial class MagicCommands
             args.Context.AddString("> No Available Bounties");
             return;
         }
-        string result = BountiesAdventureFeature.PrintBounties($"> Bounties for Interval {interval}:", availableBounties);
+        string result = PrintBounties($"> Bounties for Interval {interval}:", availableBounties);
         args.Context.AddString(result);
     }
 
@@ -38,7 +39,25 @@ public static partial class MagicCommands
             args.Context.AddString("> No Active Bounties");
             return;
         }
-        string result = BountiesAdventureFeature.PrintBounties("> Player Bounties:", availableBounties);
+        string result = PrintBounties("> Player Bounties:", availableBounties);
         args.Context.AddString(result);
+    }
+
+    private static string PrintBounties(string label, List<BountyInfo> results)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine(label);
+        for (int index = 0; index < results.Count; ++index)
+        {
+            BountyInfo bountyInfo = results[index];
+
+            sb.Append($"{index} - ");
+            sb.Append($"interval: <color=orange>{bountyInfo.Interval}</color>");
+            sb.Append($", biome: <color=orange>{bountyInfo.Biome}</color>");
+            sb.Append($", name: <color=orange>{bountyInfo.TargetName}</color>");
+            sb.Append($", ID: <color=orange>{bountyInfo.ID}</color>");
+            sb.Append($", state: <color=orange>{bountyInfo.State}</color>\n");
+        }
+        return sb.ToString();
     }
 }

@@ -46,7 +46,7 @@ public static partial class MagicCommands
 
             args.Context.AddString($">  {i + 1} - rarity: [{string.Join(", ", rarityTable)}], item: {itemPrefabName}");
 
-            LootTable loot = new LootTable()
+            LootTable loot = new LootTable
             {
                 Object = "Console",
                 Drops = [[1, 1]],

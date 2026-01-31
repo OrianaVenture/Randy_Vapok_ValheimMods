@@ -1306,29 +1306,41 @@ namespace EpicLoot
             Console.instance.Print(sb.ToString());
         }
 
-        public static void PrintLootResolutionTest(string lootTableName, int level, int itemIndex)
+        public static string PrintLootResolutionTest(string lootTableName, int level, int itemIndex)
         {
-            Debug.LogWarning($"{lootTableName}:{level}:{itemIndex}");
-
-            var lootTable = GetLootTable(lootTableName)[0];
-            var lootDrop = GetLootForLevel(lootTable, level)[itemIndex];
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"> creature: {lootTableName}, level: {level}, index: {itemIndex}");
+            List<LootTable> lootTableList = GetLootTable(lootTableName);
+            if (lootTableList.Count == 0)
+            {
+                sb.Append($"> No Loot Table for {lootTableName}");
+                return sb.ToString();
+            }
+            LootTable lootTable = GetLootTable(lootTableName).First();
+            LootDrop[] lootDropArray = GetLootForLevel(lootTable, level);
+            if (lootDropArray.Length - 1 < itemIndex)
+            {
+                sb.Append($"> No loot for item index: {itemIndex}");
+                return sb.ToString();
+            }
+            LootDrop lootDrop = lootDropArray[itemIndex];
             lootDrop = ResolveLootDrop(lootDrop);
-            var rarity = lootDrop.Rarity;
+            float[] rarity = lootDrop.Rarity;
 
             if (rarity.Length < 1)
             {
-                return;
+                sb.Append("> No Rarity table");
+                return sb.ToString();
             }
 
-            string rarityStr = "> rarity=[ ";
+            sb.Append("> rarity = [");
             for (int i = 0; i < rarity.Length - 1; i++)
             {
-                rarityStr += $"{rarity[i]},";
+                sb.Append($" {rarity[i]},");
             }
-
-            rarityStr += $"{rarity[rarity.Length - 1]} ]";
-
-            Debug.LogWarning(rarityStr);
+            sb.Append($" {rarity[rarity.Length - 1]} ]");
+            
+            return sb.ToString();
         }
     }
 }
