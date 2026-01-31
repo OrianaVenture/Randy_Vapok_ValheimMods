@@ -1,18 +1,18 @@
-﻿using HarmonyLib;
+﻿namespace EpicLoot.Crafting;
 
-namespace EpicLoot.Crafting
+using HarmonyLib;
+
+[HarmonyPatch(typeof(Player), nameof(Player.AddKnownItem))]
+static class Player_AddKnownItem_Patch
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.AddKnownItem))]
-    public static class Player_AddKnownItem_Patch
+    static bool Prefix(ItemDrop.ItemData item)
     {
-        public static bool Prefix(ItemDrop.ItemData item)
+        if (item.IsMagicCraftingMaterial())
         {
-            if (item.IsMagicCraftingMaterial())
-            {
-                var variant = EpicLoot.GetRarityIconIndex(item.GetCraftingMaterialRarity());
-                item.m_variant = variant;
-            }
-            return true;
+            int variant = EpicLoot.GetRarityIconIndex(item.GetCraftingMaterialRarity());
+            item.m_variant = variant;
         }
+
+        return true;
     }
 }

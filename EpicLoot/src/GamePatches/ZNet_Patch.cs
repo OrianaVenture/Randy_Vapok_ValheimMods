@@ -1,44 +1,45 @@
-﻿using EpicLoot.Adventure;
+﻿namespace EpicLoot;
+
+using global::EpicLoot.Adventure;
 using HarmonyLib;
 
-namespace EpicLoot
+[HarmonyPatch(typeof(ZNet), nameof(ZNet.Awake))]
+static class ZNetPatches
 {
-    [HarmonyPatch(typeof(ZNet), nameof(ZNet.Awake))]
-    public static class ZNetPatches
+    static void Postfix(ZNet __instance)
     {
-        public static void Postfix(ZNet __instance)
+        if (__instance.IsServer())
         {
-            if (__instance.IsServer())
-                __instance.gameObject.AddComponent<BountyManagmentSystem>();
-            
-            AdventureDataManager.Bounties.RegisterRPC(__instance.m_routedRpc);
+            __instance.gameObject.AddComponent<BountyManagmentSystem>();
         }
+        
+        AdventureDataManager.Bounties.RegisterRPC(__instance.m_routedRpc);
     }
+}
 
-    [HarmonyPatch(typeof(ZNet), nameof(ZNet.Start))]
-    public static class ZNet_Start_Patch
+[HarmonyPatch(typeof(ZNet), nameof(ZNet.Start))]
+static class ZNet_Start_Patch
+{
+    static void Postfix(ZNet __instance)
     {
-        public static void Postfix(ZNet __instance)
-        {
-            AdventureDataManager.OnZNetStart();
-        }
+        AdventureDataManager.OnZNetStart();
     }
+}
 
-    [HarmonyPatch(typeof(ZNet), nameof(ZNet.OnDestroy))]
-    public static class ZNet_OnDestroy_Patch
+[HarmonyPatch(typeof(ZNet), nameof(ZNet.OnDestroy))]
+static class ZNet_OnDestroy_Patch
+{
+    static void Postfix(ZNet __instance)
     {
-        public static void Postfix(ZNet __instance)
-        {
-            AdventureDataManager.OnZNetDestroyed();
-        }
+        AdventureDataManager.OnZNetDestroyed();
     }
+}
 
-    [HarmonyPatch(typeof(ZNet), nameof(ZNet.SaveWorld))]
-    public static class ZNet_SaveWorld_Patch
+[HarmonyPatch(typeof(ZNet), nameof(ZNet.SaveWorld))]
+static class ZNet_SaveWorld_Patch
+{
+    static void Prefix(ZNet __instance)
     {
-        public static void Prefix(ZNet __instance)
-        {
-            AdventureDataManager.OnWorldSave();
-        }
+        AdventureDataManager.OnWorldSave();
     }
 }

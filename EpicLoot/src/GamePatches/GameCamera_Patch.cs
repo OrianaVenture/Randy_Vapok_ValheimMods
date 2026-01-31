@@ -1,21 +1,23 @@
-﻿using HarmonyLib;
+﻿namespace EpicLoot;
 
-namespace EpicLoot
+using HarmonyLib;
+
+// TODO: Patch was added in 2021 and overrides free-fly to 30 FPS; check if this can be removed.
+[HarmonyPatch(typeof(GameCamera), nameof(GameCamera.UpdateCamera))]
+static class GameCamera_UpdateCamera_Patch
 {
-    [HarmonyPatch(typeof(GameCamera), nameof(GameCamera.UpdateCamera))]
-    public static class GameCamera_UpdateCamera_Patch
-    {
-        public static bool Prefix(GameCamera __instance)
-        {
-            if (__instance.m_freeFly)
-            {
-                const float dt = 1.0f / 30.0f;
-                __instance.UpdateFreeFly(dt);
-                __instance.UpdateCameraShake(dt);
-                return false;
-            }
+    const float _dt = 1f / 30f;
 
-            return true;
+    static bool Prefix(GameCamera __instance)
+    {
+        if (__instance.m_freeFly)
+        {
+            __instance.UpdateFreeFly(_dt);
+            __instance.UpdateCameraShake(_dt);
+
+            return false;
         }
+
+        return true;
     }
 }
