@@ -52,7 +52,7 @@ public static partial class MagicCommands
                 Drops = [[1, 1]],
                 Loot =
                 [
-                    new LootDrop()
+                    new LootDrop
                     {
                         Item = itemPrefabName,
                         Rarity = rarityTable

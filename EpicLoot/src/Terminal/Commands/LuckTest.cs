@@ -30,8 +30,8 @@ public static partial class MagicCommands
                 $"No rarity table was found for {loot_info.Value[0]} using default: [100, 0, 0, 0, 0]");
         }
 
-        var rarityBase = LootRoller.GetRarityWeights(lootDrop.Rarity, 0);
-        var rarityLuck = LootRoller.GetRarityWeights(lootDrop.Rarity, luckFactor);
+        Dictionary<ItemRarity, float> rarityBase = LootRoller.GetRarityWeights(lootDrop.Rarity, 0);
+        Dictionary<ItemRarity, float> rarityLuck = LootRoller.GetRarityWeights(lootDrop.Rarity, luckFactor);
 
         float rarityBaseTotal = rarityBase.Sum(x => x.Value);
         float rarityLuckTotal = rarityLuck.Sum(x => x.Value);

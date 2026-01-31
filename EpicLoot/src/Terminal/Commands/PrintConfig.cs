@@ -1,4 +1,5 @@
-﻿using EpicLoot_UnityLib;
+﻿using System.Collections.Generic;
+using EpicLoot_UnityLib;
 using EpicLoot.Abilities;
 using EpicLoot.Adventure;
 using EpicLoot.Crafting;
@@ -52,4 +53,11 @@ public static partial class MagicCommands
         }
         args.Context.AddString("> Check Console");
     }
+    
+    private static List<string> GetPrintOptions(int i) =>
+    [
+        "loottable", "abilities", "adventuredata", "enchantcosts",
+        "enchantingupgrades", "iteminfo", "itemnames", "legendaries",
+        "magiceffects", "materialconversion", "recipes"
+    ];
 }

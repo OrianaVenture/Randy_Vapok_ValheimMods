@@ -18,13 +18,6 @@ public static partial class MagicCommands
             .Select(c => c.name)
             .ToList()
         : [];
-
-    private static List<string> GetPrintOptions(int i) =>
-    [
-        "loottable", "abilities", "adventuredata", "enchantcosts",
-        "enchantingupgrades", "iteminfo", "itemnames", "legendaries",
-        "magiceffects", "materialconversion", "recipes"
-    ];
     
     private static List<string> GetEffectOptions() => MagicItemEffectDefinitions.AllDefinitions.Keys.ToList();
 

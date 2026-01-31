@@ -25,7 +25,8 @@ public static partial class MagicCommands
             $"<color={HEX_Gray}>[Rarity][ItemID]</color> Spawn a magic item", 
             SpawnMagicItem, 
             GetSpawnMagicItemOptions, 
-            true, true);
+            true, 
+            true);
         
         _ = new Command("magicitemwitheffects", 
             $"<color={HEX_Gray}>[EffectType][ItemID]</color> Spawn a magic item with effects", 
@@ -61,7 +62,8 @@ public static partial class MagicCommands
             $"<color={HEX_Gray}>[SetID][ItemID]</color> Spawn a legendary set", 
             SpawnMagicItemSet, 
             GetMagicItemSetOptions, 
-            true, true);
+            true, 
+            true);
 
         _ = new Command("checkstackquality",
             "Print item names with stack size and quality over 1",

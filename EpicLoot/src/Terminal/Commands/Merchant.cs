@@ -13,6 +13,12 @@ public static partial class MagicCommands
             args.Context.AddString("> Local Player is null");
             return;
         }
+
+        if (ZoneSystem.instance == null)
+        {
+            args.Context.AddString("> ZoneSystem is null");
+            return;
+        }
         
         if (ZoneSystem.instance.FindClosestLocation(HaldorLocationName, player.transform.position, out ZoneSystem.LocationInstance location))
         {
