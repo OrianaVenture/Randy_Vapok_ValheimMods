@@ -8,7 +8,7 @@ namespace EpicLoot;
 
 public static class TerminalManager
 {
-    internal const string START_COMMAND = "epicloot";
+    private const string START_COMMAND = "epicloot";
     internal static readonly Dictionary<string, Command> commands = new();
 
     [HarmonyPatch(typeof(Terminal), nameof(Terminal.InitTerminal))]
@@ -18,10 +18,16 @@ public static class TerminalManager
         {
             _ = new Terminal.ConsoleCommand(START_COMMAND, "use help to find available commands", args =>
             {
-                if (args.Length < 2) return false;
-                if (!commands.TryGetValue(args[1], out Command data))
+                string command = args.GetString(1);
+                if (string.IsNullOrEmpty(command))
                 {
-                    return false;
+                    args.Context.AddString("> Specify command");
+                    return true;
+                }
+                if (!commands.TryGetValue(command, out Command data))
+                {
+                    args.Context.AddString($"> Failed to find command: {command}");
+                    return true;
                 }
                 return data.Run(args);
             },  optionsFetcher: commands
@@ -38,6 +44,7 @@ public static class TerminalManager
                     {
                         continue;
                     }
+                    
                     if (command.Value.IsSecret())
                     {
                         continue;

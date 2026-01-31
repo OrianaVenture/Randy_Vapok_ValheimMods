@@ -44,8 +44,8 @@ public class Command
         this.description = description;
         this.command = command;
         this.isSecret = isSecret;
-        TerminalManager.commands[input] = this;
-        tabOptions = optionsFetcher;
         this.adminOnly = adminOnly;
+        tabOptions = optionsFetcher;
+        TerminalManager.commands[input] = this;
     }
 }
