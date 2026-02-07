@@ -6,27 +6,27 @@ public static partial class MagicCommands
     {
         _ = new Command("lucktest",
             $"<color={HEX_Gray}>[CreatureID][LuckFactor]</color> Rolls an example loot table with the specified luck <color={HEX_Gray}>eg: epicloot lucktest Greydwarf 1.0</color>",
-            PrintLuckTable,
-            GetLuckTestOptions, 
-            true);
+            command: PrintLuckTable,
+            optionsFetcher: GetLuckTestOptions, 
+            adminOnly: true);
         
         _ = new Command("printconfig",
             $"<color={HEX_Gray}>[ConfigType]</color> Prints out the Epic Loot current configuration of the specified type",
-            PrintConfig, 
-            GetPrintOptions);
+            command: PrintConfig, 
+            optionsFetcher: GetPrintOptions);
         
         _ = new Command("magicitem", 
             $"<color={HEX_Gray}>[Rarity][ItemID]</color> Spawn a magic item", 
-            SpawnMagicItem, 
-            GetSpawnMagicItemOptions, 
-            true);
+            command: SpawnMagicItem, 
+            optionsFetcher: GetSpawnMagicItemOptions, 
+            adminOnly: true);
         
         _ = new Command("mi", 
             $"<color={HEX_Gray}>[Rarity][ItemID]</color> Spawn a magic item", 
-            SpawnMagicItem, 
-            GetSpawnMagicItemOptions, 
-            true, 
-            true);
+            command: SpawnMagicItem, 
+            optionsFetcher: GetSpawnMagicItemOptions, 
+            adminOnly: true, 
+            isSecret: true);
         
         _ = new Command("magicitemwitheffects", 
             $"<color={HEX_Gray}>[EffectType][ItemID]</color> Spawn a magic item with effects", 

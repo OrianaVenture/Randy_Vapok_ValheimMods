@@ -26,7 +26,7 @@ public class Command
         {
             return true;
         }
-        if (!adminOnly || ZNet.m_instance.LocalPlayerIsAdminOrHost())
+        if (!adminOnly || Console.instance.IsCheatsEnabled() || ZNet.m_instance.LocalPlayerIsAdminOrHost())
         {
             return true;
         }
