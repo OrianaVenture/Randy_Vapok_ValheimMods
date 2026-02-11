@@ -1,5 +1,6 @@
 ﻿using EpicLoot.Abilities;
 using EpicLoot.Adventure;
+using EpicLoot.Biome;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
@@ -75,7 +76,7 @@ namespace EpicLoot.General
 
             readonly List<string> ConfigNames = new List<string>() 
             {
-                "loottable", "abilities", "adventuredata", "enchantcosts",
+                "loottable", "abilities", "adventuredata", "biomedata", "enchantcosts",
                 "enchantingupgrades", "iteminfo", "itemnames", "legendaries",
                 "magiceffects", "materialconversion", "recipes"
             };
@@ -112,6 +113,9 @@ namespace EpicLoot.General
                         break;
                     case "adventuredata":
                         EpicLoot.LogWarningForce(JsonConvert.SerializeObject(AdventureDataManager.Config, Formatting.Indented));
+                        break;
+                    case "biomedata":
+                        EpicLoot.LogWarningForce(JsonConvert.SerializeObject(BiomeDataManager.Config, Formatting.Indented));
                         break;
                     case "enchantcosts":
                         EpicLoot.LogWarningForce(JsonConvert.SerializeObject(EnchantCostsHelper.Config, Formatting.Indented));

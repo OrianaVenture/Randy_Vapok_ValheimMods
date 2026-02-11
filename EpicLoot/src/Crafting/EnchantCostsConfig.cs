@@ -66,7 +66,7 @@ namespace EpicLoot.Crafting
     public class IdentifyTypeConfig
     {
         public string Localization;
-        public Dictionary<Heightmap.Biome, List<string>> BiomeLootLists = new Dictionary<Heightmap.Biome, List<string>>();
+        public Dictionary<string, List<string>> BiomeLootLists = new Dictionary<string, List<string>>();
         public List<ItemAmountConfig> Costs = new List<ItemAmountConfig>();
     }
 

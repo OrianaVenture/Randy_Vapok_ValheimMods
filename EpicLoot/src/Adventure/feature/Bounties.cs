@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using Common;
+using EpicLoot.Biome;
 using EpicLoot.Config;
 using EpicLoot_UnityLib;
 using HarmonyLib;
@@ -47,8 +48,8 @@ namespace EpicLoot.Adventure.Feature
             var player = Player.m_localPlayer;
             var random = GetRandomForInterval(interval, RefreshInterval);
 
-            var bountiesPerBiome = new MultiValueDictionary<Heightmap.Biome, BountyTargetConfig>();
-            
+            var bountiesPerBiome = new MultiValueDictionary<Heightmap.Biome, BiomeBountyTargetConfig>();
+
             var defeatedBossBiomes = new List<Heightmap.Biome>();
             var previousBossKilled = false;
             var previousBoss = "";
@@ -57,83 +58,89 @@ namespace EpicLoot.Adventure.Feature
 
             if (bossBountiesGated)
             {
-                foreach (var bossConfig in AdventureDataManager.Config.Bounties.Bosses)
+                foreach (var biomeName in BiomeDataManager.GetBiomesWithBosses())
                 {
+                    var biome = BiomeDataManager.GetBiomeEnum(biomeName);
+                    var bossDefeatedKey = BiomeDataManager.GetBossDefeatedKey(biomeName);
+
                     if (previousBoss == "" && ELConfig.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
                     {
-                        defeatedBossBiomes.Add(bossConfig.Biome);
-                        previousBoss = bossConfig.BossDefeatedKey;
+                        defeatedBossBiomes.Add(biome);
+                        previousBoss = bossDefeatedKey;
                     }
 
-                    if (ZoneSystem.instance.GetGlobalKey(bossConfig.BossDefeatedKey))
+                    if (ZoneSystem.instance.GetGlobalKey(bossDefeatedKey))
                     {
-                        defeatedBossBiomes.Add(bossConfig.Biome);
+                        defeatedBossBiomes.Add(biome);
                         previousBossKilled = true;
-                        previousBoss = bossConfig.BossDefeatedKey;
+                        previousBoss = bossDefeatedKey;
                     }
-                    else if ((previousBossKilled || previousBoss.Equals(bossConfig.BossDefeatedKey)) &&
+                    else if ((previousBossKilled || previousBoss.Equals(bossDefeatedKey)) &&
                         ELConfig.BossBountyMode.Value == GatedBountyMode.BossKillUnlocksNextBiomeBounties)
                     {
-                        defeatedBossBiomes.Add(bossConfig.Biome);
-                        previousBoss = bossConfig.BossDefeatedKey;
+                        defeatedBossBiomes.Add(biome);
+                        previousBoss = bossDefeatedKey;
                         previousBossKilled = false;
                     }
                 }
             }
 
-            // When we build the list of potential targets we only want to include those that are in the game, regardless of what the config says
-            List<BountyTargetConfig> targetable_bounty_configs = new List<BountyTargetConfig>();
-            foreach (var potential_bounty in AdventureDataManager.Config.Bounties.Targets)
+            // Build list of potential targets per biome, filtering by valid prefabs, boss gating, and known biomes
+            foreach (var biomeName in BiomeDataManager.GetBiomesWithBounties())
             {
-                if (PrefabManager.Instance.GetPrefab(potential_bounty.TargetID) == null)
-                {
-                    EpicLoot.Log($"Could not find bounty prefab {potential_bounty.TargetID}");
-                    continue;
-                }
-                else
-                {
-                    targetable_bounty_configs.Add(potential_bounty);
-                }
-            }
+                var biome = BiomeDataManager.GetBiomeEnum(biomeName);
 
-            foreach (var targetConfig in targetable_bounty_configs)
-            {
-                if ((bossBountiesGated && !defeatedBossBiomes.Contains(targetConfig.Biome)) ||
-                    !player.m_knownBiome.Contains(targetConfig.Biome))
+                // Skip if boss bounties are gated and this biome's boss hasn't been defeated
+                if (bossBountiesGated && !defeatedBossBiomes.Contains(biome))
                 {
-                    // Remove the results of undefeated biome bosses &
-                    // Remove the results that the player doesn't know about yet
                     continue;
                 }
 
-                bountiesPerBiome.Add(targetConfig.Biome, targetConfig);
+                // Skip if player hasn't discovered this biome
+                if (!player.m_knownBiome.Contains(biome))
+                {
+                    continue;
+                }
+
+                foreach (var bountyTarget in BiomeDataManager.GetBountyTargets(biomeName))
+                {
+                    if (PrefabManager.Instance.GetPrefab(bountyTarget.TargetID) == null)
+                    {
+                        EpicLoot.Log($"Could not find bounty prefab {bountyTarget.TargetID}");
+                        continue;
+                    }
+
+                    bountiesPerBiome.Add(biome, bountyTarget);
+                }
             }
 
-            var selectedTargets = new List<BountyTargetConfig>();
+            // Roll one target per biome, keeping track of both biome and target
+            var selectedTargets = new List<(Heightmap.Biome Biome, BiomeBountyTargetConfig Target)>();
             foreach (var entry in bountiesPerBiome)
             {
+                var biome = entry.Key;
                 var targets = entry.Value;
-                selectedTargets.Add(RollOnList(random, targets));
+                selectedTargets.Add((biome, RollOnList(random, targets)));
             }
 
             var saveData = player.GetAdventureSaveData();
 
-            var results = selectedTargets.Select(targetConfig => new BountyInfo()
+            var results = selectedTargets.Select(x => new BountyInfo()
             {
-                Biome = targetConfig.Biome,
+                Biome = x.Biome,
                 Interval = interval,
                 PlayerID = player.GetPlayerID(),
                 Target = new BountyTargetInfo() {
-                    MonsterID = targetConfig.TargetID,
-                    Level = GetTargetLevel(random, targetConfig.RewardGold > 0, false),
+                    MonsterID = x.Target.TargetID,
+                    Level = GetTargetLevel(random, x.Target.RewardGold > 0, false),
                     Count = 1 },
                 TargetName = GenerateTargetName(random),
-                RewardIron = targetConfig.RewardIron,
-                RewardGold = targetConfig.RewardGold,
-                RewardCoins = targetConfig.RewardCoins,
-                Adds = targetConfig.Adds.Select(x => new BountyTargetInfo() {
-                    MonsterID = x.ID,
-                    Count = x.Count,
+                RewardIron = x.Target.RewardIron,
+                RewardGold = x.Target.RewardGold,
+                RewardCoins = x.Target.RewardCoins,
+                Adds = x.Target.Adds.Select(a => new BountyTargetInfo() {
+                    MonsterID = a.ID,
+                    Count = a.Count,
                     Level = GetTargetLevel(random, false, true) }).ToList()
             }).ToList();
 

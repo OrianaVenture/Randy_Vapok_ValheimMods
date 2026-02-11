@@ -74,6 +74,7 @@
     "mod_epicloot_identify_accessory": "Accessory",
     "mod_epicloot_identify_explain": "Identify a magic item to turn it into equipment. You can filter the category for a cost.",
     "mod_epicloot_identify_productsexplainer": "Potential Items Identified",
+    "mod_epicloot_identify_progressgated": "<color=yellow>(Progress-gated)</color>",
     "mod_epicloot_identify": "Identify",
 
 

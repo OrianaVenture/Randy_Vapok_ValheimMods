@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using Common;
 using EpicLoot.Abilities;
 using EpicLoot.Adventure;
+using EpicLoot.Biome;
 using EpicLoot.Crafting;
 using EpicLoot.CraftingV2;
 using EpicLoot.GatedItemType;
@@ -95,6 +96,7 @@ namespace EpicLoot.Config
         private static CustomRPC MaterialConversionRPC;
         private static CustomRPC EnchantingUpgradesRPC;
         private static CustomRPC AutoSorterConfigurationRPC;
+        private static CustomRPC BiomeDataRPC;
 
         private static string LocalizationDir = GetLocalizationDirectoryPath();
         private static readonly List<string> LocalizationLanguages = new List<string>() {
@@ -373,6 +375,9 @@ namespace EpicLoot.Config
                 LootTablesRPC, LootRoller.GetCFG);
             SychronizeConfig<MagicItemEffectsList>("magiceffects.json", MagicItemEffectDefinitions.Initialize,
                 MagicEffectsRPC, MagicItemEffectDefinitions.GetMagicItemEffectDefinitions);
+            // Biome data should be loaded early as other systems depend on it
+            SychronizeConfig<BiomeDataConfig>("biomedata.json", BiomeDataManager.Initialize,
+                BiomeDataRPC, BiomeDataManager.GetCFG);
             // Adventure data has to be loaded before iteminfo, as iteminfo uses the adventure data to determine what items can drop
             SychronizeConfig<AdventureDataConfig>("adventuredata.json", AdventureDataManager.Initialize,
                 AdventureDataRPC, AdventureDataManager.GetCFG);

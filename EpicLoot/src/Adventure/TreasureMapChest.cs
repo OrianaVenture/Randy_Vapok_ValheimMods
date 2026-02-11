@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EpicLoot.Biome;
+using HarmonyLib;
 using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,10 +11,12 @@ namespace EpicLoot.Adventure
         public Heightmap.Biome Biome;
         public int Interval;
 
-        public string LootTableName => $"TreasureMapChest_{Biome}";
+        // Use friendly biome name if available (for modded biomes), otherwise use enum name
+        public string LootTableName => $"TreasureMapChest_{BiomeDataManager.GetBiomeName(Biome)}";
 
         public void Setup(long playerID, Heightmap.Biome biome, int treasureMapInterval)
         {
+            EpicLoot.Log($"[TreasureMap] TreasureMapChest.Setup: Starting for biome={biome} (value={(int)biome}), interval={treasureMapInterval}, playerID={playerID}");
             Reinitialize(biome, treasureMapInterval, false, playerID);
 
             var container = GetComponent<Container>();
@@ -31,24 +34,28 @@ namespace EpicLoot.Adventure
                 zdo.Set("TreasureMapChest.Interval", Interval);
                 zdo.Set("TreasureMapChest.Biome", Biome.ToString());
                 zdo.Set("creator", playerID);
+                EpicLoot.Log($"[TreasureMap] TreasureMapChest.Setup: Stored biome as string='{Biome.ToString()}' in ZDO");
 
                 var items = LootRoller.RollLootTable(LootTableName, 1, LootTableName, transform.position);
+                EpicLoot.Log($"[TreasureMap] TreasureMapChest.Setup: LootTable={LootTableName}, rolled {items.Count} items");
                 items.ForEach(item => container.m_inventory.AddItem(item));
 
-                var biomeConfig = AdventureDataManager.Config.TreasureMap.BiomeInfo.Find(x => x.Biome == biome);
-                if (biomeConfig?.ForestTokens > 0)
-                    container.m_inventory.AddItem("ForestToken", biomeConfig.ForestTokens, 1, 0, 0, string.Empty);
+                var treasureMapConfig = BiomeDataManager.GetTreasureMapConfig(biome);
+                EpicLoot.Log($"[TreasureMap] TreasureMapChest.Setup: TreasureMapConfig found={treasureMapConfig != null} for biome={biome}");
+                if (treasureMapConfig?.ForestTokens > 0)
+                    container.m_inventory.AddItem("ForestToken", treasureMapConfig.ForestTokens, 1, 0, 0, string.Empty);
 
-                if (biomeConfig?.IronTokens > 0)
-                    container.m_inventory.AddItem("IronBountyToken", biomeConfig.IronTokens, 1, 0, 0, string.Empty);
+                if (treasureMapConfig?.IronTokens > 0)
+                    container.m_inventory.AddItem("IronBountyToken", treasureMapConfig.IronTokens, 1, 0, 0, string.Empty);
 
-                if (biomeConfig?.GoldTokens > 0)
-                    container.m_inventory.AddItem("GoldBountyToken", biomeConfig.GoldTokens, 1, 0, 0, string.Empty);
+                if (treasureMapConfig?.GoldTokens > 0)
+                    container.m_inventory.AddItem("GoldBountyToken", treasureMapConfig.GoldTokens, 1, 0, 0, string.Empty);
 
-                if (biomeConfig?.Coins > 0)
-                    container.m_inventory.AddItem("Coins", biomeConfig.Coins, 1, 0, 0, string.Empty);
+                if (treasureMapConfig?.Coins > 0)
+                    container.m_inventory.AddItem("Coins", treasureMapConfig.Coins, 1, 0, 0, string.Empty);
 
                 container.Save();
+                EpicLoot.Log($"[TreasureMap] TreasureMapChest.Setup: Complete for biome={biome}");
             }
             else
             {
@@ -112,8 +119,10 @@ namespace EpicLoot.Adventure
                 var biomeString = zdo.GetString($"{nameof(TreasureMapChest)}.{nameof(TreasureMapChest.Biome)}");
                 if (!string.IsNullOrEmpty(biomeString))
                 {
+                    EpicLoot.Log($"[TreasureMap] Container_Awake_Patch: Found TreasureMapChest ZDO with biomeString='{biomeString}'");
                     if (Enum.TryParse(biomeString, out Heightmap.Biome biome))
                     {
+                        EpicLoot.Log($"[TreasureMap] Container_Awake_Patch: Parsed biome={biome} (value={(int)biome})");
                         var interval = zdo.GetInt("TreasureMapChest.Interval");
                         var hasBeenFound = zdo.GetBool("TreasureMapChest.HasBeenFound");
                         var owner = zdo.GetLong("creator");
@@ -122,7 +131,7 @@ namespace EpicLoot.Adventure
                     }
                     else
                     {
-                        EpicLoot.LogError($"[EpicLoot.Adventure.Container_Awake] Unknown biome: {biomeString}");
+                        EpicLoot.LogError($"[EpicLoot.Adventure.Container_Awake] Unknown biome: {biomeString} - Enum.TryParse failed");
                     }
                 }
             }

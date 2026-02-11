@@ -39,6 +39,7 @@ namespace EpicLoot_UnityLib
         public delegate List<InventoryItemListElement> GetPotentialIdentificationsDelegate(
             string filterType, List<ItemDrop.ItemData> items_selected);
         public delegate Dictionary<string, string> GetIdentifyStylesDelegate();
+        public delegate bool IsGatingActiveDelegate(string filterType, List<ItemDrop.ItemData> items);
 
         public static GetSacrificeItemsDelegate GetSacrificeItems;
         public static GetSacrificeProductsDelegate GetSacrificeProducts;
@@ -47,6 +48,7 @@ namespace EpicLoot_UnityLib
         public static GetRandomFilteredLootRollDelegate GetRandomFilteredLoot;
         public static GetPotentialIdentificationsDelegate GetPotentialIdentifications;
         public static GetIdentifyStylesDelegate GetIdentifyStyles;
+        public static IsGatingActiveDelegate IsGatingActive;
 
         SacrificeMode _sacrificeMode = SacrificeMode.Sacrifice;
 
@@ -241,9 +243,23 @@ namespace EpicLoot_UnityLib
             else if (_sacrificeMode == SacrificeMode.Identify)
             {
                 string identifyFilter = IdentifyStyle.options[IdentifyStyle.value].text;
+                List<ItemDrop.ItemData> selectedItemsList = selectedItems.Select(x => x.Item1.GetItem()).ToList();
                 List<InventoryItemListElement> potentialIdentifyItems =
-                    GetPotentialIdentifications(identifyFilter, selectedItems.Select(x => x.Item1.GetItem()).ToList());
+                    GetPotentialIdentifications(identifyFilter, selectedItemsList);
                 SacrificeProducts.SetItems(potentialIdentifyItems.Cast<IListElement>().ToList());
+
+                // Check if gating is active and update explainer text
+                bool isGated = IsGatingActive?.Invoke(identifyFilter, selectedItemsList) ?? false;
+                if (isGated)
+                {
+                    Explainer.text = Localization.instance.Localize("$mod_epicloot_identify_productsexplainer")
+                        + " " + Localization.instance.Localize("$mod_epicloot_identify_progressgated");
+                }
+                else
+                {
+                    Explainer.text = Localization.instance.Localize("$mod_epicloot_identify_productsexplainer");
+                }
+
                 List<Tuple<ItemDrop.ItemData, int>> unidentifiedItems = selectedItems.Select(
                     x => new Tuple<ItemDrop.ItemData, int>(x.Item1.GetItem(), x.Item2)).ToList();
                 Tuple<float, float> featureValues =
