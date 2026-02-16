@@ -247,14 +247,15 @@ namespace EpicLoot.Config
             AutoAddRemoveEquipmentFromVendor = BindServerConfig("General", "Auto Add Remove Equipment From Vendor", true,
                 "Automatically adds/removes equipment from the vendor when it is added/removed from the game. ");
             AutoAddRemoveEquipmentFromLootLists = BindServerConfig("General", "Auto Add Remove Equipment From Lootlists", true,
-                "Automatically adds/removes equipment from the teir based loot lists, and validates other loot lists only contain valid items.");
+                "Automatically adds/removes equipment from the tier based loot lists, and validates other loot lists only contain valid items.");
 
             // Balance
             BalanceConfigurationType = BindServerConfig("Balance", "Balance Template", "Default",
                 "Sets the type of balance configuration to use. " +
-                "balanced: the recommended balancing, you'll be powerful but stronger enemies will still be a huge threat. " +
-                "minimal: uses heavy downtuning to not make you overpowered without any mods to increase difficulty." +
-                "legendary: this was the only balance option prior to 0.12, used by itself this will make you godlike.",
+                "When initially set can change the value of other configurations in this file. " +
+                "balanced: the recommended balancing, enchantments are powerful but stronger enemies can be a threat. " +
+                "minimal: reduced enchantment power to be used with vanilla difficulty options." +
+                "legendary: legacy balancing that can make players godlike.",
                 new AcceptableValueList<string>("balanced", "legendary", "minimal"));
             _gatedItemTypeModeConfig = BindServerConfig("Balance", "Item Drop Limits",
                 GatedItemTypeMode.BossKillUnlocksCurrentBiomeItems,
@@ -294,23 +295,27 @@ namespace EpicLoot.Config
                 "Set to true to enable all the adventure mode features: secret stash, gambling, treasure maps, and bounties. " +
                 "Set to false to disable. This will not actually remove active treasure maps or bounties from your save.");
             _andvaranautRange = BindServerConfig("Balance", "Andvaranaut Range", 20,
-                "Sets the range that Andvaranaut will locate a treasure chest.");
+                "Sets the range that Andvaranaut will activate to locate a treasure chest.");
             SetItemDropChance = BindServerConfig("Balance", "Set Item Drop Chance", 0.15f,
-                "The percent chance that a legendary item will be a set item. Min = 0, Max = 1",
+                "The percent chance that a legendary or mythic special item will be dropped, enchanted, or identified as a set item from the legendaries configuration file. Min = 0, Max = 1",
                 new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             GlobalDropRateModifier = BindServerConfig("Balance", "Global Drop Rate Modifier", 1.0f,
-                "A global percentage that modifies how likely items are to drop. " +
+                "A global percentage that modifies how likely loot is to drop. " +
                 "1 = Exactly what is in the loot tables will drop. " +
                 "0 = Nothing will drop. " +
                 "2 = The number of items in the drop table are twice as likely to drop " +
-                "(note, this doesn't double the number of items dropped, just doubles the relative chance for them to drop). " +
+                "(note, this doesn't double the number of loot dropped, just doubles the relative chance for it to drop). " +
                 "Min = 0, Max = 4", new AcceptableValueRange<float>(minValue: 0, maxValue: 4));
-            ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f, "" +
-                "Sets the chance that items are dropped as unidentified. This takes precedent over 'Items To Materials Drop Ratio' which means" +
-                "out of 100 items dropped, unidenified items are first calculated, and then the remainder is used to calculate material vs item drop.",
+            ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f,
+                "Sets the chance that loot is dropped as unidentified items. " +
+                "This value is set first, " +
+                "Items To Materials Drop Ratio uses the remaining value from this configuration for ratio calculation." +
+                "0 = no unidentified items drop, uses only the Items To Materials Drop Ratio. " +
+                "1 = only unidentified items drop.",
                 new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             ItemsToMaterialsDropRatio = BindServerConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
-                "Sets the chance that item drops are instead dropped as magic crafting materials. " +
+                "Sets the chance, using the remaining value from Items Unidentified Drop Ratio, " +
+                "that loot drops are instead dropped as magic crafting materials. " +
                 "0 = all items, no materials. " +
                 "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop. " +
                 "At 0.5, half of everything that drops would be items and the other half would be materials. " +
