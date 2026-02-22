@@ -1,4 +1,4 @@
-﻿namespace EpicLoot;
+﻿namespace EpicLoot.Adventure;
 
 public enum MinimapPinQueueTask
 {

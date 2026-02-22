@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace EpicLoot;
+namespace EpicLoot.Adventure;
 
 public class AdventureToggle
 {
@@ -43,8 +43,10 @@ public class AdventureToggle
     }
 
     public void SetLabel(string text) => label.text = Localization.instance.Localize(text);
-    
+
     public void SetIcon(Sprite icon) => checkmark.sprite = icon;
-    
-    public void SetBackground(float transparency) => darken.color = new Color(darken.color.r, darken.color.g, darken.color.b, transparency);
+
+    // Unused?
+    public void SetBackground(float transparency) =>
+        darken.color = new Color(darken.color.r, darken.color.g, darken.color.b, transparency);
 }

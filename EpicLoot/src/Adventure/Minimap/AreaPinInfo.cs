@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-namespace EpicLoot;
+namespace EpicLoot.Adventure;
 
 public class AreaPinInfo
 {
     public Minimap.PinData Pin { get; set; }
     public Minimap.PinData Area { get; set; }
     public Minimap.PinData DebugPin { get; set; }
-        
+
     //Pin Data
     public Vector3 Position { get; set; }
     public Minimap.PinType Type { get; set; }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using EpicLoot.Adventure;
 
-namespace EpicLoot;
+namespace EpicLoot.Adventure;
 
 public class PinJob
 {
