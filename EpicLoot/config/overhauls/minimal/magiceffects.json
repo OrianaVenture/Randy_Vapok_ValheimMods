@@ -5129,7 +5129,7 @@
         },
         "Legendary": {
           "MinValue": 2,
-          "MaxValue": 5
+          "MaxValue": 5,
           "Increment": 1
         },
         "Mythic": {

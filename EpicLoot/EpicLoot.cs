@@ -37,7 +37,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 {
     public const string PluginId = "randyknapp.mods.epicloot";
     public const string DisplayName = "Epic Loot";
-    public const string Version = "0.12.9";
+    public const string Version = "0.12.10";
 
     private static string ConfigFileName = PluginId + ".cfg";
     private static string ConfigFileFullPath = BepInEx.Paths.ConfigPath + Path.DirectorySeparatorChar + ConfigFileName;
@@ -509,23 +509,26 @@ public sealed class EpicLoot : BaseUnityPlugin
         {
             foreach (ItemRarity rarity in Enum.GetValues(typeof(ItemRarity)))
             {
-                var assetName = $"{type}{rarity}";
-                var prefab = EpicAssets.AssetBundle.LoadAsset<GameObject>(assetName);
-                if (prefab == null)
+                string assetName = $"{type}{rarity}";
+                GameObject prefab = EpicAssets.AssetBundle.LoadAsset<GameObject>(assetName);
+
+                if (!prefab)
                 {
                     LogErrorForce($"Tried to load asset {assetName} but it does not exist in the asset bundle!");
                     continue;
                 }
 
-                var itemDrop = prefab.GetComponent<ItemDrop>();
-                if (itemDrop != null && itemDrop.m_itemData.IsMagicCraftingMaterial())
+                if (prefab.TryGetComponent(out ItemDrop itemDrop))
                 {
-                    //Set icons for crafting materials
-                    itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
-                }
+                    if (itemDrop.m_itemData.IsMagicCraftingMaterial())
+                    {
+                        // Set icons for crafting materials.
+                        itemDrop.m_itemData.m_variant = GetRarityIconIndex(rarity);
+                    }
 
-                // Add MagicItemComponent or products will not stack until reloaded.
-                itemDrop.m_itemData.CreateMagicItem();
+                    // Add MagicItemComponent or products will not stack until reloaded.
+                    itemDrop.m_itemData.CreateMagicItem();
+                }
 
                 CustomItem custom = new CustomItem(prefab, false);
                 ItemManager.Instance.AddItem(custom);
