@@ -11,7 +11,7 @@ namespace EpicLoot.Adventure.Feature
         private readonly MerchantPanel _merchantPanel;
         private IEnumerator SpawnTreasureChestCoroutine;
 
-        public TreasureMapListPanel(MerchantPanel merchantPanel, TreasureMapListElement elementPrefab) 
+        public TreasureMapListPanel(MerchantPanel merchantPanel, TreasureMapListElement elementPrefab)
             : base(
                 merchantPanel.transform.Find("TreasureMap/Panel/ItemList") as RectTransform,
                 elementPrefab,
@@ -28,10 +28,10 @@ namespace EpicLoot.Adventure.Feature
 
         public override void RefreshButton(Currencies playerCurrencies)
         {
-            var selectedItem = GetSelectedItem();
+            TreasureMapListElement selectedItem = GetSelectedItem();
             MainButton.interactable = selectedItem != null && selectedItem.CanAfford && !selectedItem.AlreadyPurchased;
 
-            var tooltip = MainButton.GetComponent<UITooltip>();
+            UITooltip tooltip = MainButton.GetComponent<UITooltip>();
             if (tooltip != null)
             {
                 tooltip.m_text = "";
@@ -53,13 +53,13 @@ namespace EpicLoot.Adventure.Feature
                 return;
             }
 
-            var player = Player.m_localPlayer;
+            Player player = Player.m_localPlayer;
             if (player == null)
             {
                 return;
             }
 
-            var treasureMap = GetSelectedItem();
+            TreasureMapListElement treasureMap = GetSelectedItem();
             if (treasureMap != null)
             {
                 SpawnTreasureChestCoroutine = AdventureDataManager.TreasureMaps
@@ -90,14 +90,14 @@ namespace EpicLoot.Adventure.Feature
             _currentInterval = AdventureDataManager.TreasureMaps.GetCurrentInterval();
 
             DestroyAllListElementsInList();
-            var allItems = AdventureDataManager.TreasureMaps.GetTreasureMaps();
-            for (var index = 0; index < allItems.Count; index++)
+            System.Collections.Generic.List<TreasureMapItemInfo> allItems = AdventureDataManager.TreasureMaps.GetTreasureMaps();
+            for (int index = 0; index < allItems.Count; index++)
             {
-                var itemInfo = allItems[index];
-                var itemElement = Object.Instantiate(ElementPrefab, List);
+                TreasureMapItemInfo itemInfo = allItems[index];
+                TreasureMapListElement itemElement = Object.Instantiate(ElementPrefab, List);
                 itemElement.gameObject.SetActive(true);
                 itemElement.SetItem(itemInfo, currencies.Coins);
-                var i = index;
+                int i = index;
                 itemElement.OnSelected += (x) => OnItemSelected(i);
                 itemElement.SetSelected(i == _selectedItemIndex);
             }

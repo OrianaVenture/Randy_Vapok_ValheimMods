@@ -23,31 +23,36 @@ namespace EpicLoot.Adventure.Feature
 
         public List<TreasureMapItemInfo> GetTreasureMaps()
         {
-            var results = new List<TreasureMapItemInfo>();
-
-            var player = Player.m_localPlayer;
-            var currentInterval = GetCurrentInterval();
-            if (player != null)
+            List<TreasureMapItemInfo> results = new List<TreasureMapItemInfo>();
+            if (Player.m_localPlayer == null)
             {
-                var saveData = player.GetAdventureSaveData();
-                foreach (var biome in player.m_knownBiome)
+                return results;
+            }
+
+            int currentInterval = GetCurrentInterval();
+
+            AdventureSaveData saveData = Player.m_localPlayer.GetAdventureSaveData();
+            foreach (Heightmap.Biome biome in Player.m_localPlayer.m_knownBiome)
+            {
+                string lootTableName = $"TreasureMapChest_{biome}";
+                bool lootTableExists = LootRoller.GetLootTable(lootTableName).Count > 0;
+
+                if (!lootTableExists)
                 {
-                    var lootTableName = $"TreasureMapChest_{biome}";
-                    var lootTableExists = LootRoller.GetLootTable(lootTableName).Count > 0;
-                    if (lootTableExists)
+                    continue;
+                }
+
+                bool purchased = saveData.HasPurchasedTreasureMap(currentInterval, biome);
+                TreasureMapBiomeInfoConfig cost = AdventureDataManager.Config.TreasureMap.BiomeInfo.Find(x => x.Biome == biome);
+                if (cost != null && cost.Cost > 0)
+                {
+                    results.Add(new TreasureMapItemInfo()
                     {
-                        var purchased = saveData.HasPurchasedTreasureMap(currentInterval, biome);
-                        var cost = AdventureDataManager.Config.TreasureMap.BiomeInfo.Find(x => x.Biome == biome);
-                        if (cost.Cost > 0)
-                        {
-                            results.Add(new TreasureMapItemInfo() {
-                                Biome = biome,
-                                Interval = currentInterval,
-                                Cost = cost.Cost,
-                                AlreadyPurchased = purchased
-                            });
-                        }
-                    }
+                        Biome = biome,
+                        Interval = currentInterval,
+                        Cost = cost.Cost,
+                        AlreadyPurchased = purchased
+                    });
                 }
             }
 
@@ -57,7 +62,7 @@ namespace EpicLoot.Adventure.Feature
         public IEnumerator SpawnTreasureChest(Heightmap.Biome biome, Player player, int price, Action<int, bool, Vector3> callback)
         {
             player.Message(MessageHud.MessageType.Center, "$mod_epicloot_treasuremap_locatingmsg");
-            var saveData = player.GetAdventureSaveData();
+            AdventureSaveData saveData = player.GetAdventureSaveData();
             yield return BountyLocationEarlyCache.TryGetBiomePoint(biome, saveData, (success, spawnPoint) =>
             {
                 if (success)
@@ -87,9 +92,9 @@ namespace EpicLoot.Adventure.Feature
             };
             asc.SetTreasure(treasure_details);
 
-            var offset2 = UnityEngine.Random.insideUnitCircle * 
+            Vector2 offset2 = UnityEngine.Random.insideUnitCircle * 
                 (AdventureDataManager.Config.TreasureMap.MinimapAreaRadius * 0.8f);
-            var offset = new Vector3(offset2.x, 0, offset2.y);
+            Vector3 offset = new Vector3(offset2.x, 0, offset2.y);
             saveData.PurchasedTreasureMap(treasure_details);
 
             Minimap.instance.ShowPointOnMap(spawnPoint + offset);
