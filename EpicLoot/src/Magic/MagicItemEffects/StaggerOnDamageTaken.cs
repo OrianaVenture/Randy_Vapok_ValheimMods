@@ -1,35 +1,34 @@
 ﻿using HarmonyLib;
 using JetBrains.Annotations;
-using Random = UnityEngine.Random;
 
-namespace EpicLoot.MagicItemEffects
+namespace EpicLoot.MagicItemEffects;
+
+[HarmonyPatch(typeof(Character), nameof(Character.Damage))]
+public static class StaggerOnDamageTaken_Character_Damage_Patch
 {
-    [HarmonyPatch(typeof(Character), nameof(Character.RPC_Damage))]
-    public class RPC_StaggerOnDamageTaken_Character_RPC_Damage_Patch
+    [UsedImplicitly]
+    private static void Postfix(Character __instance, HitData hit)
     {
-        [UsedImplicitly]
-        private static void Postfix(Character __instance, HitData hit)
+        if (hit == null || __instance == null)
         {
-            if (hit == null || __instance == null)
+            return;
+        }
+
+        Character attacker = hit.GetAttacker();
+
+        if (attacker == Player.m_localPlayer &&
+            __instance != null && attacker != __instance &&
+            Player.m_localPlayer.HasActiveMagicEffect(MagicEffectType.StaggerOnDamageTaken, out float effectValue, 0.01f))
+        {
+            // Don't stagger friendly players, only PvP enabled ones
+            if (__instance is Player && __instance.IsPVPEnabled() == false)
             {
                 return;
             }
 
-            var attacker = hit.GetAttacker();
-
-            if (__instance is Player player &&
-                    attacker != null && attacker != __instance && !attacker.IsStaggering() &&
-                    player.HasActiveMagicEffect(MagicEffectType.StaggerOnDamageTaken, out float effectValue, 0.01f))
+            if (UnityEngine.Random.Range(0f, 1f) <= effectValue)
             {
-                // Don't stagger friendly players, only PvP enabled ones
-                if (attacker.IsPVPEnabled() == false)
-                {
-                    return;
-                }
-                if (Random.Range(0f, 1f) < effectValue)
-                {
-                    attacker.Stagger(-attacker.transform.forward);
-                }
+                __instance.Stagger(-__instance.transform.forward);
             }
         }
     }
