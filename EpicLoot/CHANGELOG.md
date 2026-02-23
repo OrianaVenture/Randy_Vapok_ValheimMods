@@ -5,6 +5,8 @@
 * Tweaked descriptions of some base configurations in the epicloot.cfg file to be more clear.
 * UI tooltip compatibility fix when using the VENI mod.
 * Bug fix for sacrificing unidentified items not using the correct configuration because the default value for "isMagic" and "IsUnidentified" was true if not explicitly set. Existing baseconfig "enchantcosts.json" file may still have the issue, you may need to regenerate it to see the update depending on your game patches and settings.
+* Fixed StaggerOnDamageTaken magic effect not working.
+* Removed a debugging feature that accidentally made it to production. This would cause a new folder called "dumps" to be generated in your game directory. It is safe to delete that folder and its contents. Apologies for the mess!
 
 ## Version 0.12.10
 

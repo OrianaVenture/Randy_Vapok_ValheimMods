@@ -10,7 +10,6 @@ public static class ModifyPlayerRegen
     [HarmonyPatch]
     private static class SEMan_ModifyRegen_Patches
     {
-        [HarmonyEmitIL("dumps")]
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(Player), nameof(Player.UpdateFood))]
         private static IEnumerable<CodeInstruction> ModifyHealthRegen_Transpiler(IEnumerable<CodeInstruction> instructions)
