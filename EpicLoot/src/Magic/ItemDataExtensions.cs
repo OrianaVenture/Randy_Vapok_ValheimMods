@@ -22,7 +22,11 @@ public static class ItemDataExtensions
     public static bool IsUnidentified(this ItemDrop.ItemData itemData)
     {
         MagicItemComponent mic = itemData.Data().Get<MagicItemComponent>();
-        if (mic == null) { return false; }
+        if (mic == null || mic.MagicItem == null)
+        {
+            return false;
+        }
+
         return mic.MagicItem.IsUnidentified;
     }
 
