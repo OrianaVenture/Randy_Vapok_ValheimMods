@@ -86,13 +86,22 @@ namespace EpicLoot
             if (UITooltip.m_tooltip != null)
             {
                 RectTransform tooltipTfm = (RectTransform)go.transform;
-                float bottomBuffer = 100f;
-                float height = tooltipTfm.position.y - bottomBuffer;
+                float height = 700f;
+                float xoffset = 185f;
 
-                Mathf.Clamp(height, 200f, 900f);
-                float y = -1f * ((height / 2f) + 20f);
+                if (tooltipTfm.position.x > (Screen.width - 400f))
+                {
+                    xoffset = -185;
+                }
 
-                AddScrollbar(UITooltip.m_tooltip, height, 350f, 185f, y);
+                // There is not enough room for the tooltip, it should be flipped to above the pointer
+                float yoffset = -1f * Mathf.Abs((height / 2f) + 20f);
+                if ((tooltipTfm.position.y - 100f) <= -height)
+                {
+                    yoffset -= Mathf.Abs(height);
+                }
+
+                AddScrollbar(UITooltip.m_tooltip, height, 350f, xoffset, yoffset);
             }
         }
 
