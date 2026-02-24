@@ -300,25 +300,25 @@ namespace EpicLoot.Config
                 "The percent chance that a legendary or mythic special item will be dropped, enchanted, or identified as a set item from the legendaries configuration file. Min = 0, Max = 1",
                 new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             GlobalDropRateModifier = BindServerConfig("Balance", "Global Drop Rate Modifier", 1.0f,
-                "A global percentage that modifies how likely loot is to drop. " +
-                "1 = Exactly what is in the loot tables will drop. " +
-                "0 = Nothing will drop. " +
+                "A global percentage that modifies how likely loot is to drop.\n" +
+                "1 = Exactly what is in the loot tables will drop.\n" +
+                "0 = Nothing will drop.\n" +
                 "2 = The number of items in the drop table are twice as likely to drop " +
-                "(note, this doesn't double the number of loot dropped, just doubles the relative chance for it to drop). " +
+                "(note, this doesn't double the number of loot dropped, just doubles the relative chance for it to drop).\n" +
                 "Min = 0, Max = 4", new AcceptableValueRange<float>(minValue: 0, maxValue: 4));
             ItemsUnidentifiedDropRatio = BindServerConfig("Balance", "Items Unidentified Drop Ratio", 0.0f,
                 "Sets the chance that loot is dropped as unidentified items. " +
                 "This value is set first, " +
-                "Items To Materials Drop Ratio uses the remaining value from this configuration for ratio calculation." +
-                "0 = no unidentified items drop, uses only the Items To Materials Drop Ratio. " +
+                "Items To Materials Drop Ratio uses the remaining value from this configuration for ratio calculation.\n" +
+                "0 = no unidentified items drop, uses only the Items To Materials Drop Ratio.\n" +
                 "1 = only unidentified items drop.",
                 new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             ItemsToMaterialsDropRatio = BindServerConfig("Balance", "Items To Materials Drop Ratio", 0.0f,
                 "Sets the chance, using the remaining value from Items Unidentified Drop Ratio, " +
-                "that loot drops are instead dropped as magic crafting materials. " +
-                "0 = all items, no materials. " +
-                "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop. " +
-                "At 0.5, half of everything that drops would be items and the other half would be materials. " +
+                "that loot drops are instead dropped as magic crafting materials.\n" +
+                "0 = all items, no materials.\n" +
+                "1 = all materials, no items. Values between 0 and 1 change the ratio of items to materials that drop.\n" +
+                "At 0.5, half of everything that drops would be items and the other half would be materials.\n" +
                 "Min = 0, Max = 1", new AcceptableValueRange<float>(minValue: 0, maxValue: 1));
             TransferMagicItemToCrafts = BindServerConfig("Balance", "Transfer Enchants to Crafted Items", false,
                 "When enchanted items are used as ingredients in recipes, transfer the highest enchant to the " +

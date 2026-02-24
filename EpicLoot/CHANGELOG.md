@@ -1,12 +1,14 @@
 ## Version 0.12.11
 
 * NEW FEATURE: map pins from bounties and treasure maps can now be toggled in the minimap UI in the bottom left corner! Thanks Rusty!
+* Removed a debugging feature that accidentally made it to production. This would cause a new folder called "dumps" to be generated in your game directory. It is safe to delete that folder and its contents. Apologies for the mess!
 * Reduced visibility of patch warnings for adding and removing existing entries, these warnings will no longer be forced and should keep the log file cleaner by default. They will appear if your log settings are set to show Warning and Error.
 * Tweaked descriptions of some base configurations in the epicloot.cfg file to be more clear.
-* UI tooltip compatibility fix when using the VENI mod.
+* UI tooltip compatibility fix when using the VENI mod. Tooltip when generated on the right side of the screen should display to the left of the cursor now.
 * Bug fix for sacrificing unidentified items not using the correct configuration because the default value for "isMagic" and "IsUnidentified" was true if not explicitly set. Existing baseconfig "enchantcosts.json" file may still have the issue, you may need to regenerate it to see the update depending on your game patches and settings.
-* Fixed StaggerOnDamageTaken magic effect not working.
-* Removed a debugging feature that accidentally made it to production. This would cause a new folder called "dumps" to be generated in your game directory. It is safe to delete that folder and its contents. Apologies for the mess!
+* Fixed the StaggerOnDamageTaken magic effect not working.
+* Fixed identifying items would have twice the magic effect power of items enchanted by other means.
+* Fixed a null reference exception issue when generating treasure maps if configurations were missing for any biomes.
 
 ## Version 0.12.10
 
