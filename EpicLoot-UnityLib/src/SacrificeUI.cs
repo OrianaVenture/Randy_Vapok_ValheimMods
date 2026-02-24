@@ -110,11 +110,9 @@ namespace EpicLoot_UnityLib
             string filterType = IdentifyStyle.options[IdentifyStyle.value].text;
             Tuple<float, float> featureValues =
                 EnchantingTableUI.instance.SourceTable.GetFeatureCurrentValue(EnchantingFeature.Sacrifice);
-            float cost_reduction = featureValues.Item1 == 0f || featureValues.Item1 == float.NaN ?
-                1.0f : 1f - (featureValues.Item1 / 100f);
-            float power_modifier = featureValues.Item2 == float.NaN ?
-                1.0f : (featureValues.Item2 / 100f) + 1f;
-            List<InventoryItemListElement> cost = GetIdentifyCost(filterType, unidentifiedItems, cost_reduction);
+            float costReduction = GetCostReduction(featureValues.Item1);
+            float powerModifier = GetPowerModifier(featureValues.Item2);
+            List<InventoryItemListElement> cost = GetIdentifyCost(filterType, unidentifiedItems, costReduction);
 
             if (!LocalPlayerCanAffordCost(cost))
             {
@@ -129,11 +127,21 @@ namespace EpicLoot_UnityLib
                 }
             }
 
-            List<InventoryItemListElement> identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems, power_modifier);
+            List<InventoryItemListElement> identifiedItems = GetRandomFilteredLoot(filterType, unidentifiedItems, powerModifier);
 
             Cancel();
             RefreshAvailableItems();
             AvailableItems.GiveFocus(true, 0);
+        }
+
+        private float GetCostReduction(float value)
+        {
+            return RuneUI.GetCostReduction(value);
+        }
+
+        private float GetPowerModifier(float value)
+        {
+            return RuneUI.GetPowerModifier(value);
         }
 
         private void SacrificeItems()

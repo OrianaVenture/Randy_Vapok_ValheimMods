@@ -496,12 +496,12 @@ namespace EpicLoot_UnityLib
             MainButton.interactable = state;
         }
 
-        private float GetCostReduction(float value)
+        internal static float GetCostReduction(float value)
         {
             return value == 0f || value == float.NaN ? 1.0f : 1f - (value / 100f);
         }
 
-        private float GetPowerModifier(float value)
+        internal static float GetPowerModifier(float value)
         {
             return value == float.NaN ? 1.0f : (value / 100f);
         }
