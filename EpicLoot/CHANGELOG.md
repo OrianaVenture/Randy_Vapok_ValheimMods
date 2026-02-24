@@ -9,6 +9,7 @@
 * Fixed the StaggerOnDamageTaken magic effect not working.
 * Fixed identifying items would have twice the magic effect power of items enchanted by other means.
 * Fixed a null reference exception issue when generating treasure maps if configurations were missing for any biomes.
+* Fixed Multishot effects CostScale setting not applying to stamina and eitr costs correctly (this setting does not work for draw stamina).
 
 ## Version 0.12.10
 

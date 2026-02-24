@@ -142,8 +142,8 @@ namespace EpicLoot.MagicItemEffects
 
         public static void ModifyAttackCost(Player player, float scale, float stamcost, float eitrcost, float healthcost)
         {
-            if (stamcost > 0) { player.UseStamina(healthcost * scale); }
-            if (eitrcost > 0) { player.UseEitr(healthcost * scale); }
+            if (stamcost > 0) { player.UseStamina(stamcost * scale); }
+            if (eitrcost > 0) { player.UseEitr(eitrcost * scale); }
             if (healthcost > 0) { player.UseHealth(healthcost * scale); }
         }
     }
