@@ -400,6 +400,7 @@ public sealed class EpicLoot : BaseUnityPlugin
 
         PrefabManager.OnPrefabsRegistered += SetupAndvaranaut;
         ItemManager.OnItemsRegistered += SetupStatusEffects;
+        
         LoadUnidentifiedItems();
         // Needs to trigger late in order to get all potentially added items by other mods
         MinimapManager.OnVanillaMapDataLoaded += () => AutoAddEnchantableItems.CheckAndAddAllEnchantableItems();
