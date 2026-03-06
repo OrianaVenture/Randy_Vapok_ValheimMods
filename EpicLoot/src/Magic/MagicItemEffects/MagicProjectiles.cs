@@ -233,6 +233,4 @@ public static class MagicProjectiles
             return true;
         }
     }
-
-
 }
