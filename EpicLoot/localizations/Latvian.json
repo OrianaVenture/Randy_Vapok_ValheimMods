@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Meklēt...",
   "mod_epicloot_no_active_adventures": "Nav aktīvu piedzīvojumu",
   "mod_epicloot_set_bonuses": "Komplekta bonusi",
-  "mod_epicloot_legendary_sets": "Leģendārās komplekti"
+  "mod_epicloot_legendary_sets": "Leģendārās komplekti",
+  "mod_epicloot_me_magicarrow_display": "Burvju Bulta +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Veido burvju bultas no eitr, piesātinātas ar nejaušu elementālo kaitējumu",
+  "mod_epicloot_me_magicbolt_display": "Burvju Bulta +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Veido burvju šautriņas no eitr, piesātinātas ar nejaušu elementālo kaitējumu",
+  "mod_epicloot_me_magic_prefix1": "Burvju"
 }

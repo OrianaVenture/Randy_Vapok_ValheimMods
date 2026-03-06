@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Пошук...",
   "mod_epicloot_no_active_adventures": "Немає активних пригод",
   "mod_epicloot_set_bonuses": "Бонуси комплекту",
-  "mod_epicloot_legendary_sets": "Легендарні набори"
+  "mod_epicloot_legendary_sets": "Легендарні набори",
+  "mod_epicloot_me_magicarrow_display": "Магічна Стріла +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Створюй магічні стріли з ейтру, наповнені випадковим стихійним пошкодженням",
+  "mod_epicloot_me_magicbolt_display": "Магічний Болт +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Створюй магічні болти з ейтру, наповнені випадковим стихійним пошкодженням",
+  "mod_epicloot_me_magic_prefix1": "Магічний"
 }

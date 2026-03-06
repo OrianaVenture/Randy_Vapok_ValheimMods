@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Αναζήτηση...",
   "mod_epicloot_no_active_adventures": "Δεν υπάρχουν ενεργές περιπέτειες",
   "mod_epicloot_set_bonuses": "Μπόνους σετ",
-  "mod_epicloot_legendary_sets": "Θρυλικά Σετ"
+  "mod_epicloot_legendary_sets": "Θρυλικά Σετ",
+  "mod_epicloot_me_magicarrow_display": "Μαγικό Βέλος +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Δημιούργησε μαγικά βέλη από έιτρ, εμποτισμένα με τυχαία στοιχειακή ζημιά",
+  "mod_epicloot_me_magicbolt_display": "Μαγικό Βλήμα +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Δημιούργησε μαγικά βλήματα από έιτρ, εμποτισμένα με τυχαία στοιχειακή ζημιά",
+  "mod_epicloot_me_magic_prefix1": "Μαγικό"
 }

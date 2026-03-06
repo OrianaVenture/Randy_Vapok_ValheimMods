@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Szukaj...",
   "mod_epicloot_no_active_adventures": "Brak aktywnych przygód",
   "mod_epicloot_set_bonuses": "Bonusy zestawu",
-  "mod_epicloot_legendary_sets": "Legendarne zestawy"
+  "mod_epicloot_legendary_sets": "Legendarne zestawy",
+  "mod_epicloot_me_magicarrow_display": "Magiczna Strzała +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Twórz magiczne strzały z eitru, przesiąknięte losowym obrażeniem żywiołów",
+  "mod_epicloot_me_magicbolt_display": "Magiczny Bełt +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Twórz magiczne bełty z eitru, przesiąknięte losowym obrażeniem żywiołów",
+  "mod_epicloot_me_magic_prefix1": "Magiczny"
 }

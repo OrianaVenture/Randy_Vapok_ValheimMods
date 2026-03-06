@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Търсене...",
   "mod_epicloot_no_active_adventures": "Няма активни приключения",
   "mod_epicloot_set_bonuses": "Комплектни бонуси",
-  "mod_epicloot_legendary_sets": "Легендарни сетове"
+  "mod_epicloot_legendary_sets": "Легендарни сетове",
+  "mod_epicloot_me_magicarrow_display": "Магическа стрела +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Създава магически стрели от ейтър, наситени със случайна елементална щета",
+  "mod_epicloot_me_magicbolt_display": "Магически болт +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Създава магически болтове от ейтър, наситени със случайна елементална щета",
+  "mod_epicloot_me_magic_prefix1": "Магически"
 }

@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "검색...",
   "mod_epicloot_no_active_adventures": "활성화된 모험이 없습니다",
   "mod_epicloot_set_bonuses": "세트 보너스",
-  "mod_epicloot_legendary_sets": "전설 세트"
+  "mod_epicloot_legendary_sets": "전설 세트",
+  "mod_epicloot_me_magicarrow_display": "마법 화살 +{0}",
+  "mod_epicloot_me_magicarrow_desc": "에이트르에서 마법 화살을 생성하여 무작위 속성 피해를 부여합니다",
+  "mod_epicloot_me_magicbolt_display": "마법 볼트 +{0}",
+  "mod_epicloot_me_magicbolt_desc": "에이트르에서 마법 볼트를 생성하여 무작위 속성 피해를 부여합니다",
+  "mod_epicloot_me_magic_prefix1": "마법"
 }

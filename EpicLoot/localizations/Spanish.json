@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Buscar...",
   "mod_epicloot_no_active_adventures": "No hay aventuras activas",
   "mod_epicloot_set_bonuses": "Bonos de conjunto",
-  "mod_epicloot_legendary_sets": "Conjuntos legendarios"
+  "mod_epicloot_legendary_sets": "Conjuntos legendarios",
+  "mod_epicloot_me_magicarrow_display": "Flecha Mágica +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Forma flechas mágicas a partir del eitr, imbuidas con daño elemental aleatorio",
+  "mod_epicloot_me_magicbolt_display": "Proyectil Mágico +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Forma proyectiles mágicos a partir del eitr, imbuidos con daño elemental aleatorio",
+  "mod_epicloot_me_magic_prefix1": "Mágico"
 }

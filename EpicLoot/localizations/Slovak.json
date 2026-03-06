@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Hľadať...",
   "mod_epicloot_no_active_adventures": "Žiadne aktívne dobrodružstvá",
   "mod_epicloot_set_bonuses": "Bonusy setu",
-  "mod_epicloot_legendary_sets": "Legendárne sady"
+  "mod_epicloot_legendary_sets": "Legendárne sady",
+  "mod_epicloot_me_magicarrow_display": "Magický Šíp +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Vytvor magické šípy z eitru, preniknuté náhodným elementálnym poškodením",
+  "mod_epicloot_me_magicbolt_display": "Magický Šaft +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Vytvor magické šafty z eitru, preniknuté náhodným elementálnym poškodením",
+  "mod_epicloot_me_magic_prefix1": "Magický"
 }

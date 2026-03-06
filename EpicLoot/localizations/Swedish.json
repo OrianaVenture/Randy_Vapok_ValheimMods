@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Sök...",
   "mod_epicloot_no_active_adventures": "Inga aktiva äventyr",
   "mod_epicloot_set_bonuses": "Setbonusar",
-  "mod_epicloot_legendary_sets": "Legendariska set"
+  "mod_epicloot_legendary_sets": "Legendariska set",
+  "mod_epicloot_me_magicarrow_display": "Magisk Pil +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Forma magiska pilar från eitr, genomsyrade med slumpmässig elementalskada",
+  "mod_epicloot_me_magicbolt_display": "Magisk Bult +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Forma magiska bultar från eitr, genomsyrade med slumpmässig elementalskada",
+  "mod_epicloot_me_magic_prefix1": "Magisk"
 }

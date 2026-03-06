@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "検索...",
   "mod_epicloot_no_active_adventures": "アクティブな冒険はありません",
   "mod_epicloot_set_bonuses": "セットボーナス",
-  "mod_epicloot_legendary_sets": "伝説のセット"
+  "mod_epicloot_legendary_sets": "伝説のセット",
+  "mod_epicloot_me_magicarrow_display": "魔法の矢 +{0}",
+  "mod_epicloot_me_magicarrow_desc": "エイトルから魔法の矢を生成し、ランダムな属性ダメージを付与する",
+  "mod_epicloot_me_magicbolt_display": "魔法のボルト +{0}",
+  "mod_epicloot_me_magicbolt_desc": "エイトルから魔法のボルトを生成し、ランダムな属性ダメージを付与する",
+  "mod_epicloot_me_magic_prefix1": "魔法の"
 }
