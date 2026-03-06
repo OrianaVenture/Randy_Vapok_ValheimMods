@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Keresés...",
   "mod_epicloot_no_active_adventures": "Nincs aktív kaland",
   "mod_epicloot_set_bonuses": "Szett bónuszok",
-  "mod_epicloot_legendary_sets": "Legendás készletek"
+  "mod_epicloot_legendary_sets": "Legendás készletek",
+  "mod_epicloot_me_magicarrow_display": "Mágikus Nyíl +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Alkoss mágikus nyilakat eitrből, véletlenszerű elemi sebzéssel átitatva",
+  "mod_epicloot_me_magicbolt_display": "Mágikus Lövedék +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Alkoss mágikus lövedékeket eitrből, véletlenszerű elemi sebzéssel átitatva",
+  "mod_epicloot_me_magic_prefix1": "Mágikus"
 }

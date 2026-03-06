@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Suche...",
   "mod_epicloot_no_active_adventures": "Keine aktiven Abenteuer",
   "mod_epicloot_set_bonuses": "Set-Boni",
-  "mod_epicloot_legendary_sets": "Legendäre Sets"
+  "mod_epicloot_legendary_sets": "Legendäre Sets",
+  "mod_epicloot_me_magicarrow_display": "Magischer Pfeil +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Forme magische Pfeile aus Eitr, durchdrungen von einem zufälligen Elementarschaden",
+  "mod_epicloot_me_magicbolt_display": "Magischer Bolzen +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Forme magische Bolzen aus Eitr, durchdrungen von einem zufälligen Elementarschaden",
+  "mod_epicloot_me_magic_prefix1": "Magisch"
 }

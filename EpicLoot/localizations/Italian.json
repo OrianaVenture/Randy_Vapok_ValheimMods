@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Cerca...",
   "mod_epicloot_no_active_adventures": "Nessuna avventura attiva",
   "mod_epicloot_set_bonuses": "Bonus set",
-  "mod_epicloot_legendary_sets": "Set Leggendari"
+  "mod_epicloot_legendary_sets": "Set Leggendari",
+  "mod_epicloot_me_magicarrow_display": "Freccia Magica +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Forma frecce magiche dall'eitr, infuse con danno elementale casuale",
+  "mod_epicloot_me_magicbolt_display": "Dardo Magico +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Forma dardi magici dall'eitr, infusi con danno elementale casuale",
+  "mod_epicloot_me_magic_prefix1": "Magico"
 }

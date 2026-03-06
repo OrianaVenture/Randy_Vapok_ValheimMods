@@ -1449,5 +1449,10 @@
   "mod_epicloot_search_placeholder": "Претрага...",
   "mod_epicloot_no_active_adventures": "Нема активних авантура",
   "mod_epicloot_set_bonuses": "Бонуси сета",
-  "mod_epicloot_legendary_sets": "Легендарни сетови"
+  "mod_epicloot_legendary_sets": "Легендарни сетови",
+  "mod_epicloot_me_magicarrow_display": "Магична Стрела +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Створи магичне стреле од еитра, прожете случајним елементалним оштећењем",
+  "mod_epicloot_me_magicbolt_display": "Магични Болт +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Створи магичне болтове од еитра, прожете случајним елементалним оштећењем",
+  "mod_epicloot_me_magic_prefix1": "Магични"
 }

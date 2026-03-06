@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "ค้นหา...",
   "mod_epicloot_no_active_adventures": "ไม่มีการผจญภัยที่กำลังดำเนินอยู่",
   "mod_epicloot_set_bonuses": "โบนัสชุด",
-  "mod_epicloot_legendary_sets": "ชุดในตำนาน"
+  "mod_epicloot_legendary_sets": "ชุดในตำนาน",
+  "mod_epicloot_me_magicarrow_display": "ลูกศรวิเศษ +{0}",
+  "mod_epicloot_me_magicarrow_desc": "สร้างลูกศรวิเศษจากเอทร์ ที่สิงสถิตด้วยความเสียหายธาตุแบบสุ่ม",
+  "mod_epicloot_me_magicbolt_display": "โบลต์วิเศษ +{0}",
+  "mod_epicloot_me_magicbolt_desc": "สร้างโบลต์วิเศษจากเอทร์ ที่สิงสถิตด้วยความเสียหายธาตุแบบสุ่ม",
+  "mod_epicloot_me_magic_prefix1": "วิเศษ"
 }
