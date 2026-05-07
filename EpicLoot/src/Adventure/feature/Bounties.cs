@@ -185,10 +185,10 @@ namespace EpicLoot.Adventure.Feature
 
         private static int GetTargetLevel(Random random, bool isGold, bool isAdd)
         {
-            var config = AdventureDataManager.Config.Bounties;
+            var min = isAdd ? AdventureDataManager.Config.Bounties.AddsMinLevel : (isGold ? AdventureDataManager.Config.Bounties.GoldMinLevel : AdventureDataManager.Config.Bounties.IronMinLevel);
+            var max = isAdd ? AdventureDataManager.Config.Bounties.AddsMaxLevel : (isGold ? AdventureDataManager.Config.Bounties.GoldMaxLevel : AdventureDataManager.Config.Bounties.IronMaxLevel);
 
-            var min = isAdd ? config.AddsMinLevel : (isGold ? config.GoldMinLevel : config.IronMinLevel);
-            var max = isAdd ? config.AddsMaxLevel : (isGold ? config.GoldMaxLevel : config.IronMaxLevel);
+            // Consider distance, biome, context or otherwise aware level detection here
 
             return random.Next(min, max + 1);
         }

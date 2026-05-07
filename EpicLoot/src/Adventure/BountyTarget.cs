@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
 using JetBrains.Annotations;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 namespace EpicLoot.Adventure
 {
@@ -84,7 +86,15 @@ namespace EpicLoot.Adventure
             _zdo.Set(BountyTargetComponent.BountyTargetNameKey, GetTargetName(_character.m_name, isAdd, bounty.TargetName));
 
             _character.SetLevel(GetTargetLevel(bounty, monsterID, isAdd));
-            _character.SetMaxHealth(GetModifiedMaxHealth(_character, bounty, isAdd));
+            if (StarLevelSystem.API.IsAvailable)
+            {
+                StarLevelSystem.API.SetCreatureBaseAttribute(_character, 0, GetMaxHealthModifier(bounty, isAdd));
+                StarLevelSystem.API.ApplyCreatureUpdates(_character); // Flush changes to the creature
+            }
+            else
+            {
+                _character.SetMaxHealth(GetModifiedMaxHealth(_character, bounty, isAdd));
+            }
             _character.m_baseAI.SetPatrolPoint();
 
             Reinitialize();
@@ -150,6 +160,21 @@ namespace EpicLoot.Adventure
             }
 
             return character.GetMaxHealth() * AdventureDataManager.Config.Bounties.IronHealthMultiplier;
+        }
+
+        private static float GetMaxHealthModifier(BountyInfo bounty, bool isAdd)
+        {
+            if (isAdd)
+            {
+                return AdventureDataManager.Config.Bounties.AddsHealthMultiplier;
+            }
+
+            if (bounty.RewardGold > 0)
+            {
+                return AdventureDataManager.Config.Bounties.GoldHealthMultiplier;
+            }
+
+            return AdventureDataManager.Config.Bounties.IronHealthMultiplier;
         }
 
         private static string GetTargetName(string originalName, bool isAdd, string targetName)
