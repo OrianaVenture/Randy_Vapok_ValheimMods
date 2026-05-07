@@ -293,9 +293,12 @@ internal class ELConfig
             "use 'Crypt Key Drop Player Range' to set the range.");
         _bossWishboneDropPlayerRange = BindServerConfig("Balance", "Wishbone Drop Player Range", 100.0f,
             "Sets the range that bosses check when dropping multiple wishbones using the OnePerPlayerNearBoss drop mode.");
+
         _adventureModeEnabled = BindServerConfig("Balance", "Adventure Mode Enabled", true,
             "Set to true to enable all the adventure mode features: secret stash, gambling, treasure maps, and bounties. " +
             "Set to false to disable. This will not actually remove active treasure maps or bounties from your save.");
+        _adventureModeEnabled.SettingChanged += (_, _) => MinimapController.RefreshAdventureToggleContainer();
+
         _andvaranautRange = BindServerConfig("Balance", "Andvaranaut Range", 20,
             "Sets the range that Andvaranaut will activate to locate a treasure chest.");
         SetItemDropChance = BindServerConfig("Balance", "Set Item Drop Chance", 0.15f,
