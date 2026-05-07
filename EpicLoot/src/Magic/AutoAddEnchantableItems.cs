@@ -290,7 +290,7 @@ namespace EpicLoot.Magic
 
         private static void AddRemoveItemsFromVendor(List<ItemTypeInfo> newConfig)
         {
-            if (!ELConfig.AutoAddRemoveEquipmentFromVendor.Value)
+            if (ELConfig.AutoAddRemoveEquipmentFromVendor.Value == false)
             {
                 return;
             }
@@ -321,15 +321,18 @@ namespace EpicLoot.Magic
                         if (existingVendorItems.ContainsKey(itemName))
                         {
                             // Found this entry
+                            EpicLoot.Log($"Found existing vendor entry for {itemName} - price {existingVendorItems[itemName].CoinsCost}, keeping it in the list.");
                             foundItemEntry.Add(itemName);
                         }
                         else
                         {
+                            foundItemEntry.Add(itemName);
                             existingVendorItems.Add(itemName, new SecretStashItemConfig()
                             {
                                 Item = itemName,
                                 CoinsCost = DetermineCoinsCostForItem(bossEntry.Key)
                             });
+                            EpicLoot.Log($"Adding new vendor entry for {itemName} with price {existingVendorItems[itemName].CoinsCost}.");
                         }
                     }
                 }
