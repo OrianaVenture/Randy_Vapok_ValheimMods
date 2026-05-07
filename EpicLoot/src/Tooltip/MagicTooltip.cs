@@ -164,7 +164,7 @@ public partial class MagicTooltip(ItemDrop.ItemData item, MagicItem magicItem, i
         // this applies to trophies, but perhaps, other mods utilize this to add extra descriptions.
         if (item.m_shared.m_subtitle.Length > 0)
         {
-            text.Append($"\n$<color=orange>{item.m_shared.m_subtitle}</color>");
+            text.Append($"\n<color=orange>{item.m_shared.m_subtitle}</color>");
         }
     }
 
