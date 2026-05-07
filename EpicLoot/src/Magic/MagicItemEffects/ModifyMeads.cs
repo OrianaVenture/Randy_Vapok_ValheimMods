@@ -27,7 +27,7 @@ namespace EpicLoot.Magic.MagicItemEffects
                     {
                         typeof(StatusEffect), typeof(bool), typeof(int), typeof(float)
                     })))
-                .ThrowIfNotMatch("Unable to patch Player.ConsumeItem for Instant Meads.")
+                .ThrowIfNotMatch("Unable to patch Player.ConsumeItem for Mead Effects.")
                 .Advance(1)
                 .InsertAndAdvance(Transpilers.EmitDelegate(ModifyMead));
             return codeMatcher.Instructions();
@@ -79,6 +79,11 @@ namespace EpicLoot.Magic.MagicItemEffects
 
         private static SE_Stats TryCreateDecreasedCooldownMead(SE_Stats effect, float value)
         {
+            if (!HasOverTimeValues(effect))
+            {
+                return effect;
+            }
+
             SE_Stats newStatusEffect = (SE_Stats)effect.Clone();
             newStatusEffect.m_ttl *= Mathf.Clamp01(1f - value);
 
