@@ -1,3 +1,14 @@
+## Version 0.12.12
+
+* Bug fix for Mead Cooldown reducing all SE_Stats mead times, should now work as intended.
+* Bug fix for Gambling loot tables not saving values correctly when auto-assigned causing large coin values.
+* Bug fix for Modify Armor effect showing up for non-armor applying item types.
+* Bug fix for Modify Elemental Damage effect showing up on the wrong items.
+* Bug fix for a tool tip display issue when items had a subtitle (trinkets).
+* Bug fix for a tool tip display issue for set items not showing equipped correctly.
+* Disabling adventure mode in the main configuration file will now also remove the minimap toggles.
+* Star Level System API support.
+
 ## Version 0.12.11
 
 * NEW FEATURE: map pins from bounties and treasure maps can now be toggled in the minimap UI in the bottom left corner! Thanks Rusty!
