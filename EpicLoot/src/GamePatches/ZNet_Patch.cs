@@ -21,7 +21,7 @@ namespace EpicLoot
         public static void Postfix(ZNet __instance)
         {
             AdventureDataManager.OnZNetStart();
-            MinimapController.RefreshEpicLootToggleContainerVisibility();
+            MinimapController.RefreshAdventureToggleContainer();
         }
     }
 
@@ -31,7 +31,7 @@ namespace EpicLoot
         public static void Postfix(ZNet __instance)
         {
             AdventureDataManager.OnZNetDestroyed();
-            MinimapController.RefreshEpicLootToggleContainerVisibility();
+            MinimapController.RefreshAdventureToggleContainer();
         }
     }
 

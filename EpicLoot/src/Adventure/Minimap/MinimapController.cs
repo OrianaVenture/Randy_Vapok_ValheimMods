@@ -19,7 +19,7 @@ public class MinimapController : MonoBehaviour
     public static readonly Dictionary<string, AreaPinInfo> BountyPins = new();
     public static bool DebugMode;
 
-    private static GameObject _epicLootToggleContainer;
+    private static GameObject _adventureToggleContainer;
 
     public virtual void Awake()
     {
@@ -82,14 +82,14 @@ public class MinimapController : MonoBehaviour
         MinimapPinQueue.Clear();
         TreasureMapPins.Clear();
         BountyPins.Clear();
-        _epicLootToggleContainer = null;
+        Destroy(_adventureToggleContainer);
     }
 
     private void SetupToggles()
     {
         GameObject original = Utils.FindChild(_minimap.transform, "SharedPanel").gameObject;
         
-        GameObject container = new GameObject("EpicLoot Toggle Container");
+        GameObject container = new GameObject("AdventureToggleContainer");
         RectTransform rect = container.AddComponent<RectTransform>();
         rect.SetParent(original.transform.parent);
 
@@ -98,7 +98,7 @@ public class MinimapController : MonoBehaviour
         rect.pivot = new Vector2(0f, 1f);
         rect.sizeDelta = new Vector2(250f, 42f);
         rect.anchoredPosition = new Vector2(20f, 60f);
-        // figure out how to programmatically set this position, if needed
+        // TODO: add repositioning configuration to be compatible with other mods
 
         HorizontalLayoutGroup layout = container.AddComponent<HorizontalLayoutGroup>();
         layout.childForceExpandWidth = false;
@@ -117,30 +117,26 @@ public class MinimapController : MonoBehaviour
         treasureToggle.SetGamepadKey("JoyRTrigger");
         treasureToggle.SetLabel("$mod_epicloot_merchant_treasuremaps");
 
-        _epicLootToggleContainer = container;
-        RefreshEpicLootToggleContainerVisibility();
+        _adventureToggleContainer = container;
+        RefreshAdventureToggleContainer();
     }
 
     /// <summary>
     /// When not connected to a world, the container stays active. When connected and Adventure Mode is disabled, the container is hidden.
     /// </summary>
-    public static void RefreshEpicLootToggleContainerVisibility()
+    public static void RefreshAdventureToggleContainer()
     {
-        if (_epicLootToggleContainer == null)
+        if (_adventureToggleContainer == null)
         {
             return;
         }
 
-        _epicLootToggleContainer.SetActive(ShouldShowEpicLootMinimapToggleContainer());
+        _adventureToggleContainer.SetActive(ShowAdventureToggleContainer());
     }
 
-    private static bool ShouldShowEpicLootMinimapToggleContainer()
+    private static bool ShowAdventureToggleContainer()
     {
-        if (ZNet.instance == null)
-        {
-            return true;
-        }
-
+        // TODO: add more configuration options to hide minimap buttons as needed
         return EpicLoot.IsAdventureModeEnabled();
     }
 
