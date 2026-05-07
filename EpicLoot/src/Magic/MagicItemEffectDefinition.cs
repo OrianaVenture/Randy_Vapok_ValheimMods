@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static ItemDrop;
 
 namespace EpicLoot
 {
@@ -187,8 +188,8 @@ namespace EpicLoot
                 return false;
             }
 
-            if (ItemHasElementalDamage != null && 
-                (ItemHasElementalDamage == itemData.EpicLootHasElementalDamage()))
+            if (ItemHasElementalDamage != null &&
+                (ItemHasElementalDamage == !itemData.EpicLootHasElementalDamage()))
             {
                 return false;
             }
@@ -226,7 +227,7 @@ namespace EpicLoot
                 return false;
             }
 
-            if (ItemHasArmor != null && (ItemHasArmor == itemData.m_shared.m_armor <= 0))
+            if (ItemHasArmor != null && (ItemHasArmor == (itemData.m_shared.m_armor <= 0 || !IsArmorType(itemData.m_shared.m_itemType))))
             {
                 return false;
             }
@@ -287,6 +288,17 @@ namespace EpicLoot
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns the item types that apply armor values for the Player.
+        /// </summary>
+        private bool IsArmorType(ItemData.ItemType type)
+        {
+            return type == ItemData.ItemType.Helmet ||
+                type == ItemData.ItemType.Chest ||
+                type == ItemData.ItemType.Legs ||
+                type == ItemData.ItemType.Shoulder;
         }
     }
 
