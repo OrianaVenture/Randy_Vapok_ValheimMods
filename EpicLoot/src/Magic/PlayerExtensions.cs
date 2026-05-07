@@ -6,7 +6,7 @@ namespace EpicLoot;
 
 public static class PlayerExtensions
 {
-    public static List<ItemDrop.ItemData> GetEquipment(this Player player)
+    public static List<ItemDrop.ItemData> GetMagicEquipment(this Player player)
     {
         List<ItemDrop.ItemData> items = player.GetInventory().GetEquippedItems()
             .Where(x => x.IsMagic()).ToList();
@@ -15,7 +15,7 @@ public static class PlayerExtensions
 
     public static List<MagicItemEffect> GetAllActiveMagicEffects(this Player player, string effectType = null)
     {
-        IEnumerable<MagicItemEffect> equipEffects = player.GetEquipment()
+        IEnumerable<MagicItemEffect> equipEffects = player.GetMagicEquipment()
             .Where(x => x.IsMagic())
             .SelectMany(x => x.GetMagicItem().GetEffects(effectType));
         List<MagicItemEffect> setEffects = player.GetAllActiveSetMagicEffects(effectType);
@@ -28,7 +28,7 @@ public static class PlayerExtensions
         HashSet<LegendarySetInfo> equippedSets = player.GetEquippedSets();
         foreach (LegendarySetInfo setInfo in equippedSets)
         {
-            int count = player.GetEquippedSetPieces(setInfo.ID).Count;
+            int count = player.GetMagicEquippedSetPieces(setInfo.ID).Count;
             foreach (SetBonusInfo setBonusInfo in setInfo.SetBonuses)
             {
                 if (count >= setBonusInfo.Count && (effectType == null || setBonusInfo.Effect.Type == effectType))
@@ -45,7 +45,7 @@ public static class PlayerExtensions
     public static HashSet<LegendarySetInfo> GetEquippedSets(this Player player)
     {
         HashSet<LegendarySetInfo> sets = new HashSet<LegendarySetInfo>();
-        foreach (ItemDrop.ItemData itemData in player.GetEquipment())
+        foreach (ItemDrop.ItemData itemData in player.GetMagicEquipment())
         {
             if (itemData.IsMagic(out MagicItem magicItem) && magicItem.IsLegendarySetItem())
             {
@@ -93,17 +93,22 @@ public static class PlayerExtensions
 
     public static List<ItemDrop.ItemData> GetEquippedSetPieces(this Player player, string setName)
     {
-        return player.GetEquipment().Where(x => x.IsPartOfSet(setName)).ToList();
+        return player.GetInventory().GetEquippedItems().Where(x => x.IsPartOfSet(setName)).ToList();
+    }
+
+    public static List<ItemDrop.ItemData> GetMagicEquippedSetPieces(this Player player, string setName)
+    {
+        return player.GetMagicEquipment().Where(x => x.IsPartOfSet(setName)).ToList();
     }
 
     public static bool HasEquipmentOfType(this Player player, ItemDrop.ItemData.ItemType type)
     {
-        return player.GetEquipment().Exists(x => x != null && x.m_shared.m_itemType == type);
+        return player.GetMagicEquipment().Exists(x => x != null && x.m_shared.m_itemType == type);
     }
 
     public static ItemDrop.ItemData GetEquipmentOfType(this Player player, ItemDrop.ItemData.ItemType type)
     {
-        return player.GetEquipment().FirstOrDefault(x => x != null && x.m_shared.m_itemType == type);
+        return player.GetMagicEquipment().FirstOrDefault(x => x != null && x.m_shared.m_itemType == type);
     }
 
     public static Player GetPlayerWithEquippedItem(ItemDrop.ItemData itemData)

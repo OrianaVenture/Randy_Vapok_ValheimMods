@@ -279,7 +279,7 @@ namespace EpicLoot
             }
 
             Player player = (Player)humanoid;
-            foreach (ItemDrop.ItemData equipmentItemData in player.GetEquipment())
+            foreach (ItemDrop.ItemData equipmentItemData in player.GetMagicEquipment())
             {
                 if (equipmentItemData == item)
                 {

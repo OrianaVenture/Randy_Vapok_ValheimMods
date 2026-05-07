@@ -15,22 +15,19 @@ public class MagicEffectTextInfo(string topic) : MagicTextInfo(topic)
         Dictionary<string, List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>>> magicEffects =
             new Dictionary<string, List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>>>();
 
-        List<ItemDrop.ItemData> allEquipment = Player.m_localPlayer.GetEquipment();
-        foreach (ItemDrop.ItemData item in allEquipment)
+        List<ItemDrop.ItemData> allMagicEquipment = Player.m_localPlayer.GetMagicEquipment();
+        foreach (ItemDrop.ItemData item in allMagicEquipment)
         {
-            if (item.IsMagic())
+            foreach (MagicItemEffect effect in item.GetMagicItem().Effects)
             {
-                foreach (MagicItemEffect effect in item.GetMagicItem().Effects)
+                if (!magicEffects.TryGetValue(effect.EffectType,
+                        out List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>> effectList))
                 {
-                    if (!magicEffects.TryGetValue(effect.EffectType,
-                            out List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>> effectList))
-                    {
-                        effectList = new List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>>();
-                        magicEffects.Add(effect.EffectType, effectList);
-                    }
-
-                    effectList.Add(new KeyValuePair<MagicItemEffect, ItemDrop.ItemData>(effect, item));
+                    effectList = new List<KeyValuePair<MagicItemEffect, ItemDrop.ItemData>>();
+                    magicEffects.Add(effect.EffectType, effectList);
                 }
+
+                effectList.Add(new KeyValuePair<MagicItemEffect, ItemDrop.ItemData>(effect, item));
             }
         }
 

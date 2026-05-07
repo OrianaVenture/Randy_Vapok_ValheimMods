@@ -24,7 +24,7 @@ public static class ModifyMovementSpeed
     private static float GetModifyMovementSpeedAmount(Player __instance)
     {
         float movementSpeed = 0f;
-        foreach (var itemData in __instance.GetEquipment())
+        foreach (var itemData in __instance.GetMagicEquipment())
         {
             // Negate previous penalties
             movementSpeed -= GetSpeedPenaltyAmount(itemData);
