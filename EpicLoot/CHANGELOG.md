@@ -1,7 +1,8 @@
 ## Version 0.12.12
 
 * Bug fix for Mead Cooldown reducing all SE_Stats mead times, should now work as intended.
-* Bug fix for Gambling loot tables not saving values correctly when auto-assigned causing large coin values.
+* Bug fix for Gambling loot tables not saving values correctly when auto-assigned causing large coin values. 
+  * Needs a adventuredata.json configuration refresh to apply.
 * Bug fix for Modify Armor effect showing up for non-armor applying item types.
 * Bug fix for Modify Elemental Damage effect showing up on the wrong items.
 * Bug fix for a tool tip display issue when items had a subtitle (trinkets).
