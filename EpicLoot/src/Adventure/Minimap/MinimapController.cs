@@ -20,8 +20,6 @@ public class MinimapController : MonoBehaviour
     public static bool DebugMode;
 
     private static GameObject _adventureToggleContainer;
-    private static AdventureToggle _adventureBountyToggle;
-    private static AdventureToggle _adventureTreasureToggle;
 
     public virtual void Awake()
     {
@@ -44,12 +42,15 @@ public class MinimapController : MonoBehaviour
                 m_icon = EpicAssets.MapIconBounty
             });
         }
-
+        
         SetupToggles();
     }
 
     private void Start()
     {
+        TreasureMapPins.Clear();
+        BountyPins.Clear();
+        
         if (_minimap.m_visibleIconTypes.Length < (int)EpicLoot.TreasureMapPinType + 1)
         {
             _minimap.m_visibleIconTypes = new bool[(int)EpicLoot.TreasureMapPinType + 1];
@@ -60,17 +61,16 @@ public class MinimapController : MonoBehaviour
             }
         }
 
-        RefreshAdventureToggleContainer();
+        PinJob pinJob = new PinJob
+        {
+            Task = MinimapPinQueueTask.RefreshAll
+        };
+
+        AddPinJobToQueue(pinJob);
     }
 
     public virtual void Update()
     {
-        if (Player.m_localPlayer == null)
-        {
-            // Do not perform operations without access to adventure data
-            return;
-        }
-
         while (MinimapPinQueue.Any())
         {
             ProcessMinimapPinTask(MinimapPinQueue.Dequeue());
@@ -107,19 +107,18 @@ public class MinimapController : MonoBehaviour
         layout.childControlHeight = false;
         layout.spacing = 5f;
 
-        _adventureBountyToggle = new AdventureToggle(original, rect, "Bounty", ToggleBounties);
-        _adventureBountyToggle.SetIcon(EpicAssets.MapIconBounty);
-        _adventureBountyToggle.SetGamepadKey("JoyLTrigger");
-        _adventureBountyToggle.SetLabel("$mod_epicloot_merchant_bounties");
-        _adventureBountyToggle.toggle.isOn = true;
+        AdventureToggle bountyToggle = new AdventureToggle(original, rect, "Bounty", ToggleBounties);
+        bountyToggle.SetIcon(EpicAssets.MapIconBounty);
+        bountyToggle.SetGamepadKey("JoyLTrigger");
+        bountyToggle.SetLabel("$mod_epicloot_merchant_bounties");
 
-        _adventureTreasureToggle = new AdventureToggle(original, rect, "Treasure", ToggleTreasureMaps);
-        _adventureTreasureToggle.SetIcon(EpicAssets.MapIconTreasureMap);
-        _adventureTreasureToggle.SetGamepadKey("JoyRTrigger");
-        _adventureTreasureToggle.SetLabel("$mod_epicloot_merchant_treasuremaps");
-        _adventureTreasureToggle.toggle.isOn = true;
+        AdventureToggle treasureToggle = new AdventureToggle(original, rect, "Treasure", ToggleTreasureMaps);
+        treasureToggle.SetIcon(EpicAssets.MapIconTreasureMap);
+        treasureToggle.SetGamepadKey("JoyRTrigger");
+        treasureToggle.SetLabel("$mod_epicloot_merchant_treasuremaps");
 
         _adventureToggleContainer = container;
+        RefreshAdventureToggleContainer();
     }
 
     /// <summary>
@@ -127,38 +126,17 @@ public class MinimapController : MonoBehaviour
     /// </summary>
     public static void RefreshAdventureToggleContainer()
     {
-        EpicLoot.Log("Refreshing toggle container!");
         if (_adventureToggleContainer == null)
         {
-            EpicLoot.LogError("There was an issue setting adventure data for the minimap, toggle container is null!");
             return;
         }
 
-        bool show = ShowAdventureToggleContainer();
-        _adventureToggleContainer.SetActive(show);
-
-        PinJob pinJob = new PinJob
-        {
-            Task = MinimapPinQueueTask.RefreshAll
-        };
-
-        AddPinJobToQueue(pinJob);
-    }
-
-    private static bool ShowAdventureBountyPins()
-    {
-        return _adventureBountyToggle.toggle.isOn;
-    }
-
-    private static bool ShowAdventureTreasurePins()
-    {
-        return _adventureTreasureToggle.toggle.isOn;
+        _adventureToggleContainer.SetActive(ShowAdventureToggleContainer());
     }
 
     private static bool ShowAdventureToggleContainer()
     {
         // TODO: add more configuration options to hide minimap buttons as needed
-        // Will need to ensure places this is used maintian logic if changed.
         return EpicLoot.IsAdventureModeEnabled();
     }
 
@@ -169,18 +147,11 @@ public class MinimapController : MonoBehaviour
             return;
         }
 
-        RefreshBounties(show);
-    }
-
-    private static void RefreshBounties(bool show)
-    {
-        if (ShowAdventureToggleContainer() && show)
+        if (show)
         {
-            EpicLoot.Log("Refreshing bounty pins on!");
             AdventureSaveData adventureSaveData = Player.m_localPlayer.GetAdventureSaveData();
             if (adventureSaveData == null) return;
             List<BountyInfo> currentBounties = adventureSaveData.GetInProgressBounties();
-
             foreach (BountyInfo bounty in currentBounties)
             {
                 string key = bounty.ID;
@@ -206,7 +177,6 @@ public class MinimapController : MonoBehaviour
         }
         else
         {
-            EpicLoot.Log("Refreshing bounty pins off!");
             foreach (KeyValuePair<string, AreaPinInfo> pinEntry in BountyPins)
             {
                 PinJob pinJob = new PinJob()
@@ -219,6 +189,7 @@ public class MinimapController : MonoBehaviour
             }
         }
     }
+
     private static void ToggleTreasureMaps(bool show)
     {
         if (Player.m_localPlayer == null)
@@ -226,19 +197,8 @@ public class MinimapController : MonoBehaviour
             return;
         }
 
-        RefreshTreasureMaps(show);
-    }
-
-    private static void RefreshTreasureMaps(bool show)
-    {
-        if (Player.m_localPlayer == null)
+        if (show)
         {
-            return;
-        }
-
-        if (ShowAdventureToggleContainer() && show)
-        {
-            EpicLoot.Log("Refreshing treasure pins on!");
             AdventureSaveData adventureSaveData = Player.m_localPlayer.GetAdventureSaveData();
             if (adventureSaveData == null)
             {
@@ -274,7 +234,6 @@ public class MinimapController : MonoBehaviour
         }
         else
         {
-            EpicLoot.Log("Refreshing treasure pins off!");
             foreach (KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> pinEntry in TreasureMapPins)
             {
                 PinJob pinJob = new PinJob()
@@ -302,16 +261,8 @@ public class MinimapController : MonoBehaviour
         switch (pinJob.Task)
         {
             case MinimapPinQueueTask.AddBountyPin:
-                if (ShowAdventureBountyPins())
-                {
-                    AddPin(pinJob);
-                }
-                break;
             case MinimapPinQueueTask.AddTreasurePin:
-                if (ShowAdventureTreasurePins())
-                {
-                    AddPin(pinJob);
-                }
+                AddPin(pinJob);
                 break;
             case MinimapPinQueueTask.RemoveTreasurePin:
                 RemovePin(pinJob.TreasurePin.Value);
@@ -383,9 +334,96 @@ public class MinimapController : MonoBehaviour
 
     private void RefreshPins()
     {
-        EpicLoot.Log("Refreshing pins!");
+        if (Player.m_localPlayer == null)
+        {
+            return;
+        }
 
-        ToggleBounties(ShowAdventureBountyPins());
-        ToggleTreasureMaps(ShowAdventureTreasurePins());
+        AdventureSaveData adventureSaveData = Player.m_localPlayer.GetAdventureSaveData();
+        if (adventureSaveData == null)
+        {
+            return;
+        }
+
+        List<TreasureMapChestInfo> unfoundTreasureChests = adventureSaveData.GetUnfoundTreasureChests();
+        List<KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>> oldPins = TreasureMapPins.Where(pinEntry => !unfoundTreasureChests
+            .Exists(x => x.Interval == pinEntry.Key.Item1 && x.Biome == pinEntry.Key.Item2)).ToList();
+
+        foreach (KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo> pinEntry in oldPins)
+        {
+            PinJob pinJob = new PinJob
+            {
+                Task = MinimapPinQueueTask.RemoveTreasurePin,
+                DebugMode = DebugMode,
+                TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+            };
+
+            AddPinJobToQueue(pinJob);
+        }
+
+        foreach (TreasureMapChestInfo chestInfo in unfoundTreasureChests)
+        {
+            Tuple<int, Heightmap.Biome> key = new Tuple<int, Heightmap.Biome>(chestInfo.Interval, chestInfo.Biome);
+
+            if (!TreasureMapPins.ContainsKey(key))
+            {
+                AreaPinInfo pinInfo = new AreaPinInfo
+                {
+                    Position = chestInfo.Position + chestInfo.MinimapCircleOffset,
+                    Type = EpicLoot.TreasureMapPinType,
+                    Name = Localization.instance.Localize("$mod_epicloot_treasurechest_minimappin",
+                        Localization.instance.Localize($"$biome_{chestInfo.Biome.ToString().ToLowerInvariant()}"),
+                        (chestInfo.Interval + 1).ToString())
+                };
+
+                PinJob pinJob = new PinJob
+                {
+                    Task = MinimapPinQueueTask.AddTreasurePin,
+                    DebugMode = DebugMode,
+                    TreasurePin = new KeyValuePair<Tuple<int, Heightmap.Biome>, AreaPinInfo>(key, pinInfo)
+                };
+
+                AddPinJobToQueue(pinJob);
+            }
+        }
+
+        List<BountyInfo> currentBounties = adventureSaveData.GetInProgressBounties();
+        List<KeyValuePair<string, AreaPinInfo>> oldBountyPins =
+            BountyPins.Where(pinEntry => !currentBounties.Exists(x => x.ID == pinEntry.Key)).ToList();
+
+        foreach (KeyValuePair<string, AreaPinInfo> pinEntry in oldBountyPins)
+        {
+            PinJob pinJob = new PinJob
+            {
+                Task = MinimapPinQueueTask.RemoveBountyPin,
+                DebugMode = DebugMode,
+                BountyPin = new KeyValuePair<string, AreaPinInfo>(pinEntry.Key, pinEntry.Value)
+            };
+
+            AddPinJobToQueue(pinJob);
+        }
+
+        foreach (BountyInfo bounty in currentBounties)
+        {
+            string key = bounty.ID;
+            if (!BountyPins.ContainsKey(key))
+            {
+                AreaPinInfo pinInfo = new AreaPinInfo
+                {
+                    Position = bounty.Position + bounty.MinimapCircleOffset,
+                    Type = EpicLoot.BountyPinType,
+                    Name = Localization.instance.Localize("$mod_epicloot_bounties_minimappin", AdventureDataManager.GetBountyName(bounty))
+                };
+
+                PinJob pinJob = new PinJob
+                {
+                    Task = MinimapPinQueueTask.AddBountyPin,
+                    DebugMode = DebugMode,
+                    BountyPin = new KeyValuePair<string, AreaPinInfo>(key, pinInfo)
+                };
+
+                AddPinJobToQueue(pinJob);
+            }
+        }
     }
 }

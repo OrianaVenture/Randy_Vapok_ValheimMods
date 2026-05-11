@@ -608,7 +608,7 @@ namespace EpicLoot
                 var item = SpawnLootForDrop(itemPrefab, dropPoint, initializeObject);
                 var itemDrop = item.GetComponent<ItemDrop>();
 
-                if (itemDrop != null && EpicLoot.CanBeMagicItem(itemDrop.m_itemData) && !ArrayUtils.IsNullOrEmpty(lootDrop.Rarity))
+                if (EpicLoot.CanBeMagicItem(itemDrop.m_itemData) && !ArrayUtils.IsNullOrEmpty(lootDrop.Rarity))
                 {
                     var itemData = itemDrop.m_itemData;
                     var magicItemComponent = itemData.Data().GetOrCreate<MagicItemComponent>();

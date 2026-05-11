@@ -1,9 +1,3 @@
-## Version 0.12.15
-
-* Fixed an issue with bounties not spawning correctly if not using the Star Level System mod.
-* Fixed an issue with bounty and treasure map pins not displaying until toggled.
-* If you experienced loot not dropping from previous version upgrades (12.12, 12.13) please refresh your BepInEx\config\EpicLoot\baseconfig\loottables.json file to remove null entries.
-
 ## Version 0.12.14
 
 * Fixed an issue with auto-adding loot tables causing mobs to not drop loot.

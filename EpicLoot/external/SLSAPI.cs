@@ -47,7 +47,6 @@ namespace StarLevelSystem
         static API()
         {
             APIReciever = Type.GetType("StarLevelSystem.modules.APIReciever, StarLevelSystem");
-            if (APIReciever == null) return;
             UpdateCreatureLevel = APIReciever.GetMethod("UpdateCreatureLevel", BindingFlags.Public | BindingFlags.Static);
             UpdateCreatureColorization = APIReciever.GetMethod("UpdateCreatureColorization", BindingFlags.Public | BindingFlags.Static);
             GetBaseAttributeValue = APIReciever.GetMethod("GetBaseAttributeValue", BindingFlags.Public | BindingFlags.Static);
