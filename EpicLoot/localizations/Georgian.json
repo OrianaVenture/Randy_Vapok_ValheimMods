@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "ძიება...",
   "mod_epicloot_no_active_adventures": "მოქმედი თავგადასავალი არ არის",
   "mod_epicloot_set_bonuses": "ჯგუფური ბონუსები",
-  "mod_epicloot_legendary_sets": "ლეგენდარული სეტები"
+  "mod_epicloot_legendary_sets": "ლეგენდარული სეტები",
+  "mod_epicloot_me_magicarrow_display": "მაგიური ისარი +{0}",
+  "mod_epicloot_me_magicarrow_desc": "შეიქმენი მაგიური ისრები ეიტრისგან, გაჯერებული შემთხვევითი სტიქიური დაზიანებით",
+  "mod_epicloot_me_magicbolt_display": "მაგიური ჭექა +{0}",
+  "mod_epicloot_me_magicbolt_desc": "შეიქმენი მაგიური ჭექები ეიტრისგან, გაჯერებული შემთხვევითი სტიქიური დაზიანებით",
+  "mod_epicloot_me_magic_prefix1": "მაგიური"
 }

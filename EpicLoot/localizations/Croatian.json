@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Pretraži...",
   "mod_epicloot_no_active_adventures": "Nema aktivnih avantura",
   "mod_epicloot_set_bonuses": "Set bonusi",
-  "mod_epicloot_legendary_sets": "Legendarni setovi"
+  "mod_epicloot_legendary_sets": "Legendarni setovi",
+  "mod_epicloot_me_magicarrow_display": "Magična strijela +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Stvara magične strijele iz eitra, prožete nasumičnom elementarnom štetom",
+  "mod_epicloot_me_magicbolt_display": "Magični vijak +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Stvara magične vijke iz eitra, prožete nasumičnom elementarnom štetom",
+  "mod_epicloot_me_magic_prefix1": "Magični"
 }

@@ -147,6 +147,8 @@ namespace EpicLoot
         public static string ChainLightning = nameof(ChainLightning);
         public static string Apportation = nameof(Apportation);
         public static string ModifyFireRate = nameof(ModifyFireRate);
+        public static string MagicArrow = nameof(MagicArrow);
+        public static string MagicBolt = nameof(MagicBolt);
 
         public static string Bulwark = nameof(Bulwark);
         public static string Undying = nameof(Undying);

@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Ara...",
   "mod_epicloot_no_active_adventures": "Aktif macera yok",
   "mod_epicloot_set_bonuses": "Set Bonusları",
-  "mod_epicloot_legendary_sets": "Efsanevi Setler"
+  "mod_epicloot_legendary_sets": "Efsanevi Setler",
+  "mod_epicloot_me_magicarrow_display": "Sihirli Ok +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Eitr'den sihirli oklar oluştur, rastgele elemental hasarla doldurulmuş",
+  "mod_epicloot_me_magicbolt_display": "Sihirli Cıvata +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Eitr'den sihirli cıvatalar oluştur, rastgele elemental hasarla doldurulmuş",
+  "mod_epicloot_me_magic_prefix1": "Sihirli"
 }

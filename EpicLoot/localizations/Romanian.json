@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Căutare...",
   "mod_epicloot_no_active_adventures": "Nu există aventuri active",
   "mod_epicloot_set_bonuses": "Bonusuri set",
-  "mod_epicloot_legendary_sets": "Seturi legendare"
+  "mod_epicloot_legendary_sets": "Seturi legendare",
+  "mod_epicloot_me_magicarrow_display": "Săgeată Magică +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Creează săgeți magice din eitr, impregnate cu daune elementale aleatoare",
+  "mod_epicloot_me_magicbolt_display": "Proiectil Magic +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Creează proiectile magice din eitr, impregnate cu daune elementale aleatoare",
+  "mod_epicloot_me_magic_prefix1": "Magic"
 }

@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Поиск...",
   "mod_epicloot_no_active_adventures": "Активных приключений нет",
   "mod_epicloot_set_bonuses": "Бонусы комплекта",
-  "mod_epicloot_legendary_sets": "Легендарные наборы"
+  "mod_epicloot_legendary_sets": "Легендарные наборы",
+  "mod_epicloot_me_magicarrow_display": "Магическая Стрела +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Создавай магические стрелы из эйтра, наполненные случайным стихийным уроном",
+  "mod_epicloot_me_magicbolt_display": "Магический Болт +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Создавай магические болты из эйтра, наполненные случайным стихийным уроном",
+  "mod_epicloot_me_magic_prefix1": "Магический"
 }

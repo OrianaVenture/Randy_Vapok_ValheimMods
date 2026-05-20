@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "搜索...",
   "mod_epicloot_no_active_adventures": "没有正在进行的冒险",
   "mod_epicloot_set_bonuses": "套装加成",
-  "mod_epicloot_legendary_sets": "传奇套装"
+  "mod_epicloot_legendary_sets": "传奇套装",
+  "mod_epicloot_me_magicarrow_display": "魔法箭矢 +{0}",
+  "mod_epicloot_me_magicarrow_desc": "用伊特尔凝聚出魔法箭矢，并附带随机元素伤害",
+  "mod_epicloot_me_magicbolt_display": "魔法弩箭 +{0}",
+  "mod_epicloot_me_magicbolt_desc": "用伊特尔凝聚出魔法弩箭，并附带随机元素伤害",
+  "mod_epicloot_me_magic_prefix1": "魔法"
 }

@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Haku...",
   "mod_epicloot_no_active_adventures": "Ei aktiivisia seikkailuja",
   "mod_epicloot_set_bonuses": "Settiponukset",
-  "mod_epicloot_legendary_sets": "Legendaariset setit"
+  "mod_epicloot_legendary_sets": "Legendaariset setit",
+  "mod_epicloot_me_magicarrow_display": "Taikanuoli +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Luo taikanuolia eitristä, satunnaisella elementtivahingolla",
+  "mod_epicloot_me_magicbolt_display": "Taikapultti +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Luo taikapultteja eitristä, satunnaisella elementtivahingolla",
+  "mod_epicloot_me_magic_prefix1": "Taika"
 }

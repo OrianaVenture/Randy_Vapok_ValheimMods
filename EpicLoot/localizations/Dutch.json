@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Zoeken...",
   "mod_epicloot_no_active_adventures": "Geen actieve avonturen",
   "mod_epicloot_set_bonuses": "Setbonussen",
-  "mod_epicloot_legendary_sets": "Legendarische sets"
+  "mod_epicloot_legendary_sets": "Legendarische sets",
+  "mod_epicloot_me_magicarrow_display": "Magische pijl +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Vorm magische pijlen uit eitr, doordrenkt met willekeurige elementaire schade",
+  "mod_epicloot_me_magicbolt_display": "Magische bout +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Vorm magische bouten uit eitr, doordrenkt met willekeurige elementaire schade",
+  "mod_epicloot_me_magic_prefix1": "Magisch"
 }

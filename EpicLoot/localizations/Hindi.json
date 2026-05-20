@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "खोजें...",
   "mod_epicloot_no_active_adventures": "कोई सक्रिय रोमांच नहीं",
   "mod_epicloot_set_bonuses": "सेट बोनस",
-  "mod_epicloot_legendary_sets": "पौराणिक सेट"
+  "mod_epicloot_legendary_sets": "पौराणिक सेट",
+  "mod_epicloot_me_magicarrow_display": "जादुई तीर +{0}",
+  "mod_epicloot_me_magicarrow_desc": "एइत्र से जादुई तीर बनाएं, यादृच्छिक तात्विक क्षति से भरपूर",
+  "mod_epicloot_me_magicbolt_display": "जादुई बोल्ट +{0}",
+  "mod_epicloot_me_magicbolt_desc": "एइत्र से जादुई बोल्ट बनाएं, यादृच्छिक तात्विक क्षति से भरपूर",
+  "mod_epicloot_me_magic_prefix1": "जादुई"
 }

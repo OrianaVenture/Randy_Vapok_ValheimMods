@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Søk...",
   "mod_epicloot_no_active_adventures": "Ingen aktive eventyr",
   "mod_epicloot_set_bonuses": "Settbonuser",
-  "mod_epicloot_legendary_sets": "Legendariske sett"
+  "mod_epicloot_legendary_sets": "Legendariske sett",
+  "mod_epicloot_me_magicarrow_display": "Magisk Pil +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Form magiske piler fra eitr, gjennomsyret med tilfeldig elementskade",
+  "mod_epicloot_me_magicbolt_display": "Magisk Bolt +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Form magiske bolter fra eitr, gjennomsyret med tilfeldig elementskade",
+  "mod_epicloot_me_magic_prefix1": "Magisk"
 }
