@@ -1480,5 +1480,11 @@
     "mod_epicloot_search_placeholder": "Search...",
     "mod_epicloot_no_active_adventures": "No active adventures",
     "mod_epicloot_set_bonuses": "Set Bonuses",
-    "mod_epicloot_legendary_sets": "Legendary Sets"
+    "mod_epicloot_legendary_sets": "Legendary Sets",
+
+    "mod_epicloot_me_magicarrow_display": "Magic Arrow +{0}",
+    "mod_epicloot_me_magicarrow_desc": "Form magic arrows from eitr, infused with a random elemental damage",
+    "mod_epicloot_me_magicbolt_display": "Magic Bolt +{0}",
+    "mod_epicloot_me_magicbolt_desc": "Form magic bolts from eitr, infused with a random elemental damage",
+    "mod_epicloot_me_magic_prefix1": "Magic"
 }

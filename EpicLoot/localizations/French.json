@@ -1448,5 +1448,10 @@
   "mod_epicloot_search_placeholder": "Rechercher...",
   "mod_epicloot_no_active_adventures": "Aucune aventure en cours",
   "mod_epicloot_set_bonuses": "Bonus de set",
-  "mod_epicloot_legendary_sets": "Ensembles légendaires"
+  "mod_epicloot_legendary_sets": "Ensembles légendaires",
+  "mod_epicloot_me_magicarrow_display": "Flèche magique +{0}",
+  "mod_epicloot_me_magicarrow_desc": "Crée des flèches magiques à partir d’eitr, imprégnées de dégâts élémentaires aléatoires",
+  "mod_epicloot_me_magicbolt_display": "Carreau magique +{0}",
+  "mod_epicloot_me_magicbolt_desc": "Crée des carreaux magiques à partir d’eitr, imprégnés de dégâts élémentaires aléatoires",
+  "mod_epicloot_me_magic_prefix1": "Magique"
 }

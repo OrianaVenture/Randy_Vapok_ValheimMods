@@ -6605,6 +6605,98 @@
         "NoRoll": true
       },
       "Ability": "Berserker"
+    },
+    {
+      "Type": "MagicArrow",
+      "DisplayText": "$mod_epicloot_me_magicarrow_display",
+      "Description": "$mod_epicloot_me_magicarrow_desc",
+      "Requirements": {
+        "AllowedSkillTypes": [
+          "Bows"
+        ],
+        "ExcludedSkillTypes": [],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Rare": {
+          "MinValue": 3,
+          "MaxValue": 8,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 8,
+          "MaxValue": 18,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 18,
+          "MaxValue": 25,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 25,
+          "MaxValue": 55,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 10,
+      "Prefixes": [
+        "$mod_epicloot_me_magic_prefix1"
+      ],
+      "Config": {
+        "EitrCost": 5
+      }
+    },
+    {
+      "Type": "MagicBolt",
+      "DisplayText": "$mod_epicloot_me_magicbolt_display",
+      "Description": "$mod_epicloot_me_magicbolt_desc",
+      "Requirements": {
+        "AllowedSkillTypes": [
+          "Crossbows"
+        ],
+        "ExcludedSkillTypes": [],
+        "AllowedRarities": [
+          "Rare",
+          "Epic",
+          "Legendary",
+          "Mythic"
+        ]
+      },
+      "ValuesPerRarity": {
+        "Rare": {
+          "MinValue": 3,
+          "MaxValue": 8,
+          "Increment": 1
+        },
+        "Epic": {
+          "MinValue": 8,
+          "MaxValue": 18,
+          "Increment": 1
+        },
+        "Legendary": {
+          "MinValue": 18,
+          "MaxValue": 25,
+          "Increment": 1
+        },
+        "Mythic": {
+          "MinValue": 25,
+          "MaxValue": 55,
+          "Increment": 1
+        }
+      },
+      "SelectionWeight": 10,
+      "Prefixes": [
+        "$mod_epicloot_me_magic_prefix1"
+      ],
+      "Config": {
+        "EitrCost": 5
+      }
     }
   ]
 }
