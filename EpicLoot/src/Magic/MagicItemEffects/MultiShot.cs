@@ -118,7 +118,9 @@ namespace EpicLoot.MagicItemEffects
             weaponDamage.Modify(damage);
             attack.GetWeapon().m_shared.m_damages = weaponDamage;
 
-            ModifyAttackCost(player, costScale, attack.GetAttackStamina(), attack.GetAttackEitr(), attack.GetAttackHealth());
+            // Vanilla spends the base attack cost; multishot only needs to spend the configured extra amount.
+            float extraCostScale = Mathf.Max(0f, costScale - 1f);
+            ModifyAttackCost(player, extraCostScale, attack.GetAttackStamina(), attack.GetAttackEitr(), attack.GetAttackHealth());
 
             attack.m_projectileAccuracy = attack.m_weapon.m_shared.m_attack.m_projectileAccuracy * accuracy;
 
