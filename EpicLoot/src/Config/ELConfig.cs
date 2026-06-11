@@ -475,7 +475,7 @@ internal class ELConfig
         try
         {
             string fileContents = File.ReadAllText(baseCfgLocation);
-            T contents = JsonConvert.DeserializeObject<T>(fileContents);
+            T contents = DeserializeConfig<T>(fileContents);
             setupMethod(contents);
         }
         catch (Exception e)
@@ -483,7 +483,7 @@ internal class ELConfig
             EpicLoot.LogWarningForce($"The existing baseconfig file {filename} is invalid! Defaults will be used." +
                 $"\n{e.Message}");
             string defaultConfig = EpicLoot.ReadEmbeddedResourceFile(GetDefaultEmbeddedFileLocation(filename));
-            setupMethod(JsonConvert.DeserializeObject<T>(defaultConfig));
+            setupMethod(DeserializeConfig<T>(defaultConfig));
         }
 
         EpicLoot.Log($"Finished loading and applying patches for baseconfig file {filename}.");
@@ -510,7 +510,7 @@ internal class ELConfig
             bool validUpdate = false;
             try
             {
-                T contents = JsonConvert.DeserializeObject<T>(File.ReadAllText(baseCfgLocation));
+                T contents = DeserializeConfig<T>(File.ReadAllText(baseCfgLocation));
                 EpicLoot.Log($"Config file {baseCfgLocation} has been modified, updating config.");
                 setupMethod(contents);
                 validUpdate = true;
@@ -714,11 +714,11 @@ internal class ELConfig
         yield return null;
     }
 
-    private static T ClientRecieveParseJsonConfig<T>(string json)
+    private static T ClientRecieveParseJsonConfig<T>(string json) where T : class
     {
         try
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return DeserializeConfig<T>(json);
         }
         catch (Exception e)
         {
@@ -732,6 +732,16 @@ internal class ELConfig
         ZPackage package = new ZPackage();
         package.Write(zpackage_content);
         return package;
+    }
+
+    private static T DeserializeConfig<T>(string json) where T : class
+    {
+        if (typeof(T) == typeof(MagicItemEffectsList))
+        {
+            return MagicItemEffectsConfigParser.Deserialize(json) as T;
+        }
+
+        return JsonConvert.DeserializeObject<T>(json);
     }
 
     public static IEnumerator OnServerRecieveConfigs(long sender, ZPackage package)
