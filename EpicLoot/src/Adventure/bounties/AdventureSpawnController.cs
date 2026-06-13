@@ -1,7 +1,10 @@
-﻿using EpicLoot.Data;
+﻿using System;
+using EpicLoot.Data;
 using System.Collections;
 using System.Collections.Generic;
+using Jotunn.Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EpicLoot.Adventure
 {
@@ -64,7 +67,7 @@ namespace EpicLoot.Adventure
                 startedPlacement = true;
                 if (bounty.Get().PlayerID != 0)
                 {
-                    StartCoroutine(DeterminespawnPoint(bounty.Get().Position, bounty.Get().Biome));
+                    StartCoroutine(DeterminespawnPoint(bounty.Get().Position, bounty.Get().Biome,false,true));
                 }
 
                 if (treasure.Get().PlayerID != 0)
@@ -173,9 +176,59 @@ namespace EpicLoot.Adventure
             treasureChest.Setup(treasure.PlayerID, treasure.Biome, treasure.Interval);
             placed.ForceSet(true);
         }
+        
+        /// <summary>
+        /// Returns the first DungeonGenerator in bounds if exists.
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        public static LocationProxy GetLocationProxyInBounds(Vector3 center, float distance)
+        {
+            var list = SceneManager.GetActiveScene().GetRootGameObjects();
+
+            for (int lcv = 0; lcv < list.Length; lcv++)
+            {
+                var obj = list[lcv];
+                var locationProxy = obj.GetComponent<LocationProxy>();
+
+                if (locationProxy != null && InBounds(center, obj.transform.position, distance))
+                {
+                    return locationProxy;
+                }
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// Determines if two positions are in range of each other.
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="position"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        public static bool InBounds(Vector3 center, Vector3 position, float distance)
+        {
+            var delta = center - position;
+            var mag = GetMaximumDistance(delta.x, delta.z);
+            return mag <= distance;
+        }
+        
+        /// <summary>
+        /// Calculates the maximum distance a point in space can be from another:
+        /// The hypotenuse of a triangle represented by x, z.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        public static float GetMaximumDistance(float x, float z)
+        {
+            return (float)Math.Sqrt(Math.Pow(x, 2) + Math.Pow(z, 2));
+        }
 
         internal IEnumerator DeterminespawnPoint(Vector3 startingSpawnPoint,
-            Heightmap.Biome biome, bool allowWaterSpawn = false)
+            Heightmap.Biome biome, bool allowWaterSpawn = false, bool isBountySpawn = false)
         {
             yield return new WaitForSeconds(5);
 
@@ -199,6 +252,33 @@ namespace EpicLoot.Adventure
                 {
                     // Sleep to avoid locking the thread
                     yield return new WaitForSeconds(1f);
+                }
+
+                if (isBountySpawn)
+                {
+                    LocationProxy locationProxy = GetLocationProxyInBounds(determinedSpawn, radius);
+                    if (locationProxy != null)
+                    {
+                        CreatureSpawner creatureSpawner =
+                            locationProxy.m_instance.GetComponentInChildren<CreatureSpawner>(true);
+                        if (creatureSpawner != null)
+                        {
+                            // Check if the target creature spawner is same faction as Bounty to avoid bounty being killed by other creatures.
+                            Character.Faction creatureFaction =
+                                creatureSpawner.m_creaturePrefab.GetComponent<Character>().GetFaction();
+                            GameObject bountyCreature = PrefabManager.Instance.GetPrefab(bounty.Get().Target.MonsterID);
+                            if (bountyCreature != null)
+                            {
+                                Character.Faction bountyFaction = bountyCreature.GetComponent<Character>().GetFaction();
+                                if (bountyFaction == creatureFaction)
+                                {
+                                    determinedSpawn = creatureSpawner.transform.position;
+                                }
+                            }
+                        }
+
+                        break;
+                    }
                 }
 
                 ZoneSystem.instance.GetGroundData(
