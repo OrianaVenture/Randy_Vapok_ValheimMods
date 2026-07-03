@@ -145,21 +145,6 @@ namespace EpicLoot.Adventure.Feature
             return results;
         }
 
-        public static string PrintBounties(string label, List<BountyInfo> results)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine(label);
-            for (var index = 0; index < results.Count; index++)
-            {
-                var bountyInfo = results[index];
-                sb.AppendLine($"{index} - {bountyInfo.Interval}, {bountyInfo.Biome}, " +
-                    $"{bountyInfo.TargetName}, ID={bountyInfo.ID}, state={bountyInfo.State}");
-            }
-
-            EpicLoot.Log(sb.ToString());
-            return sb.ToString();
-        }
-
         public static string GenerateTargetName(Random random)
         {
             var specialNames = AdventureDataManager.Config.Bounties.Names.SpecialNames;

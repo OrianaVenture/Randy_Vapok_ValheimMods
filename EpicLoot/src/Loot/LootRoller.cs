@@ -640,7 +640,7 @@ namespace EpicLoot
             return item;
         }
 
-        private static LootDrop ResolveLootDrop(LootDrop lootDrop)
+        public static LootDrop ResolveLootDrop(LootDrop lootDrop)
         {
             var result = new LootDrop { Item = lootDrop.Item, Rarity = ArrayUtils.Copy(lootDrop.Rarity), Weight = lootDrop.Weight };
             var needsResolve = true;
@@ -1209,18 +1209,27 @@ namespace EpicLoot
             return luckFactor;
         }
 
-        public static void DebugLuckFactor()
+        public static string DebugLuckFactor()
         {
-            var players = Player.s_players;
+            StringBuilder sb = new  StringBuilder();
+            List<Player> players = Player.s_players;
             if (players != null)
             {
-                Debug.LogWarning($"DebugLuckFactor ({players.Count} players)");
-                var index = 0;
-                foreach (var player in players)
+                sb.AppendLine($"> DebugLuckFactor ({players.Count} players)");
+                int index = 0;
+                foreach (Player player in players)
                 {
-                    Debug.LogWarning($"{index++}: {player?.m_name}: {player?.m_nview?.GetZDO()?.GetInt("el-luk")}");
+                    if (player == null || player.m_nview == null || !player.m_nview.IsValid()) continue;
+                    
+                    sb.AppendLine($"{++index}: {player.GetPlayerName()}, luck factor: {player.m_nview.GetZDO().GetInt("el-luk")}");
                 }
             }
+            else
+            {
+                sb.Append("> No players");
+            }
+
+            return sb.ToString();
         }
 
         public static Dictionary<ItemRarity, float> ModifyRarityByLuck(
@@ -1297,29 +1306,41 @@ namespace EpicLoot
             Console.instance.Print(sb.ToString());
         }
 
-        public static void PrintLootResolutionTest(string lootTableName, int level, int itemIndex)
+        public static string PrintLootResolutionTest(string lootTableName, int level, int itemIndex)
         {
-            Debug.LogWarning($"{lootTableName}:{level}:{itemIndex}");
-
-            var lootTable = GetLootTable(lootTableName)[0];
-            var lootDrop = GetLootForLevel(lootTable, level)[itemIndex];
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"> creature: {lootTableName}, level: {level}, index: {itemIndex}");
+            List<LootTable> lootTableList = GetLootTable(lootTableName);
+            if (lootTableList.Count == 0)
+            {
+                sb.Append($"> No Loot Table for {lootTableName}");
+                return sb.ToString();
+            }
+            LootTable lootTable = GetLootTable(lootTableName).First();
+            LootDrop[] lootDropArray = GetLootForLevel(lootTable, level);
+            if (lootDropArray.Length - 1 < itemIndex)
+            {
+                sb.Append($"> No loot for item index: {itemIndex}");
+                return sb.ToString();
+            }
+            LootDrop lootDrop = lootDropArray[itemIndex];
             lootDrop = ResolveLootDrop(lootDrop);
-            var rarity = lootDrop.Rarity;
+            float[] rarity = lootDrop.Rarity;
 
             if (rarity.Length < 1)
             {
-                return;
+                sb.Append("> No Rarity table");
+                return sb.ToString();
             }
 
-            string rarityStr = "> rarity=[ ";
+            sb.Append("> rarity = [");
             for (int i = 0; i < rarity.Length - 1; i++)
             {
-                rarityStr += $"{rarity[i]},";
+                sb.Append($" {rarity[i]},");
             }
-
-            rarityStr += $"{rarity[rarity.Length - 1]} ]";
-
-            Debug.LogWarning(rarityStr);
+            sb.Append($" {rarity[rarity.Length - 1]} ]");
+            
+            return sb.ToString();
         }
     }
 }
